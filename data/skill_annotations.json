@@ -1,0 +1,194 @@
+{
+  "annotations": {
+    "productivity/xlsx": {
+      "task_types": [
+        "data.processing",
+        "file.operation"
+      ],
+      "input_formats": [
+        "xlsx",
+        "csv",
+        "excel",
+        "*"
+      ],
+      "priority": 8,
+      "tags": [
+        "spreadsheet"
+      ]
+    },
+    "productivity/docx": {
+      "task_types": [
+        "document.writing",
+        "file.operation"
+      ],
+      "input_formats": [
+        "docx",
+        "word",
+        "*"
+      ],
+      "priority": 8,
+      "tags": [
+        "document"
+      ]
+    },
+    "productivity/pdf": {
+      "task_types": [
+        "file.operation"
+      ],
+      "input_formats": [
+        "pdf",
+        "*"
+      ],
+      "priority": 8,
+      "tags": [
+        "document"
+      ]
+    },
+    "software-development/python-debugpy": {
+      "task_types": [
+        "code.generation",
+        "code.review"
+      ],
+      "input_formats": [
+        "python",
+        "*"
+      ],
+      "priority": 9,
+      "tags": [
+        "code"
+      ]
+    },
+    "software-development/github": {
+      "task_types": [
+        "code.generation",
+        "system.admin"
+      ],
+      "input_formats": [
+        "git",
+        "*"
+      ],
+      "priority": 7,
+      "tags": [
+        "git"
+      ]
+    },
+    "software-development/test-driven-development": {
+      "task_types": [
+        "code.generation",
+        "code.review"
+      ],
+      "input_formats": [
+        "python",
+        "*"
+      ],
+      "priority": 6,
+      "tags": [
+        "testing"
+      ]
+    },
+    "research/arxiv": {
+      "task_types": [
+        "web.academic"
+      ],
+      "input_formats": [
+        "*",
+        "academic",
+        "paper"
+      ],
+      "priority": 9,
+      "tags": [
+        "academic"
+      ]
+    },
+    "research/grounded-citations": {
+      "task_types": [
+        "web.academic",
+        "document.writing"
+      ],
+      "input_formats": [
+        "*"
+      ],
+      "priority": 6,
+      "tags": [
+        "citation"
+      ]
+    },
+    "creative/design-md": {
+      "task_types": [
+        "document.writing"
+      ],
+      "input_formats": [
+        "html",
+        "css",
+        "*"
+      ],
+      "priority": 7,
+      "tags": [
+        "design"
+      ]
+    },
+    "creative/claude-design": {
+      "task_types": [
+        "document.writing"
+      ],
+      "input_formats": [
+        "html",
+        "*"
+      ],
+      "priority": 6,
+      "tags": [
+        "design"
+      ]
+    },
+    "root/deep-research": {
+      "task_types": [
+        "web.deep_research"
+      ],
+      "input_formats": [
+        "*"
+      ],
+      "priority": 9,
+      "tags": [
+        "research"
+      ]
+    },
+    "root/gpt-researcher": {
+      "task_types": [
+        "web.deep_research"
+      ],
+      "input_formats": [
+        "*"
+      ],
+      "priority": 8,
+      "tags": [
+        "research"
+      ]
+    },
+    "root/search-layer": {
+      "task_types": [
+        "web.search"
+      ],
+      "input_formats": [
+        "*",
+        "web",
+        "search"
+      ],
+      "priority": 9,
+      "tags": [
+        "search"
+      ]
+    },
+    "web/blocked-page-recovery": {
+      "task_types": [
+        "web.search"
+      ],
+      "input_formats": [
+        "*"
+      ],
+      "priority": 5,
+      "tags": [
+        "web"
+      ]
+    }
+  }
+}
