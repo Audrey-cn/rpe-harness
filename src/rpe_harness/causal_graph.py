@@ -128,23 +128,31 @@ class CausalGraph:
             profile = self.profiles.get(skill_id)
             if not profile:
                 continue
-            # 检查使用场景是否匹配
-            match_score = 0.0
+            # 1. 场景匹配（主信号，最高 0.7）
+            context_score = 0.0
             for ctx in profile.usage_contexts:
-                if any(kw in state.goal for kw in ctx.split()):
-                    match_score += 0.3
-            # 检查是否有与当前活跃技能的关联
-            for active in all_skills:
-                if active in dormant:
-                    continue
-                path = self.find_path(active, skill_id)
-                if path and len(path) <= 3:
-                    match_score += 0.4
-            if match_score > 0.3:
+                if any(kw in state.goal.lower() for kw in ctx.lower().split()):
+                    context_score += 0.35
+            context_score = min(context_score, 0.7)
+
+            # 2. 关联发现（弱信号，封顶 0.3，且要求任务类型相关）
+            relation_score = 0.0
+            if profile.usage_contexts or state.task_type.value != "unknown":
+                for active in all_skills:
+                    if active in dormant:
+                        continue
+                    path = self.find_path(active, skill_id)
+                    if path and len(path) <= 3:
+                        relation_score = 0.3  # 封顶，不累加
+                        break
+
+            match_score = context_score + relation_score
+            # 关联分不能单独触发——必须有场景匹配，且总分够高
+            if context_score > 0.3 and match_score > 0.6:
                 results.append({
                     "skill_id": skill_id,
-                    "match_score": min(match_score, 1.0),
-                    "reason": "场景匹配" if match_score > 0.5 else "关联发现",
+                    "match_score": round(min(match_score, 1.0), 3),
+                    "reason": "场景匹配" if context_score > 0.2 else "关联发现",
                 })
         return sorted(results, key=lambda x: x["match_score"], reverse=True)
 
