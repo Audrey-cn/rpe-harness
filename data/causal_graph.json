@@ -1,0 +1,258 @@
+{
+  "edges": [
+    {
+      "source": "productivity/xlsx",
+      "target": "productivity/docx",
+      "relation": "composes_with",
+      "condition": "数据处理后生成报告",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "productivity/pdf",
+      "target": "productivity/docx",
+      "relation": "composes_with",
+      "condition": "PDF 提取后写文档",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "productivity/docx",
+      "target": "creative/design-md",
+      "relation": "fallback_for",
+      "condition": "需要富排版时",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "software-development/python-debugpy",
+      "target": "software-development/github",
+      "relation": "depends_on",
+      "condition": "代码提交",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "software-development/github",
+      "target": "software-development/requesting-code-review",
+      "relation": "composes_with",
+      "condition": "PR 前审查",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "software-development/test-driven-development",
+      "target": "software-development/python-debugpy",
+      "relation": "composes_with",
+      "condition": "TDD 循环",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "web/search-layer",
+      "target": "research/arxiv",
+      "relation": "fallback_for",
+      "condition": "学术搜索",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "web/search-layer",
+      "target": "deep-research",
+      "relation": "fallback_for",
+      "condition": "需要深度调研",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "research/arxiv",
+      "target": "research/grounded-citations",
+      "relation": "composes_with",
+      "condition": "论文引用",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "deep-research",
+      "target": "gpt-researcher",
+      "relation": "composes_with",
+      "condition": "多源聚合",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "deep-research",
+      "target": "research/grounded-citations",
+      "relation": "composes_with",
+      "condition": "引用标注",
+      "confidence": 1.0,
+      "evidence_count": 0
+    },
+    {
+      "source": "creative/design-md",
+      "target": "creative/claude-design",
+      "relation": "composes_with",
+      "condition": "HTML 设计稿",
+      "confidence": 1.0,
+      "evidence_count": 0
+    }
+  ],
+  "profiles": {
+    "productivity/xlsx": {
+      "skill_id": "productivity/xlsx",
+      "preconditions": [
+        "file_exists"
+      ],
+      "postconditions": [
+        "data_cleaned"
+      ],
+      "failure_modes": [
+        "encrypted_file",
+        "malformed_header",
+        "merged_cells"
+      ],
+      "alternatives": [
+        "productivity/csv-parser"
+      ],
+      "composed_with": [
+        "productivity/docx"
+      ],
+      "usage_contexts": [
+        "excel spreadsheet data cleaning analysis csv"
+      ]
+    },
+    "productivity/docx": {
+      "skill_id": "productivity/docx",
+      "preconditions": [],
+      "postconditions": [
+        "document_created"
+      ],
+      "failure_modes": [
+        "template_missing"
+      ],
+      "alternatives": [
+        "creative/design-md"
+      ],
+      "composed_with": [
+        "productivity/xlsx"
+      ],
+      "usage_contexts": [
+        "word document writing report docx"
+      ]
+    },
+    "productivity/pdf": {
+      "skill_id": "productivity/pdf",
+      "preconditions": [
+        "file_exists"
+      ],
+      "postconditions": [
+        "text_extracted"
+      ],
+      "failure_modes": [
+        "scanned_image",
+        "encrypted_pdf"
+      ],
+      "alternatives": [],
+      "composed_with": [
+        "productivity/docx"
+      ],
+      "usage_contexts": [
+        "pdf read extract merge fill"
+      ]
+    },
+    "software-development/python-debugpy": {
+      "skill_id": "software-development/python-debugpy",
+      "preconditions": [
+        "python_env"
+      ],
+      "postconditions": [
+        "bug_fixed"
+      ],
+      "failure_modes": [
+        "import_error",
+        "syntax_error"
+      ],
+      "alternatives": [
+        "software-development/systematic-debugging"
+      ],
+      "composed_with": [
+        "software-development/github",
+        "software-development/test-driven-development"
+      ],
+      "usage_contexts": [
+        "python debug code fix traceback"
+      ]
+    },
+    "web/search-layer": {
+      "skill_id": "web/search-layer",
+      "preconditions": [],
+      "postconditions": [
+        "results_found"
+      ],
+      "failure_modes": [
+        "rate_limited",
+        "blocked"
+      ],
+      "alternatives": [
+        "web/blocked-page-recovery",
+        "deep-research"
+      ],
+      "composed_with": [],
+      "usage_contexts": [
+        "search web query lookup find information"
+      ]
+    },
+    "research/arxiv": {
+      "skill_id": "research/arxiv",
+      "preconditions": [],
+      "postconditions": [
+        "papers_found"
+      ],
+      "failure_modes": [
+        "no_results"
+      ],
+      "alternatives": [],
+      "composed_with": [
+        "research/grounded-citations"
+      ],
+      "usage_contexts": [
+        "academic paper arxiv research literature scientific"
+      ]
+    },
+    "deep-research": {
+      "skill_id": "deep-research",
+      "preconditions": [],
+      "postconditions": [
+        "report_generated"
+      ],
+      "failure_modes": [
+        "timeout",
+        "shallow_results"
+      ],
+      "alternatives": [
+        "gpt-researcher"
+      ],
+      "composed_with": [
+        "research/grounded-citations"
+      ],
+      "usage_contexts": [
+        "deep research comprehensive investigation multi-source"
+      ]
+    },
+    "gpt-researcher": {
+      "skill_id": "gpt-researcher",
+      "preconditions": [],
+      "postconditions": [
+        "report_generated"
+      ],
+      "failure_modes": [],
+      "alternatives": [],
+      "composed_with": [
+        "deep-research"
+      ],
+      "usage_contexts": [
+        "research report plan solve parallel agent aggregation"
+      ]
+    }
+  }
+}
