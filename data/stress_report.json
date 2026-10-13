@@ -13,7 +13,7 @@
     "active": 448,
     "dormant": 52,
     "deterministic_rules": 132,
-    "registration_ms": 1.858,
+    "registration_ms": 1.868,
     "index_alloc_mb": 0.031,
     "index_peak_alloc_mb": 0.04
   },
@@ -39,41 +39,41 @@
   "latency_ms": {
     "overall": {
       "count": 600,
-      "mean_ms": 0.1511,
-      "p50_ms": 0.0115,
-      "p95_ms": 0.3623,
-      "p99_ms": 0.9566,
-      "max_ms": 1.0496
+      "mean_ms": 0.1537,
+      "p50_ms": 0.0118,
+      "p95_ms": 0.3714,
+      "p99_ms": 0.9717,
+      "max_ms": 1.044
     },
     "l0_deterministic": {
       "count": 300,
-      "mean_ms": 0.0012,
-      "p50_ms": 0.001,
-      "p95_ms": 0.0013,
-      "p99_ms": 0.0053,
-      "max_ms": 0.0171
+      "mean_ms": 0.0009,
+      "p50_ms": 0.0009,
+      "p95_ms": 0.001,
+      "p99_ms": 0.0012,
+      "max_ms": 0.0104
     },
     "l2_relational": {
       "count": 300,
-      "mean_ms": 0.299,
-      "p50_ms": 0.2339,
-      "p95_ms": 0.8732,
-      "p99_ms": 0.9645,
-      "max_ms": 1.0004
+      "mean_ms": 0.3042,
+      "p50_ms": 0.2383,
+      "p95_ms": 0.8907,
+      "p99_ms": 0.9693,
+      "max_ms": 1.0514
     }
   },
   "throughput_tps": {
-    "overall": 6553.9,
-    "l0_deterministic": 484457.0,
-    "l2_relational": 3309.9
+    "overall": 6445.0,
+    "l0_deterministic": 596075.4,
+    "l2_relational": 3252.4
   },
   "memory": {
-    "peak_rss_mb": 15.48,
+    "peak_rss_mb": 14.7,
     "index_alloc_mb": 0.031,
     "routing_peak_alloc_mb": 0.028
   },
   "comparison": {
-    "l2_over_l0_p95_ratio": 671.69,
-    "l2_over_l0_throughput_ratio": 146.37
+    "l2_over_l0_p95_ratio": 890.7,
+    "l2_over_l0_throughput_ratio": 183.27
   }
 }
