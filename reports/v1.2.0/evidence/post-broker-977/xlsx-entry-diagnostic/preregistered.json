@@ -1,0 +1,27 @@
+{
+  "experiment_id": "installed-977-xlsx-validation-diagnostic",
+  "purpose": "Identify stage and argument-key/type validation cause without changing production functions",
+  "wheel_sha256": "97794dfa0b9c92294c32b6b9337b7d99aae927d1c9187efe58de73faa733b1ca",
+  "cases": [
+    "xlsx_typed_keys",
+    "xlsx_formulas"
+  ],
+  "case_sessions": 2,
+  "session_timeout_seconds": 120,
+  "order": [
+    "xlsx_typed_keys",
+    "xlsx_formulas"
+  ],
+  "model_calls_authorized": "Exactly these two isolated host sessions; ordinary API turns/retries within launcher budget",
+  "fixture_source": "installed-contract-release/hermes-anchored/fixtures; exact original XLSX bytes copied into fresh owned workspaces",
+  "fixed_contract": "Original required_request business parameters, with fresh owned path/event metadata only",
+  "diagnostic": "Owned ephemeral plugin wrappers call originals unaltered; record stage/type/origin line plus argument key names/types and genuine ContextVar IDs only",
+  "excluded_recordings": [
+    "raw argument values",
+    "prompt/message/history text",
+    "credentials",
+    "raw exception message"
+  ],
+  "preservation": "Original installed977 six-case acceptance preserved, this independent diagnostic never substitutes its results",
+  "cleanup": "Launcher owned process cleanup and gate run first; then copy safe diagnostics and remove each entire owned session home/logs"
+}

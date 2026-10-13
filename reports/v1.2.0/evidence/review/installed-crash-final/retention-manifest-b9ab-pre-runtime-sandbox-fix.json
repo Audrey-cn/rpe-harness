@@ -1,0 +1,24 @@
+{
+  "scope": "pre-runtime-sandbox-fix package",
+  "wheel_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7",
+  "final_release_acceptance": false,
+  "passed_crash_phases": 3,
+  "installed_identity_source_relative_to_owned": "installed-contract-closed/report.json",
+  "installed_identity_report_sha256": "06bff2628518aa38ad113828725bce342d5705dae3804de0d0ea4cbef367424e",
+  "files": [
+    {
+      "path": "installed-crash-evidence-b9ab-pre-runtime-sandbox-fix.json",
+      "sha256": "37c848dab2c624ef5e00c9b937fce9419fd709234338c5c2820909f74053ccf8",
+      "bytes": 5457,
+      "source_relative_to_owned": "review/installed-crash/installed-crash-evidence.json"
+    },
+    {
+      "path": "reproduce_installed_crash-b9ab-pre-runtime-sandbox-fix.py",
+      "sha256": "b0f6bfb0ba649b8f07c850ca547b03dae0450daa2e02a9cb295328222a2cedf8",
+      "bytes": 10567,
+      "source_relative_to_owned": "review/installed-crash/reproduce_installed_crash.py"
+    }
+  ],
+  "probes_executed_by_retention_script": 0,
+  "followup": "root will repeat installed owner-crash checks for the final exact wheel"
+}

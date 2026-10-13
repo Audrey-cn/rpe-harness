@@ -1,0 +1,28 @@
+{
+  "experiment": "final-guarded-release-supplement",
+  "declared_before_calls": true,
+  "scheduled_after_completion_of_original_36": true,
+  "checks": [
+    {
+      "kind": "fixed_contract_installed_hermes_e2e",
+      "attempts": 6,
+      "same_case_ids_as_original": true,
+      "required_request": "explicit fixed v2 anchor",
+      "candidate_actual_use": "csv_multiline after actual CLI candidate validate/apply",
+      "post_candidate": "rollback"
+    },
+    {
+      "kind": "same_agent_session_continuation",
+      "rounds": 2,
+      "same_unmodified_messages_continued": true,
+      "deadline_seconds": 360,
+      "required_request": null,
+      "manual_truth": "two fixed literal CSV truths"
+    }
+  ],
+  "purpose": "Final installation and admission/reset behavior, outside paired cost comparison; all failures retained",
+  "model": "xiaomi mimo-v2.6-pro",
+  "production_change": "Reject actual none-policy calls or new same-turn calls after durable terminal result before any Harness run or publication; preserve actual original-call replay and new-turn admission",
+  "source_and_wheel_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7",
+  "frozen_manifest": "frozen-source-manifest.json"
+}

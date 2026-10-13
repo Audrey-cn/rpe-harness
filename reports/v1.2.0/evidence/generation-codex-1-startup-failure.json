@@ -1,0 +1,13 @@
+{
+  "agent": "installed Codex CLI",
+  "ephemeral": true,
+  "returncode": 1,
+  "timed_out": false,
+  "elapsed_seconds": 2.603,
+  "candidate_exists": false,
+  "candidate_sha256": null,
+  "candidate_bytes": 0,
+  "parse_error": null,
+  "events": [],
+  "history_and_cache_scope": "all writes confined to owned root; ephemeral session; separate local logs/state"
+}

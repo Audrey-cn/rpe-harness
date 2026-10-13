@@ -1,0 +1,47 @@
+{
+  "scope": "Darwin RSS observer fix only",
+  "source_files_changed": [
+    "src/rpe_harness/evolution/sandbox.py",
+    "tests/test_candidate_rss.py"
+  ],
+  "files": [
+    {
+      "path": "sandbox-reviewed.py",
+      "source": "src/rpe_harness/evolution/sandbox.py",
+      "sha256": "dfa8c543dd0a59b524dffc701b92b4d7451511796e2bd497f5a25c01e87a0dbb",
+      "bytes": 8398
+    },
+    {
+      "path": "test_candidate_rss.py",
+      "source": "tests/test_candidate_rss.py",
+      "sha256": "8efd9716da48d8252f15c415f3a55b54a3491b3fc09e61d3348a6a8174c9b5fe",
+      "bytes": 2040
+    },
+    {
+      "path": "focused-result.json",
+      "sha256": "0f8d1c5ebc565cd8fe294449e6b466b838c87709237b0bf4e41465d99e4a0be8",
+      "bytes": 8347
+    },
+    {
+      "path": "red-green-summary.json",
+      "sha256": "fc1e93cb3f374f2fd279fe30331cad8d8426d8eeb545ae5fc14434bec0e6d5e2",
+      "bytes": 639
+    },
+    {
+      "path": "sdk-abi.json",
+      "sha256": "7db098a9bcb9c0b559ac1cb2929298298d0d444e433991d88a6f3c3a4407bffe",
+      "bytes": 956
+    }
+  ],
+  "source_frozen": true,
+  "full_suite_owner": "root",
+  "final_release_acceptance": false,
+  "separate_unresolved_issue": "macOS nested sandbox_apply blocks actual Hermes candidate child; not solved by this RSS patch",
+  "excluded": [
+    "raw histories",
+    "credentials",
+    "SQLite",
+    "Hermes home"
+  ],
+  "model_or_api_calls": 0
+}

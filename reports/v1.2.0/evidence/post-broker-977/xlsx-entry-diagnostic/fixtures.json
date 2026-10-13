@@ -1,0 +1,42 @@
+[
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/csv_chinese/input.csv",
+    "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/csv_multiline/input.csv",
+    "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/reject_formula_dependency/input.xlsx",
+    "sha256": "00cbd64312c327d4560338317ccb0bfdf371a36ecf7f669cccb6f5427f26a185"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/reject_json/input.json",
+    "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_formulas/input.xlsx",
+    "sha256": "5557d0794385ba9de79ec9b19867614511bb7b523f209d6e771badb5c5418781"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_formulas/output.xlsx",
+    "sha256": "203eb62ae2f4067d77082f2691e6c449d809043dbbe31bcb4c54b93cd17c3128"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_formulas/request.json",
+    "sha256": "0b36c048940186a178621468d17751c24aeabafae6a9fff6373366d8b97b7581"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_typed_keys/input.xlsx",
+    "sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_typed_keys/output.xlsx",
+    "sha256": "0d2bbedc531d354666c358e7486c6b0c2dde23cb9561f6e973af11fbb9f70bd0"
+  },
+  {
+    "path": "artifacts/post-broker-977/xlsx-entry-diagnostic/xlsx_typed_keys/request.json",
+    "sha256": "2bd062c81ed4d1da0c6f3f43fd0ada0d7ef499763046c81717cc67126dab2073"
+  }
+]

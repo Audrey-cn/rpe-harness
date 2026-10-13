@@ -78,6 +78,218 @@ def test_home_rejects_unsupported_provider_before_copy(tmp_path):
                      tool_enabled=True, settings={'provider': 'nous', 'api_key': 'secret'})
 
 
+def test_strict_home_exposes_only_eager_task_tool(tmp_path):
+    workspace = tmp_path / 'workspace'
+    workspace.mkdir()
+    home = prepare_home(tmp_path/'session', workspace, tmp_path/'db.sqlite', tool_enabled=True,
+                        entry_mode='strict', settings={'provider':'xiaomi', 'model':'test',
+                        'base_url':'https://example.invalid/v1', 'api_key':'owned-test-key'})
+    config = json.loads((home/'config.yaml').read_text())
+    assert config['platform_toolsets']['cli'] == ['rpe_harness']
+    assert config['tools']['tool_search']['enabled'] == 'off'
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(),reason='macOS native observer sandbox')
+def test_native_observer_hashes_tools_inside_minimal_import_sandbox(tmp_path):
+    import os
+    import subprocess
+    import sys
+    source=Path(__file__).resolve().parents[1]/'src'
+    workspace=tmp_path/'native'
+    workspace.mkdir()
+    profile=sandbox_profile([workspace],Path.home()/'.hermes',native_import_root=source)
+    program='''import json,sys
+from pathlib import Path
+sys.path.insert(0,sys.argv[1])
+from rpe_harness.integrations.hermes import HostEventStore,register
+class Context:
+    def __init__(self): self.hooks={}
+    def register_hook(self,name,callback): self.hooks[name]=callback
+context=Context()
+register(context)
+context.hooks['pre_api_request'](session_id='native-session',api_request_id='api-one',request={
+    'body':{'tool_choice':'auto','messages':[{'content':'PRIVATE_PROMPT'}],
+            'tools':[{'type':'function','function':{'name':'terminal',
+                     'description':'PRIVATE_SCHEMA','parameters':{'type':'object'}}}]}})
+assert 'rpe_harness.integrations.hermes_gate' not in sys.modules
+try:
+    (Path(sys.argv[1])/'rpe_harness/integrations/hermes_gate.py').read_text()
+except PermissionError:
+    pass
+else:
+    raise AssertionError('oracle source must stay unreadable')
+print(json.dumps(HostEventStore(sys.argv[2]).list('native-session')))
+'''
+    db=workspace/'runs.sqlite'
+    env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1','RPE_HERMES_TOOL_ENABLED':'0',
+         'RPE_HERMES_DB':str(db),'RPE_HERMES_WORKSPACE':str(workspace)}
+    child=subprocess.run(['/usr/bin/sandbox-exec','-p',profile,sys.executable,'-B','-c',program,
+                          str(source),str(db)],env=env,cwd=workspace,capture_output=True,text=True,timeout=15)
+    assert child.returncode==0,child.stderr
+    rows=json.loads(child.stdout)
+    assert len(rows)==1
+    assert rows[0]['request_tool_names']==['terminal']
+    assert len(rows[0]['request_tools_sha256'])==64
+    assert 'PRIVATE' not in child.stdout
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(),reason='macOS nested installed runtime sandbox')
+@pytest.mark.parametrize('tool_enabled',[True,False])
+def test_owned_parent_allows_only_explicit_installed_runtime_reads(tmp_path,monkeypatch,tool_enabled):
+    import shutil
+    import sys
+    from rpe_harness.integrations import hermes,hermes_session as module
+    runtime=tmp_path/'installed-runtime'
+    import_root=runtime/'lib/python/site-packages'
+    package=import_root/'rpe_harness'
+    integrations=package/'integrations'
+    integrations.mkdir(parents=True)
+    (package/'__init__.py').write_text('')
+    (integrations/'__init__.py').write_text('')
+    shutil.copyfile(hermes.__file__,integrations/'hermes.py')
+    (package/'contracts.py').write_text('ORACLE_READ_MUST_REMAIN_DENIED')
+    sibling=tmp_path/'unrelated-owned-secret.txt'
+    sibling.write_text('SIBLING_READ_MUST_REMAIN_DENIED')
+    workspace=tmp_path/'workspace'
+    workspace.mkdir()
+    hermes_root=tmp_path/'fake-installed-hermes'
+    hermes_root.mkdir()
+    dependency=Path(sys.executable).absolute().parent.parent/'pyvenv.cfg'
+    assert dependency.is_file(),'test requires the owned venv interpreter'
+    owner=dependency.parent.parent
+    assert tmp_path.resolve().is_relative_to(owner.resolve())
+    bootstrap=integrations/'hermes_bootstrap.py'
+    program='''import json,os,sys
+from pathlib import Path
+sys.path.insert(0,IMPORT_ROOT)
+assert Path(DEPENDENCY).read_text()
+def denied_read(path):
+    try: Path(path).read_text()
+    except PermissionError: return
+    raise AssertionError('unexpected read permission')
+denied_read(SIBLING)
+if not TOOL_ENABLED: denied_read(ORACLE)
+for path in (DEPENDENCY,__file__):
+    try: Path(path).write_text('forbidden runtime modification')
+    except PermissionError: pass
+    else: raise AssertionError('unexpected runtime write permission')
+from rpe_harness.integrations.hermes import HostEventStore
+HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'nested-runtime-session','completed':True})
+print(json.dumps({'type':'result','session_id':'nested-runtime-session','text':'owned runtime read probe'}))
+'''
+    program=('IMPORT_ROOT='+repr(str(import_root))+'\nDEPENDENCY='+repr(str(dependency))+
+             '\nSIBLING='+repr(str(sibling))+'\nORACLE='+repr(str(package/'contracts.py'))+
+             '\nTOOL_ENABLED='+repr(tool_enabled)+'\n'+program)
+    bootstrap.write_text(program)
+    before_dependency=dependency.read_bytes()
+    monkeypatch.setattr(module,'__file__',str(integrations/'hermes_session.py'))
+    # The real host interpreter lives outside the owned Harness venv; resolve the
+    # test venv's symlink to reproduce that distinct-host startup arrangement.
+    monkeypatch.setattr(module,'_installed_python',lambda root:Path(sys.executable).resolve())
+    monkeypatch.setattr(module,'_read_host_settings',lambda *a:{'provider':'xiaomi','model':'owned-test-model',
+        'base_url':'https://example.invalid/v1','api_key':'owned-test-secret'})
+    result=module.run_hermes_session('No model: exercise owned runtime read boundary',workspace,tmp_path/'runs.sqlite',
+        tool_enabled=tool_enabled,owner_root=owner,hermes_root=hermes_root,timeout=5)
+    try:
+        assert result['completed'] is True,(result,Path(result['session_root'],'stderr.log').read_text())
+        assert result['exit_code']==0
+        assert result['process_cleanup']['cleanup_complete'] is True
+        assert result['usage']['api_requests']==0
+        assert result['events'][0]['kind']=='on_session_end'
+        assert dependency.read_bytes()==before_dependency
+        assert bootstrap.read_text()==program
+    finally:
+        shutil.rmtree(result['session_root'])
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(),reason='macOS external candidate and sandboxed host')
+@pytest.mark.parametrize('separate_owner',[False,True])
+def test_real_activated_candidate_runs_through_registered_tool_external_broker(tmp_path,monkeypatch,separate_owner):
+    import shutil
+    import sys
+    import rpe_harness
+    from test_candidates import candidate
+    from rpe_harness.evolution import apply_candidate,validate_candidate
+    from rpe_harness.integrations import hermes_session as module
+    state=tmp_path/'persistent-state'
+    db,proposal=candidate(state)
+    assert validate_candidate(proposal['proposal_id'],db)['passed']
+    active=apply_candidate(proposal['proposal_id'],db)
+    runtime=tmp_path/'installed-runtime'
+    import_root=runtime/'lib/python/site-packages'
+    package=import_root/'rpe_harness'
+    shutil.copytree(Path(rpe_harness.__file__).parent,package)
+    integrations=package/'integrations'
+    bootstrap=integrations/'hermes_bootstrap.py'
+    workspace=tmp_path/'new-task-workspace'
+    workspace.mkdir()
+    source=workspace/'new.csv'
+    source.write_text('id,value\na,first\na,later\nb,second\n')
+    output=workspace/'new-out.csv'
+    request={'schema_version':2,'event_id':'activated-host-sandbox','capability':'tabular.deduplicate',
+        'goal':'retain first','constraints':['preserve_original','preserve_order'],
+        'execution':{'input_path':str(source),'output_path':str(output),'key_columns':['id']}}
+    sibling=state/'not-bound-private.txt'
+    sibling.write_text('UNRELATED_SIBLING')
+    program='''import json,os,sys
+from pathlib import Path
+sys.path.insert(0,IMPORT_ROOT)
+from rpe_harness.integrations.hermes import HostEventStore,register
+if NOT_SEPARATE:
+    try: Path(SIBLING).read_text()
+    except PermissionError: pass
+    else: raise AssertionError('unbound owned sibling exposed')
+for path in (ARTIFACT,INPUT,OUTPUT):
+    try: Path(path).write_text('forbidden certificate/evidence mutation')
+    except PermissionError: pass
+    else: raise AssertionError('readonly candidate file became writable')
+class Context:
+    def __init__(self): self.hooks,self.middleware,self.tools={},{},{}
+    def register_hook(self,name,callback): self.hooks[name]=callback
+    def register_middleware(self,name,callback): self.middleware[name]=callback
+    def register_tool(self,**values): self.tools[values['name']]=values['handler']
+ctx=Context()
+register(ctx)
+identity={key:'candidate-test-'+key for key in ('session_id','task_id','turn_id','api_request_id','tool_call_id')}
+next_call=lambda args:ctx.tools['rpe_task'](args,session_id=identity['session_id'],task_id=identity['task_id'])
+answer=json.loads(ctx.middleware['tool_execution']('rpe_task',{'request':REQUEST},next_call,**identity))
+ctx.hooks['post_tool_call'](**identity,tool_name='rpe_task',result=json.dumps(answer))
+HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'candidate-runtime-session','completed':answer['status']=='succeeded'})
+print(json.dumps({'type':'result','session_id':'candidate-runtime-session','text':json.dumps({'status':answer['status'],'run_id':answer.get('run_id')})}))
+'''
+    program=('IMPORT_ROOT='+repr(str(import_root))+'\nSIBLING='+repr(str(sibling))+
+        '\nARTIFACT='+repr(proposal['artifact_path'])+'\nINPUT='+repr(str(state/'orders.csv'))+
+        '\nOUTPUT='+repr(str(state/'result.csv'))+'\nREQUEST='+repr(request)+
+        '\nNOT_SEPARATE='+repr(not separate_owner)+'\n'+program)
+    bootstrap.write_text(program)
+    owner=tmp_path/'ephemeral-owner' if separate_owner else Path(sys.executable).absolute().parent.parent.parent
+    monkeypatch.setattr(module,'__file__',str(integrations/'hermes_session.py'))
+    monkeypatch.setattr(module,'_installed_python',lambda root:Path(sys.executable).resolve())
+    monkeypatch.setattr(module,'_read_host_settings',lambda *a:{'provider':'xiaomi','model':'owned-test-model',
+        'base_url':'https://example.invalid/v1','api_key':'owned-test-secret'})
+    result=module.run_hermes_session('No model: exercise active producer OS boundaries',workspace,db,
+        tool_enabled=True,owner_root=owner,hermes_root=tmp_path/'fake-hermes',timeout=10)
+    try:
+        assert result['completed'] is True,(result,Path(result['session_root'],'stderr.log').read_text())
+        answer=json.loads(result['final_response'])
+        from rpe_harness.storage import RunStore
+        artifact=RunStore(db).get(answer['run_id'])['artifact']
+        executor=artifact['actual_executor']
+        assert executor['kind']=='candidate',executor
+        assert executor['candidate_version_id']==active['version_id']
+        assert executor['code_sha256']==proposal['content_hash']
+        profile=Path(result['session_root'],'hermes.sb').read_text()
+        assert str(state/'evolution-sandboxes') not in profile
+        assert proposal['artifact_path'] not in profile
+        assert result['process_cleanup']['external_executor_cleanup_complete'] is True
+        assert result['process_cleanup']['external_executor_remaining_children']==[]
+        assert output.read_text(encoding='utf-8-sig')=='id,value\na,first\nb,second\n'
+        assert result['usage']['api_requests']==0
+        assert result['process_cleanup']['cleanup_complete'] is True
+    finally:
+        shutil.rmtree(result['session_root'])
+
+
 def test_descendants_track_identity_and_never_include_parent(monkeypatch):
     from rpe_harness.integrations import hermes_session as module
     table = {10: (1, 'host-start'), 20: (10, 'child-start'), 30: (20, 'grandchild-start'),

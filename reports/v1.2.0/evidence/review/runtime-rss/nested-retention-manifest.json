@@ -1,0 +1,10 @@
+{
+  "scope": "historical nested sandbox_apply limitation after RSS fix and before external executor boundary",
+  "source_relative_to_owned": "probes/candidate-nested-os-limit.json",
+  "path": "candidate-nested-os-limit.json",
+  "sha256": "ce8ca25a1c4ce40f297af7f97f7fb0888997324935ea19c645a15341ea60e549",
+  "model_calls": 0,
+  "actual_candidate_verified": false,
+  "next_design": "root authorized external authenticated ephemeral executor parent boundary",
+  "later_broker_result_not_in_this_record": true
+}

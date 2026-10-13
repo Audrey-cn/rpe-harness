@@ -1,0 +1,30 @@
+{
+  "experiment": "final-guarded-release-supplement",
+  "declared_before_calls": true,
+  "scheduled_after_completion_of_original_36": true,
+  "checks": [
+    {
+      "kind": "fixed_contract_installed_hermes_e2e",
+      "attempts": 6,
+      "same_case_ids_as_original": true,
+      "required_request": "explicit fixed v2 anchor",
+      "candidate_actual_use": "csv_multiline after actual CLI candidate validate/apply",
+      "post_candidate": "rollback"
+    },
+    {
+      "kind": "same_agent_session_continuation",
+      "rounds": 2,
+      "same_unmodified_messages_continued": true,
+      "deadline_seconds": 360,
+      "required_request": null,
+      "manual_truth": "two fixed literal CSV truths"
+    }
+  ],
+  "purpose": "Final installation and admission/reset behavior, outside paired cost comparison; all failures retained",
+  "model": "xiaomi mimo-v2.6-pro",
+  "production_change": "Close actual none-policy and same-turn terminal admission before execution; retain original-call read-only replay. Run the fixed Harness CLI outside the preserved Hermes sandbox through a session-owned authenticated, receipt/hash-bound loopback task endpoint with bounded child/socket cleanup; candidates retain their own single sandbox and native libproc RSS supervision.",
+  "source_and_wheel_sha256": "97794dfa0b9c92294c32b6b9337b7d99aae927d1c9187efe58de73faa733b1ca",
+  "frozen_manifest": "frozen-source-manifest.json",
+  "startup_failure_preserved": "final-supplement-startup-failure.json",
+  "amendment_before_retry": "Read-only launcher runtime fix, ephemeral authenticated external executor to avoid macOS nested sandbox_apply, native Darwin RSS observation and fresh owned fixture state; six-case and same-session budgets/acceptance unchanged. Original pre-model failure and nested-sandbox RED are preserved."
+}

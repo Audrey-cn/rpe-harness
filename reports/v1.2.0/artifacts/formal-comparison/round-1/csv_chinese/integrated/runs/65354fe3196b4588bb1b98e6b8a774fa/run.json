@@ -1,0 +1,203 @@
+{
+  "run_id": "65354fe3196b4588bb1b98e6b8a774fa",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 55389,
+  "started_at": 1791926188.340448,
+  "finished_at": 1791926188.348503,
+  "skill_id": "builtin/csv-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-4283b386701a91c4ef7f67aad81dbd615a0722a819902703062c1f0dfc17bfad",
+  "payload_hash": "1df638c2200c7f370cdc9c940fbc74ca5d9f621fd96d678026c8e747a3ad898c",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791926188.3420548,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按列「编号」的完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序，utf-8-sig 输出",
+    "input_format": "csv",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_051609_b8e997",
+    "source_ref": "entry-4283b386701a91c4ef7f67aad81dbd615a0722a819902703062c1f0dfc17bfad",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "headers_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "source_unchanged": true
+    },
+    "input_rows": 5,
+    "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+    "output_rows": 3,
+    "output_sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+    "passed": true,
+    "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+    },
+    "format": "csv",
+    "input_rows": 5,
+    "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+    "output_rows": 3,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv",
+    "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-4283b386701a91c4ef7f67aad81dbd615a0722a819902703062c1f0dfc17bfad",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/input.csv",
+      "keep": "first",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv"
+    },
+    "goal": "按列「编号」的完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序，utf-8-sig 输出",
+    "schema_version": 2,
+    "session_id": "20261014_051609_b8e997"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/csv-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按列「编号」的完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序，utf-8-sig 输出",
+          "input_format": "csv",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/input.csv",
+          "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv",
+          "session_id": "20261014_051609_b8e997",
+          "sheet": null,
+          "source_ref": "entry-4283b386701a91c4ef7f67aad81dbd615a0722a819902703062c1f0dfc17bfad",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+      },
+      "created_at": 1791926188.342795
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791926188.3433201
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+      },
+      "created_at": 1791926188.343607
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+        },
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+      },
+      "created_at": 1791926188.346712
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+      },
+      "created_at": 1791926188.347081
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv",
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 5,
+          "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+          "output_rows": 3,
+          "output_sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+          "passed": true,
+          "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791926188.3475351
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6"
+        },
+        "format": "csv",
+        "input_rows": 5,
+        "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv",
+        "plan_sha256": "3bd4e4e36eca75301629802d7e4bae0c2b7535d5d86e9e5e6a7f0cc9731fb1c6",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a"
+      },
+      "created_at": 1791926188.348313
+    }
+  ]
+}

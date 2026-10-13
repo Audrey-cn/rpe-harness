@@ -1,0 +1,231 @@
+{
+  "version": "1.2.0",
+  "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "source_checkout_used": false,
+  "wheel_sha256": "97794dfa0b9c92294c32b6b9337b7d99aae927d1c9187efe58de73faa733b1ca",
+  "installed_member_count": 35,
+  "installed_members_match": true,
+  "dependency": {
+    "openpyxl": "3.1.5",
+    "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/openpyxl/__init__.py",
+    "fresh_network_dependency_install_tested": true
+  },
+  "checks": [
+    {
+      "case_id": "csv_chinese",
+      "passed": true,
+      "status": "succeeded",
+      "returncode": 0,
+      "run_id": "2be5f05c33384a8b9f428198b176967d",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {
+        "checks": {
+          "duplicates_removed": true,
+          "first_records_preserved": true,
+          "headers_preserved": true,
+          "record_order_preserved": true,
+          "request_bound": true,
+          "source_unchanged": true
+        },
+        "input_rows": 5,
+        "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+        "output_rows": 3,
+        "output_sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+        "passed": true,
+        "plan_sha256": "584cf6fdbe2e281f8c63b1eca16f2956a3398cbdfc65eeff5fe3500ab9af478c",
+        "removed_rows": 2
+      },
+      "error": null,
+      "artifact": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "584cf6fdbe2e281f8c63b1eca16f2956a3398cbdfc65eeff5fe3500ab9af478c"
+        },
+        "format": "csv",
+        "input_rows": 5,
+        "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/csv_chinese/output.csv",
+        "plan_sha256": "584cf6fdbe2e281f8c63b1eca16f2956a3398cbdfc65eeff5fe3500ab9af478c",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a"
+      }
+    },
+    {
+      "case_id": "csv_multiline",
+      "passed": true,
+      "status": "succeeded",
+      "returncode": 0,
+      "run_id": "4dc61cc9c43449948d41870fc3859e4f",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {
+        "checks": {
+          "duplicates_removed": true,
+          "first_records_preserved": true,
+          "headers_preserved": true,
+          "record_order_preserved": true,
+          "request_bound": true,
+          "source_unchanged": true
+        },
+        "input_rows": 4,
+        "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+        "output_rows": 3,
+        "output_sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+        "passed": true,
+        "plan_sha256": "86e7a5bbe69646a0a5ad974f0d41ff303b2877799acf6cbc0103073c0ad4ff27",
+        "removed_rows": 1
+      },
+      "error": null,
+      "artifact": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "86e7a5bbe69646a0a5ad974f0d41ff303b2877799acf6cbc0103073c0ad4ff27"
+        },
+        "format": "csv",
+        "input_rows": 4,
+        "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/csv_multiline/output.csv",
+        "plan_sha256": "86e7a5bbe69646a0a5ad974f0d41ff303b2877799acf6cbc0103073c0ad4ff27",
+        "published": true,
+        "removed_rows": 1,
+        "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae"
+      }
+    },
+    {
+      "case_id": "xlsx_typed_keys",
+      "passed": true,
+      "status": "succeeded",
+      "returncode": 0,
+      "run_id": "71ea2ca377814ba3987c00ee2adcb572",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {
+        "checks": {
+          "duplicates_removed": true,
+          "first_records_preserved": true,
+          "formulas_preserved": true,
+          "headers_preserved": true,
+          "non_target_sheets_preserved": true,
+          "record_order_preserved": true,
+          "request_bound": true,
+          "retained_metadata_preserved": true,
+          "source_unchanged": true
+        },
+        "input_rows": 6,
+        "input_sha256": "3180970bfb06f369ec691f6ed029c999ce1b7630b72b8178c456480cf59b7f0c",
+        "output_rows": 4,
+        "output_sha256": "97c9a93509a67bb7a527b0981b700a5f3d5daa8173f9773ea9129236e4e67af9",
+        "passed": true,
+        "plan_sha256": "b13f7200ad703fd4e398551f8dd56550d865051e7c40d8b9e9aca59061e36d95",
+        "removed_rows": 2
+      },
+      "error": null,
+      "artifact": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "b13f7200ad703fd4e398551f8dd56550d865051e7c40d8b9e9aca59061e36d95"
+        },
+        "format": "xlsx",
+        "input_rows": 6,
+        "input_sha256": "3180970bfb06f369ec691f6ed029c999ce1b7630b72b8178c456480cf59b7f0c",
+        "output_rows": 4,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/xlsx_typed_keys/output.xlsx",
+        "plan_sha256": "b13f7200ad703fd4e398551f8dd56550d865051e7c40d8b9e9aca59061e36d95",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "97c9a93509a67bb7a527b0981b700a5f3d5daa8173f9773ea9129236e4e67af9"
+      }
+    },
+    {
+      "case_id": "xlsx_formulas",
+      "passed": true,
+      "status": "succeeded",
+      "returncode": 0,
+      "run_id": "a1b95d0106e946989f1619f427108bf5",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {
+        "checks": {
+          "duplicates_removed": true,
+          "first_records_preserved": true,
+          "formulas_preserved": true,
+          "headers_preserved": true,
+          "non_target_sheets_preserved": true,
+          "record_order_preserved": true,
+          "request_bound": true,
+          "retained_metadata_preserved": true,
+          "source_unchanged": true
+        },
+        "input_rows": 5,
+        "input_sha256": "771c9df542fb21fa8d5cc105ffeac2e538f49adce7fea9657f8b9a20669a32c5",
+        "output_rows": 3,
+        "output_sha256": "52fbe9168b5986ebcdc0591681054548f8c88a75f3b6e0eb0fa11cffcc3c8e85",
+        "passed": true,
+        "plan_sha256": "8d0bab04ab539579bc4647a8bed1984e8b8070aa3102102cae81147ce7a9e5e1",
+        "removed_rows": 2
+      },
+      "error": null,
+      "artifact": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "8d0bab04ab539579bc4647a8bed1984e8b8070aa3102102cae81147ce7a9e5e1"
+        },
+        "format": "xlsx",
+        "input_rows": 5,
+        "input_sha256": "771c9df542fb21fa8d5cc105ffeac2e538f49adce7fea9657f8b9a20669a32c5",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/xlsx_formulas/output.xlsx",
+        "plan_sha256": "8d0bab04ab539579bc4647a8bed1984e8b8070aa3102102cae81147ce7a9e5e1",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "52fbe9168b5986ebcdc0591681054548f8c88a75f3b6e0eb0fa11cffcc3c8e85"
+      }
+    },
+    {
+      "case_id": "reject_json",
+      "passed": true,
+      "status": "rejected",
+      "returncode": 2,
+      "run_id": "5537a81a38424cfea16bb5d6e710b043",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {},
+      "error": {
+        "code": "invalid_request",
+        "message": "input must be a supported csv or xlsx file",
+        "type": "ValueError"
+      },
+      "artifact": null
+    },
+    {
+      "case_id": "reject_formula_dependency",
+      "passed": true,
+      "status": "rejected",
+      "returncode": 2,
+      "run_id": "43d94f085ccc472aba11bc134382807c",
+      "source_unchanged": true,
+      "replay_same_run_artifact": true,
+      "verification": {},
+      "error": {
+        "code": "invalid_request",
+        "message": "retained formula references a row that would be cleared",
+        "type": "ValueError"
+      },
+      "artifact": null
+    }
+  ],
+  "passed": true
+}

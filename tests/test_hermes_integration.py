@@ -21,6 +21,7 @@ class PluginContext:
     def __init__(self):
         self.tools = {}
         self.hooks = {}
+        self.middleware = {}
 
     def register_tool(self, **kwargs):
         self.tools[kwargs['name']] = kwargs
@@ -28,10 +29,13 @@ class PluginContext:
     def register_hook(self, name, callback):
         self.hooks[name] = callback
 
+    def register_middleware(self, name, callback):
+        self.middleware[name] = callback
+
 
 def configured_plugin(tmp_path, monkeypatch, enabled=True):
     workspace = tmp_path / 'workspace'
-    workspace.mkdir()
+    workspace.mkdir(exist_ok=True)
     db = tmp_path / 'state.sqlite'
     monkeypatch.setenv('RPE_HERMES_DB', str(db))
     monkeypatch.setenv('RPE_HERMES_WORKSPACE', str(workspace))
@@ -146,20 +150,15 @@ def test_observers_remain_active_when_native_arm_disables_tool(tmp_path, monkeyp
 
 def test_model_facing_schema_requires_goal_and_constraint_array(tmp_path, monkeypatch):
     context, _, _ = configured_plugin(tmp_path, monkeypatch)
-    envelope = context.tools['rpe_task']['schema']['parameters']['properties']['request']
-    assert envelope['properties']['schema_version']['const'] == 1
-    assert envelope['properties']['event_id']['minLength'] == 1
-    assert set(envelope['required']) == {'schema_version', 'event_id', 'state', 'execution'}
-    state = envelope['properties']['state']
-    assert {'task_type', 'goal', 'input_format', 'required_capability'} <= set(state['required'])
-    assert state['properties']['goal'] == {'type': 'string', 'minLength': 1}
-    assert state['properties']['task_type']['enum'] == ['data.processing', 'file.operation']
-    assert state['properties']['required_capability']['const'] == 'tabular.deduplicate'
-    constraints = state['properties']['constraints']
+    schema = context.tools['rpe_task']['schema']['parameters']
+    assert set(schema['required']) == {'input_path', 'output_path', 'key_columns', 'goal'}
+    assert 'request' not in schema['properties']
+    assert 'task_type' not in schema['properties']
+    assert schema['properties']['goal'] == {'type': 'string', 'minLength': 1}
+    constraints = schema['properties']['constraints']
     assert constraints['type'] == 'array'
     assert constraints['items']['enum'] == ['preserve_original', 'preserve_order', 'preserve_formulas']
-    execution = envelope['properties']['execution']
-    assert set(execution['required']) == {'input_path', 'output_path', 'key_columns'}
+    execution = schema
     assert execution['properties']['key_columns']['type'] == 'array'
     assert execution['properties']['key_columns']['minItems'] == 1
     assert execution['properties']['key_columns']['items']['type'] == 'string'
@@ -235,6 +234,60 @@ def test_runtime_rejection_is_returned_and_durable(tmp_path, monkeypatch):
     assert result['error']['code'] == 'invalid_request'
     assert RunStore(db).get(result['run_id'])['status'] == 'rejected'
     assert not (workspace / 'out.csv').exists()
+
+
+@pytest.mark.parametrize('damage,fields',[
+    ('unknown_flat_key',['sheet_name']),('request_not_object',['request']),
+    ('execution_not_object',['execution']),('constraints_not_array',['constraints']),
+    ('input_path_not_string',['input_path']),
+])
+def test_argument_validation_feedback_is_specific_and_durable_without_launch(tmp_path,monkeypatch,damage,fields):
+    context,workspace,db=configured_plugin(tmp_path,monkeypatch)
+    payload=request(workspace)
+    args={'request':payload}
+    if damage=='unknown_flat_key':
+        args={'input_path':'orders.csv','output_path':'out.csv','key_columns':['id'],
+              'goal':'PRIVATE_GOAL_VALUE','sheet_name':'PRIVATE_SHEET_VALUE'}
+    elif damage=='request_not_object': args={'request':['PRIVATE_REQUEST_VALUE']}
+    elif damage=='execution_not_object': payload['execution']='PRIVATE_EXECUTION_VALUE'
+    elif damage=='constraints_not_array': payload['state']['constraints']='PRIVATE_CONSTRAINT_VALUE'
+    elif damage=='input_path_not_string': payload['execution']['input_path']=42
+    def forbidden_launch(*args,**kwargs):
+        raise AssertionError('invalid arguments must not start any child')
+    monkeypatch.setattr(integration().subprocess,'run',forbidden_launch)
+    result=json.loads(context.tools['rpe_task']['handler'](args,session_id='argument-session'))
+    assert result['status']=='rejected'
+    assert result['error']['code']=='invalid_task_arguments'
+    assert result['error']['fields']==fields
+    assert 'sheet' in result['error']['allowed_parameters']
+    assert 'sheet_name' not in result['error']['allowed_parameters']
+    assert fields[0] in result['error']['message']
+    assert 'PRIVATE_' not in json.dumps(result)
+    events=integration().HostEventStore(db).list('argument-session')
+    returned=next(event for event in events if event['kind']=='rpe_task_returned')
+    assert returned['error_code']=='invalid_task_arguments'
+    assert returned['error']['code']=='invalid_task_arguments'
+    assert returned['error']['type']=='TaskArgumentsError'
+    assert 'PRIVATE_' not in json.dumps(events)
+    assert RunStore(db).list()==[]
+    assert not (workspace/'out.csv').exists()
+
+
+def test_argument_error_fact_reaches_existing_host_failure_diagnosis(tmp_path,monkeypatch):
+    from rpe_harness.evolution import cycle,EvolutionStore
+    context,workspace,db=configured_plugin(tmp_path,monkeypatch)
+    request(workspace)
+    result=json.loads(context.tools['rpe_task']['handler']({'input_path':'orders.csv',
+        'output_path':'out.csv','key_columns':['id'],'goal':'private-goal','sheet_name':'private-sheet'},
+        session_id='host-error-session'))
+    assert result['error']['code']=='invalid_task_arguments'
+    cycle(db,tmp_path,auto_apply=False)
+    diagnoses=EvolutionStore(db).list_proposals()
+    host=next(item for item in diagnoses if item['component']=='host')
+    content=json.loads(Path(host['artifact_path']).read_text())
+    facts=content['host_errors']
+    assert any(item['code']=='invalid_task_arguments' and item['error_type']=='TaskArgumentsError' for item in facts)
+    assert 'private-goal' not in json.dumps(content) and 'private-sheet' not in json.dumps(content)
 
 
 def test_receipt_persisted_before_child_and_timeout_is_recorded(tmp_path, monkeypatch):
@@ -407,4 +460,183 @@ print(result)
     assert linked['tool_call_id'] == 'native-call'
     assert linked['api_request_id'] == 'native-api'
     assert linked['telemetry_schema_version'] == 'hermes.observer.v1'
+    receipt = rows[1]
+    assert all(receipt[key] == linked[key] for key in
+               ('session_id','task_id','tool_call_id','turn_id','api_request_id'))
     assert RunStore(db).get(result['run_id'])['verification']['passed'] is True
+
+
+@pytest.mark.skipif(not os.environ.get('RPE_HERMES_SOURCE'),
+                    reason='set RPE_HERMES_SOURCE for installed hook serializer coverage')
+def test_native_normalized_response_serializer_retains_actual_model_call_identity(tmp_path):
+    hermes=Path(os.environ['RPE_HERMES_SOURCE']).resolve()
+    home=tmp_path/'owned-home'
+    home.mkdir()
+    (home/'config.yaml').write_text('{}')
+    env={**os.environ,'HERMES_HOME':str(home),'HERMES_RUNTIME_DIR':str(tmp_path/'runtime'),
+         'PYTHONDONTWRITEBYTECODE':'1','PYTHONPATH':str(hermes)}
+    program='''import json
+from agent.api_request_hooks import ApiRequestHooksMixin
+from agent.transports.types import NormalizedResponse, ToolCall
+agent=ApiRequestHooksMixin()
+message=NormalizedResponse(content='PRIVATE', tool_calls=[ToolCall(
+    id='provider-call-one', name='rpe_task', arguments='PRIVATE_ARGUMENTS')], finish_reason='tool_calls')
+print(json.dumps(agent._api_response_payload_for_hook(None,message,finish_reason='tool_calls')))
+'''
+    child=subprocess.run([str(hermes/'.venv'/'bin'/'python'),'-B','-c',program],cwd=tmp_path,
+                         env=env,capture_output=True,text=True,timeout=30)
+    assert child.returncode==0,child.stderr
+    payload=json.loads(child.stdout)
+    assert payload['assistant_message']['tool_calls'][0]['name']=='rpe_task'
+    metadata=integration()._metadata({'response':payload,'assistant_tool_call_count':1})
+    assert metadata['model_tool_calls']==[{'tool_call_id':'provider-call-one','tool_name':'rpe_task'}]
+    assert 'PRIVATE' not in json.dumps(metadata)
+
+
+def strict_entry(tmp_path,monkeypatch):
+    monkeypatch.setenv('RPE_HERMES_ENTRY_MODE','strict')
+    monkeypatch.setenv('RPE_HERMES_ENTRY_KEY','trusted-guard-entry')
+    return configured_plugin(tmp_path,monkeypatch)
+
+
+def native_identity(call='call-one',api='api-one',turn='turn-one'):
+    return {'session_id':'guard-session','task_id':'guard-task','turn_id':turn,
+            'api_request_id':api,'tool_call_id':call}
+
+
+def strict_request(context,identity,actual_choice=None):
+    body={'tools':[{'type':'function','function':{'name':'rpe_task','parameters':{'type':'object'}}}]}
+    rewritten=context.middleware['llm_request'](request=body,original_request=body,**identity)['request']
+    if actual_choice is not None:
+        rewritten['tool_choice']=actual_choice
+    context.hooks['pre_api_request'](request={'body':rewritten},**identity)
+    return rewritten
+
+
+def native_dispatch(context,args,identity):
+    context.hooks['pre_tool_call'](tool_name='rpe_task',args=args,**identity)
+    result=context.middleware['tool_execution'](tool_name='rpe_task',args=args,
+        next_call=lambda payload:context.tools['rpe_task']['handler'](payload,
+            task_id=identity['task_id'],session_id=identity['session_id']),**identity)
+    context.hooks['post_tool_call'](tool_name='rpe_task',args=args,result=result,status='ok',**identity)
+    return json.loads(result)
+
+
+def test_real_counterexample_ignored_none_cannot_start_second_contract_after_json_rejection(tmp_path,monkeypatch):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    (workspace/'unsupported.json').write_text('[{"id":"a"}]')
+    request(workspace)
+    first_id=native_identity()
+    strict_request(context,first_id)
+    rejected=native_dispatch(context,{'input_path':'unsupported.json','output_path':'out.json',
+        'key_columns':['id'],'goal':'deduplicate JSON'},first_id)
+    assert rejected['status']=='rejected'
+    extra_id=native_identity(call='call-extra',api='api-final')
+    assert strict_request(context,extra_id)['tool_choice']=='none'
+    before=RunStore(db).list()
+    monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('forbidden executor launch'))
+    extra=native_dispatch(context,{'input_path':'orders.csv','output_path':'forbidden.csv',
+        'key_columns':['id'],'goal':'different valid CSV task'},extra_id)
+    assert extra['status']=='rejected'
+    assert extra.get('run_id') is None
+    assert RunStore(db).list()==before
+    assert not (workspace/'forbidden.csv').exists()
+
+
+def test_completed_turn_rejects_stale_named_request_and_preserves_published_output(tmp_path,monkeypatch):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    payload=request(workspace)
+    first_id=native_identity()
+    queued=native_identity(call='queued-call',api='queued-api')
+    strict_request(context,first_id)
+    assert strict_request(context,queued)['tool_choice']['function']['name']=='rpe_task'
+    first=native_dispatch(context,{'request':payload},first_id)
+    original=(workspace/'out.csv').read_bytes()
+    monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('closed turn executor launch'))
+    extra=native_dispatch(context,{'request':{**payload,'execution':{
+        **payload['execution'],'output_path':'forbidden.csv'}}},queued)
+    assert extra['error']['code']=='entry_closed'
+    assert extra.get('run_id') is None
+    assert len(RunStore(db).list())==1
+    assert (workspace/'out.csv').read_bytes()==original
+    assert not (workspace/'forbidden.csv').exists()
+
+
+def test_original_named_call_replay_returns_durable_run_without_executor_launch(tmp_path,monkeypatch):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    payload=request(workspace)
+    identity=native_identity()
+    strict_request(context,identity)
+    first=native_dispatch(context,{'request':payload},identity)
+    original=(workspace/'out.csv').read_bytes()
+    monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('replay must not launch executor'))
+    replay=native_dispatch(context,{'request':{**payload,'state':{
+        **payload['state'],'goal':'equivalent description'}}},identity)
+    assert replay['status']=='succeeded'
+    assert replay['run_id']==first['run_id']
+    assert len(RunStore(db).list())==1
+    assert (workspace/'out.csv').read_bytes()==original
+
+
+def test_new_turn_named_request_remains_allowed_after_previous_turn_terminal(tmp_path,monkeypatch):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    payload=request(workspace)
+    first_id=native_identity()
+    strict_request(context,first_id)
+    native_dispatch(context,{'request':payload},first_id)
+    second_id=native_identity(call='next-call',api='next-api',turn='next-turn')
+    assert strict_request(context,second_id)['tool_choice']['function']['name']=='rpe_task'
+    second=native_dispatch(context,{'request':{**payload,'execution':{
+        **payload['execution'],'output_path':'next.csv'}}},second_id)
+    assert second['status']=='succeeded'
+    assert len(RunStore(db).list())==2
+
+
+@pytest.mark.parametrize('missing_policy',[False,True])
+def test_actual_none_or_incomplete_policy_fails_closed_before_first_run(tmp_path,monkeypatch,missing_policy):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    payload=request(workspace)
+    identity=native_identity()
+    if not missing_policy:
+        # The actual pre-API request takes precedence over an earlier named rewrite.
+        strict_request(context,identity,actual_choice='none')
+    monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('inadmissible executor launch'))
+    result=native_dispatch(context,{'request':payload},identity)
+    assert result['error']['code']==('entry_policy_missing' if missing_policy else 'entry_policy_none')
+    assert result.get('run_id') is None
+    assert RunStore(db).list()==[]
+    assert not (workspace/'out.csv').exists()
+
+
+@pytest.mark.parametrize('fault',['source_changed','artifact_changed','artifact_removed'])
+@pytest.mark.parametrize('same_call',[True,False])
+def test_damaged_current_evidence_cannot_reopen_durably_closed_turn(tmp_path,monkeypatch,fault,same_call):
+    context,workspace,db=strict_entry(tmp_path,monkeypatch)
+    payload=request(workspace)
+    original_id=native_identity()
+    stale=native_identity(call='stale-new-call',api='stale-named-api')
+    strict_request(context,original_id)
+    strict_request(context,stale)
+    first=native_dispatch(context,{'request':payload},original_id)
+    assert first['status']=='succeeded'
+    source=workspace/'orders.csv'
+    output=workspace/'out.csv'
+    if fault=='source_changed':
+        source.write_text('id,value\na,changed\nb,new\n')
+    elif fault=='artifact_changed':
+        output.write_text('id,value\na,tampered\n')
+    else:
+        output.unlink()
+    current_output=output.read_bytes() if output.exists() else None
+    current_source=source.read_bytes()
+    monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('damaged evidence reopened executor'))
+    args={'request':payload} if same_call else {'request':{**payload,'execution':{
+        **payload['execution'],'output_path':'forbidden.csv'}}}
+    blocked=native_dispatch(context,args,original_id if same_call else stale)
+    assert blocked['status']=='rejected'
+    assert blocked.get('run_id') is None
+    assert len(RunStore(db).list())==1
+    assert (output.read_bytes() if output.exists() else None)==current_output
+    assert source.read_bytes()==current_source
+    assert not (workspace/'forbidden.csv').exists()
+    assert strict_request(context,native_identity(call='',api='final-after-damage'))['tool_choice']=='none'

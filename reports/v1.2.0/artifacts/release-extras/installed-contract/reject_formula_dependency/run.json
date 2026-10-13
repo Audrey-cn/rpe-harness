@@ -1,0 +1,114 @@
+{
+  "run_id": "2f04f6d6a2da4467a4561084c618cfea",
+  "status": "rejected",
+  "stage": "execute",
+  "owner_pid": 90419,
+  "started_at": 1791933704.767452,
+  "finished_at": 1791933704.816601,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "local",
+  "event_id": "installed-reject_formula_dependency",
+  "payload_hash": "d2cec87e75273ca1c8df3365aa5da8428548a5ef151f9f42e24ec4c9e368bd4d",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791933704.807432,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按明确关键列去重并保留首条",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": null,
+    "source_ref": "installed-reject_formula_dependency",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "retained formula references a row that would be cleared",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "installed-reject_formula_dependency",
+    "execution": {
+      "delimiter": ",",
+      "encoding": "utf-8-sig",
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/reject_formula_dependency/input.xlsx",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/reject_formula_dependency/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按明确关键列去重并保留首条",
+    "schema_version": 2
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按明确关键列去重并保留首条",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/reject_formula_dependency/input.xlsx",
+          "input_sha256": "e31aa5a78e01f1852dd06cebda715efa387a72b16b010033324f45c2a85bc9cb",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/fixtures/reject_formula_dependency/output.xlsx",
+          "session_id": null,
+          "sheet": "订单",
+          "source_ref": "installed-reject_formula_dependency",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "36dcdf721673e7013ed66c94eb6f54891138b0562dd97ad2768322b62a97f0d8"
+      },
+      "created_at": 1791933704.8088388
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "36dcdf721673e7013ed66c94eb6f54891138b0562dd97ad2768322b62a97f0d8",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791933704.8101919
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "36dcdf721673e7013ed66c94eb6f54891138b0562dd97ad2768322b62a97f0d8"
+      },
+      "created_at": 1791933704.811008
+    },
+    {
+      "stage": "execute",
+      "evidence": {},
+      "created_at": 1791933704.816119
+    }
+  ]
+}

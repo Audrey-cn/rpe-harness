@@ -1,0 +1,115 @@
+{
+  "run_id": "deeec42804c94a5f927a2672e33f3b78",
+  "status": "rejected",
+  "stage": "execute",
+  "owner_pid": 88183,
+  "started_at": 1791932891.361999,
+  "finished_at": 1791932891.406068,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-e23d65547136efdab897953aad29c37e1643c189288bbadf10f7f386d790907a",
+  "payload_hash": "004dfa5aa1cd6e55f0a6939e5ff4b9d9c56b67bc4889ac096c8cea2440615226",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791932891.401151,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按列 [\"编号\"] 的完整值去重，保留首次出现的完整记录及原顺序；键值不去除空格、不忽略大小写、不强制转数字；保留中文、前导零和所有非键列原值。XLSX 处理订单工作表：只清空重复数据行的值、注释和超链接，不删除或移动行；保留其余单元格的原坐标、公式文本、样式、注释和超链接，以及其他工作表和隐藏状态、列宽。原文件不可修改，目标已存在时拒绝覆盖。",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_070757_9f19af",
+    "source_ref": "entry-e23d65547136efdab897953aad29c37e1643c189288bbadf10f7f386d790907a",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "retained formula references a row that would be cleared",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-e23d65547136efdab897953aad29c37e1643c189288bbadf10f7f386d790907a",
+    "execution": {
+      "delimiter": ",",
+      "encoding": "utf-8-sig",
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/input.xlsx",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按列 [\"编号\"] 的完整值去重，保留首次出现的完整记录及原顺序；键值不去除空格、不忽略大小写、不强制转数字；保留中文、前导零和所有非键列原值。XLSX 处理订单工作表：只清空重复数据行的值、注释和超链接，不删除或移动行；保留其余单元格的原坐标、公式文本、样式、注释和超链接，以及其他工作表和隐藏状态、列宽。原文件不可修改，目标已存在时拒绝覆盖。",
+    "schema_version": 2,
+    "session_id": "20261014_070757_9f19af"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按列 [\"编号\"] 的完整值去重，保留首次出现的完整记录及原顺序；键值不去除空格、不忽略大小写、不强制转数字；保留中文、前导零和所有非键列原值。XLSX 处理订单工作表：只清空重复数据行的值、注释和超链接，不删除或移动行；保留其余单元格的原坐标、公式文本、样式、注释和超链接，以及其他工作表和隐藏状态、列宽。原文件不可修改，目标已存在时拒绝覆盖。",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/input.xlsx",
+          "input_sha256": "6b76d91f8c8ce3b8d8a29fd8bcb0988670a1ab65050c5fbbc30cc1dfbf02e6a3",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/output.xlsx",
+          "session_id": "20261014_070757_9f19af",
+          "sheet": "订单",
+          "source_ref": "entry-e23d65547136efdab897953aad29c37e1643c189288bbadf10f7f386d790907a",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "ec4a99a65ebcc2b2a2ca5976425b1abcb809da2252f2c4c63024273b8ed0bc51"
+      },
+      "created_at": 1791932891.402074
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "ec4a99a65ebcc2b2a2ca5976425b1abcb809da2252f2c4c63024273b8ed0bc51",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791932891.4026518
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "ec4a99a65ebcc2b2a2ca5976425b1abcb809da2252f2c4c63024273b8ed0bc51"
+      },
+      "created_at": 1791932891.402959
+    },
+    {
+      "stage": "execute",
+      "evidence": {},
+      "created_at": 1791932891.405905
+    }
+  ]
+}

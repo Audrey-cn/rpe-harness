@@ -391,7 +391,9 @@ def _event_evidence(events: Any) -> list[dict[str, Any]]:
                "api_request_id", "tool_call_id", "tool_name", "run_id", "model", "provider", "api_mode",
                "response_model", "status", "completed", "failed", "interrupted", "api_call_count",
                "api_duration", "started_at", "ended_at", "received_at", "error_type", "error_code",
-               "status_code", "retry_count", "max_retries", "retryable"}
+               "status_code", "retry_count", "max_retries", "retryable", "receipt_id",
+               "contract_sha256", "plan_sha256", "input_sha256", "request_tool_choice",
+               "request_parallel_tool_calls", "request_tools_sha256"}
     evidence = []
     for raw in events if isinstance(events, list) else []:
         if not isinstance(raw, dict):
@@ -399,6 +401,13 @@ def _event_evidence(events: Any) -> list[dict[str, Any]]:
         event = _metadata(raw)
         clean = {key: value for key, value in event.items() if key in allowed
                  and (value is None or type(value) in (str, int, float, bool))}
+        names = event.get('request_tool_names')
+        if isinstance(names, list) and all(isinstance(name, str) for name in names):
+            clean['request_tool_names'] = names
+        calls = event.get('model_tool_calls')
+        if isinstance(calls, list):
+            clean['model_tool_calls'] = [{key: call[key] for key in ('tool_call_id', 'tool_name')
+                if isinstance(call.get(key), str)} for call in calls if isinstance(call, dict)]
         if "usage" in event:
             clean["usage"] = None if event["usage"] is None else _usage_for_report(event["usage"])
         if isinstance(event.get("error"), dict):
@@ -452,7 +461,9 @@ def _pair_evidence(attempts: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def run_comparison(root: Path | str, report_path: Path | str,
-                   session_runner: Callable[..., dict[str, Any]]) -> dict[str, Any]:
+                   session_runner: Callable[..., dict[str, Any]], *,
+                   cases: list[dict[str, Any]] | None = None, arm_offset: int = 0,
+                   checkpoint: Callable[[dict[str, Any]], None] | None = None) -> dict[str, Any]:
     """Run all pairs, alternating order, retaining outcomes without private text."""
     root = Path(root)
     if root.is_symlink():
@@ -460,7 +471,7 @@ def run_comparison(root: Path | str, report_path: Path | str,
     root.mkdir(parents=True, exist_ok=True)
     root = root.resolve()
     comparison_root = Path(tempfile.mkdtemp(prefix="comparison-", dir=root))
-    cases = build_cases(comparison_root / "fixtures")
+    cases = build_cases(comparison_root / "fixtures") if cases is None else cases
     report: dict[str, Any] = {
         "experiment": "hermes-native-v1.1", "case_count": len(cases), "attempts": [],
         "native_hermes_baseline_measured": False,
@@ -468,7 +479,7 @@ def run_comparison(root: Path | str, report_path: Path | str,
         "owned_state_root": str(comparison_root),
     }
     for index, case in enumerate(cases):
-        for arm in (("native", "integrated") if index % 2 == 0 else ("integrated", "native")):
+        for arm in (("native", "integrated") if (index + arm_offset) % 2 == 0 else ("integrated", "native")):
             workspace = comparison_root / "workspaces" / case["id"] / arm
             workspace.mkdir(parents=True)
             source_data = Path(case["source_path"]).read_bytes()
@@ -487,6 +498,12 @@ def run_comparison(root: Path | str, report_path: Path | str,
                         "runner_error_type": type(error).__name__}
             actual_case = {**case, "tool_enabled": arm == "integrated", "db_path": str(db_path)}
             validation = validate_case(actual_case, workspace, host)
+            entry = host.get("entry_validation")
+            if arm == "integrated" and isinstance(entry, dict):
+                entry_ok = (entry.get("harness_verified") is True if case["expected"] == "success"
+                            else entry.get("status") == "rejected" and not entry.get("errors"))
+                validation["required_entry_passed"] = entry_ok
+                validation["passed"] = validation["passed"] and entry_ok
             audit = _tool_audit(host.get("stream_tool_calls"))
             attempt = {
                 "case_id": case["id"], "arm": arm, "expected": case["expected"],
@@ -504,8 +521,14 @@ def run_comparison(root: Path | str, report_path: Path | str,
             }
             if "runner_error_type" in host:
                 attempt["runner_error_type"] = host["runner_error_type"]
+            if isinstance(entry, dict):
+                attempt["entry_validation"] = {key: value for key, value in entry.items()
+                    if key in {"status", "verified", "harness_verified", "errors", "run_id",
+                               "receipt_id", "contract_sha256", "plan_sha256"}}
             report["attempts"].append(attempt)
             _save_report(Path(report_path), report)
+            if checkpoint is not None:
+                checkpoint(report)
     report["summary"] = {
         arm: {"attempts": sum(a["arm"] == arm for a in report["attempts"]),
               "supported_successes": sum(a["arm"] == arm and a["expected"] == "success"

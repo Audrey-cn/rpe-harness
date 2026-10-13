@@ -1,0 +1,1 @@
+This historical wheel passed the 367-test admission-guard suite and installed local contracts; its first final live supplement failed before any API request because the owner sandbox denied the nested runtime. Later launcher fixes and their release wheel are separate. See ../../evidence/final-supplement-startup-failure.json and ../../evidence/pre-runtime-sandbox-fix/.

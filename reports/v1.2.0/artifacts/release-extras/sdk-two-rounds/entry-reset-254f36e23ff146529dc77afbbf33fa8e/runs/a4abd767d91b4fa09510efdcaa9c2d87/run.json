@@ -1,0 +1,203 @@
+{
+  "run_id": "a4abd767d91b4fa09510efdcaa9c2d87",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 92063,
+  "started_at": 1791934557.0391538,
+  "finished_at": 1791934557.046504,
+  "skill_id": "builtin/csv-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-903fb412e648730bea57c1d6f760a052b6fbf210e436f4941628c0340d49b068",
+  "payload_hash": "e05e07c52893cf66db9bd7892dcce5a375482e22a79d7b3650d3028aa7253090",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791934557.040446,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "retain the first record for each id",
+    "input_format": "csv",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+    "source_ref": "entry-903fb412e648730bea57c1d6f760a052b6fbf210e436f4941628c0340d49b068",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "headers_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "source_unchanged": true
+    },
+    "input_rows": 3,
+    "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+    "output_rows": 2,
+    "output_sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e",
+    "passed": true,
+    "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+    "removed_rows": 1
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+    },
+    "format": "csv",
+    "input_rows": 3,
+    "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+    "output_rows": 2,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv",
+    "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+    "published": true,
+    "removed_rows": 1,
+    "sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-903fb412e648730bea57c1d6f760a052b6fbf210e436f4941628c0340d49b068",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first.csv",
+      "keep": "first",
+      "key_columns": [
+        "id"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv"
+    },
+    "goal": "retain the first record for each id",
+    "schema_version": 2,
+    "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/csv-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "retain the first record for each id",
+          "input_format": "csv",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first.csv",
+          "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+          "keep": "first",
+          "key_columns": [
+            "id"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv",
+          "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+          "sheet": null,
+          "source_ref": "entry-903fb412e648730bea57c1d6f760a052b6fbf210e436f4941628c0340d49b068",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+      },
+      "created_at": 1791934557.0410671
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791934557.041505
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+      },
+      "created_at": 1791934557.041781
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+        },
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+      },
+      "created_at": 1791934557.044688
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+      },
+      "created_at": 1791934557.0450392
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv",
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 3,
+          "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+          "output_rows": 2,
+          "output_sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e",
+          "passed": true,
+          "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+          "removed_rows": 1
+        }
+      },
+      "created_at": 1791934557.0454998
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de"
+        },
+        "format": "csv",
+        "input_rows": 3,
+        "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+        "output_rows": 2,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv",
+        "plan_sha256": "f69b317ba60489bd690c4f0f91a7a24ed1fa4a13bbffac577e925f023f32c5de",
+        "published": true,
+        "removed_rows": 1,
+        "sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e"
+      },
+      "created_at": 1791934557.046301
+    }
+  ]
+}

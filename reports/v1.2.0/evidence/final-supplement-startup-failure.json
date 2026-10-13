@@ -1,0 +1,94 @@
+{
+  "probe": "installed_final_anchored_six_case_e2e",
+  "source_checkout_used": false,
+  "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "version": "1.2.0",
+  "candidate_generated_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+  "candidate_activation": null,
+  "cases": [
+    {
+      "case_id": "csv_chinese",
+      "expected": "success",
+      "entry_accepted": false,
+      "entry_validation": {
+        "status": "failed",
+        "verified": false,
+        "harness_verified": false,
+        "errors": [
+          "host_or_observation_incomplete",
+          "durable_observations_mismatch",
+          "tool_observations_incomplete",
+          "api_observations_incomplete",
+          "matching_terminal_run_missing"
+        ]
+      },
+      "validation": {
+        "passed": false,
+        "expected": "success",
+        "source_unchanged": true,
+        "manual_truth_ok": false,
+        "verification": null,
+        "linked_run_verified": false,
+        "run_ids": [],
+        "observations_present": false,
+        "host_completed": false,
+        "native_independent": null,
+        "used_rpe_task": false,
+        "native_tool_executed": false,
+        "output_exists": false,
+        "validation_error_type": "ValueError"
+      },
+      "host": {
+        "completed": false,
+        "exit_code": 2,
+        "timed_out": false,
+        "elapsed_seconds": 0.193,
+        "usage": {
+          "api_requests": 0,
+          "missing_observations": 0,
+          "requests_with_usage": 0,
+          "api_errors": 0,
+          "coverage_complete": false,
+          "known_total_tokens": 0,
+          "prompt_tokens": null,
+          "output_tokens": null,
+          "input_tokens": null,
+          "total_tokens": null,
+          "cache_read_tokens": null,
+          "cache_write_tokens": null,
+          "reasoning_tokens": null
+        },
+        "events": [],
+        "tool_audit": null,
+        "model_identity": {
+          "provider": "xiaomi",
+          "requested_model": "mimo-v2.6-pro",
+          "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+          "response_models": []
+        },
+        "process_cleanup": {
+          "tracked_descendants": 0,
+          "signaled_descendants": 0,
+          "remaining_descendants": [],
+          "cleanup_complete": true,
+          "errors": []
+        },
+        "observer_errors": 0,
+        "session_id": null
+      },
+      "run_ids": [],
+      "candidate_used": null,
+      "rollback": null,
+      "source_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa"
+    }
+  ],
+  "completed": false,
+  "accepted": false,
+  "attempt_interpretation": "One startup failure before API request. Test then stopped because it reused an immutable candidate file intentionally corrupted by an earlier fault probe. Not counted as completed six-case supplement.",
+  "root_causes": [
+    "owner_read_scope denies nested release runtime bootstrap",
+    "test setup reused quarantined corrupted candidate artifact"
+  ],
+  "startup_error": "Operation not permitted opening installed hermes_bootstrap.py; exit 2, zero API requests.",
+  "wheel_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7"
+}

@@ -1,0 +1,7 @@
+{
+  "owned_pytest_pid": 84948,
+  "exit_code": 2,
+  "signal": "SIGINT",
+  "reason": "Interrupted when independent slowdrip cleanup RED required another production fix; not a completed regression or final release proof",
+  "model_calls": 0
+}

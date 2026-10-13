@@ -1,0 +1,48 @@
+{
+  "run_id": "addcea5e06184d33a63ec18f42cade5d",
+  "status": "rejected",
+  "stage": "validate",
+  "owner_pid": 55972,
+  "started_at": 1791926342.1005309,
+  "finished_at": 1791926342.1027782,
+  "skill_id": null,
+  "attempted": 0,
+  "verification_ok": 0,
+  "source": "local",
+  "event_id": "installed-reject_json",
+  "payload_hash": "8902207fba0c6bbc495ba2aa24360f0c09fe96ded2768ba5e99137590ddb0e3c",
+  "state": null,
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "input must be a supported csv or xlsx file",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "installed-reject_json",
+    "execution": {
+      "delimiter": ",",
+      "encoding": "utf-8-sig",
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/reject_json/input.json",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/reject_json/output.json"
+    },
+    "goal": "按明确关键列去重并保留首条",
+    "schema_version": 2
+  },
+  "steps": [
+    {
+      "stage": "validate",
+      "evidence": {},
+      "created_at": 1791926342.102326
+    }
+  ]
+}

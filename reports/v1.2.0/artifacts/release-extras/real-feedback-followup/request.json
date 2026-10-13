@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "event_id": "real-feedback-upgrade-followup",
+  "capability": "tabular.deduplicate",
+  "goal": "verify actually activated executor from live feedback",
+  "constraints": [
+    "preserve_original",
+    "preserve_order"
+  ],
+  "execution": {
+    "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/orders.csv",
+    "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv",
+    "key_columns": [
+      "id"
+    ]
+  }
+}

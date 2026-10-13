@@ -1,0 +1,212 @@
+{
+  "run_id": "04d4f9ed27b9456eada50716396e91f7",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 55968,
+  "started_at": 1791926341.766127,
+  "finished_at": 1791926341.81988,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "local",
+  "event_id": "installed-xlsx_typed_keys",
+  "payload_hash": "528698708e27e5e2679eed63968a25cf77df9a32da47c06bf2e09bacb2ae9ac4",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791926341.802906,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按明确关键列去重并保留首条",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": null,
+    "source_ref": "installed-xlsx_typed_keys",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "formulas_preserved": true,
+      "headers_preserved": true,
+      "non_target_sheets_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "retained_metadata_preserved": true,
+      "source_unchanged": true
+    },
+    "input_rows": 6,
+    "input_sha256": "f4e41fa80842439c10d19043cbc9b9d500733d64cbc72c984effd411ab71463b",
+    "output_rows": 4,
+    "output_sha256": "4e1245eb5b926754f79b3cc1dec8570d45e5db10bf45ea1d405396abf2f03fcc",
+    "passed": true,
+    "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/xlsx-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+    },
+    "format": "xlsx",
+    "input_rows": 6,
+    "input_sha256": "f4e41fa80842439c10d19043cbc9b9d500733d64cbc72c984effd411ab71463b",
+    "output_rows": 4,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/output.xlsx",
+    "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "4e1245eb5b926754f79b3cc1dec8570d45e5db10bf45ea1d405396abf2f03fcc"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "installed-xlsx_typed_keys",
+    "execution": {
+      "delimiter": ",",
+      "encoding": "utf-8-sig",
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/input.xlsx",
+      "key_columns": [
+        "编号",
+        "地区"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按明确关键列去重并保留首条",
+    "schema_version": 2
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按明确关键列去重并保留首条",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/input.xlsx",
+          "input_sha256": "f4e41fa80842439c10d19043cbc9b9d500733d64cbc72c984effd411ab71463b",
+          "keep": "first",
+          "key_columns": [
+            "编号",
+            "地区"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/output.xlsx",
+          "session_id": null,
+          "sheet": "订单",
+          "source_ref": "installed-xlsx_typed_keys",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+      },
+      "created_at": 1791926341.8044128
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791926341.805703
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+      },
+      "created_at": 1791926341.8065999
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+        },
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+      },
+      "created_at": 1791926341.813996
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+      },
+      "created_at": 1791926341.8146539
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/output.xlsx",
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "formulas_preserved": true,
+            "headers_preserved": true,
+            "non_target_sheets_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "retained_metadata_preserved": true,
+            "source_unchanged": true
+          },
+          "input_rows": 6,
+          "input_sha256": "f4e41fa80842439c10d19043cbc9b9d500733d64cbc72c984effd411ab71463b",
+          "output_rows": 4,
+          "output_sha256": "4e1245eb5b926754f79b3cc1dec8570d45e5db10bf45ea1d405396abf2f03fcc",
+          "passed": true,
+          "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791926341.8183491
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9"
+        },
+        "format": "xlsx",
+        "input_rows": 6,
+        "input_sha256": "f4e41fa80842439c10d19043cbc9b9d500733d64cbc72c984effd411ab71463b",
+        "output_rows": 4,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/fixtures/xlsx_typed_keys/output.xlsx",
+        "plan_sha256": "67f4c794c55390b0af76881c32a508f290aecb587f69c270d5a410e89230dcd9",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "4e1245eb5b926754f79b3cc1dec8570d45e5db10bf45ea1d405396abf2f03fcc"
+      },
+      "created_at": 1791926341.819499
+    }
+  ]
+}

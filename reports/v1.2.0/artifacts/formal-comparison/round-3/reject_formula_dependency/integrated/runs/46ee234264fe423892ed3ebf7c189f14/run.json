@@ -1,0 +1,103 @@
+{
+  "run_id": "46ee234264fe423892ed3ebf7c189f14",
+  "status": "rejected",
+  "stage": "execute",
+  "owner_pid": 70373,
+  "started_at": 1791929084.567609,
+  "finished_at": 1791929084.614791,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-e8aeeb2211c64c0f7845fbf52367111d8348edfb57f632393428292b275420ab",
+  "payload_hash": "1af64302e152146971058fd81dae45e78c66c28a7a1eb3aa0e4a92b061642b58",
+  "state": {
+    "constraints": [],
+    "context_tokens_saved": 0,
+    "created_at": 1791929084.6075149,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "Deduplicate 订单 worksheet of input.xlsx by full value of column 编号, keeping first occurrence; clear duplicate rows' values/comments/hyperlinks in place without moving rows; preserve formulas, styles, other sheets, column widths; reject on merged cells or formula references to cleared rows",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_060424_7db9fe",
+    "source_ref": "entry-e8aeeb2211c64c0f7845fbf52367111d8348edfb57f632393428292b275420ab",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "retained formula references a row that would be cleared",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [],
+    "event_id": "entry-e8aeeb2211c64c0f7845fbf52367111d8348edfb57f632393428292b275420ab",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated/input.xlsx",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated/output.xlsx"
+    },
+    "goal": "Deduplicate 订单 worksheet of input.xlsx by full value of column 编号, keeping first occurrence; clear duplicate rows' values/comments/hyperlinks in place without moving rows; preserve formulas, styles, other sheets, column widths; reject on merged cells or formula references to cleared rows",
+    "schema_version": 2,
+    "session_id": "20261014_060424_7db9fe"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "Deduplicate 订单 worksheet of input.xlsx by full value of column 编号, keeping first occurrence; clear duplicate rows' values/comments/hyperlinks in place without moving rows; preserve formulas, styles, other sheets, column widths; reject on merged cells or formula references to cleared rows",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated/input.xlsx",
+          "input_sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated/output.xlsx",
+          "session_id": "20261014_060424_7db9fe",
+          "sheet": "订单",
+          "source_ref": "entry-e8aeeb2211c64c0f7845fbf52367111d8348edfb57f632393428292b275420ab",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "8ac7d8dbb6a1b54a5733749e355ee9f89143faaecec2272196585f77411f17a2"
+      },
+      "created_at": 1791929084.608715
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "8ac7d8dbb6a1b54a5733749e355ee9f89143faaecec2272196585f77411f17a2",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791929084.6094568
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "8ac7d8dbb6a1b54a5733749e355ee9f89143faaecec2272196585f77411f17a2"
+      },
+      "created_at": 1791929084.609797
+    },
+    {
+      "stage": "execute",
+      "evidence": {},
+      "created_at": 1791929084.614537
+    }
+  ]
+}

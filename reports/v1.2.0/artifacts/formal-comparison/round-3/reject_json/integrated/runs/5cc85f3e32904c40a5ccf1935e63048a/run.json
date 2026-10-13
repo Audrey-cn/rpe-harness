@@ -1,0 +1,47 @@
+{
+  "run_id": "5cc85f3e32904c40a5ccf1935e63048a",
+  "status": "rejected",
+  "stage": "validate",
+  "owner_pid": 70228,
+  "started_at": 1791929055.2269351,
+  "finished_at": 1791929055.228756,
+  "skill_id": null,
+  "attempted": 0,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-fbb8b58a965d969d4d02126521845aa46611ff6708a7a1d779054e268669ef7f",
+  "payload_hash": "ee8bf22dc202feaa1c721a4fb4a4b1d08200a4f2a6e3410be6d15eae5a7844aa",
+  "state": null,
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "input must be a supported csv or xlsx file",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-fbb8b58a965d969d4d02126521845aa46611ff6708a7a1d779054e268669ef7f",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/integrated/input.json",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/integrated/output.json"
+    },
+    "goal": "按列「编号」完整值去重，保留首次出现记录及原顺序，输出 output.json",
+    "schema_version": 2,
+    "session_id": "20261014_060341_58cc2d"
+  },
+  "steps": [
+    {
+      "stage": "validate",
+      "evidence": {},
+      "created_at": 1791929055.228374
+    }
+  ]
+}

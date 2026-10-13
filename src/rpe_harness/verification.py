@@ -147,24 +147,38 @@ def _xlsx_checks(source: bytes, artifact: bytes, prepared: dict[str, Any]) -> di
             result.close()
 
 
-def verify_deduplication(prepared: dict[str, Any]) -> dict[str, Any]:
+def verify_deduplication(prepared: dict[str, Any], plan: Any = None) -> dict[str, Any]:
     """Return evidence, and seal only an artifact verified from reopened files."""
     prepared.pop("_verified_output_sha256", None)
-    source = Path(prepared["input_path"]).read_bytes()
+    prepared.pop('_verified_plan_sha256', None)
+    if plan is not None:
+        from .contracts import VERIFIER_REVISION
+        if plan.verifier_revision != VERIFIER_REVISION:
+            return {'passed': False, 'plan_sha256': plan.sha256,
+                    'checks': {'verifier_revision': False},
+                    'error': 'loaded verifier revision differs from original plan'}
+    parameters = plan.verification_parameters() if plan is not None else prepared
+    if plan is not None and not plan.matches_prepared(prepared):
+        return {'passed': False, 'plan_sha256': plan.sha256,
+                'checks': {'request_bound': False}, 'error': 'producer parameters differ from original plan'}
+    source = Path(parameters["input_path"]).read_bytes()
     artifact = Path(prepared["staging_path"]).read_bytes()
     input_hash = hashlib.sha256(source).hexdigest()
     output_hash = hashlib.sha256(artifact).hexdigest()
     report: dict[str, Any] = {
         "passed": False, "input_sha256": input_hash, "output_sha256": output_hash,
-        "checks": {"source_unchanged": input_hash == prepared["input_sha256"]},
+        "checks": {"source_unchanged": input_hash == parameters["input_sha256"]},
     }
+    if plan is not None:
+        report['plan_sha256'] = plan.sha256
+        report['checks']['request_bound'] = True
     if not report["checks"]["source_unchanged"]:
         return report
     try:
-        if prepared["format"] == "csv":
-            evidence = _csv_checks(source, artifact, prepared)
-        elif prepared["format"] == "xlsx":
-            evidence = _xlsx_checks(source, artifact, prepared)
+        if parameters["format"] == "csv":
+            evidence = _csv_checks(source, artifact, parameters)
+        elif parameters["format"] == "xlsx":
+            evidence = _xlsx_checks(source, artifact, parameters)
         else:
             raise ValueError("unsupported verification format")
         report["checks"].update(evidence.pop("checks"))
@@ -176,4 +190,6 @@ def verify_deduplication(prepared: dict[str, Any]) -> dict[str, Any]:
     report["passed"] = all(report["checks"].values())
     if report["passed"]:
         prepared["_verified_output_sha256"] = output_hash
+        if plan is not None:
+            prepared['_verified_plan_sha256'] = plan.sha256
     return report

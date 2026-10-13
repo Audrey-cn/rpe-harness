@@ -1,0 +1,6 @@
+{
+  "reason": "independent review exposed activation diagnostics path nondeterminism; stop before first completed attempt to rebuild exact final wheel",
+  "runner_pid": 51579,
+  "completed_checkpoint_attempts": 0,
+  "signaled": "SIGINT"
+}

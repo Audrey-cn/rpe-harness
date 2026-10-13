@@ -1,0 +1,1360 @@
+{
+  "purpose": "audit-only retained synthetic business data from real native sessions",
+  "source_report": "../../evidence/hermes-repeated-comparison.json",
+  "source_report_sha256_at_retention": "739ddab6bbc2efeb40cc63becf7bfaaf0df200cf8e78de193393c0260df01dd5",
+  "source_snapshot_wheel_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+  "final_release_acceptance": false,
+  "planned_attempts": 36,
+  "retained_attempts": 36,
+  "native_hermes_baseline_measured": false,
+  "compatible_successful_pair_count": 9,
+  "observed_summary": {
+    "native": {
+      "attempts": 18,
+      "accepted": 12,
+      "supported_successes": 9,
+      "correct_rejections": 3,
+      "completed": 12,
+      "timeouts": 6,
+      "complete_usage_attempts": 12,
+      "unknown_usage_attempts": 6,
+      "complete_usage_token_subtotal": 518054,
+      "total_tokens": null,
+      "observed_elapsed_seconds": 2395.872
+    },
+    "integrated": {
+      "attempts": 18,
+      "accepted": 15,
+      "supported_successes": 12,
+      "correct_rejections": 3,
+      "completed": 18,
+      "timeouts": 0,
+      "complete_usage_attempts": 18,
+      "unknown_usage_attempts": 0,
+      "complete_usage_token_subtotal": 161517,
+      "total_tokens": 161517,
+      "observed_elapsed_seconds": 763.421
+    }
+  },
+  "attempts": [
+    {
+      "round": 1,
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "attempt_id": "r1-csv_chinese-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/native",
+      "retained_files": [
+        "round-1/csv_chinese/native/input.csv",
+        "round-1/csv_chinese/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 1,
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "attempt_id": "r1-csv_chinese-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated",
+      "retained_files": [
+        "round-1/csv_chinese/integrated/input.csv",
+        "round-1/csv_chinese/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "65354fe3196b4588bb1b98e6b8a774fa",
+          "status": "succeeded",
+          "path": "round-1/csv_chinese/integrated/runs/65354fe3196b4588bb1b98e6b8a774fa/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "attempt_id": "r1-csv_multiline-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/integrated",
+      "retained_files": [
+        "round-1/csv_multiline/integrated/input.csv",
+        "round-1/csv_multiline/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "134b1e40a6e64626ada1d591a03cad5b",
+          "status": "succeeded",
+          "path": "round-1/csv_multiline/integrated/runs/134b1e40a6e64626ada1d591a03cad5b/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "attempt_id": "r1-csv_multiline-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/native",
+      "retained_files": [
+        "round-1/csv_multiline/native/input.csv",
+        "round-1/csv_multiline/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 1,
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "attempt_id": "r1-xlsx_typed_keys-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/native",
+      "retained_files": [
+        "round-1/xlsx_typed_keys/native/input.xlsx",
+        "round-1/xlsx_typed_keys/native/output.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 1,
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "attempt_id": "r1-xlsx_typed_keys-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/integrated",
+      "retained_files": [
+        "round-1/xlsx_typed_keys/integrated/input.xlsx",
+        "round-1/xlsx_typed_keys/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "c6451ab6614148c8836a8030ca95d6f3",
+          "status": "succeeded",
+          "path": "round-1/xlsx_typed_keys/integrated/runs/c6451ab6614148c8836a8030ca95d6f3/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "attempt_id": "r1-xlsx_formulas-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_formulas/integrated",
+      "retained_files": [
+        "round-1/xlsx_formulas/integrated/input.xlsx",
+        "round-1/xlsx_formulas/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "dfa7bb4ea44f4bafb6d4fce098f09116",
+          "status": "succeeded",
+          "path": "round-1/xlsx_formulas/integrated/runs/dfa7bb4ea44f4bafb6d4fce098f09116/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "xlsx_formulas",
+      "arm": "native",
+      "attempt_id": "r1-xlsx_formulas-native",
+      "expected": "success",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_formulas/native",
+      "retained_files": [
+        "round-1/xlsx_formulas/native/input.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 1,
+      "case_id": "reject_json",
+      "arm": "native",
+      "attempt_id": "r1-reject_json-native",
+      "expected": "rejected",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/native",
+      "retained_files": [
+        "round-1/reject_json/native/input.json"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 1,
+      "case_id": "reject_json",
+      "arm": "integrated",
+      "attempt_id": "r1-reject_json-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated",
+      "retained_files": [
+        "round-1/reject_json/integrated/input.json"
+      ],
+      "run_records": [
+        {
+          "run_id": "99809934e958487699be08c0d37a6568",
+          "status": "rejected",
+          "path": "round-1/reject_json/integrated/runs/99809934e958487699be08c0d37a6568/run.json"
+        },
+        {
+          "run_id": "748ddfdb3b1442208850199bcf914116",
+          "status": "rejected",
+          "path": "round-1/reject_json/integrated/runs/748ddfdb3b1442208850199bcf914116/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "reject_formula_dependency",
+      "arm": "integrated",
+      "attempt_id": "r1-reject_formula_dependency-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated",
+      "retained_files": [
+        "round-1/reject_formula_dependency/integrated/input.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "f760ee64a49a486c9e7c3a56ff4c216a",
+          "status": "rejected",
+          "path": "round-1/reject_formula_dependency/integrated/runs/f760ee64a49a486c9e7c3a56ff4c216a/run.json"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "case_id": "reject_formula_dependency",
+      "arm": "native",
+      "attempt_id": "r1-reject_formula_dependency-native",
+      "expected": "rejected",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/native",
+      "retained_files": [
+        "round-1/reject_formula_dependency/native/input.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "attempt_id": "r2-csv_chinese-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/integrated",
+      "retained_files": [
+        "round-2/csv_chinese/integrated/input.csv",
+        "round-2/csv_chinese/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "6266c2bfde7d48a0b539d110b0a67f2e",
+          "status": "succeeded",
+          "path": "round-2/csv_chinese/integrated/runs/6266c2bfde7d48a0b539d110b0a67f2e/run.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "attempt_id": "r2-csv_chinese-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/native",
+      "retained_files": [
+        "round-2/csv_chinese/native/input.csv",
+        "round-2/csv_chinese/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "attempt_id": "r2-csv_multiline-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/native",
+      "retained_files": [
+        "round-2/csv_multiline/native/input.csv",
+        "round-2/csv_multiline/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "attempt_id": "r2-csv_multiline-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/integrated",
+      "retained_files": [
+        "round-2/csv_multiline/integrated/input.csv",
+        "round-2/csv_multiline/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "7ee868c485914d64bda6a5620157d6d9",
+          "status": "succeeded",
+          "path": "round-2/csv_multiline/integrated/runs/7ee868c485914d64bda6a5620157d6d9/run.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "attempt_id": "r2-xlsx_typed_keys-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated",
+      "retained_files": [
+        "round-2/xlsx_typed_keys/integrated/input.xlsx",
+        "round-2/xlsx_typed_keys/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "e88dfe6bd1c74f0a81e0e31b29780dfa",
+          "status": "succeeded",
+          "path": "round-2/xlsx_typed_keys/integrated/runs/e88dfe6bd1c74f0a81e0e31b29780dfa/run.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "attempt_id": "r2-xlsx_typed_keys-native",
+      "expected": "success",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/native",
+      "retained_files": [
+        "round-2/xlsx_typed_keys/native/input.xlsx",
+        "round-2/xlsx_typed_keys/native/output.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "xlsx_formulas",
+      "arm": "native",
+      "attempt_id": "r2-xlsx_formulas-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/native",
+      "retained_files": [
+        "round-2/xlsx_formulas/native/input.xlsx",
+        "round-2/xlsx_formulas/native/output.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "attempt_id": "r2-xlsx_formulas-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated",
+      "retained_files": [
+        "round-2/xlsx_formulas/integrated/input.xlsx",
+        "round-2/xlsx_formulas/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "a74543b514824e018afb99be8b84f300",
+          "status": "succeeded",
+          "path": "round-2/xlsx_formulas/integrated/runs/a74543b514824e018afb99be8b84f300/run.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "case_id": "reject_json",
+      "arm": "integrated",
+      "attempt_id": "r2-reject_json-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_json/integrated",
+      "retained_files": [
+        "round-2/reject_json/integrated/input.json"
+      ],
+      "run_records": [
+        {
+          "run_id": "a1495324fc704d39a38dd4c935da7bd8",
+          "status": "rejected",
+          "path": "round-2/reject_json/integrated/runs/a1495324fc704d39a38dd4c935da7bd8/run.json"
+        },
+        {
+          "run_id": "eac3a499ec76484d80e16e7822bfa6ce",
+          "status": "rejected",
+          "path": "round-2/reject_json/integrated/runs/eac3a499ec76484d80e16e7822bfa6ce/run.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "case_id": "reject_json",
+      "arm": "native",
+      "attempt_id": "r2-reject_json-native",
+      "expected": "rejected",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_json/native",
+      "retained_files": [
+        "round-2/reject_json/native/input.json"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "reject_formula_dependency",
+      "arm": "native",
+      "attempt_id": "r2-reject_formula_dependency-native",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/native",
+      "retained_files": [
+        "round-2/reject_formula_dependency/native/input.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 2,
+      "case_id": "reject_formula_dependency",
+      "arm": "integrated",
+      "attempt_id": "r2-reject_formula_dependency-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated",
+      "retained_files": [
+        "round-2/reject_formula_dependency/integrated/input.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "7ee073da2f1443c389255b92f8d45cf7",
+          "status": "rejected",
+          "path": "round-2/reject_formula_dependency/integrated/runs/7ee073da2f1443c389255b92f8d45cf7/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "attempt_id": "r3-csv_chinese-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/native",
+      "retained_files": [
+        "round-3/csv_chinese/native/input.csv",
+        "round-3/csv_chinese/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 3,
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "attempt_id": "r3-csv_chinese-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/integrated",
+      "retained_files": [
+        "round-3/csv_chinese/integrated/input.csv",
+        "round-3/csv_chinese/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "087a6c274f3c4da7a2aff85148c3b86e",
+          "status": "succeeded",
+          "path": "round-3/csv_chinese/integrated/runs/087a6c274f3c4da7a2aff85148c3b86e/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "attempt_id": "r3-csv_multiline-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/integrated",
+      "retained_files": [
+        "round-3/csv_multiline/integrated/input.csv",
+        "round-3/csv_multiline/integrated/output.csv"
+      ],
+      "run_records": [
+        {
+          "run_id": "1629c2f13817447c9c7c44c8d7fa337c",
+          "status": "succeeded",
+          "path": "round-3/csv_multiline/integrated/runs/1629c2f13817447c9c7c44c8d7fa337c/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "attempt_id": "r3-csv_multiline-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/native",
+      "retained_files": [
+        "round-3/csv_multiline/native/input.csv",
+        "round-3/csv_multiline/native/output.csv"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 3,
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "attempt_id": "r3-xlsx_typed_keys-native",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/native",
+      "retained_files": [
+        "round-3/xlsx_typed_keys/native/input.xlsx",
+        "round-3/xlsx_typed_keys/native/output.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 3,
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "attempt_id": "r3-xlsx_typed_keys-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated",
+      "retained_files": [
+        "round-3/xlsx_typed_keys/integrated/input.xlsx",
+        "round-3/xlsx_typed_keys/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "9d2361934ada49e8badab30f1d6bc502",
+          "status": "succeeded",
+          "path": "round-3/xlsx_typed_keys/integrated/runs/9d2361934ada49e8badab30f1d6bc502/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "attempt_id": "r3-xlsx_formulas-integrated",
+      "expected": "success",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_formulas/integrated",
+      "retained_files": [
+        "round-3/xlsx_formulas/integrated/input.xlsx",
+        "round-3/xlsx_formulas/integrated/output.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "6a1eaf0dbd4149bebad7d412594ac707",
+          "status": "succeeded",
+          "path": "round-3/xlsx_formulas/integrated/runs/6a1eaf0dbd4149bebad7d412594ac707/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "xlsx_formulas",
+      "arm": "native",
+      "attempt_id": "r3-xlsx_formulas-native",
+      "expected": "success",
+      "completed": false,
+      "timed_out": true,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_formulas/native",
+      "retained_files": [
+        "round-3/xlsx_formulas/native/input.xlsx"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 3,
+      "case_id": "reject_json",
+      "arm": "native",
+      "attempt_id": "r3-reject_json-native",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/native",
+      "retained_files": [
+        "round-3/reject_json/native/input.json"
+      ],
+      "run_records": []
+    },
+    {
+      "round": 3,
+      "case_id": "reject_json",
+      "arm": "integrated",
+      "attempt_id": "r3-reject_json-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/integrated",
+      "retained_files": [
+        "round-3/reject_json/integrated/input.json"
+      ],
+      "run_records": [
+        {
+          "run_id": "5cc85f3e32904c40a5ccf1935e63048a",
+          "status": "rejected",
+          "path": "round-3/reject_json/integrated/runs/5cc85f3e32904c40a5ccf1935e63048a/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "reject_formula_dependency",
+      "arm": "integrated",
+      "attempt_id": "r3-reject_formula_dependency-integrated",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": false,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated",
+      "retained_files": [
+        "round-3/reject_formula_dependency/integrated/input.xlsx"
+      ],
+      "run_records": [
+        {
+          "run_id": "46ee234264fe423892ed3ebf7c189f14",
+          "status": "rejected",
+          "path": "round-3/reject_formula_dependency/integrated/runs/46ee234264fe423892ed3ebf7c189f14/run.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "case_id": "reject_formula_dependency",
+      "arm": "native",
+      "attempt_id": "r3-reject_formula_dependency-native",
+      "expected": "rejected",
+      "completed": true,
+      "timed_out": false,
+      "accepted_in_original_report": true,
+      "original_workspace_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/native",
+      "retained_files": [
+        "round-3/reject_formula_dependency/native/input.xlsx"
+      ],
+      "run_records": []
+    }
+  ],
+  "files": [
+    {
+      "path": "round-1/csv_chinese/native/input.csv",
+      "role": "input",
+      "attempt_id": "r1-csv_chinese-native",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/native/input.csv"
+    },
+    {
+      "path": "round-1/csv_chinese/native/output.csv",
+      "role": "output",
+      "attempt_id": "r1-csv_chinese-native",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/native/output.csv"
+    },
+    {
+      "path": "round-1/csv_chinese/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r1-csv_chinese-integrated",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/input.csv"
+    },
+    {
+      "path": "round-1/csv_chinese/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r1-csv_chinese-integrated",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_chinese/integrated/output.csv"
+    },
+    {
+      "path": "round-1/csv_chinese/integrated/runs/65354fe3196b4588bb1b98e6b8a774fa/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-csv_chinese-integrated",
+      "bytes": 8636,
+      "sha256": "a95ea8bef022cce376091b3fce2758153639416bda99ce63c8e9fda5c279d55d",
+      "source_relative_to_owned": "formal-run-records/02-65354fe3196b4588bb1b98e6b8a774fa.json"
+    },
+    {
+      "path": "round-1/csv_multiline/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r1-csv_multiline-integrated",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/integrated/input.csv"
+    },
+    {
+      "path": "round-1/csv_multiline/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r1-csv_multiline-integrated",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/integrated/output.csv"
+    },
+    {
+      "path": "round-1/csv_multiline/integrated/runs/134b1e40a6e64626ada1d591a03cad5b/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-csv_multiline-integrated",
+      "bytes": 8746,
+      "sha256": "0cf330fba183ca5128b9ecf756cc5438b9990f127a3db016b731383957e38600",
+      "source_relative_to_owned": "formal-run-records/03-134b1e40a6e64626ada1d591a03cad5b.json"
+    },
+    {
+      "path": "round-1/csv_multiline/native/input.csv",
+      "role": "input",
+      "attempt_id": "r1-csv_multiline-native",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/native/input.csv"
+    },
+    {
+      "path": "round-1/csv_multiline/native/output.csv",
+      "role": "output",
+      "attempt_id": "r1-csv_multiline-native",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/csv_multiline/native/output.csv"
+    },
+    {
+      "path": "round-1/xlsx_typed_keys/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-xlsx_typed_keys-native",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/native/input.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_typed_keys/native/output.xlsx",
+      "role": "output",
+      "attempt_id": "r1-xlsx_typed_keys-native",
+      "bytes": 5022,
+      "sha256": "ba2d2bc480f04234be80933d56e9f71f923d737aed790c9bbc0834fb0d7178e8",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/native/output.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_typed_keys/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-xlsx_typed_keys-integrated",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/integrated/input.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_typed_keys/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r1-xlsx_typed_keys-integrated",
+      "bytes": 5021,
+      "sha256": "9a54490e636a04e9a3faf272374e1083f766e45b065377100e9ef0b2b44d3263",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_typed_keys/integrated/output.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_typed_keys/integrated/runs/c6451ab6614148c8836a8030ca95d6f3/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-xlsx_typed_keys-integrated",
+      "bytes": 9673,
+      "sha256": "7b4f578ef998cc256a8f3e0b059b539b139f8d3ec133e6a50ed33e830b2df91b",
+      "source_relative_to_owned": "formal-run-records/06-c6451ab6614148c8836a8030ca95d6f3.json"
+    },
+    {
+      "path": "round-1/xlsx_formulas/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-xlsx_formulas-integrated",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_formulas/integrated/input.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_formulas/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r1-xlsx_formulas-integrated",
+      "bytes": 7050,
+      "sha256": "b0ac6852b4316a619a25e1e9eb83c168e3db002e9b2931c7383eaa80ad62000c",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_formulas/integrated/output.xlsx"
+    },
+    {
+      "path": "round-1/xlsx_formulas/integrated/runs/dfa7bb4ea44f4bafb6d4fce098f09116/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-xlsx_formulas-integrated",
+      "bytes": 9268,
+      "sha256": "55d265f42423cfe94eef737c676e31945701596d68a15754e72c3bb48804020f",
+      "source_relative_to_owned": "formal-run-records/07-dfa7bb4ea44f4bafb6d4fce098f09116.json"
+    },
+    {
+      "path": "round-1/xlsx_formulas/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-xlsx_formulas-native",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/xlsx_formulas/native/input.xlsx"
+    },
+    {
+      "path": "round-1/reject_json/native/input.json",
+      "role": "input",
+      "attempt_id": "r1-reject_json-native",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/native/input.json"
+    },
+    {
+      "path": "round-1/reject_json/integrated/input.json",
+      "role": "input",
+      "attempt_id": "r1-reject_json-integrated",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated/input.json"
+    },
+    {
+      "path": "round-1/reject_json/integrated/runs/99809934e958487699be08c0d37a6568/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-reject_json-integrated",
+      "bytes": 1675,
+      "sha256": "4c980c8fefeafb4bdee26fd87c9cf964182f89cb985dd59612217bf1927194c1",
+      "source_relative_to_owned": "formal-run-records/10-99809934e958487699be08c0d37a6568.json"
+    },
+    {
+      "path": "round-1/reject_json/integrated/runs/748ddfdb3b1442208850199bcf914116/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-reject_json-integrated",
+      "bytes": 1619,
+      "sha256": "dca05c8f227353da0f34f8247ba055271902f26bb613f15d5e947bb88ad77a90",
+      "source_relative_to_owned": "formal-run-records/10-748ddfdb3b1442208850199bcf914116.json"
+    },
+    {
+      "path": "round-1/reject_formula_dependency/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-reject_formula_dependency-integrated",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated/input.xlsx"
+    },
+    {
+      "path": "round-1/reject_formula_dependency/integrated/runs/f760ee64a49a486c9e7c3a56ff4c216a/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r1-reject_formula_dependency-integrated",
+      "bytes": 5299,
+      "sha256": "f013032f24865b23467b388ad285db8f1579bbed0905ae353dfbbaebee838731",
+      "source_relative_to_owned": "formal-run-records/11-f760ee64a49a486c9e7c3a56ff4c216a.json"
+    },
+    {
+      "path": "round-1/reject_formula_dependency/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r1-reject_formula_dependency-native",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/native/input.xlsx"
+    },
+    {
+      "path": "round-2/csv_chinese/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r2-csv_chinese-integrated",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/integrated/input.csv"
+    },
+    {
+      "path": "round-2/csv_chinese/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r2-csv_chinese-integrated",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/integrated/output.csv"
+    },
+    {
+      "path": "round-2/csv_chinese/integrated/runs/6266c2bfde7d48a0b539d110b0a67f2e/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-csv_chinese-integrated",
+      "bytes": 8904,
+      "sha256": "d14684a012bb47290bde3d9e1557ea68950620aa4f0fe8c8786c452ccfb68585",
+      "source_relative_to_owned": "formal-run-records/13-6266c2bfde7d48a0b539d110b0a67f2e.json"
+    },
+    {
+      "path": "round-2/csv_chinese/native/input.csv",
+      "role": "input",
+      "attempt_id": "r2-csv_chinese-native",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/native/input.csv"
+    },
+    {
+      "path": "round-2/csv_chinese/native/output.csv",
+      "role": "output",
+      "attempt_id": "r2-csv_chinese-native",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_chinese/native/output.csv"
+    },
+    {
+      "path": "round-2/csv_multiline/native/input.csv",
+      "role": "input",
+      "attempt_id": "r2-csv_multiline-native",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/native/input.csv"
+    },
+    {
+      "path": "round-2/csv_multiline/native/output.csv",
+      "role": "output",
+      "attempt_id": "r2-csv_multiline-native",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/native/output.csv"
+    },
+    {
+      "path": "round-2/csv_multiline/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r2-csv_multiline-integrated",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/integrated/input.csv"
+    },
+    {
+      "path": "round-2/csv_multiline/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r2-csv_multiline-integrated",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/csv_multiline/integrated/output.csv"
+    },
+    {
+      "path": "round-2/csv_multiline/integrated/runs/7ee868c485914d64bda6a5620157d6d9/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-csv_multiline-integrated",
+      "bytes": 8797,
+      "sha256": "f518f8dc03bdb9fd219f90506fb236ac29be62f06d9f9e378f10f5e29574d947",
+      "source_relative_to_owned": "formal-run-records/16-7ee868c485914d64bda6a5620157d6d9.json"
+    },
+    {
+      "path": "round-2/xlsx_typed_keys/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-xlsx_typed_keys-integrated",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/input.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_typed_keys/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r2-xlsx_typed_keys-integrated",
+      "bytes": 5023,
+      "sha256": "310c41160c0c428da833bc8d47b16161566dd2f0b3e277e90eeb17b81f340283",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_typed_keys/integrated/runs/e88dfe6bd1c74f0a81e0e31b29780dfa/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-xlsx_typed_keys-integrated",
+      "bytes": 9831,
+      "sha256": "f46a76cf068d2590c4e0959df18d7c4342c95c4ca275a9666e318bca5367159f",
+      "source_relative_to_owned": "formal-run-records/17-e88dfe6bd1c74f0a81e0e31b29780dfa.json"
+    },
+    {
+      "path": "round-2/xlsx_typed_keys/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-xlsx_typed_keys-native",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/native/input.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_typed_keys/native/output.xlsx",
+      "role": "output",
+      "attempt_id": "r2-xlsx_typed_keys-native",
+      "bytes": 5024,
+      "sha256": "8a0644197daccf0dbdc5df6d8905526090632f3ddae1e99e580335f19db52247",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/native/output.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_formulas/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-xlsx_formulas-native",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/native/input.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_formulas/native/output.xlsx",
+      "role": "output",
+      "attempt_id": "r2-xlsx_formulas-native",
+      "bytes": 7051,
+      "sha256": "0f4519c4d85ebeaee6e9e98a1282bf944cfa58b280fdd4bcb298347df7e4eb4c",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/native/output.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_formulas/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-xlsx_formulas-integrated",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/input.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_formulas/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r2-xlsx_formulas-integrated",
+      "bytes": 7051,
+      "sha256": "945a6c3c17a9f180c50ea12fc25ba40d9c7e18eddc4b24f9528b614fd680f651",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx"
+    },
+    {
+      "path": "round-2/xlsx_formulas/integrated/runs/a74543b514824e018afb99be8b84f300/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-xlsx_formulas-integrated",
+      "bytes": 9690,
+      "sha256": "c8c15133b6560f5514bd76dbbbf344a20b032b683cdd7215789c57651cbf9975",
+      "source_relative_to_owned": "formal-run-records/20-a74543b514824e018afb99be8b84f300.json"
+    },
+    {
+      "path": "round-2/reject_json/integrated/input.json",
+      "role": "input",
+      "attempt_id": "r2-reject_json-integrated",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_json/integrated/input.json"
+    },
+    {
+      "path": "round-2/reject_json/integrated/runs/a1495324fc704d39a38dd4c935da7bd8/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-reject_json-integrated",
+      "bytes": 1620,
+      "sha256": "5a7e144dff5919a295f09673c2b529179157e4e1a3795a75609192c4afc95a58",
+      "source_relative_to_owned": "formal-run-records/21-a1495324fc704d39a38dd4c935da7bd8.json"
+    },
+    {
+      "path": "round-2/reject_json/integrated/runs/eac3a499ec76484d80e16e7822bfa6ce/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-reject_json-integrated",
+      "bytes": 1556,
+      "sha256": "787cb3cefb8c28a6e0e5b3fe54f3fdc31f201c5cae1f7b26c744a3780fa905cc",
+      "source_relative_to_owned": "formal-run-records/21-eac3a499ec76484d80e16e7822bfa6ce.json"
+    },
+    {
+      "path": "round-2/reject_json/native/input.json",
+      "role": "input",
+      "attempt_id": "r2-reject_json-native",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_json/native/input.json"
+    },
+    {
+      "path": "round-2/reject_formula_dependency/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-reject_formula_dependency-native",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/native/input.xlsx"
+    },
+    {
+      "path": "round-2/reject_formula_dependency/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r2-reject_formula_dependency-integrated",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated/input.xlsx"
+    },
+    {
+      "path": "round-2/reject_formula_dependency/integrated/runs/7ee073da2f1443c389255b92f8d45cf7/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r2-reject_formula_dependency-integrated",
+      "bytes": 5057,
+      "sha256": "77d574ca594628b0d214d7bf7885af982bebe3bfbb4526062119f3543e4dc44c",
+      "source_relative_to_owned": "formal-run-records/24-7ee073da2f1443c389255b92f8d45cf7.json"
+    },
+    {
+      "path": "round-3/csv_chinese/native/input.csv",
+      "role": "input",
+      "attempt_id": "r3-csv_chinese-native",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/native/input.csv"
+    },
+    {
+      "path": "round-3/csv_chinese/native/output.csv",
+      "role": "output",
+      "attempt_id": "r3-csv_chinese-native",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/native/output.csv"
+    },
+    {
+      "path": "round-3/csv_chinese/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r3-csv_chinese-integrated",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/integrated/input.csv"
+    },
+    {
+      "path": "round-3/csv_chinese/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r3-csv_chinese-integrated",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_chinese/integrated/output.csv"
+    },
+    {
+      "path": "round-3/csv_chinese/integrated/runs/087a6c274f3c4da7a2aff85148c3b86e/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-csv_chinese-integrated",
+      "bytes": 8740,
+      "sha256": "934a91c466b077c137aa758ebeb1a0fb12f0ad23cf0521501e527e2d501ec8c3",
+      "source_relative_to_owned": "formal-run-records/26-087a6c274f3c4da7a2aff85148c3b86e.json"
+    },
+    {
+      "path": "round-3/csv_multiline/integrated/input.csv",
+      "role": "input",
+      "attempt_id": "r3-csv_multiline-integrated",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/integrated/input.csv"
+    },
+    {
+      "path": "round-3/csv_multiline/integrated/output.csv",
+      "role": "output",
+      "attempt_id": "r3-csv_multiline-integrated",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/integrated/output.csv"
+    },
+    {
+      "path": "round-3/csv_multiline/integrated/runs/1629c2f13817447c9c7c44c8d7fa337c/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-csv_multiline-integrated",
+      "bytes": 8531,
+      "sha256": "f9b0e3f558c6eadabc557a2f2bb2418df709dba1ad59bcf53cebf052730a7f9a",
+      "source_relative_to_owned": "formal-run-records/27-1629c2f13817447c9c7c44c8d7fa337c.json"
+    },
+    {
+      "path": "round-3/csv_multiline/native/input.csv",
+      "role": "input",
+      "attempt_id": "r3-csv_multiline-native",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/native/input.csv"
+    },
+    {
+      "path": "round-3/csv_multiline/native/output.csv",
+      "role": "output",
+      "attempt_id": "r3-csv_multiline-native",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/csv_multiline/native/output.csv"
+    },
+    {
+      "path": "round-3/xlsx_typed_keys/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-xlsx_typed_keys-native",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/native/input.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_typed_keys/native/output.xlsx",
+      "role": "output",
+      "attempt_id": "r3-xlsx_typed_keys-native",
+      "bytes": 5024,
+      "sha256": "e2e67fbd1c446954d6dbf4f5d875851ea348270f94fb12032f4dc18cbf07d6e4",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/native/output.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_typed_keys/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-xlsx_typed_keys-integrated",
+      "bytes": 5055,
+      "sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/input.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_typed_keys/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r3-xlsx_typed_keys-integrated",
+      "bytes": 5024,
+      "sha256": "c2c5dab5b6767e9570e99af78981e8ceae20394932e2a40cddc8f7b8eb944e06",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_typed_keys/integrated/runs/9d2361934ada49e8badab30f1d6bc502/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-xlsx_typed_keys-integrated",
+      "bytes": 8834,
+      "sha256": "382790dddca74595d8ae12906b72fc0321a0aaa0b9d64dfcda26e68b7ff0913d",
+      "source_relative_to_owned": "formal-run-records/30-9d2361934ada49e8badab30f1d6bc502.json"
+    },
+    {
+      "path": "round-3/xlsx_formulas/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-xlsx_formulas-integrated",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_formulas/integrated/input.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_formulas/integrated/output.xlsx",
+      "role": "output",
+      "attempt_id": "r3-xlsx_formulas-integrated",
+      "bytes": 7051,
+      "sha256": "e3e54349008e12955519a75d6d6174e656ef3aab7668e7da9dfee57c170f036f",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_formulas/integrated/output.xlsx"
+    },
+    {
+      "path": "round-3/xlsx_formulas/integrated/runs/6a1eaf0dbd4149bebad7d412594ac707/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-xlsx_formulas-integrated",
+      "bytes": 8845,
+      "sha256": "c81e99ca16d34d4361c598418af1c4498f6f64ef44fb1bc0185f579eb33a4fca",
+      "source_relative_to_owned": "formal-run-records/31-6a1eaf0dbd4149bebad7d412594ac707.json"
+    },
+    {
+      "path": "round-3/xlsx_formulas/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-xlsx_formulas-native",
+      "bytes": 7090,
+      "sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_formulas/native/input.xlsx"
+    },
+    {
+      "path": "round-3/reject_json/native/input.json",
+      "role": "input",
+      "attempt_id": "r3-reject_json-native",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/native/input.json"
+    },
+    {
+      "path": "round-3/reject_json/integrated/input.json",
+      "role": "input",
+      "attempt_id": "r3-reject_json-integrated",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_json/integrated/input.json"
+    },
+    {
+      "path": "round-3/reject_json/integrated/runs/5cc85f3e32904c40a5ccf1935e63048a/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-reject_json-integrated",
+      "bytes": 1662,
+      "sha256": "54e02e0f339d29792fca769163fe05d5c302a2cf57aedaeb052d075dda6945e0",
+      "source_relative_to_owned": "formal-run-records/34-5cc85f3e32904c40a5ccf1935e63048a.json"
+    },
+    {
+      "path": "round-3/reject_formula_dependency/integrated/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-reject_formula_dependency-integrated",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/integrated/input.xlsx"
+    },
+    {
+      "path": "round-3/reject_formula_dependency/integrated/runs/46ee234264fe423892ed3ebf7c189f14/run.json",
+      "role": "durable_run_record",
+      "attempt_id": "r3-reject_formula_dependency-integrated",
+      "bytes": 4848,
+      "sha256": "d30bbcf67e217240370abb504d666e9c8d31abb03ba7d3ead46f77021013c09d",
+      "source_relative_to_owned": "formal-run-records/35-46ee234264fe423892ed3ebf7c189f14.json"
+    },
+    {
+      "path": "round-3/reject_formula_dependency/native/input.xlsx",
+      "role": "input",
+      "attempt_id": "r3-reject_formula_dependency-native",
+      "bytes": 4980,
+      "sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+      "source_relative_to_owned": "formal-pairs-final/round-3/comparison-1d_55qox/workspaces/reject_formula_dependency/native/input.xlsx"
+    }
+  ],
+  "data_and_count_discrepancies": [],
+  "excluded": [
+    "Hermes home",
+    "state.db",
+    "stdout/stderr",
+    "chat history",
+    "skills",
+    "cache",
+    "keys",
+    ".env",
+    "other workspace files"
+  ],
+  "model_or_api_calls_by_retention_script": 0
+}

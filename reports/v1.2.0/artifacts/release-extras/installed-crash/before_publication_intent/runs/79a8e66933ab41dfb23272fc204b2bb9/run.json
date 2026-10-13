@@ -1,0 +1,125 @@
+{
+  "run_id": "79a8e66933ab41dfb23272fc204b2bb9",
+  "status": "interrupted",
+  "stage": "verify",
+  "owner_pid": 90512,
+  "started_at": 1791933733.9530969,
+  "finished_at": 1791933734.0043561,
+  "skill_id": "builtin/csv-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "local",
+  "event_id": "installed-crash-before_publication_intent",
+  "payload_hash": "4bacdf8411f9eef75a27daec57f66aca7161e19428937ddf239857b34f8ee5e2",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791933733.9548118,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按订单号保留首条",
+    "input_format": "csv",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": null,
+    "source_ref": "installed-crash-before_publication_intent",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "owner_process_exited",
+    "message": "previous owner exited before recording a verified result"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "installed-crash-before_publication_intent",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/source.csv",
+      "key_columns": [
+        "订单号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/result.csv"
+    },
+    "goal": "按订单号保留首条",
+    "schema_version": 2
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/csv-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按订单号保留首条",
+          "input_format": "csv",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/source.csv",
+          "input_sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+          "keep": "first",
+          "key_columns": [
+            "订单号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/result.csv",
+          "session_id": null,
+          "sheet": null,
+          "source_ref": "installed-crash-before_publication_intent",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023"
+      },
+      "created_at": 1791933733.955848
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791933733.957128
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023"
+      },
+      "created_at": 1791933733.957927
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023"
+        },
+        "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023"
+      },
+      "created_at": 1791933733.9623392
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "50f4e03fc4c64613073f52183edb3b3b405171268f5fc303a39d3bc226d6f023"
+      },
+      "created_at": 1791933733.963152
+    }
+  ]
+}

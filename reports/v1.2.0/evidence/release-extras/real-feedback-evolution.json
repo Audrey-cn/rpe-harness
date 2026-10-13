@@ -1,0 +1,175 @@
+{
+  "wheel_sha256": "73632f86e221f19b58021c74f1b32e470f9292d9ec24d78d9a7774e6693bc3b7",
+  "accepted_real_hermes_success_run_ids": [
+    "18beabdb13f04aca8df615876f0530c5",
+    "82efbb8a4dd54003b4c3b11b48b328dd",
+    "cc33a7558f1e456bbc8586aa40fc1bb7",
+    "8afd7f250abf409e9b0bac2a6d2132f8"
+  ],
+  "generated_cli_candidate_code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+  "proposer_bound_real_csv_run_ids": [
+    "18beabdb13f04aca8df615876f0530c5",
+    "82efbb8a4dd54003b4c3b11b48b328dd"
+  ],
+  "cycle": {
+    "verified_feedback_count": 8,
+    "proposal_count": 10,
+    "proposal_ids": [
+      "86eadb7b59a238cca4bb0664749fbcdb53c4581089364a5ae079b9feee5c6740",
+      "cbac7d7b60fc04905e9f943d5c4e15d8d30627d22dd54712b7051c83587ea001",
+      "eefac16682f1236803b20bb6b3d0dd057f7317a06150ded6f12999d9c2ae1f7e",
+      "6a6657255d9b183561d56987acb54429cf2560b52be4acbbebf2a8235313ae90",
+      "8a6326573d034dfd895d317dd057e260f46054c6921576b12c3f99936bac70fb",
+      "033575f55c15ef8d51ba1a0d0784b3535237fb5c135f45be497e51ffe04f75c5",
+      "f201686fb9f3a5ef87e80fccc5b5b24bbe7f771e19e4ccba56ecfb4162344360",
+      "72be7a7641019b0d5044651456a4008238294d77f4b54b8c304969254050a5f7",
+      "ce635d44f53e7ae67005f64fe831259ff7b02b57248b29772708091c2cd4dc58",
+      "7853148f267cd7d41fe0f0946bcc6d28f4c459b91a4a260fc14b9ef43a113258"
+    ],
+    "validated": [
+      "72be7a7641019b0d5044651456a4008238294d77f4b54b8c304969254050a5f7",
+      "ce635d44f53e7ae67005f64fe831259ff7b02b57248b29772708091c2cd4dc58",
+      "7853148f267cd7d41fe0f0946bcc6d28f4c459b91a4a260fc14b9ef43a113258"
+    ],
+    "applied": [
+      {
+        "applied": true,
+        "activation_id": "32ab0d56051746b4a8a7bb18a59d0f9c",
+        "version_id": "dddbb01a85404ad204bd44adf58f7bbcf86900b333adcede82da21d9560b80fa",
+        "previous_version_id": null,
+        "component": "recipe",
+        "kind": "recipe",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/evolution-artifacts/9ce811a7388c98f531853fa1a7a64963d40a64c7f3cca53f7cc8804eab79b557.json",
+        "content_hash": "9ce811a7388c98f531853fa1a7a64963d40a64c7f3cca53f7cc8804eab79b557"
+      },
+      {
+        "applied": true,
+        "activation_id": "83f86d30c4b74bd3a9c7433576d160bc",
+        "version_id": "44d4a42303d4edf37e5324a1495f0173875a16c589657136e3d9c79d5bb43135",
+        "previous_version_id": "dddbb01a85404ad204bd44adf58f7bbcf86900b333adcede82da21d9560b80fa",
+        "component": "recipe",
+        "kind": "recipe",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/evolution-artifacts/561f5107ccc8b34395fbcaf2affd30fc29d75016236cb4406676018d3d32d857.json",
+        "content_hash": "561f5107ccc8b34395fbcaf2affd30fc29d75016236cb4406676018d3d32d857"
+      },
+      {
+        "applied": true,
+        "activation_id": "fd0bda894ed248b18080bbaca04c4911",
+        "version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+        "previous_version_id": null,
+        "component": "executor",
+        "kind": "csv_executor",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/evolution-artifacts/ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e.py",
+        "content_hash": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e"
+      }
+    ],
+    "rejected": [
+      {
+        "proposal_id": "86eadb7b59a238cca4bb0664749fbcdb53c4581089364a5ae079b9feee5c6740",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "contract",
+          "proposal_id": "86eadb7b59a238cca4bb0664749fbcdb53c4581089364a5ae079b9feee5c6740"
+        }
+      },
+      {
+        "proposal_id": "cbac7d7b60fc04905e9f943d5c4e15d8d30627d22dd54712b7051c83587ea001",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "discovery",
+          "proposal_id": "cbac7d7b60fc04905e9f943d5c4e15d8d30627d22dd54712b7051c83587ea001"
+        }
+      },
+      {
+        "proposal_id": "eefac16682f1236803b20bb6b3d0dd057f7317a06150ded6f12999d9c2ae1f7e",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "recipe",
+          "proposal_id": "eefac16682f1236803b20bb6b3d0dd057f7317a06150ded6f12999d9c2ae1f7e"
+        }
+      },
+      {
+        "proposal_id": "6a6657255d9b183561d56987acb54429cf2560b52be4acbbebf2a8235313ae90",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "executor",
+          "proposal_id": "6a6657255d9b183561d56987acb54429cf2560b52be4acbbebf2a8235313ae90"
+        }
+      },
+      {
+        "proposal_id": "8a6326573d034dfd895d317dd057e260f46054c6921576b12c3f99936bac70fb",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "host",
+          "proposal_id": "8a6326573d034dfd895d317dd057e260f46054c6921576b12c3f99936bac70fb"
+        }
+      },
+      {
+        "proposal_id": "033575f55c15ef8d51ba1a0d0784b3535237fb5c135f45be497e51ffe04f75c5",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "core",
+          "proposal_id": "033575f55c15ef8d51ba1a0d0784b3535237fb5c135f45be497e51ffe04f75c5"
+        }
+      },
+      {
+        "proposal_id": "f201686fb9f3a5ef87e80fccc5b5b24bbe7f771e19e4ccba56ecfb4162344360",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "verifier",
+          "proposal_id": "f201686fb9f3a5ef87e80fccc5b5b24bbe7f771e19e4ccba56ecfb4162344360"
+        }
+      }
+    ],
+    "quarantined": [],
+    "owned_root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release"
+  },
+  "actual_executor_versions_bound_to_real_feedback": [
+    {
+      "version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+      "state": "active",
+      "evidence_run_ids": [
+        "18beabdb13f04aca8df615876f0530c5",
+        "82efbb8a4dd54003b4c3b11b48b328dd"
+      ],
+      "validation_passed": true
+    }
+  ],
+  "interpretation": "The unattended callback reuses code generated by the earlier real isolated CLI; no additional model call or scheduled worker is claimed. Only fully accepted live sessions seed this binding. Local CLI feedback remains separately identified.",
+  "actual_followup": {
+    "run_id": "0be58594f0384a2782781af173e45c09",
+    "manual_truth_passed": true,
+    "actual_executor": {
+      "candidate_version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+      "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "candidate",
+      "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+    },
+    "verification": {
+      "checks": {
+        "duplicates_removed": true,
+        "first_records_preserved": true,
+        "headers_preserved": true,
+        "record_order_preserved": true,
+        "request_bound": true,
+        "source_unchanged": true
+      },
+      "input_rows": 3,
+      "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+      "output_rows": 2,
+      "output_sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8",
+      "passed": true,
+      "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+      "removed_rows": 1
+    },
+    "source_unchanged": true
+  }
+}

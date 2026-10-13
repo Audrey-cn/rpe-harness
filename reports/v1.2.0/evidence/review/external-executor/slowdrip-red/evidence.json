@@ -1,0 +1,14 @@
+{
+  "slowdrip_context_still_blocked_after_3_5s": true,
+  "closed_after_test_shutdown": true,
+  "errors": [],
+  "total_s": 3.5030412089981837,
+  "cleanup": {
+    "tracked_children": 0,
+    "remaining_children": [],
+    "cleanup_complete": true,
+    "errors": []
+  },
+  "no_model_calls": true,
+  "daily_writes": false
+}

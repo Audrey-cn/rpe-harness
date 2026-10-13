@@ -1,0 +1,36 @@
+{
+  "scope": "Only proven parameter-error feedback classification; original977 XLSX failure cause remains undetermined",
+  "source_sha256": "60f8fbc4335e55d96ca8a74c23ed6977081d0870e8e26cb898e922d2c8a16af2",
+  "delta_from_archived977": {
+    "added_lines": 50,
+    "removed_lines": 11
+  },
+  "red": {
+    "target": "tests/test_hermes_integration.py -k argument_validation_feedback or argument_error_fact",
+    "exit_code": 1,
+    "failed": 6,
+    "passed": 0,
+    "elapsed_seconds": 0.16,
+    "actual": "workspace_violation",
+    "expected": "invalid_task_arguments and specific fields/allowed parameters plus typed persisted host fact"
+  },
+  "green": {
+    "target": "tests/test_hermes_integration.py",
+    "exit_code": 0,
+    "passed": 42,
+    "skipped": 0,
+    "elapsed_seconds": 3.77
+  },
+  "already_started_before_root_requested_no_duplicate_linked_run": {
+    "target": "tests/test_hermes_gate.py tests/test_hermes_session.py tests/test_hermes_broker.py",
+    "exit_code": 0,
+    "passed": 80,
+    "skipped": 0,
+    "elapsed_seconds": 14.17
+  },
+  "feedback": "rpe_task_returned now persists sanitized error type/code; unchanged cycle._diagnoses detects that type/code and creates host diagnostic proposal with event hash. No execution success/run/artifact invented.",
+  "models": "No further model calls after the separately preregistered two diagnostic sessions",
+  "no_aliases": true,
+  "workspace_boundary_unchanged": true,
+  "diff_check_exit_code": 0
+}

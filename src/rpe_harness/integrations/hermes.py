@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import logging
 import math
 import os
@@ -9,6 +10,8 @@ import sqlite3
 import subprocess
 import time
 import uuid
+import threading
+from contextvars import ContextVar
 from pathlib import Path
 from typing import Any
 
@@ -19,12 +22,17 @@ _TEXT_FIELDS = frozenset({
     'model', 'provider', 'response_model', 'api_mode', 'platform', 'status', 'run_id',
     'error_type', 'error_code', 'turn_exit_reason', 'telemetry_schema_version',
     'finish_reason', 'parent_session_id',
+    'receipt_id', 'entry_key', 'contract_sha256', 'input_sha256',
+    'request_tool_choice', 'request_tools_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
+    'task_attempt',
 })
-_BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn'})
+_BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
+                          'request_parallel_tool_calls'})
+_CALL_CONTEXT = ContextVar('rpe_native_tool_context', default={})
 _USAGE_FIELDS = frozenset({
     'input_tokens', 'output_tokens', 'cache_read_tokens', 'cache_write_tokens',
     'reasoning_tokens', 'request_count', 'prompt_tokens', 'completion_tokens', 'total_tokens',
@@ -46,6 +54,13 @@ _HOOKS = ('on_session_start', 'pre_llm_call', 'post_llm_call', 'on_session_end',
 
 def _number(value: Any) -> bool:
     return type(value) in (int, float) and math.isfinite(value)
+
+
+def _digest_json(value):
+    # Native controls can import only this observer module; hashing metadata must
+    # never depend on execution or acceptance code outside that sandbox scope.
+    return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,
+        allow_nan=False,separators=(',',':')).encode()).hexdigest()
 
 
 def _raw_usage(value: dict, depth: int = 0) -> dict:
@@ -92,6 +107,35 @@ def _metadata(payload: dict[str, Any]) -> dict[str, Any]:
     if isinstance(error, dict):
         saved['error'] = {key: error[key] for key in ('type', 'code')
                           if isinstance(error.get(key), str)}
+    request = payload.get('request')
+    body = request.get('body') if isinstance(request, dict) else None
+    if isinstance(body, dict):
+        choice = body.get('tool_choice')
+        if isinstance(choice, dict) and choice.get('type') == 'function':
+            choice = (choice.get('function') or {}).get('name')
+        if isinstance(choice, str):
+            saved['request_tool_choice'] = choice
+        if type(body.get('parallel_tool_calls')) is bool:
+            saved['request_parallel_tool_calls'] = body['parallel_tool_calls']
+        tools = body.get('tools')
+        if isinstance(tools, list):
+            saved['request_tool_names'] = sorted((t.get('function') or {}).get('name','')
+                                                for t in tools if isinstance(t,dict))
+            saved['request_tools_sha256'] = _digest_json(tools)
+    response = payload.get('response')
+    assistant = response.get('assistant_message') if isinstance(response, dict) else None
+    if isinstance(assistant, dict) and isinstance(assistant.get('tool_calls'), list):
+        saved['model_tool_calls'] = []
+        for call in assistant['tool_calls']:
+            call = call if isinstance(call,dict) else {}
+            # Hermes serializes normalized ToolCall dataclasses as id/name; older
+            # SDK-shaped hook payloads put the name inside function instead.
+            function = call.get('function')
+            name = call.get('name') if 'name' in call else (
+                function.get('name') if isinstance(function,dict) else None)
+            saved['model_tool_calls'].append({
+                'tool_call_id':call.get('id') if isinstance(call.get('id'),str) else None,
+                'tool_name':name if isinstance(name,str) else None})
     return saved
 
 
@@ -164,16 +208,55 @@ def _workspace_path(value: Any, workspace: Path) -> str:
     return str(resolved)
 
 
+_TASK_PARAMETERS = frozenset({'input_path','output_path','key_columns','goal','constraints',
+                             'sheet','keep','encoding','delimiter'})
+
+
+class TaskArgumentsError(ValueError):
+    """Correctable schema facts; never include submitted business values."""
+    def __init__(self, message, fields):
+        super().__init__(message)
+        self.fields = sorted(fields)
+        self.allowed_parameters = sorted(_TASK_PARAMETERS)
+
+
 def _prepare_request(args: dict[str, Any], workspace: Path, session_id: str | None) -> dict:
-    payload = args.get('request') if isinstance(args, dict) else None
+    if not isinstance(args, dict):
+        raise TaskArgumentsError('arguments must be a JSON object', ['arguments'])
+    payload = args.get('request')
+    if 'request' not in args:
+        unknown = set(args) - _TASK_PARAMETERS
+        if unknown:
+            raise TaskArgumentsError('unknown task parameter(s): '+', '.join(sorted(unknown))+
+                '; allowed parameters: '+', '.join(sorted(_TASK_PARAMETERS)), unknown)
+        payload = {'schema_version':2, 'event_id':'tool-'+uuid.uuid4().hex,
+                   'capability':'tabular.deduplicate', 'goal':args.get('goal'),
+                   'constraints':args.get('constraints',[]),
+                   'execution':{key:value for key,value in args.items()
+                                if key not in {'goal','constraints'}}}
     if not isinstance(payload, dict):
-        raise ValueError('request must be a v1 JSON object')
-    request = json.loads(json.dumps(payload, allow_nan=False))
+        raise TaskArgumentsError('request must be a versioned JSON object', ['request'])
+    try:
+        request = json.loads(json.dumps(payload, allow_nan=False))
+    except (ValueError, TypeError):
+        raise TaskArgumentsError('request must contain JSON values without nonfinite numbers', ['request']) from None
+    version = request.get('schema_version')
+    if type(version) is not int or version not in (1,2):
+        raise TaskArgumentsError('schema_version must be 1 or 2', ['schema_version'])
+    state = request.get('state') if version==1 else request
+    if not isinstance(state,dict):
+        raise TaskArgumentsError('state must be a JSON object in a version 1 request', ['state'])
+    constraints = state.get('constraints',[])
+    if not isinstance(constraints,list) or any(not isinstance(item,str) for item in constraints):
+        raise TaskArgumentsError('constraints must be an array of strings', ['constraints'])
     execution = request.get('execution')
     if not isinstance(execution, dict):
-        raise ValueError('execution must be a JSON object')
+        raise TaskArgumentsError('execution must be a JSON object', ['execution'])
     for key in ('input_path', 'output_path'):
-        execution[key] = _workspace_path(execution.get(key), workspace)
+        value = execution.get(key)
+        if not isinstance(value,str) or not value or '\x00' in value:
+            raise TaskArgumentsError(key+' must be a nonempty path string without NUL', [key])
+        execution[key] = _workspace_path(value, workspace)
     if session_id:
         request['session_id'] = session_id
         if isinstance(request.get('state'), dict):
@@ -204,16 +287,137 @@ def _mark_observer_failure(path: Path, kind: str) -> None:
         os.close(fd)
 
 
-def _execute(args, *, store, workspace, python, task_id=None, session_id=None) -> str:
-    native = {'tool_name': 'rpe_task', 'task_id': task_id, 'session_id': session_id}
-    # Failure to persist receipt propagates; no child may execute without durable admission.
-    receipt = store.record('rpe_task_received', native)
+def _execution_identity(payload):
+    copied=json.loads(json.dumps(payload,allow_nan=False))
+    for key in ('event_id','goal','source_ref','session_id'):
+        copied.pop(key,None)
+    if isinstance(copied.get('state'),dict):
+        for key in ('goal','source_ref','session_id'):
+            copied['state'].pop(key,None)
+    return copied
+
+
+def _recorded_contract(payload):
+    """Read original normalized semantics without consulting current file facts."""
+    state=payload['state'] if payload['schema_version']==1 else payload
+    execution=payload['execution']
+    params={key:execution.get(key,default) for key,default in
+            [('keep','first'),('encoding','utf-8-sig'),('delimiter',','),('sheet',None)]}
+    params.update({key:execution[key] for key in ('input_path','output_path','key_columns')})
+    return {'capability':state.get('required_capability') if payload['schema_version']==1 else state.get('capability'),
+            'contract_version':payload.get('contract_version',1),
+            'constraints':sorted(set(state.get('constraints',[]))),'execution':params}
+
+
+def _strict_replay_payload(payload, contract, store, workspace):
+    """Reuse the first durable payload only across harmless metadata changes."""
+    from .hermes_gate import contract_for
+    with sqlite3.connect(store.path.resolve().as_uri()+'?mode=ro',uri=True) as db:
+        if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='events'").fetchone():
+            return payload
+        row=db.execute("SELECT payload_json FROM events WHERE source='hermes' AND event_id=?",
+                       (payload['event_id'],)).fetchone()
+    if row is None:
+        return payload
+    original=json.loads(row[0])
+    if contract_for(original,workspace)!=contract:
+        raise ValueError('stable entry contract mismatch')
+
+    goal=(payload.get('state') or {}).get('goal') if payload.get('schema_version')==1 else payload.get('goal')
+    if (not isinstance(goal,str) or not goal.strip()
+            or _execution_identity(original)!=_execution_identity(payload)):
+        return payload
+    # Preserve the originally admitted goal and provenance in the durable event.
+    return original
+
+
+def _broker_exchange(payload, receipt_id, native):
+    """Contact only the parent-owned local task endpoint; never use proxy settings."""
+    from urllib.parse import urlsplit
+    from urllib.request import Request, ProxyHandler, HTTPRedirectHandler, build_opener
+    from urllib.error import HTTPError
+
+    url = os.environ.get('RPE_HERMES_BROKER_URL', '')
+    token = os.environ.get('RPE_HERMES_BROKER_TOKEN', '')
+    parsed = urlsplit(url)
+    if (parsed.scheme != 'http' or parsed.hostname != '127.0.0.1'
+            or parsed.path != '/task' or parsed.query or parsed.fragment
+            or parsed.username is not None or parsed.password is not None
+            or parsed.port is None or not 1 <= parsed.port <= 65535
+            or not token or len(token) > 256 or any(ord(c) < 33 or ord(c) > 126 for c in token)):
+        raise ValueError('invalid local executor configuration')
+    body = json.dumps({'payload': payload, 'receipt_id': receipt_id, 'native': native},
+                      ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode()
+    if len(body) > 1_048_576:
+        raise ValueError('task envelope exceeds the local executor limit')
+
+    class NoRedirect(HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+
+    req = Request(url, data=body, headers={'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token}, method='POST')
+    try:
+        with build_opener(ProxyHandler({}), NoRedirect()).open(req, timeout=125) as response:
+            if response.status != 200 or response.headers.get_content_type() != 'application/json':
+                raise ValueError('invalid local executor response')
+            raw = response.read(1_048_577)
+            if len(raw) > 1_048_576:
+                raise ValueError('local executor response exceeds limit')
+    except HTTPError as error:
+        error.close()
+        if error.code == 504:
+            raise TimeoutError('local executor exceeded its time budget') from None
+        raise ValueError('local executor rejected the request') from None
+    envelope = json.loads(raw)
+    if (not isinstance(envelope, dict) or set(envelope) != {'returncode', 'result'}
+            or type(envelope['returncode']) is not int or not isinstance(envelope['result'], dict)):
+        raise ValueError('invalid local executor result envelope')
+    return envelope
+
+
+def _execute(args, *, store, workspace, python, task_id=None, session_id=None,
+             entry_key=None, required_request=None, input_sha=None, task_attempt=None,
+             admission_error=None, replay_result=None) -> str:
+    from .hermes_gate import contract_for, digest_json, request_input_sha
+    native = {**_CALL_CONTEXT.get(), 'tool_name':'rpe_task',
+              'task_id':task_id, 'session_id':session_id}
+    if entry_key:
+        native['entry_key'] = entry_key
+    if task_attempt is not None:
+        native['task_attempt'] = task_attempt
+    rejection = admission_error
+    argument_error = None
     try:
         payload = _prepare_request(args, workspace, session_id)
+        contract = contract_for(payload, workspace)
+        contract_sha = digest_json(contract)
+        native['contract_sha256'] = contract_sha
+        native['input_sha256'] = request_input_sha(payload,workspace)
+        if required_request is not None and contract != contract_for(required_request,workspace):
+            rejection = rejection or ('request_contract_mismatch','arguments differ from the fixed task contract')
+        if input_sha and native['input_sha256'] != input_sha:
+            rejection = rejection or ('input_changed','original input hash changed')
+        if entry_key:
+            payload['event_id'] = 'entry-'+digest_json([entry_key,contract_sha,native['input_sha256']])
+            if not rejection:
+                payload = _strict_replay_payload(payload,contract,store,workspace)
+    except TaskArgumentsError as error:
+        if rejection is None:
+            rejection = ('invalid_task_arguments',str(error))
+            argument_error = error
     except (ValueError, TypeError, OSError):
-        result = {'status': 'rejected', 'error': {'code': 'workspace_violation',
-                  'message': 'request paths must be valid files inside the configured workspace '
-                             'without symlinks'}}
+        rejection = rejection or ('workspace_violation','request must contain valid parameters and '
+                                  'regular files inside the configured workspace without symlinks')
+    # The receipt and its request hash are durable before starting any executor.
+    receipt = store.record('rpe_task_received', native)
+    if rejection:
+        result = {'status':'rejected', 'error':{'code':rejection[0],'message':rejection[1]}}
+        if argument_error is not None:
+            result['error'].update(type='TaskArgumentsError',fields=argument_error.fields,
+                                  allowed_parameters=argument_error.allowed_parameters)
+    elif replay_result is not None:
+        result = _compact(replay_result)
     else:
         env = os.environ.copy()
         package_root = str(Path(__file__).resolve().parents[2])
@@ -222,13 +426,17 @@ def _execute(args, *, store, workspace, python, task_id=None, session_id=None) -
         argv = [python, '-B', '-m', 'rpe_harness', 'events', 'submit', '--event', '-',
                 '--db', str(store.path)]
         try:
-            child = subprocess.run(argv, input=json.dumps(payload, ensure_ascii=False, allow_nan=False),
-                                   capture_output=True, text=True, cwd=workspace, env=env, timeout=120)
-            decoded = json.loads(child.stdout)
+            if ('RPE_HERMES_BROKER_URL' in os.environ or 'RPE_HERMES_BROKER_TOKEN' in os.environ):
+                envelope = _broker_exchange(payload, receipt['ingest_event_id'], native)
+                decoded, returncode = envelope['result'], envelope['returncode']
+            else:
+                child = subprocess.run(argv, input=json.dumps(payload, ensure_ascii=False, allow_nan=False),
+                                       capture_output=True, text=True, cwd=workspace, env=env, timeout=120)
+                decoded, returncode = json.loads(child.stdout), child.returncode
             if (not isinstance(decoded, dict)
                     or decoded.get('status') not in {'succeeded', 'rejected', 'failed', 'interrupted',
                                                     'received', 'running', 'error'}
-                    or (decoded.get('status') == 'succeeded' and child.returncode != 0)):
+                    or (decoded.get('status') == 'succeeded' and returncode != 0)):
                 raise ValueError('invalid Harness response')
             if decoded['status'] == 'succeeded' and (
                     not isinstance(decoded.get('run_id'), str) or not decoded['run_id']
@@ -238,7 +446,7 @@ def _execute(args, *, store, workspace, python, task_id=None, session_id=None) -
                     or decoded['artifact'].get('published') is not True):
                 raise ValueError('Harness success has no verified published artifact')
             result = _compact(decoded)
-        except subprocess.TimeoutExpired:
+        except (subprocess.TimeoutExpired, TimeoutError):
             result = {'status': 'failed', 'error': {'code': 'harness_timeout',
                       'message': 'Harness execution timed out'}}
         except (ValueError, TypeError):
@@ -248,9 +456,15 @@ def _execute(args, *, store, workspace, python, task_id=None, session_id=None) -
             result = {'status': 'failed', 'error': {'code': 'harness_launch_error',
                       'message': 'Harness process could not start'}}
     error = result.get('error') or {}
-    store.record('rpe_task_returned', {**native, 'run_id': result.get('run_id'),
-                 'status': result.get('status'), 'error_code': error.get('code')})
+    store.record('rpe_task_returned', {**native, 'receipt_id':receipt['ingest_event_id'],
+                 'run_id': result.get('run_id'),
+                 'status': result.get('status'), 'error_code': error.get('code'),
+                 **({'error_type':'TaskArgumentsError','error':{'type':'TaskArgumentsError',
+                      'code':error['code']}} if argument_error is not None else {})})
     result['receipt_id'] = receipt['ingest_event_id']
+    for key in ('contract_sha256','input_sha256'):
+        if key in native:
+            result[key] = native[key]
     return json.dumps(result, ensure_ascii=False, allow_nan=False, separators=(',', ':'))
 
 
@@ -274,8 +488,10 @@ def register(ctx) -> None:
                     result = json.loads(payload.get('result', ''))
                 except (ValueError, TypeError):
                     result = None
-                if isinstance(result, dict) and isinstance(result.get('run_id'), str):
-                    payload['run_id'] = result['run_id']
+                if isinstance(result, dict):
+                    for key in ('run_id','receipt_id','contract_sha256','input_sha256'):
+                        if isinstance(result.get(key),str):
+                            payload[key] = result[key]
             try:
                 store.record(kind, payload)
             except (sqlite3.Error, OSError, ValueError):
@@ -299,61 +515,188 @@ def register(ctx) -> None:
     if not Path(python).is_file() or not os.access(python, os.X_OK):
         raise ValueError('RPE_HARNESS_PYTHON must point to an executable Python')
 
-    def handle(args, task_id=None, session_id=None, **kwargs):
-        return _execute(args, store=store, workspace=workspace, python=python,
-                        task_id=task_id, session_id=session_id)
+    from .hermes_gate import contract_for, read_run, request_input_sha, _same_call, _verify_run
+    entry_mode = os.environ.get('RPE_HERMES_ENTRY_MODE','optional')
+    if entry_mode not in ('optional','strict'):
+        raise ValueError('entry mode must be optional or strict')
+    strict = entry_mode == 'strict'
+    entry_key = os.environ.get('RPE_HERMES_ENTRY_KEY') if strict else None
+    if strict and not entry_key:
+        raise ValueError('strict entry requires a trusted entry key')
+    max_attempts = int(os.environ.get('RPE_HERMES_MAX_TASK_ATTEMPTS','3'))
+    if not 1 <= max_attempts <= 20:
+        raise ValueError('task attempt limit must be between 1 and 20')
+    required_request = None
+    fixed_path = os.environ.get('RPE_HERMES_REQUIRED_REQUEST_PATH')
+    if fixed_path:
+        path = Path(fixed_path)
+        if not path.is_absolute() or path.is_symlink() or path.stat().st_size > 1_048_576:
+            raise ValueError('invalid fixed contract file')
+        required_request = _prepare_request({'request':json.loads(path.read_text())},workspace,None)
+        contract_for(required_request,workspace)
+    input_sha = os.environ.get('RPE_HERMES_INPUT_SHA256')
+    if required_request is not None and not input_sha:
+        input_sha = request_input_sha(required_request,workspace)
+    required_contract_sha=_digest_json(contract_for(required_request,workspace)) if required_request is not None else None
+    admission_lock = threading.Lock()
+    attempts = {}
+    request_policies = {}
 
-    request_schema = {
-        'type': 'object',
-        'properties': {
-            'schema_version': {'type': 'integer', 'const': 1},
-            'event_id': {'type': 'string', 'minLength': 1},
-            'session_id': {'type': 'string'},
-            'state': {
-                'type': 'object',
-                'properties': {
-                    'task_type': {'type': 'string', 'enum': ['data.processing', 'file.operation']},
-                    'goal': {'type': 'string', 'minLength': 1},
-                    'input_format': {'type': 'string', 'minLength': 1,
-                                     'description': 'Input extension; supported execution formats '
-                                                    'are csv and xlsx. Unsupported formats are rejected.'},
-                    'required_capability': {'type': 'string', 'const': 'tabular.deduplicate'},
-                    'constraints': {'type': 'array', 'items': {
-                        'type': 'string', 'enum': ['preserve_original', 'preserve_order',
-                                                  'preserve_formulas']}},
-                    'session_id': {'type': 'string'},
-                },
-                'required': ['task_type', 'goal', 'input_format', 'required_capability'],
-                'additionalProperties': False,
-            },
-            'execution': {
-                'type': 'object',
-                'properties': {
-                    'input_path': {'type': 'string', 'minLength': 1},
-                    'output_path': {'type': 'string', 'minLength': 1},
-                    'key_columns': {'type': 'array', 'minItems': 1,
-                                    'items': {'type': 'string', 'minLength': 1}},
-                    'keep': {'type': 'string', 'enum': ['first']},
-                    'encoding': {'type': 'string'},
-                    'delimiter': {'type': 'string'},
-                    'sheet': {'type': 'string'},
-                },
-                'required': ['input_path', 'output_path', 'key_columns'],
-                'additionalProperties': False,
-            },
-        },
-        'required': ['schema_version', 'event_id', 'state', 'execution'],
-        'additionalProperties': False,
+    def terminal(session_id, turn_id):
+        rows = [e for e in store.list(session_id) if e.get('turn_id')==turn_id]
+        for post in reversed(rows):
+            if post['kind']!='post_tool_call' or post.get('tool_name')!='rpe_task' or not post.get('run_id'):
+                continue
+            receipt = next((e for e in rows if e['kind']=='rpe_task_received'
+                            and e['ingest_event_id']==post.get('receipt_id')
+                            and _same_call(post,e) and e.get('entry_key')==entry_key), None)
+            returned = next((e for e in rows if e['kind']=='rpe_task_returned'
+                             and e.get('receipt_id')==post.get('receipt_id')
+                             and _same_call(post,e) and e.get('run_id')==post.get('run_id')), None)
+            if (receipt is None or returned is None or
+                    not any(e['kind']=='pre_tool_call' and _same_call(post,e) for e in rows)):
+                continue
+            try:
+                run = read_run(store.path,post['run_id'])
+                if (returned.get('status')!=run.get('status') or
+                        (run.get('status')=='rejected' and returned.get('error_code')!=
+                         (run.get('error') or {}).get('code'))):
+                    continue
+                contract_sha=receipt.get('contract_sha256')
+                original_sha=receipt.get('input_sha256')
+                if (not contract_sha or not original_sha or
+                        _digest_json(_recorded_contract(run['event']))!=contract_sha or
+                        run['event'].get('event_id')!='entry-'+_digest_json([entry_key,contract_sha,original_sha]) or
+                        (required_contract_sha is not None and contract_sha!=required_contract_sha) or
+                        (input_sha is not None and original_sha!=input_sha)):
+                    continue
+                # A linked durable terminal outcome closes admission permanently.
+                # Later damage to source/output must never authorize reinterpretation.
+                if run['status']=='succeeded':
+                    verification,artifact=run.get('verification') or {},run.get('artifact') or {}
+                    if (verification.get('passed') is not True or artifact.get('published') is not True or
+                            verification.get('input_sha256')!=original_sha or artifact.get('input_sha256')!=original_sha):
+                        continue
+                elif run['status']!='rejected' or not (run.get('error') or {}).get('code'):
+                    continue
+            except (OSError,ValueError,TypeError,KeyError,AttributeError,sqlite3.Error):
+                continue
+            return run,post,receipt
+        return None
+
+    def policy(request, session_id='', turn_id='', **kwargs):
+        if not strict:
+            return None
+        try:
+            rewritten = dict(request)
+            rewritten['parallel_tool_calls'] = False
+            identity=(session_id,kwargs.get('task_id'),turn_id,kwargs.get('api_request_id'))
+            if any(not isinstance(value,str) or not value for value in identity):
+                raise ValueError('native API request identity required')
+            choice='rpe_task' if terminal(session_id,turn_id) is None else 'none'
+            rewritten['tool_choice'] = ({'type':'function','function':{'name':'rpe_task'}}
+                                         if choice=='rpe_task' else 'none')
+            with admission_lock:
+                request_policies[identity]=choice
+            return {'request':rewritten,'source':'rpe_harness','reason':'required_entry'}
+        except (OSError,ValueError,TypeError,sqlite3.Error):
+            _mark_observer_failure(error_path,'llm_request_policy')
+            raise
+
+    def bind_call(tool_name, args, next_call, **context):
+        if tool_name!='rpe_task':
+            return next_call(args)
+        real = {key:context.get(key) for key in
+                ('session_id','task_id','turn_id','api_request_id','tool_call_id')}
+        token = _CALL_CONTEXT.set(real)
+        try:
+            return next_call(args)
+        finally:
+            _CALL_CONTEXT.reset(token)
+
+    ctx.register_middleware('tool_execution',bind_call)
+    if strict:
+        ctx.register_middleware('llm_request',policy)
+
+    def handle(args, task_id=None, session_id=None, **kwargs):
+        attempt = None
+        admission_error = None
+        replay_result = None
+        replay_input_sha = input_sha
+        if strict:
+            identity = _CALL_CONTEXT.get()
+            turn_id = identity.get('turn_id')
+            if (any(not isinstance(identity.get(key),str) or not identity[key] for key in
+                    ('session_id','task_id','turn_id','api_request_id','tool_call_id'))
+                    or identity.get('session_id')!=session_id or identity.get('task_id')!=task_id):
+                admission_error = ('entry_context_missing','native task execution context required')
+            with admission_lock:
+                key = (session_id,turn_id)
+                policy_key=tuple(identity.get(k) for k in ('session_id','task_id','turn_id','api_request_id'))
+                observed=[e for e in store.list(session_id) if e['kind']=='pre_api_request'
+                          and tuple(e.get(k) for k in ('session_id','task_id','turn_id','api_request_id'))==policy_key]
+                # Actual pre-API policy has priority; an earlier rewrite cannot
+                # authorize execution when another middleware changed it to none.
+                actual_choice=observed[0].get('request_tool_choice') if len(observed)==1 else None
+                recorded_choice=request_policies.get(policy_key)
+                if actual_choice=='none' or recorded_choice=='none':
+                    admission_error=admission_error or ('entry_policy_none','this API request forbids task execution')
+                elif (actual_choice!='rpe_task' or recorded_choice!='rpe_task'
+                      or observed[0].get('request_parallel_tool_calls') is not False
+                      or observed[0].get('request_tool_names')!=['rpe_task']):
+                    admission_error=admission_error or ('entry_policy_missing','complete native API policy required')
+                outcome=terminal(session_id,turn_id) if not admission_error else None
+                if outcome is not None:
+                    run,post,receipt=outcome
+                    # Re-delivery of the very same named native call is a read-only
+                    # replay. New calls in this turn cannot create another contract.
+                    try:
+                        candidate=_prepare_request(args,workspace,session_id) if _same_call(identity,post) else None
+                        valid_replay=(candidate is not None and
+                            _execution_identity(candidate)==_execution_identity(run['event']) and
+                            contract_for(candidate,workspace)==contract_for(run['event'],workspace) and
+                            request_input_sha(candidate,workspace)==receipt.get('input_sha256'))
+                        if valid_replay:
+                            # Fresh files decide whether a read-only replay can
+                            # report success; failure cannot reopen this turn.
+                            _verify_run(run,receipt,workspace,required_request)
+                    except (ValueError,TypeError,OSError):
+                        valid_replay=False
+                    if valid_replay:
+                        replay_result=run
+                        replay_input_sha=receipt['input_sha256']
+                        attempt=receipt.get('task_attempt')
+                    else:
+                        admission_error=('entry_closed','this turn already has an acceptable durable outcome')
+                if replay_result is None:
+                    attempts[key] = attempts.get(key,0)+1
+                    attempt = attempts[key]
+                if replay_result is None and attempt > max_attempts:
+                    admission_error = ('task_attempt_limit','bounded task argument attempts exhausted')
+        return _execute(args, store=store, workspace=workspace, python=python,
+                        task_id=task_id, session_id=session_id,entry_key=entry_key,
+                        required_request=required_request,input_sha=replay_input_sha,
+                        task_attempt=attempt,admission_error=admission_error,replay_result=replay_result)
+
+    properties = {
+        'input_path':{'type':'string','minLength':1},
+        'output_path':{'type':'string','minLength':1},
+        'key_columns':{'type':'array','minItems':1,'items':{'type':'string','minLength':1}},
+        'goal':{'type':'string','minLength':1},
+        'constraints':{'type':'array','items':{'type':'string','enum':[
+            'preserve_original','preserve_order','preserve_formulas']}},
+        'sheet':{'type':'string'},'keep':{'type':'string','enum':['first']},
+        'encoding':{'type':'string'},'delimiter':{'type':'string'},
     }
     ctx.register_tool(name='rpe_task', toolset='rpe_harness', handler=handle, schema={
         'name': 'rpe_task',
-        'description': 'Deduplicate a CSV or XLSX by explicit key columns, preserving the first '
-                       'records and original input. Verifies the new output. Pass a version 1 '
-                       'request with schema_version=1, a unique event_id, state (task_type '
-                       'data.processing, nonempty goal, input_format csv or xlsx, required_capability '
-                       'tabular.deduplicate, constraints as an array of strings), and execution '
-                       '(input_path, output_path, '
-                       'key_columns; optional sheet and keep=first). Paths are workspace relative.',
-        'parameters': {'type': 'object', 'properties': {'request': request_schema},
-                       'required': ['request'], 'additionalProperties': False},
+        'description':'Deduplicate by explicit key columns, keeping first records and original order. '
+                      'Pass input_path, a new output_path, key_columns and a short goal. Paths are '
+                      'workspace relative. CSV/XLSX outputs are independently verified; unsupported '
+                      'formats and unsafe formula dependencies are durably rejected. For XLSX name '
+                      'the sheet and use preserve_formulas when required; do not use that constraint '
+                      'for CSV. The returned durable status is authoritative.',
+        'parameters':{'type':'object','properties':properties,
+                      'required':['input_path','output_path','key_columns','goal'],
+                      'additionalProperties':False},
     })

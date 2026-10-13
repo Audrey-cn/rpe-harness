@@ -1,0 +1,76 @@
+{
+  "probe": "same_agent_two_round_entry_reset",
+  "formal_experiment": false,
+  "startup_only": true,
+  "model_deadline_seconds": 360,
+  "per_round_budget_seconds": 180,
+  "elapsed_seconds": 1.144,
+  "sdk_result": {
+    "probe": "sdk_startup_only_diagnostic",
+    "completed": false,
+    "startup_completed": true,
+    "stage": "before_agent_initialization",
+    "agent_instance_count": 0,
+    "rounds": []
+  },
+  "entry_reset_observed": false,
+  "unmodified_history_continuation_observed": false,
+  "entry_validation": {
+    "status": "failed",
+    "verified": false,
+    "harness_verified": false,
+    "errors": [
+      "host_or_observation_incomplete",
+      "durable_observations_mismatch",
+      "tool_observations_incomplete",
+      "api_observations_incomplete",
+      "matching_terminal_run_missing"
+    ]
+  },
+  "csv_truth": [],
+  "host": {
+    "completed": false,
+    "exit_code": 0,
+    "timed_out": false,
+    "observer_errors": 0,
+    "session_id": null,
+    "events": [],
+    "process_cleanup": {
+      "cleanup_complete": true,
+      "external_executor": {
+        "tracked_children": 0,
+        "remaining_children": [],
+        "cleanup_complete": true,
+        "errors": []
+      },
+      "tracked_descendants": 1,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "errors": []
+    }
+  },
+  "usage": {
+    "api_requests": 0,
+    "missing_observations": 0,
+    "requests_with_usage": 0,
+    "api_errors": 0,
+    "coverage_complete": false,
+    "known_total_tokens": 0,
+    "prompt_tokens": null,
+    "output_tokens": null,
+    "input_tokens": null,
+    "total_tokens": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "reasoning_tokens": null
+  },
+  "source_unchanged": true,
+  "package_source_sha256": "c9858b86912af22ed301532b64d40c0bf920718151863c820d9caf63d9f52aaa",
+  "sdk_source_sha256": {
+    "/Users/audrey/.hermes/hermes-agent/run_agent.py": "9fca746dde685859ed084d6f7651a94d8849e8944a145de77f8a177c839cb5ac",
+    "/Users/audrey/.hermes/hermes-agent/hermes_bootstrap.py": "f242036b2d35b92283b9a7e97c7059e537607fc4b02026f657a6d00cb4683f69",
+    "/Users/audrey/.hermes/hermes-agent/agent/turn_facade.py": "e9176a8ae1d7822fa45c75b680d5ae4be7c949e49c877673aea867cc146856a0",
+    "/Users/audrey/.hermes/hermes-agent/agent/turn_context.py": "7f22179bf7db0cc3009f24422750e3ec729f0ad4f7253705fd3df3116c75fb3d"
+  },
+  "accepted": false
+}

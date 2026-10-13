@@ -1,0 +1,153 @@
+{
+  "ledger": "initial-retention-manifest.json",
+  "interpretation": "The ledger records original copy events. Closing validation replaces the top-level final wheel, source manifest, test XML and installed evidence; historical bytes remain in explicit snapshot directories listed below. It is not a claim that every original destination still contains its old snapshot.",
+  "items": [
+    {
+      "original_copy_destination": "artifacts/rpe_harness-1.2.0-py3-none-any.whl",
+      "original_copy_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+      "current_destination_matches_original": false,
+      "preserved_original_bytes_at": [
+        "artifacts/pre-admission-guard/rpe_harness-1.2.0-py3-none-any.whl"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/pytest-final.xml",
+      "original_copy_sha256": "cc7283024af0996c486e8bd427ecd3eaa3c28d9f65c650523639a4fc62602265",
+      "current_destination_matches_original": false,
+      "preserved_original_bytes_at": [
+        "evidence/pre-admission-guard/pytest-final.xml"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/baseline-v1.1-refreshed.xml",
+      "original_copy_sha256": "cc8f7e2e71baa086663b14526bfda4519d3ff8266f3b626137895ed94040a029",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/baseline-v1.1-refreshed.xml"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/baseline-v1.1-refreshed.log",
+      "original_copy_sha256": "3e30cc40ced7da6e823d48e195d6ebdcf59937a8b815070a020c8921b0786b02",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/baseline-v1.1-refreshed.log"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/frozen-source-manifest.json",
+      "original_copy_sha256": "f59d331aa11918379307a5c21a2b5476415c90c0cc616d97f9c7f4321271243d",
+      "current_destination_matches_original": false,
+      "preserved_original_bytes_at": [
+        "evidence/pre-admission-guard/frozen-source-manifest.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/installed-contract.json",
+      "original_copy_sha256": "34904c60705ab17d9d54a11fa7b11577dbcf491b62ae6dc4e3226e950d85929f",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/installed-contract.json",
+        "evidence/pre-admission-guard/installed-contract.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/generated-executor-evolution.json",
+      "original_copy_sha256": "72104b471e1649f1048662ce7877b157bdaab04240346ff2d3edd0345f7c0d46",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/generated-executor-evolution.json"
+      ]
+    },
+    {
+      "original_copy_destination": "artifacts/generated-csv-executor.py",
+      "original_copy_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "artifacts/generated-csv-executor.py",
+        "artifacts/release-extras/generated-csv-executor.py"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/generation-hermes-1-timeout.json",
+      "original_copy_sha256": "a3b6486a3edc54b9a32a88bb4d5ed798bd6a690d008732e70b4c4ef68e5b2635",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/generation-hermes-1-timeout.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/generation-hermes-2-timeout.json",
+      "original_copy_sha256": "285e08c27af9fb144d1601297ae7a5545fbed5d9299cd6e38f38a9d7eb2b690f",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/generation-hermes-2-timeout.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/generation-codex-1-startup-failure.json",
+      "original_copy_sha256": "adcd7eb2ee5523bd8c63ca4ce83fe6b901785e6572ac954b7561d62e8c8563c3",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/generation-codex-1-startup-failure.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/generation-codex-2-success.json",
+      "original_copy_sha256": "e2462af8f3d7619111f2b19b7dd6d9c4edd477cc343bfa4e65e16d8faf4c1cbf",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/generation-codex-2-success.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/entry-smoke-before-parser-fix.json",
+      "original_copy_sha256": "5f960bd52a04a81708b93218eeb816bdde2ccaf23cb22d7656217df7e80542f6",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/entry-smoke-before-parser-fix.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/entry-smoke-corrected.json",
+      "original_copy_sha256": "b97b865a309beb6b2076777dc978b6ef4ed8c953f94950b53a1bf747fd7ea21e",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/entry-smoke-corrected.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/native-observer-smoke.json",
+      "original_copy_sha256": "008815a548fbc0e5e8fe6edf9e6a3e0a25093c2ae9fc8dc0e76c450f1d601917",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/native-observer-smoke.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/aborted-pilot-reason.json",
+      "original_copy_sha256": "f4d28864276bb9cd83c8c0f677d32d84499c1183b49329a8128347a095bb8f22",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/aborted-pilot-reason.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/aborted-pilot.json",
+      "original_copy_sha256": "5304aff321cde80094322c022548656c324b14ca4404d7d70f3a0a31618deef1",
+      "current_destination_matches_original": true,
+      "preserved_original_bytes_at": [
+        "evidence/aborted-pilot.json"
+      ]
+    },
+    {
+      "original_copy_destination": "evidence/independent-review.md",
+      "original_copy_sha256": "4ed9b5f28a8604b60c18cc214c6bc8a642de435a69c3d056a1625e2cb1968b92",
+      "current_destination_matches_original": false,
+      "preserved_original_bytes_at": [
+        "evidence/review/independent/initial-copy-snapshot.md"
+      ]
+    }
+  ],
+  "all_original_bytes_preserved": true
+}

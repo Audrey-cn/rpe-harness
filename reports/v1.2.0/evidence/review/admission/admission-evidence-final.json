@@ -1,0 +1,67 @@
+{
+  "scope": "source-only strict admission independent review",
+  "source_path": "/Users/audrey/项目/rpe-harness/src/rpe_harness/integrations/hermes.py",
+  "source_sha256": "b07acfd990d2fc34dfb3f759e5c388495923079c443d7649cac735e4d2652ac0",
+  "source_file_count": 31,
+  "source_snapshot_stable_during_tests": true,
+  "changed_since_prior_frozen_review": [
+    "src/rpe_harness/integrations/hermes.py"
+  ],
+  "gate_unchanged": true,
+  "passed": true,
+  "remaining_code_findings": [],
+  "independent": {
+    "admission_cases_passed": 9,
+    "prior_independent_compatibility_cases_passed": 7,
+    "total_passed": 16,
+    "seconds": 5.4
+  },
+  "project_focused": {
+    "passed": 87,
+    "skipped": 0,
+    "seconds": 8.51
+  },
+  "verified_boundaries": [
+    "persisted none overrides stale named rewrite",
+    "incomplete strict policy creates no run or child",
+    "terminal blocks stale named/new call/different output",
+    "exact original named API/call replays unchanged source without child",
+    "fresh named new turn admits new contract",
+    "ignored none remains gate unverified",
+    "changed source cannot reopen old native call",
+    "corrupt output cannot reopen old native call",
+    "removed output cannot reopen old native call"
+  ],
+  "prior_red_evidence": "admission-evidence-pending.json",
+  "prior_finding_closed": "fresh source/artifact damage no longer clears durable terminal admission; replay needs fresh proof and failure rejects without child",
+  "evidence_limits": "Controlled native hooks/middleware and simulated provider-response fixtures; real Harness writer children. No live model/API invocation in this review.",
+  "reviewer_production_edits": false,
+  "reviewer_live_wheel_or_environment_changes": false,
+  "reviewer_daily_environment_writes": false,
+  "model_or_api_calls": 0,
+  "scope_note": "No inference about external concurrent daily Hermes changes; this review creates only owned probe fixtures, DBs and reports.",
+  "sdk_batch_dispatch_static_review": {
+    "source": "actual installed Hermes host source, read-only",
+    "sources": {
+      "run_agent.py": {
+        "lines": "1294-1317",
+        "path": "/Users/audrey/.hermes/hermes-agent/run_agent.py",
+        "sha256": "9fca746dde685859ed084d6f7651a94d8849e8944a145de77f8a177c839cb5ac"
+      },
+      "agent/tool_dispatch_helpers.py": {
+        "lines": "184-241",
+        "path": "/Users/audrey/.hermes/hermes-agent/agent/tool_dispatch_helpers.py",
+        "sha256": "cb153a092a2c104b2bce057b4954a31d0d8b769622f9c4929b1f55175ef13de9"
+      },
+      "agent/tool_executor.py": {
+        "lines": "133,184-193,895-992,1793-1808,1852-1893",
+        "path": "/Users/audrey/.hermes/hermes-agent/agent/tool_executor.py",
+        "sha256": "8b145fbc70936f028f18e59cb7f9c8723fc992a067fe068f06e7f9f876e9c679"
+      }
+    },
+    "conclusion": "rpe_task is not parallel-safe and becomes a sequential barrier; each normal call emits terminal post before next call",
+    "strict_config": "only rpe_harness tools and empty MCP servers; no custom tool timeout config or inherited HERMES_CONCURRENT_TOOL_TIMEOUT_S",
+    "timeout_boundary": "SDK can abandon timed-out workers; default sequential deadline is 420s, Harness child deadline 120s; no observed normal multi-call parallel window and no speculative feature change",
+    "additional_tests_or_product_changes": false
+  }
+}

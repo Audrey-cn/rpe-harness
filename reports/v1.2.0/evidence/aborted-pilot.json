@@ -1,0 +1,19 @@
+{
+  "experiment": "hermes-native-v1.2-repeated",
+  "repetitions": 3,
+  "case_count": 6,
+  "planned_attempts": 36,
+  "attempts": [],
+  "rounds": [],
+  "pairs": [],
+  "completed": false,
+  "native_hermes_baseline_measured": false,
+  "interpretation": "Independent fresh sessions, not stateful conversation turns. Required-entry policy is part of the integrated product. All attempts count; missing usage is unknown; no causal or general-agent claim.",
+  "aborted": true,
+  "interruption": {
+    "reason": "independent review exposed activation diagnostics path nondeterminism; stop before first completed attempt to rebuild exact final wheel",
+    "runner_pid": 51579,
+    "completed_checkpoint_attempts": 0,
+    "signaled": "SIGINT"
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "run_id": "e88dfe6bd1c74f0a81e0e31b29780dfa",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 61520,
+  "started_at": 1791927571.343188,
+  "finished_at": 1791927571.403181,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-f4a8e912dc3f6e870360a0ad7e07578ad963be4a618a98ae8c9c4cc97e49261c",
+  "payload_hash": "388b8fef37f9e4bc6916bbb40bb44ef8942cd8225cbeaf7d71c1afab8da6375c",
+  "state": {
+    "constraints": [
+      "preserve_formulas",
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791927571.385908,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "Deduplicate input.xlsx 订单 sheet by full values of columns 编号 and 地区 (no trimming, case-sensitive, no numeric coercion), keeping first occurrence and original row order; for duplicate rows clear only cell values, comments and hyperlinks without deleting/moving rows; preserve all other cells' coordinates, formulas, styles, comments, hyperlinks, other sheets, hidden states and column widths.",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_053902_475522",
+    "source_ref": "entry-f4a8e912dc3f6e870360a0ad7e07578ad963be4a618a98ae8c9c4cc97e49261c",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "formulas_preserved": true,
+      "headers_preserved": true,
+      "non_target_sheets_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "retained_metadata_preserved": true,
+      "source_unchanged": true
+    },
+    "input_rows": 6,
+    "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+    "output_rows": 4,
+    "output_sha256": "310c41160c0c428da833bc8d47b16161566dd2f0b3e277e90eeb17b81f340283",
+    "passed": true,
+    "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/xlsx-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+    },
+    "format": "xlsx",
+    "input_rows": 6,
+    "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+    "output_rows": 4,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+    "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "310c41160c0c428da833bc8d47b16161566dd2f0b3e277e90eeb17b81f340283"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order",
+      "preserve_formulas"
+    ],
+    "event_id": "entry-f4a8e912dc3f6e870360a0ad7e07578ad963be4a618a98ae8c9c4cc97e49261c",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/input.xlsx",
+      "keep": "first",
+      "key_columns": [
+        "编号",
+        "地区"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "Deduplicate input.xlsx 订单 sheet by full values of columns 编号 and 地区 (no trimming, case-sensitive, no numeric coercion), keeping first occurrence and original row order; for duplicate rows clear only cell values, comments and hyperlinks without deleting/moving rows; preserve all other cells' coordinates, formulas, styles, comments, hyperlinks, other sheets, hidden states and column widths.",
+    "schema_version": 2,
+    "session_id": "20261014_053902_475522"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_formulas",
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "Deduplicate input.xlsx 订单 sheet by full values of columns 编号 and 地区 (no trimming, case-sensitive, no numeric coercion), keeping first occurrence and original row order; for duplicate rows clear only cell values, comments and hyperlinks without deleting/moving rows; preserve all other cells' coordinates, formulas, styles, comments, hyperlinks, other sheets, hidden states and column widths.",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/input.xlsx",
+          "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+          "keep": "first",
+          "key_columns": [
+            "编号",
+            "地区"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+          "session_id": "20261014_053902_475522",
+          "sheet": "订单",
+          "source_ref": "entry-f4a8e912dc3f6e870360a0ad7e07578ad963be4a618a98ae8c9c4cc97e49261c",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+      },
+      "created_at": 1791927571.387199
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791927571.3879669
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+      },
+      "created_at": 1791927571.3883479
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+        },
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+      },
+      "created_at": 1791927571.397302
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+      },
+      "created_at": 1791927571.397702
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "formulas_preserved": true,
+            "headers_preserved": true,
+            "non_target_sheets_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "retained_metadata_preserved": true,
+            "source_unchanged": true
+          },
+          "input_rows": 6,
+          "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+          "output_rows": 4,
+          "output_sha256": "310c41160c0c428da833bc8d47b16161566dd2f0b3e277e90eeb17b81f340283",
+          "passed": true,
+          "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791927571.401609
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f"
+        },
+        "format": "xlsx",
+        "input_rows": 6,
+        "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+        "output_rows": 4,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+        "plan_sha256": "65d8f40a239b5f45e2e9104e02b406cc0f4be4ffe85d64f68863907ab74eec9f",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "310c41160c0c428da833bc8d47b16161566dd2f0b3e277e90eeb17b81f340283"
+      },
+      "created_at": 1791927571.402903
+    }
+  ]
+}

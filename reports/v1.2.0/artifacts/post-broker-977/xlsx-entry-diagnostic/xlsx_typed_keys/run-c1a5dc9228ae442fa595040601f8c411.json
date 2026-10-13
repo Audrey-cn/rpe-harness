@@ -1,0 +1,212 @@
+{
+  "run_id": "c1a5dc9228ae442fa595040601f8c411",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 88807,
+  "started_at": 1791933292.769248,
+  "finished_at": 1791933292.820509,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-ae4d2b1f2eb14e189af7f1db9455f1c57f053ca328e624631b5482cd3e51a504",
+  "payload_hash": "23e919f65b31ebae30514590cc6acba2d2a5e4ed90308883af4865135c2d5003",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791933292.805866,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按明确关键列 [\"编号\", \"地区\"] 的完整值去重（不去空格、不忽略大小写、不强制转数字），保留首次出现的完整记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_071440_8a5430",
+    "source_ref": "entry-ae4d2b1f2eb14e189af7f1db9455f1c57f053ca328e624631b5482cd3e51a504",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "formulas_preserved": true,
+      "headers_preserved": true,
+      "non_target_sheets_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "retained_metadata_preserved": true,
+      "source_unchanged": true
+    },
+    "input_rows": 6,
+    "input_sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65",
+    "output_rows": 4,
+    "output_sha256": "0d2bbedc531d354666c358e7486c6b0c2dde23cb9561f6e973af11fbb9f70bd0",
+    "passed": true,
+    "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/xlsx-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+    },
+    "format": "xlsx",
+    "input_rows": 6,
+    "input_sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65",
+    "output_rows": 4,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/output.xlsx",
+    "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "0d2bbedc531d354666c358e7486c6b0c2dde23cb9561f6e973af11fbb9f70bd0"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-ae4d2b1f2eb14e189af7f1db9455f1c57f053ca328e624631b5482cd3e51a504",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/input.xlsx",
+      "keep": "first",
+      "key_columns": [
+        "编号",
+        "地区"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按明确关键列 [\"编号\", \"地区\"] 的完整值去重（不去空格、不忽略大小写、不强制转数字），保留首次出现的完整记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行",
+    "schema_version": 2,
+    "session_id": "20261014_071440_8a5430"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按明确关键列 [\"编号\", \"地区\"] 的完整值去重（不去空格、不忽略大小写、不强制转数字），保留首次出现的完整记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/input.xlsx",
+          "input_sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65",
+          "keep": "first",
+          "key_columns": [
+            "编号",
+            "地区"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/output.xlsx",
+          "session_id": "20261014_071440_8a5430",
+          "sheet": "订单",
+          "source_ref": "entry-ae4d2b1f2eb14e189af7f1db9455f1c57f053ca328e624631b5482cd3e51a504",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+      },
+      "created_at": 1791933292.806728
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791933292.807297
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+      },
+      "created_at": 1791933292.807651
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+        },
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+      },
+      "created_at": 1791933292.814734
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+      },
+      "created_at": 1791933292.8151622
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/output.xlsx",
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "formulas_preserved": true,
+            "headers_preserved": true,
+            "non_target_sheets_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "retained_metadata_preserved": true,
+            "source_unchanged": true
+          },
+          "input_rows": 6,
+          "input_sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65",
+          "output_rows": 4,
+          "output_sha256": "0d2bbedc531d354666c358e7486c6b0c2dde23cb9561f6e973af11fbb9f70bd0",
+          "passed": true,
+          "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791933292.81938
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200"
+        },
+        "format": "xlsx",
+        "input_rows": 6,
+        "input_sha256": "19d99b93b00713e4a75e6fdbbee445f2eaba02abf166b0d3fc2fa46b27cb9f65",
+        "output_rows": 4,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/xlsx-entry-diagnostic/fixtures/xlsx_typed_keys/output.xlsx",
+        "plan_sha256": "c6e6ea40414e8a6ec40941d14c0bb4bbe5877a21730742bbe70f7d7cc249e200",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "0d2bbedc531d354666c358e7486c6b0c2dde23cb9561f6e973af11fbb9f70bd0"
+      },
+      "created_at": 1791933292.8203142
+    }
+  ]
+}

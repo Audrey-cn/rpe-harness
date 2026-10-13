@@ -1,0 +1,114 @@
+{
+  "scope": "structured error_code-only host-return diagnosis, no classifier or root-cause inference",
+  "red_terminal": "1 failed, 1 passed, 11 deselected in 0.15s",
+  "green_terminal": "13 passed in 1.20s",
+  "red_source_sha256": "4e1a29d92552bbfac65afa4052729438809631a467270edade7f14deb08ff3a1",
+  "green_cycle_sha256": "d6830ddc1f4a352969a0456833bd0fb65036e01d357b985fecf9fb1bdfca284f",
+  "green_test_sha256": "6bd0603be75bb22d07dbabf10d2be7436f0080e663ae56d27f74330259ec82a2",
+  "red_fact": "HostEventStore persists failed rpe_task_returned with error_code=harness_launch_error and no error/type; runs table count is zero; old host/core diagnostic host_errors is empty.",
+  "green_fact": "host/core fact records the supplied code, None for absent type, event ID, metadata hash and evidence hash. Real locally executed successful CSV without error code is not diagnosed as host failure.",
+  "verified_feedback_or_activation_scope_changed": false,
+  "model_or_api_calls": 0,
+  "new_security_experiments": 0,
+  "runs": [
+    {
+      "stage": "red",
+      "source_relative_to_owned": "host-error-code-red.xml",
+      "original_xml_sha256": "e98bff6b494cd21c049e34f2a8226b0451aa2c7d579ba28694a3e8e9649490e7",
+      "tests": 2,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": "0.153",
+      "cases": [
+        {
+          "name": "test_host_return_error_code_without_durable_run_becomes_fact_diagnostic",
+          "outcome": "failed",
+          "seconds": "0.032"
+        },
+        {
+          "name": "test_real_successful_host_return_without_error_code_is_not_host_error",
+          "outcome": "passed",
+          "seconds": "0.063"
+        }
+      ]
+    },
+    {
+      "stage": "green",
+      "source_relative_to_owned": "host-error-code-green.xml",
+      "original_xml_sha256": "c910824ab32e6b3e490ab238fdb79803e0d8134721e4c2dffa2f938040e6c503",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": "1.197",
+      "cases": [
+        {
+          "name": "test_feedback_requires_real_durable_verified_artifact",
+          "outcome": "passed",
+          "seconds": "0.034"
+        },
+        {
+          "name": "test_claimed_success_and_summary_do_not_become_verified_feedback",
+          "outcome": "passed",
+          "seconds": "0.075"
+        },
+        {
+          "name": "test_changed_published_artifact_is_not_learning_evidence",
+          "outcome": "passed",
+          "seconds": "0.020"
+        },
+        {
+          "name": "test_offline_cycle_dedupes_and_generates_all_component_proposals",
+          "outcome": "passed",
+          "seconds": "0.157"
+        },
+        {
+          "name": "test_dormant_experience_stays_indexed_and_quarantine_is_visible",
+          "outcome": "passed",
+          "seconds": "0.097"
+        },
+        {
+          "name": "test_default_cycle_validates_and_activates_verified_recipe",
+          "outcome": "passed",
+          "seconds": "0.116"
+        },
+        {
+          "name": "test_empty_cycle_still_persists_diagnostic_without_fabricating_success",
+          "outcome": "passed",
+          "seconds": "0.054"
+        },
+        {
+          "name": "test_cycle_proposer_is_separate_from_acceptance",
+          "outcome": "passed",
+          "seconds": "0.116"
+        },
+        {
+          "name": "test_failure_diagnostic_binds_structured_problem_and_expected_change",
+          "outcome": "passed",
+          "seconds": "0.070"
+        },
+        {
+          "name": "test_repeated_applied_cycle_does_not_reactivate_identical_recipe",
+          "outcome": "passed",
+          "seconds": "0.163"
+        },
+        {
+          "name": "test_cycle_quarantines_experience_when_supporting_artifact_is_changed",
+          "outcome": "passed",
+          "seconds": "0.163"
+        },
+        {
+          "name": "test_host_return_error_code_without_durable_run_becomes_fact_diagnostic",
+          "outcome": "passed",
+          "seconds": "0.028"
+        },
+        {
+          "name": "test_real_successful_host_return_without_error_code_is_not_host_error",
+          "outcome": "passed",
+          "seconds": "0.056"
+        }
+      ]
+    }
+  ]
+}

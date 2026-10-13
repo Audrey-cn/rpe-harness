@@ -1,0 +1,117 @@
+{
+  "run_id": "f760ee64a49a486c9e7c3a56ff4c216a",
+  "status": "rejected",
+  "stage": "execute",
+  "owner_pid": 59233,
+  "started_at": 1791927102.222615,
+  "finished_at": 1791927102.2722108,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-276da57c78500de59f7aa3a06292fd5214e09f918a066ffaeef4b00b3a8bd295",
+  "payload_hash": "f375d99b75b81ccc9a51ae73f6a26feb43f54b719f37dbda8575ecbfa4e8f1ed",
+  "state": {
+    "constraints": [
+      "preserve_formulas",
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791927102.264883,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序；处理「订单」工作表时只清空重复行的值/注释/超链接，不删行不移行，保留公式文本、样式、其余工作表与列宽；若保留公式引用被清空的重复行则拒绝",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_053106_e008bb",
+    "source_ref": "entry-276da57c78500de59f7aa3a06292fd5214e09f918a066ffaeef4b00b3a8bd295",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "retained formula references a row that would be cleared",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order",
+      "preserve_formulas"
+    ],
+    "event_id": "entry-276da57c78500de59f7aa3a06292fd5214e09f918a066ffaeef4b00b3a8bd295",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated/input.xlsx",
+      "keep": "first",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序；处理「订单」工作表时只清空重复行的值/注释/超链接，不删行不移行，保留公式文本、样式、其余工作表与列宽；若保留公式引用被清空的重复行则拒绝",
+    "schema_version": 2,
+    "session_id": "20261014_053106_e008bb"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_formulas",
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现的完整记录及原顺序；处理「订单」工作表时只清空重复行的值/注释/超链接，不删行不移行，保留公式文本、样式、其余工作表与列宽；若保留公式引用被清空的重复行则拒绝",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated/input.xlsx",
+          "input_sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_formula_dependency/integrated/output.xlsx",
+          "session_id": "20261014_053106_e008bb",
+          "sheet": "订单",
+          "source_ref": "entry-276da57c78500de59f7aa3a06292fd5214e09f918a066ffaeef4b00b3a8bd295",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "2500c89c626b002261e4547407c55ad09dfddbe45149d5c7d4d9e7e717c2604d"
+      },
+      "created_at": 1791927102.265852
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "2500c89c626b002261e4547407c55ad09dfddbe45149d5c7d4d9e7e717c2604d",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791927102.26644
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "2500c89c626b002261e4547407c55ad09dfddbe45149d5c7d4d9e7e717c2604d"
+      },
+      "created_at": 1791927102.267196
+    },
+    {
+      "stage": "execute",
+      "evidence": {},
+      "created_at": 1791927102.271899
+    }
+  ]
+}

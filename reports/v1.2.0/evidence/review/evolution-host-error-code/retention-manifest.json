@@ -1,0 +1,33 @@
+{
+  "scope": "diagnosis-only minimum patch",
+  "source_files_changed": [
+    "src/rpe_harness/evolution/cycle.py",
+    "tests/test_evolution.py"
+  ],
+  "files": [
+    {
+      "path": "summary.json",
+      "bytes": 4178,
+      "sha256": "722598cd4237e7d78fb8f6897d3c0536604e230a4be907e7fc7c5e267d98ded1"
+    },
+    {
+      "path": "cycle-reviewed.py",
+      "bytes": 11871,
+      "sha256": "d6830ddc1f4a352969a0456833bd0fb65036e01d357b985fecf9fb1bdfca284f"
+    },
+    {
+      "path": "test_evolution.py",
+      "bytes": 9733,
+      "sha256": "6bd0603be75bb22d07dbabf10d2be7436f0080e663ae56d27f74330259ec82a2"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1033,
+      "sha256": "7b42c4e200131d6e6ee6e7b5eb8a202ef53e51ecb5910e95b4ee6a5ad60881c3"
+    }
+  ],
+  "manifest_not_self_hashed": true,
+  "models": 0,
+  "new_security_probes": 0,
+  "database_copies": 0
+}

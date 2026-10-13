@@ -1,0 +1,47 @@
+{
+  "run_id": "99809934e958487699be08c0d37a6568",
+  "status": "rejected",
+  "stage": "validate",
+  "owner_pid": 58867,
+  "started_at": 1791927013.74832,
+  "finished_at": 1791927013.7496362,
+  "skill_id": null,
+  "attempted": 0,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-7420a64103fe6a6a17165e304e71feaae2265bff79c44d8f5a8dd80ac13af11c",
+  "payload_hash": "1c7d1e1084fb5d39a9849d6c328fedeee53cb081e7e0124a462fbe73fffeb7ba",
+  "state": null,
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "input must be a supported csv or xlsx file",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-7420a64103fe6a6a17165e304e71feaae2265bff79c44d8f5a8dd80ac13af11c",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated/input.json",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated/output.json"
+    },
+    "goal": "Deduplicate input.json records by full value of column 编号, keeping first occurrence and original order",
+    "schema_version": 2,
+    "session_id": "20261014_052958_0b0e7b"
+  },
+  "steps": [
+    {
+      "stage": "validate",
+      "evidence": {},
+      "created_at": 1791927013.7494552
+    }
+  ]
+}

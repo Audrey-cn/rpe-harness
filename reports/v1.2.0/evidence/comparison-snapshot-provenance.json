@@ -1,0 +1,8 @@
+{
+  "role": "preregistered 36-session comparison snapshot; model ignored none and exposed an admission gap; retain all attempts, do not relabel as final guarded release",
+  "wheel_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+  "installed_source_manifest": "pre-admission-guard/frozen-source-manifest.json",
+  "full_regression_before_guard": "pre-admission-guard/pytest-final.xml",
+  "final_release_supplement": "installed anchored 6-case E2E plus same-agent 2-task continuation, independent forced illegal-call regression; separately declared before calls",
+  "no_formal_attempt_replacement": true
+}

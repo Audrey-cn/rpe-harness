@@ -1,0 +1,47 @@
+{
+  "run_id": "48bc86057c514fb8abcf5be8cd132799",
+  "status": "rejected",
+  "stage": "validate",
+  "owner_pid": 90900,
+  "started_at": 1791933789.502712,
+  "finished_at": 1791933789.504401,
+  "skill_id": null,
+  "attempted": 0,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-3d6dd98c097ceac05467945dadfceb570d635f812df3c7cf6b36fb2ddb99aa6d",
+  "payload_hash": "f9654ed7fff9b866660e714bf8117caf72f8aa303cdc9a385a1393665b57779d",
+  "state": null,
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "input must be a supported csv or xlsx file",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-3d6dd98c097ceac05467945dadfceb570d635f812df3c7cf6b36fb2ddb99aa6d",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_json/input.json",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/reject_json/output.json"
+    },
+    "goal": "按明确关键列保留首次完整记录",
+    "schema_version": 2,
+    "session_id": "20261014_072301_f29c1c"
+  },
+  "steps": [
+    {
+      "stage": "validate",
+      "evidence": {},
+      "created_at": 1791933789.5042381
+    }
+  ]
+}

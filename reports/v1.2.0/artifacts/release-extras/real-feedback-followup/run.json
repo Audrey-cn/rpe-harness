@@ -1,0 +1,204 @@
+{
+  "run_id": "0be58594f0384a2782781af173e45c09",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 91189,
+  "started_at": 1791933911.142501,
+  "finished_at": 1791933911.188648,
+  "skill_id": "builtin/csv-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "local",
+  "event_id": "real-feedback-upgrade-followup",
+  "payload_hash": "07911474a1f1800a7f1e06626bb9c8e57c21e251e03cf5d14e1680b658f71679",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791933911.144139,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "verify actually activated executor from live feedback",
+    "input_format": "csv",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": null,
+    "source_ref": "real-feedback-upgrade-followup",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "headers_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "source_unchanged": true
+    },
+    "input_rows": 3,
+    "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+    "output_rows": 2,
+    "output_sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8",
+    "passed": true,
+    "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+    "removed_rows": 1
+  },
+  "artifact": {
+    "actual_executor": {
+      "candidate_version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+      "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "candidate",
+      "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+    },
+    "format": "csv",
+    "input_rows": 3,
+    "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+    "output_rows": 2,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv",
+    "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+    "published": true,
+    "removed_rows": 1,
+    "sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "real-feedback-upgrade-followup",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/orders.csv",
+      "key_columns": [
+        "id"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv"
+    },
+    "goal": "verify actually activated executor from live feedback",
+    "schema_version": 2
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/csv-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "verify actually activated executor from live feedback",
+          "input_format": "csv",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/orders.csv",
+          "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+          "keep": "first",
+          "key_columns": [
+            "id"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv",
+          "session_id": null,
+          "sheet": null,
+          "source_ref": "real-feedback-upgrade-followup",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+      },
+      "created_at": 1791933911.145371
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791933911.14666
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+      },
+      "created_at": 1791933911.147376
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "candidate_version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+          "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+        },
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+      },
+      "created_at": 1791933911.1854222
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+      },
+      "created_at": 1791933911.1862211
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv",
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 3,
+          "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+          "output_rows": 2,
+          "output_sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8",
+          "passed": true,
+          "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+          "removed_rows": 1
+        }
+      },
+      "created_at": 1791933911.187069
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "candidate_version_id": "618994a0292f705ce2c9a3a415ab12d2747407d4ffa132f71aec9f79ec9ee5ab",
+          "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861"
+        },
+        "format": "csv",
+        "input_rows": 3,
+        "input_sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+        "output_rows": 2,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/real-feedback-followup/out.csv",
+        "plan_sha256": "4697d959d54e6f1ce7417609bb7674c3cb1cc38325417649b79e26a8d56a9861",
+        "published": true,
+        "removed_rows": 1,
+        "sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8"
+      },
+      "created_at": 1791933911.188204
+    }
+  ]
+}

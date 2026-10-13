@@ -19,6 +19,24 @@ def experiment():
     return importlib.import_module("rpe_harness.experiments.hermes_native")
 
 
+def test_required_policy_and_native_call_links_are_exported_without_arguments():
+    event = {'kind': 'pre_api_request', 'receipt_id': 'receipt',
+             'contract_sha256': 'c' * 64, 'request_tool_choice': 'rpe_task',
+             'request_parallel_tool_calls': False, 'request_tools_sha256': 'a' * 64,
+             'request_tool_names': ['rpe_task'],
+             'model_tool_calls': [{'tool_call_id': 'native-call', 'tool_name': 'rpe_task',
+                                   'arguments': 'PRIVATE', 'extra': 'PRIVATE'}],
+             'request': {'messages': ['PRIVATE']}, 'entry_key': 'PRIVATE'}
+    saved = experiment()._event_evidence([event])[0]
+    assert saved['request_tool_choice'] == 'rpe_task'
+    assert saved['request_parallel_tool_calls'] is False
+    assert saved['request_tool_names'] == ['rpe_task']
+    assert saved['model_tool_calls'] == [{'tool_call_id': 'native-call', 'tool_name': 'rpe_task'}]
+    assert saved['receipt_id'] == 'receipt'
+    assert saved['contract_sha256'] == 'c' * 64
+    assert 'PRIVATE' not in json.dumps(saved)
+
+
 def result(*, rejected=False, reason="", events=None):
     return {
         "exit_code": 0, "completed": True, "session_id": "test-session",

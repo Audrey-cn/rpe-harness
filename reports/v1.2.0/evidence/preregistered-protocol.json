@@ -1,0 +1,49 @@
+{
+  "experiment": "hermes-native-v1.2-repeated",
+  "preregistered_at": "2026-10-14",
+  "repetitions": 3,
+  "case_ids": [
+    "csv_chinese",
+    "csv_multiline",
+    "xlsx_typed_keys",
+    "xlsx_formulas",
+    "reject_json",
+    "reject_formula_dependency"
+  ],
+  "planned_attempts": 36,
+  "arm_order": "case index + round index alternates first arm",
+  "fixed_input": "one seed set copied byte-for-byte to every arm and repetition",
+  "prompt": "same original bytes in both arms; no fixed JSON request appended in this comparison",
+  "integrated_policy": {
+    "entry_mode": "strict",
+    "required_request": null,
+    "toolsets": [
+      "rpe_harness"
+    ],
+    "tool_choice": "rpe_task until acceptable durable terminal result; then none",
+    "parallel_tool_calls": false,
+    "tool_search": "off"
+  },
+  "native_policy": {
+    "entry_mode": "optional",
+    "toolsets": [
+      "terminal",
+      "file"
+    ],
+    "no_harness_tool": true,
+    "harness_implementation_and_oracle_unreadable": true
+  },
+  "shared": {
+    "provider": "xiaomi",
+    "requested_model": "mimo-v2.6-pro",
+    "api_base": "https://token-plan-cn.xiaomimimo.com/v1",
+    "timeout_seconds": 180,
+    "maximum_host_turns": 12,
+    "maximum_task_attempts": 3
+  },
+  "acceptance": "unchanged original external manual CSV/XLSX oracle; strict arm additionally actual request/model call/receipt/durable run/plan/independent artifact gate",
+  "exclusion": "none; retain launch failures, provider errors, timeouts and incomplete observations; no reruns replace formal attempts",
+  "cost_reporting": "all attempts; missing usage unknown, no total if any incomplete. Successful pair subtotal requires same actual model identity/input/prompt and complete usage",
+  "interpretation": "three repetitions of independent fresh sessions, not a stateful conversation-memory study; request tools and strict choice differ as the product policy bundle; no universal token saving, subscription cost or causal-learning claim",
+  "separate_checks": "fixed --request anchored installed six-case E2E, actual generated-candidate evolution, real crash and replay probes are outside paired cost comparison"
+}

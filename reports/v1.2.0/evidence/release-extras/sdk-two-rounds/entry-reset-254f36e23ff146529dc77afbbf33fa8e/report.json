@@ -1,0 +1,744 @@
+{
+  "probe": "same_agent_two_round_entry_reset",
+  "formal_experiment": false,
+  "startup_only": false,
+  "model_deadline_seconds": 360,
+  "startup_deadline_seconds": null,
+  "per_round_budget_seconds": 180,
+  "elapsed_seconds": 29.315,
+  "sdk_result": {
+    "probe": "same_agent_two_round_entry_reset",
+    "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+    "agent_instance_count": 1,
+    "per_round_budget_seconds": 180,
+    "rounds": [
+      {
+        "round": 1,
+        "completed": true,
+        "failed": false,
+        "interrupted": false,
+        "api_calls": 2,
+        "history_messages_passed": 0,
+        "returned_message_count": 4,
+        "turn_ids": [
+          "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596"
+        ],
+        "request_choices": [
+          "rpe_task",
+          "none"
+        ],
+        "tool_call_ids": [
+          "call_bcabc4b490114557bf26290a"
+        ],
+        "run_ids": [
+          "a4abd767d91b4fa09510efdcaa9c2d87"
+        ]
+      },
+      {
+        "round": 2,
+        "completed": true,
+        "failed": false,
+        "interrupted": false,
+        "api_calls": 2,
+        "history_messages_passed": 4,
+        "returned_message_count": 8,
+        "turn_ids": [
+          "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569"
+        ],
+        "request_choices": [
+          "rpe_task",
+          "none"
+        ],
+        "tool_call_ids": [
+          "call_42ccf2fe831648b1a96e75ff"
+        ],
+        "run_ids": [
+          "093b41c209b4490baf69e5dafdc4f960"
+        ]
+      }
+    ],
+    "completed": true
+  },
+  "entry_reset_observed": true,
+  "unmodified_history_continuation_observed": true,
+  "entry_validation": {
+    "status": "succeeded",
+    "verified": true,
+    "harness_verified": true,
+    "errors": [],
+    "contract_sha256": "1ef224f01f48cafda8791f534b8cf5261bba599c5661fa1fe9b98ec774f31353",
+    "plan_sha256": "4a75c128135414cc77a29fcd9f712463a2970750def34ef4fbfd4bc0cf8b7631",
+    "verification": {
+      "passed": true,
+      "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+      "output_sha256": "5932cc01b1c8b363f928daf31375fc4d27c74bfd6fcb1fad5eae902d9e8369f3",
+      "checks": {
+        "source_unchanged": true,
+        "request_bound": true,
+        "headers_preserved": true,
+        "first_records_preserved": true,
+        "record_order_preserved": true,
+        "duplicates_removed": true
+      },
+      "plan_sha256": "4a75c128135414cc77a29fcd9f712463a2970750def34ef4fbfd4bc0cf8b7631",
+      "input_rows": 3,
+      "output_rows": 2,
+      "removed_rows": 1
+    },
+    "artifact": {
+      "actual_executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "4a75c128135414cc77a29fcd9f712463a2970750def34ef4fbfd4bc0cf8b7631"
+      },
+      "format": "csv",
+      "input_rows": 3,
+      "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+      "output_rows": 2,
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/second-out.csv",
+      "plan_sha256": "4a75c128135414cc77a29fcd9f712463a2970750def34ef4fbfd4bc0cf8b7631",
+      "published": true,
+      "removed_rows": 1,
+      "sha256": "5932cc01b1c8b363f928daf31375fc4d27c74bfd6fcb1fad5eae902d9e8369f3"
+    },
+    "run_id": "093b41c209b4490baf69e5dafdc4f960",
+    "receipt_id": "d0617a669a2040cfba98ab87bc0d16f2"
+  },
+  "csv_truth": [
+    {
+      "round": 1,
+      "source_unchanged": true,
+      "manual_csv_truth_matches": true,
+      "request_matches": true,
+      "prompt_sha256": "8d00923f9b29d5f0c516b7d6884d30a6c3bcd38e1c63125170c60fc3c6542899",
+      "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+      "output_sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e"
+    },
+    {
+      "round": 2,
+      "source_unchanged": true,
+      "manual_csv_truth_matches": true,
+      "request_matches": true,
+      "prompt_sha256": "c33aea54c729a5385dd5a5380b7aedd76fbbceba4258d3c2b2705115fe7a4c77",
+      "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+      "output_sha256": "5932cc01b1c8b363f928daf31375fc4d27c74bfd6fcb1fad5eae902d9e8369f3"
+    }
+  ],
+  "host": {
+    "completed": true,
+    "exit_code": 0,
+    "timed_out": false,
+    "observer_errors": 0,
+    "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+    "events": [
+      {
+        "ingest_event_id": "f50c7e7672ca4d3f93f9f2d1f90c962a",
+        "source_event_id": null,
+        "kind": "on_session_start",
+        "received_at": 1791934547.096504,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "8e02668e13df4b57ac9a0aef772328ac",
+        "source_event_id": null,
+        "kind": "pre_llm_call",
+        "received_at": 1791934547.097924,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "parent_session_id": "",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "is_first_turn": true
+      },
+      {
+        "ingest_event_id": "45fc21acf94e450783cdb76c4ca2962f",
+        "source_event_id": null,
+        "kind": "pre_api_request",
+        "received_at": 1791934547.282105,
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "message_count": 2,
+        "started_at": 1791934547.278013,
+        "request_tool_choice": "rpe_task",
+        "request_parallel_tool_calls": false,
+        "request_tool_names": [
+          "rpe_task"
+        ],
+        "request_tools_sha256": "68507cf9607a3d22609042f0fa237e5bcbd0c53a58ea9cef95a2b744438990fe"
+      },
+      {
+        "ingest_event_id": "9abc6f348d0d4821984038b852d08b6e",
+        "source_event_id": null,
+        "kind": "post_api_request",
+        "received_at": 1791934556.882796,
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "finish_reason": "tool_calls",
+        "response_model": "mimo-v2.6-pro",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "api_duration": 9.511404037475586,
+        "started_at": 1791934547.278013,
+        "ended_at": 1791934556.789417,
+        "first_chunk_at": 1791934554.4857972,
+        "message_count": 2,
+        "assistant_content_chars": 0,
+        "assistant_tool_call_count": 1,
+        "usage": {
+          "input_tokens": 700,
+          "output_tokens": 450,
+          "cache_read_tokens": 1920,
+          "cache_write_tokens": 0,
+          "reasoning_tokens": 194,
+          "request_count": 1,
+          "prompt_tokens": 2620,
+          "total_tokens": 3070,
+          "raw_provider_usage": {
+            "prompt_tokens": 2620,
+            "completion_tokens": 450,
+            "total_tokens": 3070,
+            "prompt_tokens_details": {
+              "cached_tokens": 1920
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 194
+            }
+          },
+          "present_fields": [
+            "completion_tokens",
+            "completion_tokens_details.reasoning_tokens",
+            "prompt_tokens",
+            "prompt_tokens_details.cached_tokens",
+            "total_tokens"
+          ],
+          "response_identity": {
+            "id": "32d639cc-6977-452c-bbe2-79690cf7b060_d8602d19c2ca4546bf2953becc0f5060",
+            "model": "mimo-v2.6-pro"
+          }
+        },
+        "model_tool_calls": [
+          {
+            "tool_call_id": "call_bcabc4b490114557bf26290a",
+            "tool_name": "rpe_task"
+          }
+        ]
+      },
+      {
+        "ingest_event_id": "3f392a1e797d43079335a97ae878f6be",
+        "source_event_id": null,
+        "kind": "pre_tool_call",
+        "received_at": 1791934556.973697,
+        "tool_name": "rpe_task",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "tool_call_id": "call_bcabc4b490114557bf26290a",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "078674a395524d14bd2cf4f54b5cd6a3",
+        "source_event_id": null,
+        "kind": "rpe_task_received",
+        "received_at": 1791934556.9775019,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "tool_call_id": "call_bcabc4b490114557bf26290a",
+        "tool_name": "rpe_task",
+        "entry_key": "33b055a4d6c64109ba63c6d8182c7b15",
+        "contract_sha256": "2c8f8c5033facf3682e6a38bb584b54bf12239e8db7ad81d2a382ac18ac7aada",
+        "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+        "task_attempt": 1
+      },
+      {
+        "ingest_event_id": "828732ed0bb54ff5ba7044952a666e70",
+        "source_event_id": null,
+        "kind": "rpe_task_returned",
+        "received_at": 1791934557.125777,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "tool_call_id": "call_bcabc4b490114557bf26290a",
+        "tool_name": "rpe_task",
+        "entry_key": "33b055a4d6c64109ba63c6d8182c7b15",
+        "contract_sha256": "2c8f8c5033facf3682e6a38bb584b54bf12239e8db7ad81d2a382ac18ac7aada",
+        "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+        "receipt_id": "078674a395524d14bd2cf4f54b5cd6a3",
+        "run_id": "a4abd767d91b4fa09510efdcaa9c2d87",
+        "status": "succeeded",
+        "error_code": null,
+        "task_attempt": 1
+      },
+      {
+        "ingest_event_id": "97bbe5cc7d2f4082999b98351a2c9edc",
+        "source_event_id": null,
+        "kind": "post_tool_call",
+        "received_at": 1791934557.129687,
+        "tool_name": "rpe_task",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "tool_call_id": "call_bcabc4b490114557bf26290a",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:1",
+        "status": "ok",
+        "error_type": null,
+        "telemetry_schema_version": "hermes.observer.v1",
+        "run_id": "a4abd767d91b4fa09510efdcaa9c2d87",
+        "receipt_id": "078674a395524d14bd2cf4f54b5cd6a3",
+        "contract_sha256": "2c8f8c5033facf3682e6a38bb584b54bf12239e8db7ad81d2a382ac18ac7aada",
+        "input_sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+        "duration_ms": 156
+      },
+      {
+        "ingest_event_id": "e106262d26df4b77b960831808265e82",
+        "source_event_id": null,
+        "kind": "pre_api_request",
+        "received_at": 1791934557.133609,
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:2",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 2,
+        "message_count": 4,
+        "started_at": 1791934557.131608,
+        "request_tool_choice": "none",
+        "request_parallel_tool_calls": false,
+        "request_tool_names": [
+          "rpe_task"
+        ],
+        "request_tools_sha256": "68507cf9607a3d22609042f0fa237e5bcbd0c53a58ea9cef95a2b744438990fe"
+      },
+      {
+        "ingest_event_id": "34a8ced803994e16b7f176f630cb4517",
+        "source_event_id": null,
+        "kind": "post_api_request",
+        "received_at": 1791934563.421841,
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596:api:2",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "finish_reason": "stop",
+        "response_model": "mimo-v2.6-pro",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 2,
+        "api_duration": 6.286085844039917,
+        "started_at": 1791934557.131608,
+        "ended_at": 1791934563.4176939,
+        "first_chunk_at": 1791934561.7960708,
+        "message_count": 4,
+        "assistant_content_chars": 506,
+        "assistant_tool_call_count": 0,
+        "usage": {
+          "input_tokens": 1438,
+          "output_tokens": 325,
+          "cache_read_tokens": 2560,
+          "cache_write_tokens": 0,
+          "reasoning_tokens": 10,
+          "request_count": 1,
+          "prompt_tokens": 3998,
+          "total_tokens": 4323,
+          "raw_provider_usage": {
+            "prompt_tokens": 3998,
+            "completion_tokens": 325,
+            "total_tokens": 4323,
+            "prompt_tokens_details": {
+              "cached_tokens": 2560
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 10
+            }
+          },
+          "present_fields": [
+            "completion_tokens",
+            "completion_tokens_details.reasoning_tokens",
+            "prompt_tokens",
+            "prompt_tokens_details.cached_tokens",
+            "total_tokens"
+          ],
+          "response_identity": {
+            "id": "5984df37-e81f-402c-9b24-5dee4ebba94b_07692ca2065d48abb6bb473923da3f8a",
+            "model": "mimo-v2.6-pro"
+          }
+        },
+        "model_tool_calls": []
+      },
+      {
+        "ingest_event_id": "0325c2977c1a457f9d791f87f182dc84",
+        "source_event_id": null,
+        "kind": "post_llm_call",
+        "received_at": 1791934563.430933,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "9b993f3616f1430898d856d6bef30964",
+        "source_event_id": null,
+        "kind": "on_session_end",
+        "received_at": 1791934563.432626,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "27eddbf9-cea6-42d5-b87f-b989870b5b1b",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:27eddbf9-cea6-42d5-b87f-b989870b5b1b:6273b596",
+        "turn_exit_reason": "text_response(finish_reason=stop)",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "completed": true,
+        "failed": false,
+        "interrupted": false
+      },
+      {
+        "ingest_event_id": "e18246ce32034e1485a263be8d25cae3",
+        "source_event_id": null,
+        "kind": "pre_llm_call",
+        "received_at": 1791934563.438064,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "parent_session_id": "",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "is_first_turn": false
+      },
+      {
+        "ingest_event_id": "fff56300fa414ec98423911edba18c83",
+        "source_event_id": null,
+        "kind": "pre_api_request",
+        "received_at": 1791934563.444072,
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "message_count": 6,
+        "started_at": 1791934563.440976,
+        "request_tool_choice": "rpe_task",
+        "request_parallel_tool_calls": false,
+        "request_tool_names": [
+          "rpe_task"
+        ],
+        "request_tools_sha256": "68507cf9607a3d22609042f0fa237e5bcbd0c53a58ea9cef95a2b744438990fe"
+      },
+      {
+        "ingest_event_id": "6d44c1e63124439e9058e280f1b2c2ca",
+        "source_event_id": null,
+        "kind": "post_api_request",
+        "received_at": 1791934570.192039,
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "finish_reason": "tool_calls",
+        "response_model": "mimo-v2.6-pro",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "api_duration": 6.74824595451355,
+        "started_at": 1791934563.440976,
+        "ended_at": 1791934570.1892219,
+        "first_chunk_at": 1791934569.4658198,
+        "message_count": 6,
+        "assistant_content_chars": 0,
+        "assistant_tool_call_count": 1,
+        "usage": {
+          "input_tokens": 612,
+          "output_tokens": 264,
+          "cache_read_tokens": 3968,
+          "cache_write_tokens": 0,
+          "reasoning_tokens": 8,
+          "request_count": 1,
+          "prompt_tokens": 4580,
+          "total_tokens": 4844,
+          "raw_provider_usage": {
+            "prompt_tokens": 4580,
+            "completion_tokens": 264,
+            "total_tokens": 4844,
+            "prompt_tokens_details": {
+              "cached_tokens": 3968
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 8
+            }
+          },
+          "present_fields": [
+            "completion_tokens",
+            "completion_tokens_details.reasoning_tokens",
+            "prompt_tokens",
+            "prompt_tokens_details.cached_tokens",
+            "total_tokens"
+          ],
+          "response_identity": {
+            "id": "a7e3d2d3-2c9a-49e9-896a-df5cd2c956a7_5aecd1ba98b14aa79591e06921c3ec47",
+            "model": "mimo-v2.6-pro"
+          }
+        },
+        "model_tool_calls": [
+          {
+            "tool_call_id": "call_42ccf2fe831648b1a96e75ff",
+            "tool_name": "rpe_task"
+          }
+        ]
+      },
+      {
+        "ingest_event_id": "9ed33f6cf5464d96b86ebe41b2ac4b3d",
+        "source_event_id": null,
+        "kind": "pre_tool_call",
+        "received_at": 1791934570.195541,
+        "tool_name": "rpe_task",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "tool_call_id": "call_42ccf2fe831648b1a96e75ff",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "d0617a669a2040cfba98ab87bc0d16f2",
+        "source_event_id": null,
+        "kind": "rpe_task_received",
+        "received_at": 1791934570.2001011,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "tool_call_id": "call_42ccf2fe831648b1a96e75ff",
+        "tool_name": "rpe_task",
+        "entry_key": "33b055a4d6c64109ba63c6d8182c7b15",
+        "contract_sha256": "1ef224f01f48cafda8791f534b8cf5261bba599c5661fa1fe9b98ec774f31353",
+        "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+        "task_attempt": 1
+      },
+      {
+        "ingest_event_id": "f93df21502b5433296909a6d037ac7e5",
+        "source_event_id": null,
+        "kind": "rpe_task_returned",
+        "received_at": 1791934570.356336,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "tool_call_id": "call_42ccf2fe831648b1a96e75ff",
+        "tool_name": "rpe_task",
+        "entry_key": "33b055a4d6c64109ba63c6d8182c7b15",
+        "contract_sha256": "1ef224f01f48cafda8791f534b8cf5261bba599c5661fa1fe9b98ec774f31353",
+        "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+        "receipt_id": "d0617a669a2040cfba98ab87bc0d16f2",
+        "run_id": "093b41c209b4490baf69e5dafdc4f960",
+        "status": "succeeded",
+        "error_code": null,
+        "task_attempt": 1
+      },
+      {
+        "ingest_event_id": "297533630bf246c6b01a6918358c0ea0",
+        "source_event_id": null,
+        "kind": "post_tool_call",
+        "received_at": 1791934570.358167,
+        "tool_name": "rpe_task",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "tool_call_id": "call_42ccf2fe831648b1a96e75ff",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:1",
+        "status": "ok",
+        "error_type": null,
+        "telemetry_schema_version": "hermes.observer.v1",
+        "run_id": "093b41c209b4490baf69e5dafdc4f960",
+        "receipt_id": "d0617a669a2040cfba98ab87bc0d16f2",
+        "contract_sha256": "1ef224f01f48cafda8791f534b8cf5261bba599c5661fa1fe9b98ec774f31353",
+        "input_sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+        "duration_ms": 163
+      },
+      {
+        "ingest_event_id": "33667978eb724b6392339d4235b35a28",
+        "source_event_id": null,
+        "kind": "pre_api_request",
+        "received_at": 1791934570.362119,
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:2",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 2,
+        "message_count": 8,
+        "started_at": 1791934570.3599732,
+        "request_tool_choice": "none",
+        "request_parallel_tool_calls": false,
+        "request_tool_names": [
+          "rpe_task"
+        ],
+        "request_tools_sha256": "68507cf9607a3d22609042f0fa237e5bcbd0c53a58ea9cef95a2b744438990fe"
+      },
+      {
+        "ingest_event_id": "406c51e72717494799ccbc98512d3604",
+        "source_event_id": null,
+        "kind": "post_api_request",
+        "received_at": 1791934574.763306,
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "api_request_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569:api:2",
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "finish_reason": "stop",
+        "response_model": "mimo-v2.6-pro",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 2,
+        "api_duration": 4.400686740875244,
+        "started_at": 1791934570.3599732,
+        "ended_at": 1791934574.76066,
+        "first_chunk_at": 1791934573.605751,
+        "message_count": 8,
+        "assistant_content_chars": 507,
+        "assistant_tool_call_count": 0,
+        "usage": {
+          "input_tokens": 1273,
+          "output_tokens": 318,
+          "cache_read_tokens": 4480,
+          "cache_write_tokens": 0,
+          "reasoning_tokens": 6,
+          "request_count": 1,
+          "prompt_tokens": 5753,
+          "total_tokens": 6071,
+          "raw_provider_usage": {
+            "prompt_tokens": 5753,
+            "completion_tokens": 318,
+            "total_tokens": 6071,
+            "prompt_tokens_details": {
+              "cached_tokens": 4480
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 6
+            }
+          },
+          "present_fields": [
+            "completion_tokens",
+            "completion_tokens_details.reasoning_tokens",
+            "prompt_tokens",
+            "prompt_tokens_details.cached_tokens",
+            "total_tokens"
+          ],
+          "response_identity": {
+            "id": "c9b77231-b308-427a-85d3-5eedc984b2c4_2d61776b62e34dc8b60a65225391b46e",
+            "model": "mimo-v2.6-pro"
+          }
+        },
+        "model_tool_calls": []
+      },
+      {
+        "ingest_event_id": "2701b5b2b4824b13b5988e30c55376c6",
+        "source_event_id": null,
+        "kind": "post_llm_call",
+        "received_at": 1791934574.768113,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "77908a7eb0974caea6986da02d2d84d7",
+        "source_event_id": null,
+        "kind": "on_session_end",
+        "received_at": 1791934574.7693372,
+        "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad",
+        "task_id": "dce13258-0912-4096-876c-8b65d2a476de",
+        "turn_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad:dce13258-0912-4096-876c-8b65d2a476de:c1910569",
+        "turn_exit_reason": "text_response(finish_reason=stop)",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "completed": true,
+        "failed": false,
+        "interrupted": false
+      }
+    ],
+    "process_cleanup": {
+      "cleanup_complete": true,
+      "external_executor": {
+        "tracked_children": 2,
+        "remaining_children": [],
+        "cleanup_complete": true,
+        "errors": []
+      },
+      "tracked_descendants": 3,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "errors": []
+    }
+  },
+  "usage": {
+    "api_requests": 4,
+    "missing_observations": 0,
+    "requests_with_usage": 4,
+    "api_errors": 0,
+    "coverage_complete": true,
+    "known_total_tokens": 18308,
+    "prompt_tokens": 16951,
+    "output_tokens": 1357,
+    "input_tokens": 4023,
+    "total_tokens": 18308,
+    "cache_read_tokens": 12928,
+    "cache_write_tokens": null,
+    "reasoning_tokens": 218
+  },
+  "source_unchanged": true,
+  "package_source_sha256": "c9858b86912af22ed301532b64d40c0bf920718151863c820d9caf63d9f52aaa",
+  "sdk_source_sha256": {
+    "/Users/audrey/.hermes/hermes-agent/run_agent.py": "9fca746dde685859ed084d6f7651a94d8849e8944a145de77f8a177c839cb5ac",
+    "/Users/audrey/.hermes/hermes-agent/hermes_bootstrap.py": "f242036b2d35b92283b9a7e97c7059e537607fc4b02026f657a6d00cb4683f69",
+    "/Users/audrey/.hermes/hermes-agent/agent/turn_facade.py": "e9176a8ae1d7822fa45c75b680d5ae4be7c949e49c877673aea867cc146856a0",
+    "/Users/audrey/.hermes/hermes-agent/agent/turn_context.py": "7f22179bf7db0cc3009f24422750e3ec729f0ad4f7253705fd3df3116c75fb3d"
+  },
+  "accepted": true
+}

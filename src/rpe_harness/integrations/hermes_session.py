@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+from contextlib import ExitStack
 from pathlib import Path
 import signal
 import subprocess
@@ -204,7 +205,9 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
         raise ValueError('invalid installed Hermes settings') from exc
 
 
-def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings):
+def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional'):
+    if entry_mode not in ('optional','strict') or (entry_mode=='strict' and not tool_enabled):
+        raise ValueError('strict entry requires the Harness tool')
     if settings.get('provider') != 'xiaomi':
         raise ValueError('isolated launcher currently requires xiaomi API-key provider')
     if not all(isinstance(settings.get(k), str) and settings[k]
@@ -230,7 +233,8 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings):
         'agent': {'max_turns': 12, 'run_budget_seconds': 180, 'api_max_retries': 1,
                   'auto_recovery_cycles': 0, 'environment_probe': False},
         'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
-        'platform_toolsets': {'cli': ['terminal', 'file'] + (['rpe_harness'] if tool_enabled else [])},
+        'platform_toolsets': {'cli': (['rpe_harness'] if entry_mode=='strict' else
+                                     ['terminal','file']+(['rpe_harness'] if tool_enabled else []))},
         'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
         'skills': {'external_dirs': [], 'project_discovery': False, 'auto_load': []},
         'curator': {'enabled': False}, 'compression': {'enabled': False},
@@ -240,10 +244,12 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings):
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
+    if entry_mode=='strict':
+        config['tools'] = {'tool_search':{'enabled':'off'}}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
-    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.1.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
+    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.2.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
     (plugin / '__init__.py').write_text(
         'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
         'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
@@ -354,23 +360,46 @@ def _registered_processes(path, host_pid):
 
 
 def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
-                       timeout=180, hermes_root=None):
+                       timeout=180, hermes_root=None, entry_mode='optional',
+                       required_request=None, max_task_attempts=3):
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
         raise ValueError('isolated host launcher requires macOS sandbox-exec')
     if not isinstance(prompt, str) or not prompt.strip() or len(prompt.encode()) > 1_048_576:
         raise ValueError('prompt must be nonempty and at most 1 MiB')
     if not 1 <= timeout <= 1800:
         raise ValueError('timeout must be between 1 and 1800 seconds')
+    if entry_mode not in ('optional','strict') or (entry_mode=='strict' and not tool_enabled):
+        raise ValueError('strict entry requires the Harness tool')
+    if type(max_task_attempts) is not int or not 1 <= max_task_attempts <= 20:
+        raise ValueError('task attempt limit must be between 1 and 20')
     owner_root, workspace = Path(owner_root).resolve(), Path(workspace).resolve()
     if not workspace.is_dir():
         raise ValueError('workspace must be an existing directory')
+    original_prompt_sha = hashlib.sha256(prompt.encode()).hexdigest()
+    fixed_request, fixed_input_sha = None, None
+    if required_request is not None:
+        from .hermes import _prepare_request
+        from .hermes_gate import request_input_sha
+        fixed_request = _prepare_request({'request':required_request},workspace,None)
+        fixed_input_sha = request_input_sha(fixed_request,workspace)
+        prompt += ('\nThe following fixed task contract is authoritative. Extract its business '
+                   'parameters for the task tool; do not change its execution parameters.\n'+
+                   json.dumps(fixed_request,ensure_ascii=False,allow_nan=False))
+        if len(prompt.encode()) > 1_048_576:
+            raise ValueError('prompt with fixed contract exceeds 1 MiB')
     owner_root.mkdir(parents=True, exist_ok=True, mode=0o700)
     hermes_root = Path(hermes_root or Path.home() / '.hermes/hermes-agent').resolve()
     host_python = _installed_python(hermes_root)
     settings = _read_host_settings(hermes_root, host_python)
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
-                        tool_enabled=tool_enabled, settings=settings)
+                        tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode)
+    fixed_path = None
+    if fixed_request is not None:
+        fixed_path = session_root/'fixed-request.json'
+        descriptor = os.open(fixed_path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(descriptor,'w') as stream:
+            json.dump(fixed_request,stream,ensure_ascii=False,allow_nan=False)
     for name in ['tmp', 'runtime', 'terminal-tmp']:
         (session_root / name).mkdir(mode=0o700)
     prompt_file = session_root / 'prompt.txt'
@@ -387,7 +416,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        Path.home() / '.hermes', hermes_root, db_path,
                                        [host_python.parent.parent, Path.home() / '.hermes/tools'],
                                        native_import_root=None if tool_enabled else import_root,
-                                       owner_read_scope=(owner_root, [session_root, workspace, db_path])))
+                                       owner_read_scope=(owner_root, [session_root, workspace, db_path,
+                                           import_root, Path(sys.executable).absolute().parent.parent])))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
@@ -401,85 +431,107 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 'RPE_HERMES_INSTALL_ROOT': str(hermes_root), 'RPE_HERMES_DB': str(db_path),
                 'RPE_HERMES_WORKSPACE': str(workspace),
                 'RPE_HERMES_TOOL_ENABLED': '1' if tool_enabled else '0',
+                'RPE_HERMES_ENTRY_MODE':entry_mode,
+                'RPE_HERMES_ENTRY_KEY':uuid.uuid4().hex,
+                'RPE_HERMES_MAX_TASK_ATTEMPTS':str(max_task_attempts),
                 'RPE_HERMES_ERROR_PATH': str(session_root / 'observer-errors.jsonl'),
                 'RPE_HERMES_PROCESS_PATH': str(session_root / 'child-processes.jsonl'),
                 'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HARNESS_IMPORT_ROOT': str(import_root),
                 'PYTHONPATH': str(import_root)})
+    if fixed_path is not None:
+        env['RPE_HERMES_REQUIRED_REQUEST_PATH'] = str(fixed_path)
+        env['RPE_HERMES_INPUT_SHA256'] = fixed_input_sha
     session_token = uuid.uuid4().hex
     env['RPE_HERMES_SESSION_TOKEN'] = session_token
     if not tool_enabled:
         env.pop('PYTHONPATH', None)
     env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
-    tools = 'terminal,file'+(',rpe_harness' if tool_enabled else '')
+    tools = ('rpe_harness' if entry_mode=='strict' else
+             'terminal,file'+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),
                str(host_python), '-B',
                str(Path(__file__).with_name('hermes_bootstrap.py')),
                'chat', '--cli', '--query-file', str(prompt_file), '--oneshot', '-Q',
-               '--format', 'stream-json', '--source', 'rpe-v11', '--provider', 'xiaomi',
+               '--format', 'stream-json', '--source', 'rpe-harness', '--provider', 'xiaomi',
                '--model', settings['model'], '--toolsets', tools, '--max-turns', '12',
                '--run-budget', str(int(timeout)), '--ignore-rules']
     stdout_path, stderr_path = session_root / 'stdout.jsonl', session_root / 'stderr.log'
     started = time.monotonic()
     timed_out = False
-    with stdout_path.open('w') as output, stderr_path.open('w') as errors:
-        process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
-                                   start_new_session=True)
-        owned_descendants = {}
-        start_identity = None
-        cleanup_errors = []
-        signaled_descendants, remaining_descendants = [], []
-        deadline = started + timeout + 20
-        try:
+    broker_stack = ExitStack()
+    broker_environment = {}
+    try:
+        if tool_enabled:
+            from .hermes_broker import execution_broker
+            broker_environment = broker_stack.enter_context(execution_broker(
+                db_path=db_path, workspace=workspace, python=sys.executable))
+            env.update(broker_environment)
+        with stdout_path.open('w') as output, stderr_path.open('w') as errors:
+            process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
+                                       start_new_session=True)
+            owned_descendants = {}
+            start_identity = None
+            cleanup_errors = []
+            signaled_descendants, remaining_descendants = [], []
+            deadline = started + timeout + 20
             try:
-                start_identity = _process_table().get(process.pid, (None, None))[1]
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                cleanup_errors.append({'stage': 'initial_process_query', 'error_type': type(exc).__name__})
-            while process.poll() is None:
-                if start_identity:
-                    try:
-                        _capture_descendants(process.pid, start_identity, owned_descendants)
-                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                        cleanup_errors.append({'stage': 'capture_descendants', 'error_type': type(exc).__name__})
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    timed_out = True
-                    break
                 try:
-                    process.wait(timeout=min(1, remaining))
-                except subprocess.TimeoutExpired:
-                    pass
-        finally:
-            # Also stop owned terminal descendants after an ordinary host exit.
-            # Discovery errors must never bypass stopping the exact owned host.
-            try:
-                if start_identity:
+                    start_identity = _process_table().get(process.pid, (None, None))[1]
+                except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                    cleanup_errors.append({'stage': 'initial_process_query', 'error_type': type(exc).__name__})
+                while process.poll() is None:
+                    if start_identity:
+                        try:
+                            _capture_descendants(process.pid, start_identity, owned_descendants)
+                        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                            cleanup_errors.append({'stage': 'capture_descendants', 'error_type': type(exc).__name__})
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        timed_out = True
+                        break
                     try:
-                        _capture_descendants(process.pid, start_identity, owned_descendants)
-                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                        cleanup_errors.append({'stage': 'final_capture_descendants', 'error_type': type(exc).__name__})
+                        process.wait(timeout=min(1, remaining))
+                    except subprocess.TimeoutExpired:
+                        pass
             finally:
-                if process.poll() is None:
-                    try:
-                        _stop_group(process)
-                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                        cleanup_errors.append({'stage': 'stop_host_group', 'error_type': type(exc).__name__})
-            try:
-                owned_descendants.update(_registered_processes(session_root/'child-processes.jsonl', process.pid))
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                cleanup_errors.append({'stage': 'read_process_registry', 'error_type': type(exc).__name__})
-            try:
-                owned_descendants.update(_tagged_processes(session_token))
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                cleanup_errors.append({'stage': 'query_tagged_processes', 'error_type': type(exc).__name__})
-            try:
-                signaled_descendants = _stop_descendants(owned_descendants)
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                cleanup_errors.append({'stage': 'stop_known_descendants', 'error_type': type(exc).__name__})
-            try:
-                remaining_descendants = _remaining_descendants(owned_descendants)
-            except (OSError, ValueError, subprocess.SubprocessError) as exc:
-                cleanup_errors.append({'stage': 'verify_known_descendants', 'error_type': type(exc).__name__})
-    cleanup_complete = not cleanup_errors and not remaining_descendants and process.poll() is not None
+                # Also stop owned terminal descendants after an ordinary host exit.
+                # Discovery errors must never bypass stopping the exact owned host.
+                try:
+                    if start_identity:
+                        try:
+                            _capture_descendants(process.pid, start_identity, owned_descendants)
+                        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                            cleanup_errors.append({'stage': 'final_capture_descendants', 'error_type': type(exc).__name__})
+                finally:
+                    if process.poll() is None:
+                        try:
+                            _stop_group(process)
+                        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                            cleanup_errors.append({'stage': 'stop_host_group', 'error_type': type(exc).__name__})
+                broker_stack.close()
+                try:
+                    owned_descendants.update(_registered_processes(session_root/'child-processes.jsonl', process.pid))
+                except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                    cleanup_errors.append({'stage': 'read_process_registry', 'error_type': type(exc).__name__})
+                try:
+                    owned_descendants.update(_tagged_processes(session_token))
+                except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                    cleanup_errors.append({'stage': 'query_tagged_processes', 'error_type': type(exc).__name__})
+                try:
+                    signaled_descendants = _stop_descendants(owned_descendants)
+                except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                    cleanup_errors.append({'stage': 'stop_known_descendants', 'error_type': type(exc).__name__})
+                try:
+                    remaining_descendants = _remaining_descendants(owned_descendants)
+                except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                    cleanup_errors.append({'stage': 'verify_known_descendants', 'error_type': type(exc).__name__})
+    finally:
+        broker_stack.close()
+    external_cleanup = getattr(broker_environment, 'cleanup', {
+        'tracked_children': 0, 'remaining_children': [], 'cleanup_complete': True, 'errors': []})
+    cleanup_errors.extend(external_cleanup['errors'])
+    cleanup_complete = (not cleanup_errors and not remaining_descendants and process.poll() is not None
+                        and external_cleanup['cleanup_complete'])
     records = []
     for line in stdout_path.read_text(errors='replace').splitlines():
         try:
@@ -512,11 +564,18 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                  'base_url': settings['base_url'],
                                  'response_models': sorted({e['response_model'] for e in events if isinstance(e.get('response_model'), str)})},
               'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
+              'original_prompt_sha256':original_prompt_sha,
+              'contract_prompt_injected':fixed_request is not None,
+              'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,
+              'input_sha256':fixed_input_sha,
               'session_root': str(session_root),
               'process_cleanup': {'tracked_descendants': len(owned_descendants),
                                   'signaled_descendants': len(signaled_descendants),
                                   'remaining_descendants': remaining_descendants,
                                   'cleanup_complete': cleanup_complete,
+                                  'external_executor_cleanup_complete': external_cleanup['cleanup_complete'],
+                                  'external_executor_tracked_children': external_cleanup['tracked_children'],
+                                  'external_executor_remaining_children': external_cleanup['remaining_children'],
                                   'errors': cleanup_errors},
               'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use']}
     # Defense in depth: a provider error might include its key. Owned raw logs

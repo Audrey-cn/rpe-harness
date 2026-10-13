@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .mcsi import CausalState
+from . import __version__
 from .runtime import HarnessRuntime, BUILTIN_IDS
 from .storage import EventConflict
 
@@ -103,7 +104,7 @@ class HarnessHandler(BaseHTTPRequestHandler):
                 ready = any(rt.router.skills[sid].enabled and not rt.router.skills[sid].is_dormant
                             for sid in BUILTIN_IDS.values()) and not rt.graph_issues
                 return (200 if ready else 503), {'status': 'ok' if ready else 'degraded',
-                    'version': '1.0.0', 'skills': len(rt.router.skills), 'graph_issues': rt.graph_issues}
+                    'version': __version__, 'skills': len(rt.router.skills), 'graph_issues': rt.graph_issues}
             if path == '/stats':
                 return 200, rt.stats()
             if path == '/skills':
@@ -233,7 +234,7 @@ def main(argv=None):
     parser.add_argument('--data-dir')
     args = parser.parse_args(argv)
     server = create_server(HarnessRuntime(data_dir=args.data_dir, db_path=args.db), args.host, args.port)
-    print(json.dumps({'listening': f'http://{args.host}:{server.server_port}', 'version': '1.0.0'}), flush=True)
+    print(json.dumps({'listening': f'http://{args.host}:{server.server_port}', 'version': __version__}), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

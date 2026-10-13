@@ -1,0 +1,34 @@
+{
+  "agent": "installed Codex CLI",
+  "ephemeral": true,
+  "returncode": 0,
+  "timed_out": false,
+  "elapsed_seconds": 32.812,
+  "candidate_exists": true,
+  "candidate_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+  "candidate_bytes": 1766,
+  "parse_error": null,
+  "events": [
+    {
+      "type": "thread.started",
+      "thread_id": "01a13720-c6ca-7621-b808-8710d54e34a0"
+    },
+    {
+      "type": "turn.started"
+    },
+    {
+      "type": "item.completed"
+    },
+    {
+      "type": "turn.completed",
+      "usage": {
+        "input_tokens": 14693,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 595,
+        "reasoning_output_tokens": 144
+      }
+    }
+  ],
+  "history_and_cache_scope": "CLI model tools read-only; ephemeral session; configured local logs/state/tmp owned; startup alias cleanup checked separately"
+}

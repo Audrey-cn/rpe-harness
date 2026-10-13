@@ -1,0 +1,110 @@
+[
+  {
+    "source": "wheel-final/rpe_harness-1.2.0-py3-none-any.whl",
+    "retained": "artifacts/rpe_harness-1.2.0-py3-none-any.whl",
+    "bytes": 115276,
+    "sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc"
+  },
+  {
+    "source": "pytest-final.xml",
+    "retained": "evidence/pytest-final.xml",
+    "bytes": 47848,
+    "sha256": "cc7283024af0996c486e8bd427ecd3eaa3c28d9f65c650523639a4fc62602265"
+  },
+  {
+    "source": "baseline-native.xml",
+    "retained": "evidence/baseline-v1.1-refreshed.xml",
+    "bytes": 30227,
+    "sha256": "cc8f7e2e71baa086663b14526bfda4519d3ff8266f3b626137895ed94040a029"
+  },
+  {
+    "source": "baseline-native.log",
+    "retained": "evidence/baseline-v1.1-refreshed.log",
+    "bytes": 357,
+    "sha256": "3e30cc40ced7da6e823d48e195d6ebdcf59937a8b815070a020c8921b0786b02"
+  },
+  {
+    "source": "frozen-source-manifest.json",
+    "retained": "evidence/frozen-source-manifest.json",
+    "bytes": 3567,
+    "sha256": "f59d331aa11918379307a5c21a2b5476415c90c0cc616d97f9c7f4321271243d"
+  },
+  {
+    "source": "installed-contract/report.json",
+    "retained": "evidence/installed-contract.json",
+    "bytes": 9301,
+    "sha256": "34904c60705ab17d9d54a11fa7b11577dbcf491b62ae6dc4e3226e950d85929f"
+  },
+  {
+    "source": "installed-contract/evolution-report.json",
+    "retained": "evidence/generated-executor-evolution.json",
+    "bytes": 12708,
+    "sha256": "72104b471e1649f1048662ce7877b157bdaab04240346ff2d3edd0345f7c0d46"
+  },
+  {
+    "source": "codex-candidate-2/workspace/candidate.py",
+    "retained": "artifacts/generated-csv-executor.py",
+    "bytes": 1766,
+    "sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e"
+  },
+  {
+    "source": "candidate-generation-1/report.json",
+    "retained": "evidence/generation-hermes-1-timeout.json",
+    "bytes": 2437,
+    "sha256": "a3b6486a3edc54b9a32a88bb4d5ed798bd6a690d008732e70b4c4ef68e5b2635"
+  },
+  {
+    "source": "candidate-generation-2/report.json",
+    "retained": "evidence/generation-hermes-2-timeout.json",
+    "bytes": 3381,
+    "sha256": "285e08c27af9fb144d1601297ae7a5545fbed5d9299cd6e38f38a9d7eb2b690f"
+  },
+  {
+    "source": "codex-candidate/report.json",
+    "retained": "evidence/generation-codex-1-startup-failure.json",
+    "bytes": 358,
+    "sha256": "adcd7eb2ee5523bd8c63ca4ce83fe6b901785e6572ac954b7561d62e8c8563c3"
+  },
+  {
+    "source": "codex-candidate-2/report.json",
+    "retained": "evidence/generation-codex-2-success.json",
+    "bytes": 903,
+    "sha256": "e2462af8f3d7619111f2b19b7dd6d9c4edd477cc343bfa4e65e16d8faf4c1cbf"
+  },
+  {
+    "source": "smoke-required/report.json",
+    "retained": "evidence/entry-smoke-before-parser-fix.json",
+    "bytes": 10364,
+    "sha256": "5f960bd52a04a81708b93218eeb816bdde2ccaf23cb22d7656217df7e80542f6"
+  },
+  {
+    "source": "smoke-required-corrected/report.json",
+    "retained": "evidence/entry-smoke-corrected.json",
+    "bytes": 13413,
+    "sha256": "b97b865a309beb6b2076777dc978b6ef4ed8c953f94950b53a1bf747fd7ea21e"
+  },
+  {
+    "source": "native-observer-smoke/report.json",
+    "retained": "evidence/native-observer-smoke.json",
+    "bytes": 19811,
+    "sha256": "008815a548fbc0e5e8fe6edf9e6a3e0a25093c2ae9fc8dc0e76c450f1d601917"
+  },
+  {
+    "source": "formal-interruption.json",
+    "retained": "evidence/aborted-pilot-reason.json",
+    "bytes": 238,
+    "sha256": "f4d28864276bb9cd83c8c0f677d32d84499c1183b49329a8128347a095bb8f22"
+  },
+  {
+    "source": "aborted-formal-pilot.json",
+    "retained": "evidence/aborted-pilot.json",
+    "bytes": 737,
+    "sha256": "5304aff321cde80094322c022548656c324b14ca4404d7d70f3a0a31618deef1"
+  },
+  {
+    "source": "review/independent/independent-review.md",
+    "retained": "evidence/independent-review.md",
+    "bytes": 6157,
+    "sha256": "4ed9b5f28a8604b60c18cc214c6bc8a642de435a69c3d056a1625e2cb1968b92"
+  }
+]

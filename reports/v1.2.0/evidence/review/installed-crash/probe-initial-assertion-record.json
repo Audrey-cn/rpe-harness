@@ -1,0 +1,52 @@
+{
+  "experiment": "installed-wheel-public-cli-owner-crash",
+  "version": "1.2.0",
+  "python": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/bin/python",
+  "isolated_python": true,
+  "outside_checkout": true,
+  "cwd": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash",
+  "root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash/run-20261014T053312-56ecaa1a",
+  "model_or_api_calls": 0,
+  "installed_modules": {
+    "rpe_harness": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+      "sha256": "02313e14fc154a3bf0e18556b8dc7bcafe9ebd7973cdf01be2e750879aa8831f"
+    },
+    "rpe_harness.contracts": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/contracts.py",
+      "sha256": "199d09b2aff24e79eb608ce0ee10b93569473d4d32191c7b06990fd296081c1a"
+    },
+    "rpe_harness.execution": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/execution.py",
+      "sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5"
+    },
+    "rpe_harness.recovery": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/recovery.py",
+      "sha256": "80571778eb447c361b6f32ef3276728ec196a35c02cf61f405b8db11a5887304"
+    }
+  },
+  "phases": [
+    {
+      "phase": "after_execution",
+      "passed": false,
+      "error_type": "AssertionError",
+      "error": ""
+    },
+    {
+      "phase": "before_publication_intent",
+      "passed": false,
+      "error_type": "AssertionError",
+      "error": ""
+    },
+    {
+      "phase": "after_publication",
+      "passed": false,
+      "error_type": "AssertionError",
+      "error": ""
+    }
+  ],
+  "passed": false,
+  "reviewer_probe_issue": "expected interrupted replay exit code was 3; actual documented CLI mapping is 1; recovery behavior was correct",
+  "orphan_staging_cleanup_preserved_outputs": true,
+  "orphan_staging_removed": 3
+}

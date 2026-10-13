@@ -1,8 +1,8 @@
-# RPE-Harness 1.1
+# RPE-Harness 1.2
 
 本地能力路由与可验证任务执行器。1.0 支持 CSV/XLSX 按明确关键列去重，独立检查产物、保留原文件、禁止覆盖输出，并把事件、执行阶段、验证和结果持久保存到 SQLite。
 
-1.1 增加本机 Hermes 原生插件：真实模型可以调用 `rpe_task`，工具调用、模型请求与已验证运行关联入库。新增隔离启动器和原生流程对照。持续学习收益、自动生成技能和因果图学习仍需独立验证。
+1.2 增加明确能力契约、冻结执行计划、Hermes 强制工具入口，以及持久反馈、升级提案、自动候选验证和回滚。现有 CSV 契约的配方与 Python 执行器候选可自动激活；更广的核心代码与新能力升级保存为提案，等待相应可信验收集。持续学习收益与因果图收益仍需独立验证。
 
 ## 本机快速使用
 
@@ -14,7 +14,7 @@ cd /Users/audrey/项目/rpe-harness
 ./scripts/rpe benchmark --report /tmp/rpe-basic-validation.json
 ~~~
 
-复制 `examples/deduplicate.json`，将输入、输出改为真实绝对路径；输出文件必须不存在。然后执行和查询：
+复制 `examples/deduplicate-v2.json`，将输入、输出改为真实绝对路径；输出文件必须不存在。原 V1 示例仍兼容。然后执行和查询：
 
 ~~~sh
 ./scripts/rpe run --request request.json --db /absolute/path/runs.sqlite
@@ -68,7 +68,9 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 # 支持 --event - 从 stdin 读取
 ~~~
 
-旁路协议与原生插件共享执行和幂等机制。幂等键为 `(source,event_id)`；同源同 ID 同内容返回原运行，同 ID 不同内容冲突。执行成功只有在产物验证、无覆盖发布、SQLite 提交都完成后成立；进程意外退出留下的运行在后续启动时按文件租约标 interrupted，不依赖 PID 是否已被复用。发布后、提交成功前崩溃也保留 interrupted，发布意图和 hash 留在 steps；不会自动补记成功。如需重试应使用新 event_id 和新输出路径。
+旁路协议与原生插件共享执行和幂等机制。幂等键为 `(source,event_id)`；同源同 ID 同内容返回原运行，同 ID 不同内容冲突。执行成功只有在产物验证、无覆盖发布、SQLite 提交都完成后成立；进程意外退出留下的运行在后续启动时按文件租约标 interrupted，不依赖 PID 是否已被复用。发布后、提交成功前崩溃也保留 interrupted，发布意图和 hash 留在 steps；不会自动补记成功。
+
+`./scripts/rpe recover RUN_ID --db /absolute/path/runs.sqlite` 只恢复已停止、尚未进入发布阶段的失败尝试，原输入 hash 和执行修订必须一致，输出必须不存在。重复恢复返回同一个关联后继；默认总尝试预算为 3。发布后的未知结果需要显式检查产物和记录，不能自动重试。
 
 ## 真实 Hermes 会话
 
@@ -76,18 +78,39 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 
 ~~~sh
 ./scripts/rpe hermes run --workspace /absolute/path/workspace \
-  --prompt-file /absolute/path/task.txt --db /absolute/path/runs.sqlite
+  --prompt-file /absolute/path/task.txt --request /absolute/path/request.json \
+  --db /absolute/path/runs.sqlite
 ~~~
 
-任务提示可以用工作区相对路径，例如“必须调用 rpe_task：按 input.csv 的订单号列去重，保留首条，写入新的 output.csv；支持性检查和执行均交给该工具”。`rpe_task` 参数仍为 v1 request，路径必须位于指定工作区，禁止符号链接。工具 Schema 明确要求非空 goal 和字符串数组 constraints。可选工具的自然语言任务中，模型可能自行用终端完成文件处理；本轮对照确认了这个选择缺口，生产验证请明确指定工具。
+默认严格入口直接暴露 `rpe_task`，通过官方 middleware 发送指定工具选择，获得匹配的持久结果后才允许总结。执行准入还会阻止 `none` 或不完整策略的调用，以及同轮终态后的新任务；有效原调用只读重放，新 turn 可重新进入。工具使用输入/输出路径、关键列和目标等业务参数，内部生成 V2 请求。路径必须位于指定工作区，禁止符号链接。`--request` 是可选的固定契约锚，能检测模型改变关键列、路径和选项；不提供时仍验证产物符合模型抽取的契约，但自然语言意图抽取需业务验收。`--entry-mode optional` 保留可选工具模式用于对照，不会自动降级严格策略。
+
+集成模式的启动器父进程按次创建带随机认证凭据的回环执行入口，在 Hermes 沙箱之外启动固定 Harness CLI。Hermes 保留原文件沙箱；CSV 候选由外部 Harness 子进程施加自己的单层沙箱，避免 macOS 拒绝重复 `sandbox_apply`。入口核对固定工作区、真实调用 ID、持久 receipt、契约和当前输入 hash；它不接受任意 shell 或 Python 程序。执行有超时，退出时关闭入口并回收执行进程组和登记的后代，不安装常驻服务或调度任务。严格准入与最终 artifact gate 仍独立检查真实模型策略、调用链和产物。
+
+这一模式信任父进程、SQLite 和执行期间稳定的工作目录。Hermes 宿主仍受文件沙箱限制，严格任务入口只暴露 `rpe_task`；外部固定 CLI 没有同等工作区文件沙箱。独立探针已复现：同 UID 外部进程在路径验证后、CLI 执行前替换目录，可使产物写到声明工作区之外。认证、hash 与产物验收不提供目录对象的原子绑定，36 项入口检查通过也不覆盖这一未修复缺口。当前使用范围要求其他进程不并发替换工作目录；1.3 将优先处理基于目录文件描述符的访问与发布绑定。见 [独立证据与范围](reports/v1.2.0/evidence/review/external-executor/README.md)。
 
 会话临时聊天历史、凭据副本和缓存在命令返回后清理；产物和指定数据库保留。`completed` 表示宿主完成，`harness_verified` 才表示最终 Harness 运行已验证。未调用 Harness 的完成会话返回 unverified，退出码 1。拒绝返回 2。真实宿主事件保存在 `hermes_host_events`；原生 tool_call_id/api_request_id/turn_id 与 Harness run_id 分开保存，缺失原生 event_id 保留 null。事件记录失败会产生独立失败标记并阻止验收通过。
 
 普通 XLSX 注释保留文本和作者，重复行注释清空；不保证注释框尺寸或绘图外观。控件、图片和其他复杂绘图仍拒绝。
 
-插件安装结构、复现实验与边界见 [Hermes 接入说明](integrations/hermes/README.md)，本次真实验收见 [1.1 报告](reports/v1.1.0/1.1开发与验收报告.md)。
+手动加载插件默认使用配置 Python 的直接子进程，不会创建上述入口；已有外层 macOS 沙箱时，候选可能无法再次施加沙箱，优先使用隔离启动器。配置和模式区别见 [Hermes 接入说明](integrations/hermes/README.md)。历史真实验收见 [1.1 报告](reports/v1.1.0/1.1开发与验收报告.md)。
 
-`/usage` 是外部未验证报告，和内部 verified_success_count 分开。`/skills/state` 可手动启用/禁用或休眠，重启与 reload 均保留；1.0 不自动学习或生成技能。
+`/usage` 是外部未验证报告，和内部 verified_success_count 分开。`/skills/state` 可手动启用/禁用或休眠，重启与 reload 均保留。
+
+## 无人值守升级周期
+
+```sh
+./scripts/rpe evolution cycle --owned-root /absolute/path/harness-state \
+  --db /absolute/path/harness-state/runs.sqlite
+./scripts/rpe evolution list --db /absolute/path/harness-state/runs.sqlite
+./scripts/rpe evolution experiences --db /absolute/path/harness-state/runs.sqlite
+./scripts/rpe evolution show PROPOSAL_ID --db /absolute/path/harness-state/runs.sqlite
+```
+
+数据库必须位于声明的 owned-root 内，候选、验证临时目录和版本证据也保存在这里。周期重新检查持久运行和实际产物，整理紧凑经验，记录带证据的升级提案，并可自动验证/激活已有契约的配方。`--no-auto-apply` 只生成和验证；程序本身不创建定时任务。可由现有任务调度器定期调用。
+
+代码候选通过 `evolution propose --candidate candidate.py --component executor --kind csv_executor --evidence-run-id RUN_ID --owned-root ... --db ...` 提交；验证和激活必须有非空、仍可复查的持久已验证运行证据，并通过独立的 CSV 验收集。1.2 的实际代码生成演示绑定了两次 CSV 运行，这不是 API 强制的次数门槛。随后 `evolution validate PROPOSAL_ID`、`evolution apply PROPOSAL_ID`、`evolution rollback VERSION_ID` 均接受 `--db`。代码 ABI 为 `prepare(plan: dict, staging_path: str) -> None`，只产生暂存文件，不能修改源文件或直接发布。
+
+候选生成器与验收器分离；默认周期无需模型，也支持注入本机 Agent 的提案。代码候选在 macOS 子进程沙箱内验证，限制网络、文件写入、派生进程、CPU 时间和输出体积；生产任务仍通过原计划的独立验证。内存使用标准库 ctypes 调用 Darwin libproc 读取 RSS，以 128 MiB 软阈值、20ms 轮询监督；不可观测结果失败关闭，仅目标进程已消失时返回空值。它不能保证瞬时分配峰值，不能描述为任意恶意代码的完整资源隔离。候选失效会隔离并回退内置执行器，原版本快照可回滚。休眠、隔离经验保留索引和来源。
 
 ## 评测和开发路线
 
@@ -96,7 +119,7 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 旧 `experiments.baseline` 只是读取 Hermes 目录后调用 Harness Router 的诊断；`cold_skill_test` 和 `stress_test` 为旧合成实验/微基准，不代表独立真实任务效果。
 
 1.1：真实 Hermes 事件和工具接入、原生基线、可复现端到端验证。
-1.2：工具发现与可靠调用、真实故障恢复、重复原生对照，再扩展执行器和宿主。
-2.0：Consolidator 与因果图学习，在证据、回滚和人工控制机制建立后推进。
+1.2：明确契约、可靠工具调用、真实故障恢复、重复原生对照、证据驱动提案与已有契约执行器演进。
+后续：扩展新能力和其他宿主、独立可信升级验收集、持续学习收益对照，再研究因果图与更广的程序化沉淀。总体设计见 [架构与演进](docs/architecture.md)。
 
 审核证据见 [完整审核](reports/audit-2026-10-13/项目完整审核报告.md)。1.0 设计和任务计划位于 `docs/superpowers/`，正式验证和清理记录位于 `reports/v1.0.0/`。

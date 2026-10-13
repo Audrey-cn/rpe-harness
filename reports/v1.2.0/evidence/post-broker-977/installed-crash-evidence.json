@@ -1,0 +1,115 @@
+{
+  "experiment": "installed-wheel-public-cli-owner-crash",
+  "version": "1.2.0",
+  "python": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/bin/python",
+  "isolated_python": true,
+  "outside_checkout": true,
+  "cwd": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release",
+  "root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T070526-3da82865",
+  "model_or_api_calls": 0,
+  "installed_modules": {
+    "rpe_harness": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+      "sha256": "02313e14fc154a3bf0e18556b8dc7bcafe9ebd7973cdf01be2e750879aa8831f"
+    },
+    "rpe_harness.contracts": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/contracts.py",
+      "sha256": "199d09b2aff24e79eb608ce0ee10b93569473d4d32191c7b06990fd296081c1a"
+    },
+    "rpe_harness.execution": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/execution.py",
+      "sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5"
+    },
+    "rpe_harness.recovery": {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/release-venv/lib/python3.12/site-packages/rpe_harness/recovery.py",
+      "sha256": "80571778eb447c361b6f32ef3276728ec196a35c02cf61f405b8db11a5887304"
+    }
+  },
+  "phases": [
+    {
+      "phase": "after_execution",
+      "passed": true,
+      "actual_owner_exit_code": 73,
+      "original_run_id": "72df50f8fb2c450cbcd53832502274af",
+      "original_status_after_restart": "interrupted",
+      "original_stage": "execute",
+      "original_plan_sha256": "741b4e5e899478bb2b3dfd1792a9e0cbfa6eefc43902b77588929fe6d5f195cb",
+      "publication_intent_persisted": false,
+      "output_present_after_crash": false,
+      "source_sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "source_preserved": true,
+      "original_event_replay_same_run": true,
+      "original_event_replay_exit_code": 1,
+      "durable_run_count": 2,
+      "known_child_processes": 6,
+      "all_known_children_stopped": true,
+      "orphan_staging_removed": 1,
+      "staging_cleanup_preserved_output": true,
+      "recovery_status": "succeeded",
+      "retry_of": "72df50f8fb2c450cbcd53832502274af",
+      "successor_run_id": "c42cfdf1de134f33853c8bdca308a0aa",
+      "verification_passed": true,
+      "manual_truth_passed": true,
+      "same_original_plan": true,
+      "repeated_recovery_same_run": true,
+      "published_sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33"
+    },
+    {
+      "phase": "before_publication_intent",
+      "passed": true,
+      "actual_owner_exit_code": 73,
+      "original_run_id": "f0d32edcc4fc4140af6485aa911f8de2",
+      "original_status_after_restart": "interrupted",
+      "original_stage": "verify",
+      "original_plan_sha256": "fdc2039cd4441503607a2842d95d059baeb5adf6f1ecc83973cd7110613cfee8",
+      "publication_intent_persisted": false,
+      "output_present_after_crash": false,
+      "source_sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "source_preserved": true,
+      "original_event_replay_same_run": true,
+      "original_event_replay_exit_code": 1,
+      "durable_run_count": 2,
+      "known_child_processes": 6,
+      "all_known_children_stopped": true,
+      "orphan_staging_removed": 1,
+      "staging_cleanup_preserved_output": true,
+      "recovery_status": "succeeded",
+      "retry_of": "f0d32edcc4fc4140af6485aa911f8de2",
+      "successor_run_id": "95d0d33b0556452baa0465f3b8a29bc8",
+      "verification_passed": true,
+      "manual_truth_passed": true,
+      "same_original_plan": true,
+      "repeated_recovery_same_run": true,
+      "published_sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33"
+    },
+    {
+      "phase": "after_publication",
+      "passed": true,
+      "actual_owner_exit_code": 73,
+      "original_run_id": "3e8aa8a00ed34ea98533a2e826cf16c1",
+      "original_status_after_restart": "interrupted",
+      "original_stage": "publish",
+      "original_plan_sha256": "862b148c7bacd061c34331da4e77f3cf427ae6e720942259d2c13f4ce75933d8",
+      "publication_intent_persisted": true,
+      "output_present_after_crash": true,
+      "source_sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "source_preserved": true,
+      "original_event_replay_same_run": true,
+      "original_event_replay_exit_code": 1,
+      "durable_run_count": 1,
+      "known_child_processes": 6,
+      "all_known_children_stopped": true,
+      "orphan_staging_removed": 1,
+      "staging_cleanup_preserved_output": true,
+      "recovery_refused_twice": true,
+      "recovery_exit_codes": [
+        2,
+        2
+      ],
+      "refusal_reason": "publication_started_or_outcome_unknown",
+      "published_sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33",
+      "artifact_unchanged": true
+    }
+  ],
+  "passed": true
+}

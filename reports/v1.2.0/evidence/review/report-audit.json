@@ -1,0 +1,300 @@
+{
+  "role": "independent report evidence/link audit; does not replace pending final package/host/cleanup evidence",
+  "audited_main_report_sha256": "14d938f87a0654aeb75b41cf16ad42abb0aa816dceaac9ed079fea123b76bd9c",
+  "local_links": {
+    "checked": 29,
+    "broken": [],
+    "items": [
+      {
+        "line": 68,
+        "target": "evidence/generation-codex-2-success.json",
+        "exists": true
+      },
+      {
+        "line": 68,
+        "target": "evidence/generated-executor-evolution.json",
+        "exists": true
+      },
+      {
+        "line": 68,
+        "target": "artifacts/generated-csv-executor.py",
+        "exists": true
+      },
+      {
+        "line": 76,
+        "target": "evidence/baseline-v1.1-refreshed.xml",
+        "exists": true
+      },
+      {
+        "line": 77,
+        "target": "evidence/pytest-final.xml",
+        "exists": true
+      },
+      {
+        "line": 77,
+        "target": "evidence/pytest-final-summary.json",
+        "exists": true
+      },
+      {
+        "line": 78,
+        "target": "evidence/independent-review.md",
+        "exists": true
+      },
+      {
+        "line": 78,
+        "target": "evidence/review/admission/admission-review.md",
+        "exists": true
+      },
+      {
+        "line": 79,
+        "target": "evidence/frozen-source-manifest.json",
+        "exists": true
+      },
+      {
+        "line": 79,
+        "target": "evidence/installed-contract.json",
+        "exists": true
+      },
+      {
+        "line": 80,
+        "target": "evidence/installed-contract.json",
+        "exists": true
+      },
+      {
+        "line": 81,
+        "target": "evidence/installed-contract.json",
+        "exists": true
+      },
+      {
+        "line": 81,
+        "target": "artifacts/installed-contract/",
+        "exists": true
+      },
+      {
+        "line": 82,
+        "target": "evidence/entry-smoke-before-parser-fix.json",
+        "exists": true
+      },
+      {
+        "line": 82,
+        "target": "evidence/entry-smoke-corrected.json",
+        "exists": true
+      },
+      {
+        "line": 83,
+        "target": "evidence/native-observer-smoke.json",
+        "exists": true
+      },
+      {
+        "line": 87,
+        "target": "evidence/review/admission/admission-review.md",
+        "exists": true
+      },
+      {
+        "line": 89,
+        "target": "artifacts/rpe_harness-1.2.0-py3-none-any.whl",
+        "exists": true
+      },
+      {
+        "line": 91,
+        "target": "evidence/comparison-snapshot-provenance.json",
+        "exists": true
+      },
+      {
+        "line": 91,
+        "target": "evidence/guarded-release-supplement-protocol.json",
+        "exists": true
+      },
+      {
+        "line": 117,
+        "target": "evidence/hermes-repeated-comparison.json",
+        "exists": true
+      },
+      {
+        "line": 120,
+        "target": "evidence/preregistered-protocol.json",
+        "exists": true
+      },
+      {
+        "line": 124,
+        "target": "evidence/aborted-pilot-reason.json",
+        "exists": true
+      },
+      {
+        "line": 154,
+        "target": "../../README.md",
+        "exists": true
+      },
+      {
+        "line": 154,
+        "target": "../../integrations/hermes/README.md",
+        "exists": true
+      },
+      {
+        "line": 154,
+        "target": "../../docs/superpowers/specs/2026-10-14-rpe-v12-design.md",
+        "exists": true
+      },
+      {
+        "line": 154,
+        "target": "../../docs/superpowers/plans/2026-10-14-rpe-v12.md",
+        "exists": true
+      },
+      {
+        "line": 156,
+        "target": "/Users/audrey/Desktop/量子通信研究总结_完整对话存档/量子通信研究总结_聊天气泡.html",
+        "exists": true
+      },
+      {
+        "line": 156,
+        "target": "evidence/original-design-archive-provenance.json",
+        "exists": true
+      }
+    ]
+  },
+  "external_links": [
+    {
+      "url": "https://hermes-agent.nousresearch.com/docs/user-guide/features/curator",
+      "verified": "primary page opened"
+    },
+    {
+      "url": "https://hermes-agent.nousresearch.com/docs/user-guide/features/skills",
+      "verified": "primary page opened"
+    },
+    {
+      "url": "https://arxiv.org/abs/2303.11366",
+      "verified": "primary paper page opened"
+    },
+    {
+      "url": "https://arxiv.org/abs/2507.19457",
+      "verified": "primary paper page opened"
+    },
+    {
+      "url": "https://github.com/NousResearch/hermes-agent-self-evolution/tree/0a929e3aa20e15cf04dc7c28492a7d41a5139125",
+      "verified": "HTTP HEAD 200; initial browse fetch internal error not classified as broken"
+    }
+  ],
+  "formal_comparison": {
+    "source": "../hermes-repeated-comparison.json",
+    "wheel_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+    "completed": true,
+    "attempts": 36,
+    "arms": {
+      "native": {
+        "attempts": 18,
+        "accepted": 12,
+        "supported_successes": 9,
+        "correct_rejections": 3,
+        "timeouts": 6,
+        "complete_usage_attempts": 12,
+        "complete_session_token_subtotal": 518054,
+        "incomplete_session_observed_token_subtotal": 214924,
+        "all_attempts_observed_token_lower_bound": 732978,
+        "all_attempts_token_total": null,
+        "observed_elapsed_seconds": 2395.872
+      },
+      "integrated": {
+        "attempts": 18,
+        "accepted": 15,
+        "supported_successes": 12,
+        "correct_rejections": 3,
+        "timeouts": 0,
+        "complete_usage_attempts": 18,
+        "complete_session_token_subtotal": 161517,
+        "incomplete_session_observed_token_subtotal": 0,
+        "all_attempts_observed_token_lower_bound": 161517,
+        "all_attempts_token_total": 161517,
+        "observed_elapsed_seconds": 763.421
+      }
+    },
+    "integrated_failed_entry_error_counts": {
+      "final_policy_ignored": 3
+    },
+    "both_successful_complete_pairs": {
+      "count": 9,
+      "native": {
+        "total_tokens": 400850,
+        "elapsed_seconds": 867.99
+      },
+      "integrated": {
+        "total_tokens": 74123,
+        "elapsed_seconds": 350.253
+      }
+    },
+    "cost_inference": "Complete native session subtotal is distinct from the partial observed timeout subtotal. All-attempt total remains unknown; no all-task or universal saving conclusion."
+  },
+  "junit_checks": {
+    "pytest-final.xml": {
+      "tests": "370",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "30.320"
+    },
+    "baseline-v1.1-refreshed.xml": {
+      "tests": "233",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "12.433"
+    }
+  },
+  "version_provenance_at_audit": {
+    "reported_frozen_manifest_wheel_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7",
+    "installed_contract_wheel_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+    "final_candidate_before_runtime_sandbox_fix_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7",
+    "next_final_metadata_recheck_required": true
+  },
+  "report_only_edit": {
+    "authorized_scope": "FORMAL_RESULTS_START to FORMAL_RESULTS_END only",
+    "changes": [
+      "label complete-session subtotal correctly",
+      "include incomplete-session observed subtotal",
+      "include all-attempt observed lower bound",
+      "explain unknown total and successful-pair selection bias"
+    ],
+    "old_comparison_json_modified": false
+  },
+  "pending_report_corrections": [
+    {
+      "location": "main report installation rows 79-81",
+      "problem": "installed-contract.json remains old bee snapshot and does not establish the subsequent final wheel installation",
+      "fix": "Use an explicit old-snapshot label or replace final links with new exact-wheel evidence after validation while retaining old evidence."
+    },
+    {
+      "location": "main report old-to-final difference wording near line91",
+      "problem": "Only Hermes admission source differs becomes stale once runtime-sandbox launcher fix lands",
+      "fix": "Final package includes subsequent admission and runtime-sandbox fixes; enumerate exact differences from the final manifest."
+    },
+    {
+      "location": "review/README.md historical scope paragraph",
+      "problem": "will fix / still need guard review phrasing is stale alongside the now present admission final review",
+      "fix": "Keep old reviews historical and link the completed final admission review; direct current release status to the main report."
+    }
+  ],
+  "ability_claim_audit": "Existing CSV/XLSX contract, synthetic mechanism demonstration and unproved causal/learning/cost boundaries are appropriately qualified. Continue labeling old live sessions and generated-executor/install demonstrations by snapshot; no final release performance claim follows.",
+  "production_code_edits": false,
+  "model_calls": 0,
+  "daily_state_writes": false,
+  "independent_artifact_crosscheck": {
+    "read_only": true,
+    "production_tests_run": false,
+    "model_or_api_calls": 0,
+    "daily_state_access": false,
+    "historical_files_hash_and_size_matching": 89,
+    "all_markdown_local_links_checked": 47,
+    "all_markdown_broken_local_links": 0,
+    "both_historical_wheel_records_matching_members": 34,
+    "current_top_level_wheel_before_runtime_fix": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7",
+    "current_checkout_mismatch_against_that_wheel": "src/rpe_harness/integrations/hermes_session.py",
+    "initial_copy_ledger_issue": {
+      "file": "../initial-retention-manifest.json",
+      "lines": "4-6,10-12,28-30",
+      "problem": "Original destinations now contain newer top-level wheel/XML/manifest bytes; exact old bytes remain under pre-admission-guard.",
+      "data_loss": false,
+      "recommendation": "Preserve the original ledger; add explicit historical relocation mapping or scope warning."
+    },
+    "historical_review_append_note": "Original 6157-byte review is an exact prefix of the 8110-byte retained review; retained full hash matches review retention manifest.",
+    "formal_data_original_bytes_unchanged": true
+  }
+}

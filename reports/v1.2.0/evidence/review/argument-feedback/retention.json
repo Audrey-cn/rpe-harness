@@ -1,0 +1,29 @@
+{
+  "scope": "Factual schema-error RED/GREEN; unknown historical XLSX cause remains unknown. No model calls during this fix.",
+  "files": [
+    {
+      "path": "installed977-hermes.py",
+      "sha256": "c994737a2622306a751139fd8088fcfe05b2a73fa99d7712bd44c829a1b626b9"
+    },
+    {
+      "path": "diagnostic-report.json",
+      "sha256": "65393f0468971eaa412af5acc781b7104504968b512bcbfc318e4a83669af291"
+    },
+    {
+      "path": "test_hermes_integration.py",
+      "sha256": "dfb76f4b58a97078242c53dede562f9db45bf4f86e06ae6321636e673fcf0860"
+    },
+    {
+      "path": "checkout-hermes.py",
+      "sha256": "c994737a2622306a751139fd8088fcfe05b2a73fa99d7712bd44c829a1b626b9"
+    },
+    {
+      "path": "archive-manifest.json",
+      "sha256": "89d95006252c07ac9f56c3153c2e8d68f5567f7f8f341d101a7c7b757e439a57"
+    },
+    {
+      "path": "tdd-evidence.json",
+      "sha256": "9a575c2f9e74af4ecb133d7023b2fe90d162e33c2abda2aafb270d77f4fac66d"
+    }
+  ]
+}

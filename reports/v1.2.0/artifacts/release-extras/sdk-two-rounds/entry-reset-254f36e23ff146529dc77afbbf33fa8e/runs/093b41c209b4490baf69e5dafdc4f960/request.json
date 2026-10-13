@@ -1,0 +1,19 @@
+{
+  "capability": "tabular.deduplicate",
+  "constraints": [
+    "preserve_original",
+    "preserve_order"
+  ],
+  "event_id": "entry-92e7891478cb889b4524e8f24944c787b5fd2d1998a4e2c38b9238cc6ed1067d",
+  "execution": {
+    "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/second.csv",
+    "keep": "first",
+    "key_columns": [
+      "id"
+    ],
+    "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/second-out.csv"
+  },
+  "goal": "retain the first record for each id",
+  "schema_version": 2,
+  "session_id": "entry-reset-56ff630df79a4cde9403a94cffa674ad"
+}

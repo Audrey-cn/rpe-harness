@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "event_id": "deduplicate-001",
+  "capability": "tabular.deduplicate",
+  "goal": "按订单号保留首次出现的完整记录",
+  "constraints": ["preserve_original", "preserve_order"],
+  "execution": {
+    "input_path": "/absolute/path/input.csv",
+    "output_path": "/absolute/path/output.csv",
+    "key_columns": ["订单号"],
+    "keep": "first",
+    "encoding": "utf-8-sig",
+    "delimiter": ","
+  }
+}

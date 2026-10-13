@@ -1,0 +1,30 @@
+{
+  "scope": "No-model helper startup diagnosis, separate from real SDK two-round entry acceptance. No AIAgent constructed in successful startup probes; API usage coverage remains false, not complete zero-token model cost.",
+  "cause": "Redundant child strict realpath inspects protected daily-home ancestors; use parent canonical validated directory and production-equivalent read-only runtime scope plus exact child literal. No production/Hermes source or daily write access change.",
+  "diagnostics": [
+    {
+      "path": "evidence/sdk-startup-diagnostics/sdk-startup-diagnostic-a0f260061c7d4dda8a70f077d0d95f86/report.json",
+      "sha256": "4e748639abfd2f856c977e5a6964fe6f355e7ae4b7c47e4d25d4e5bfc744ef9d",
+      "startup_completed": true,
+      "stage": "before_agent_initialization",
+      "agent_instance_count": 0,
+      "not_a_business_acceptance": true
+    },
+    {
+      "path": "evidence/sdk-startup-diagnostics/sdk-startup-diagnostic-de1fca75acba4817ba09d2a3b8fe34ee/report.json",
+      "sha256": "930af6d2df9aac971687d3432279829e3434bc868e2687338208b44f513e3870",
+      "startup_completed": false,
+      "stage": "installed_host_path",
+      "agent_instance_count": null,
+      "not_a_business_acceptance": true
+    },
+    {
+      "path": "evidence/sdk-startup-diagnostics/sdk-startup-diagnostic-e78ca89613dd4c49b285c99561f9766d/report.json",
+      "sha256": "efdeff15447fa87020f28636cc933972856a24e2361cf26b2340a41a7edae2b5",
+      "startup_completed": true,
+      "stage": "before_agent_initialization",
+      "agent_instance_count": 0,
+      "not_a_business_acceptance": true
+    }
+  ]
+}

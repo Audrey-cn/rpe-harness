@@ -1,0 +1,19 @@
+{
+  "http_status": 200,
+  "result_status": "succeeded",
+  "outside_output_exists": true,
+  "outside_output": "\ufeffid,value\na,first\nb,second\n",
+  "swapped_after_server_validation_before_cli": true,
+  "cleanup": {
+    "tracked_children": 1,
+    "remaining_children": [],
+    "cleanup_complete": true,
+    "errors": []
+  },
+  "no_model_calls": true,
+  "daily_writes": false,
+  "source_sha256": {
+    "/Users/audrey/\u9879\u76ee/rpe-harness/src/rpe_harness/integrations/hermes_broker.py": "fcb1848b762457196930c4389aba571ba46d5ed267a4c12813af001d2b4020cb",
+    "/Users/audrey/\u9879\u76ee/rpe-harness/src/rpe_harness/contracts.py": "199d09b2aff24e79eb608ce0ee10b93569473d4d32191c7b06990fd296081c1a"
+  }
+}

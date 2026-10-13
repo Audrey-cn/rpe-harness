@@ -1,0 +1,209 @@
+{
+  "run_id": "82efbb8a4dd54003b4c3b11b48b328dd",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 90681,
+  "started_at": 1791933754.84863,
+  "finished_at": 1791933754.8899798,
+  "skill_id": "builtin/csv-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-782a029a54c3cb8f1d3db81cada6cb057dcc9438a082ebcb63a8fdb38036ea90",
+  "payload_hash": "d836b92f4124e611d679337c54820ab50a790b2402bf7e3a55f870b2b70a4b71",
+  "state": {
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791933754.849911,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按明确关键列保留首次完整记录",
+    "input_format": "csv",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_072226_84eea2",
+    "source_ref": "entry-782a029a54c3cb8f1d3db81cada6cb057dcc9438a082ebcb63a8fdb38036ea90",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "headers_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "source_unchanged": true
+    },
+    "input_rows": 4,
+    "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+    "output_rows": 3,
+    "output_sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+    "passed": true,
+    "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+    "removed_rows": 1
+  },
+  "artifact": {
+    "actual_executor": {
+      "candidate_version_id": "e8179da64c8743142db84ed8950d50311d5cb777284c2535d917faa5420352c1",
+      "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "candidate",
+      "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+    },
+    "format": "csv",
+    "input_rows": 4,
+    "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+    "output_rows": 3,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv",
+    "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+    "published": true,
+    "removed_rows": 1,
+    "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "event_id": "entry-782a029a54c3cb8f1d3db81cada6cb057dcc9438a082ebcb63a8fdb38036ea90",
+    "execution": {
+      "delimiter": ",",
+      "encoding": "utf-8-sig",
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/input.csv",
+      "key_columns": [
+        "客户",
+        "地区"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv"
+    },
+    "goal": "按明确关键列保留首次完整记录",
+    "schema_version": 2,
+    "session_id": "20261014_072226_84eea2"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/csv-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按明确关键列保留首次完整记录",
+          "input_format": "csv",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/input.csv",
+          "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+          "keep": "first",
+          "key_columns": [
+            "客户",
+            "地区"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv",
+          "session_id": "20261014_072226_84eea2",
+          "sheet": null,
+          "source_ref": "entry-782a029a54c3cb8f1d3db81cada6cb057dcc9438a082ebcb63a8fdb38036ea90",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+      },
+      "created_at": 1791933754.8506439
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791933754.8512251
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+      },
+      "created_at": 1791933754.851607
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "candidate_version_id": "e8179da64c8743142db84ed8950d50311d5cb777284c2535d917faa5420352c1",
+          "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+        },
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+      },
+      "created_at": 1791933754.8878
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+      },
+      "created_at": 1791933754.888174
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv",
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 4,
+          "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+          "output_rows": 3,
+          "output_sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+          "passed": true,
+          "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+          "removed_rows": 1
+        }
+      },
+      "created_at": 1791933754.8887942
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "candidate_version_id": "e8179da64c8743142db84ed8950d50311d5cb777284c2535d917faa5420352c1",
+          "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281"
+        },
+        "format": "csv",
+        "input_rows": 4,
+        "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv",
+        "plan_sha256": "b1b1d746065354bbacd90fbf7f66092cf94286315bedead9e84f098975651281",
+        "published": true,
+        "removed_rows": 1,
+        "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae"
+      },
+      "created_at": 1791933754.889785
+    }
+  ]
+}

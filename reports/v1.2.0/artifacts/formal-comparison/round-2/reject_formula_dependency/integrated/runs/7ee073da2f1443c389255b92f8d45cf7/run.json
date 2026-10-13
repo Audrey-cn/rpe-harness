@@ -1,0 +1,117 @@
+{
+  "run_id": "7ee073da2f1443c389255b92f8d45cf7",
+  "status": "rejected",
+  "stage": "execute",
+  "owner_pid": 67676,
+  "started_at": 1791928398.244603,
+  "finished_at": 1791928398.293172,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-8fabe023dd81f1f14c1e04741036fc8fbfd90ed48984b6bd565ef3cc5662723b",
+  "payload_hash": "59b42908043b276b578129ae5935a9a91cc8bd6165d7a2ee830f08441bcc9abc",
+  "state": {
+    "constraints": [
+      "preserve_formulas",
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791928398.286368,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "Deduplicate XLSX sheet 订单 by full values of column 编号, keeping first occurrences in original order; clear only duplicate row cell values/comments/hyperlinks without moving rows, preserving formulas, styles, other sheets, hidden states and column widths",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_055240_44a493",
+    "source_ref": "entry-8fabe023dd81f1f14c1e04741036fc8fbfd90ed48984b6bd565ef3cc5662723b",
+    "task_type": "unknown"
+  },
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "retained formula references a row that would be cleared",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order",
+      "preserve_formulas"
+    ],
+    "event_id": "entry-8fabe023dd81f1f14c1e04741036fc8fbfd90ed48984b6bd565ef3cc5662723b",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated/input.xlsx",
+      "keep": "first",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "Deduplicate XLSX sheet 订单 by full values of column 编号, keeping first occurrences in original order; clear only duplicate row cell values/comments/hyperlinks without moving rows, preserving formulas, styles, other sheets, hidden states and column widths",
+    "schema_version": 2,
+    "session_id": "20261014_055240_44a493"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_formulas",
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "Deduplicate XLSX sheet 订单 by full values of column 编号, keeping first occurrences in original order; clear only duplicate row cell values/comments/hyperlinks without moving rows, preserving formulas, styles, other sheets, hidden states and column widths",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated/input.xlsx",
+          "input_sha256": "224da87ecf1aca124919d73489f18be69884ea353a7389489d7c2bbcec608d60",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/reject_formula_dependency/integrated/output.xlsx",
+          "session_id": "20261014_055240_44a493",
+          "sheet": "订单",
+          "source_ref": "entry-8fabe023dd81f1f14c1e04741036fc8fbfd90ed48984b6bd565ef3cc5662723b",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "b99d156c159ed88a7606c7e2f6dfeb30efb9c432eab00b2ce27624eac3e97b39"
+      },
+      "created_at": 1791928398.287467
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "b99d156c159ed88a7606c7e2f6dfeb30efb9c432eab00b2ce27624eac3e97b39",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791928398.2881489
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "b99d156c159ed88a7606c7e2f6dfeb30efb9c432eab00b2ce27624eac3e97b39"
+      },
+      "created_at": 1791928398.288486
+    },
+    {
+      "stage": "execute",
+      "evidence": {},
+      "created_at": 1791928398.292835
+    }
+  ]
+}

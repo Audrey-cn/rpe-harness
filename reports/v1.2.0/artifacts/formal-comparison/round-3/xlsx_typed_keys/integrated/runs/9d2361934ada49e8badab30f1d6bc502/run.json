@@ -1,0 +1,201 @@
+{
+  "run_id": "9d2361934ada49e8badab30f1d6bc502",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 69117,
+  "started_at": 1791928722.501251,
+  "finished_at": 1791928722.556909,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-95472b06b2f96083b29fbe9ee221c967836ac0b977d80d280f1a906d333ae677",
+  "payload_hash": "1968c4e6645974d808d40c01dabb0521b0bda899955eab956c224a335e1640bc",
+  "state": {
+    "constraints": [],
+    "context_tokens_saved": 0,
+    "created_at": 1791928722.5425239,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "Deduplicate 订单 sheet by full values of 编号+地区, keeping first occurrence and original order; clear only duplicate rows' values/comments/hyperlinks without moving rows",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_055804_ffac25",
+    "source_ref": "entry-95472b06b2f96083b29fbe9ee221c967836ac0b977d80d280f1a906d333ae677",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "formulas_preserved": true,
+      "headers_preserved": true,
+      "non_target_sheets_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "retained_metadata_preserved": true,
+      "source_unchanged": true
+    },
+    "input_rows": 6,
+    "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+    "output_rows": 4,
+    "output_sha256": "c2c5dab5b6767e9570e99af78981e8ceae20394932e2a40cddc8f7b8eb944e06",
+    "passed": true,
+    "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/xlsx-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+    },
+    "format": "xlsx",
+    "input_rows": 6,
+    "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+    "output_rows": 4,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+    "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "c2c5dab5b6767e9570e99af78981e8ceae20394932e2a40cddc8f7b8eb944e06"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [],
+    "event_id": "entry-95472b06b2f96083b29fbe9ee221c967836ac0b977d80d280f1a906d333ae677",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/input.xlsx",
+      "key_columns": [
+        "编号",
+        "地区"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx"
+    },
+    "goal": "Deduplicate 订单 sheet by full values of 编号+地区, keeping first occurrence and original order; clear only duplicate rows' values/comments/hyperlinks without moving rows",
+    "schema_version": 2,
+    "session_id": "20261014_055804_ffac25"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "Deduplicate 订单 sheet by full values of 编号+地区, keeping first occurrence and original order; clear only duplicate rows' values/comments/hyperlinks without moving rows",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/input.xlsx",
+          "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+          "keep": "first",
+          "key_columns": [
+            "编号",
+            "地区"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+          "session_id": "20261014_055804_ffac25",
+          "sheet": "订单",
+          "source_ref": "entry-95472b06b2f96083b29fbe9ee221c967836ac0b977d80d280f1a906d333ae677",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+      },
+      "created_at": 1791928722.543492
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791928722.5440772
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+      },
+      "created_at": 1791928722.544359
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+        },
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+      },
+      "created_at": 1791928722.5521338
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+      },
+      "created_at": 1791928722.5525088
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "formulas_preserved": true,
+            "headers_preserved": true,
+            "non_target_sheets_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "retained_metadata_preserved": true,
+            "source_unchanged": true
+          },
+          "input_rows": 6,
+          "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+          "output_rows": 4,
+          "output_sha256": "c2c5dab5b6767e9570e99af78981e8ceae20394932e2a40cddc8f7b8eb944e06",
+          "passed": true,
+          "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791928722.555852
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006"
+        },
+        "format": "xlsx",
+        "input_rows": 6,
+        "input_sha256": "3e83309b2f03efcf899074c366d28b28be2dacac8b090cdaab00edd21edea5d0",
+        "output_rows": 4,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-3/comparison-1d_55qox/workspaces/xlsx_typed_keys/integrated/output.xlsx",
+        "plan_sha256": "57331daeb105c115c9d72392f4a77cd82e8274ee479d0ae53e220754b3b7f006",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "c2c5dab5b6767e9570e99af78981e8ceae20394932e2a40cddc8f7b8eb944e06"
+      },
+      "created_at": 1791928722.556729
+    }
+  ]
+}

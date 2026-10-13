@@ -1,0 +1,19 @@
+{
+  "command": "RPE_HERMES_SOURCE=/Users/audrey/.hermes/hermes-agent PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 owned/venv/bin/python -B -m pytest -q -p no:cacheprovider --basetemp owned/pytest-final-closed --junitxml owned/pytest-final-closed.xml",
+  "terminal_result": "367 passed, 3 subtests passed in 30.34s",
+  "junit_suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "370",
+      "time": "30.320",
+      "timestamp": "2026-10-14T05:50:57.310691+08:00",
+      "hostname": "AudreydeMacBook-Pro.local"
+    }
+  ],
+  "raw_terminal_log_retained": false,
+  "version": "1.2.0",
+  "wheel_sha256": "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7"
+}

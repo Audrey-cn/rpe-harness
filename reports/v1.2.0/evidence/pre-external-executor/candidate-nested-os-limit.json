@@ -1,0 +1,62 @@
+{
+  "model_calls": 0,
+  "session_scope_sha256": "b109d77fcb0addb00666e38a373ce528fd898d77a96a22796572c694fc11b9d8",
+  "pytest": {
+    "target": "tests/test_hermes_session.py",
+    "passed": 41,
+    "failed": 2,
+    "skipped": 0,
+    "elapsed_seconds": 15.49
+  },
+  "minimal_os_reproduction": [
+    {
+      "outer_profile": "(version 1)(allow default)",
+      "inner_profile": "(version 1)(allow default)",
+      "command": "/usr/bin/true",
+      "exit_code": 71,
+      "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+    },
+    {
+      "outer_profile": "(version 1)(allow default)(deny signal (require-not (target same-sandbox)))",
+      "inner_profile": "(version 1)(allow default)",
+      "command": "/usr/bin/true",
+      "exit_code": 71,
+      "stderr": "sandbox-exec: sandbox_apply: Operation not permitted\n"
+    }
+  ],
+  "actual_cases": [
+    {
+      "layout": "owner_contains_state",
+      "db": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/pytest-runtime-read-root/test_real_activated_candidate_0/persistent-state/runs.sqlite",
+      "candidate": {
+        "version_id": "a780219b75b7238a217fc809830b3058675d1ab43c07c09c39da3ac600591d6d",
+        "state": "quarantine",
+        "reason": "candidate exited 71: sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      "business_status": "succeeded",
+      "actual_executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "b472f05c2e80794363cf66173e86f33f54b7ff1c905cc0a659c7c4f2a0a52609"
+      }
+    },
+    {
+      "layout": "separate_ephemeral_owner",
+      "db": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/pytest-runtime-read-root/test_real_activated_candidate_1/persistent-state/runs.sqlite",
+      "candidate": {
+        "version_id": "d4a126cec7f5ebb6d0b7f7530480fb3411f2050bbb260a5db869b3fae34f693d",
+        "state": "quarantine",
+        "reason": "candidate exited 71: sandbox-exec: sandbox_apply: Operation not permitted\n"
+      },
+      "business_status": "succeeded",
+      "actual_executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "7b022e4826e76777d3201d270c3ef9b3ce9913cb30d39e0d3d7fdb17af086509"
+      }
+    }
+  ],
+  "conclusion": "isolated host cannot apply a second seatbelt sandbox on this machine; candidate use is not verified"
+}

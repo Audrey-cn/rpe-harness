@@ -1,0 +1,190 @@
+{
+  "no_models": true,
+  "daily_writes": false,
+  "probes": [
+    {
+      "probe": "strict_event_id_binding",
+      "status": 403,
+      "answer": {
+        "error": {
+          "code": "broker_receipt_invalid"
+        }
+      }
+    },
+    {
+      "probe": "receipt_replay_binding",
+      "statuses": [
+        200,
+        200,
+        403
+      ]
+    },
+    {
+      "probe": "no_execution_none",
+      "status": 403,
+      "answer": {
+        "error": {
+          "code": "broker_receipt_invalid"
+        }
+      }
+    },
+    {
+      "probe": "no_execution_missing_policy",
+      "status": 403,
+      "answer": {
+        "error": {
+          "code": "broker_receipt_invalid"
+        }
+      }
+    },
+    {
+      "probe": "no_execution_unlinked_receipt",
+      "status": 403,
+      "answer": {
+        "error": {
+          "code": "broker_receipt_invalid"
+        }
+      }
+    },
+    {
+      "probe": "no_execution_outside_path",
+      "status": 403,
+      "answer": {
+        "error": {
+          "code": "broker_receipt_invalid"
+        }
+      }
+    },
+    {
+      "probe": "domain_rejection_no_overwrite",
+      "status": 200,
+      "result_status": "rejected"
+    },
+    {
+      "probe": "http_auth_missing",
+      "status": 401,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_auth_nonascii",
+      "status": 401,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_get",
+      "status": 501,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_route",
+      "status": 404,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_transfer_encoding",
+      "status": 400,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_large",
+      "status": 413,
+      "alive_status": 401
+    },
+    {
+      "probe": "http_bad_json",
+      "status": 400,
+      "alive_status": 401
+    },
+    {
+      "probe": "actual_nested_broker_candidate",
+      "executor": {
+        "candidate_version_id": "3e26817114eca94ce229109e81361cf10a59c7ce0f4cfcf34b42fb73a3bdf9d2",
+        "code_sha256": "991f0d5df898865073b80c9239c12c50049fdc6a207be74651408fed76ea8e9a",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "candidate",
+        "plan_sha256": "473af0852684b39044659a93d0089cf494ad1d29406cefad2f30a8093f29f1e2"
+      },
+      "candidate_state": "active",
+      "quarantine_reason": null,
+      "exit_code": 0,
+      "elapsed_s": 0.39333816700673196,
+      "cleanup_intervention_pids": [],
+      "owned_cli_tempdirs_removed": true
+    },
+    {
+      "probe": "actual_nested_broker_timeout",
+      "executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "b36d96c5e216c47c07973b04d917262162b193df36daecc9972fe1cc271a615a"
+      },
+      "candidate_state": "quarantine",
+      "quarantine_reason": "candidate timeout",
+      "exit_code": 0,
+      "elapsed_s": 3.3370922079921,
+      "cleanup_intervention_pids": [],
+      "owned_cli_tempdirs_removed": true
+    },
+    {
+      "probe": "context_cancellation_separate_candidate_group",
+      "observed_pids": [
+        87024,
+        87029
+      ],
+      "remaining_after_context": [],
+      "context_exit_seconds": 0.39920037500269245,
+      "response_statuses": [],
+      "connection_errors": [
+        "RemoteDisconnected"
+      ],
+      "external_cleanup": {
+        "tracked_children": 1,
+        "remaining_children": [],
+        "cleanup_complete": true,
+        "errors": []
+      }
+    },
+    {
+      "probe": "context_cancellation_partial_capture_error",
+      "observed_pids": [
+        87088,
+        87092
+      ],
+      "remaining_after_context": [],
+      "context_exit_seconds": 0.4105919160065241,
+      "response_statuses": [],
+      "connection_errors": [
+        "RemoteDisconnected"
+      ],
+      "external_cleanup": {
+        "tracked_children": 1,
+        "remaining_children": [],
+        "cleanup_complete": false,
+        "errors": [
+          {
+            "stage": "external_executor_cleanup",
+            "error_type": "OSError"
+          }
+        ]
+      }
+    },
+    {
+      "probe": "half_open_shutdown_bounded",
+      "elapsed_s": 0.04875887499656528,
+      "lingering_threads": [],
+      "cleanup": {
+        "tracked_children": 0,
+        "remaining_children": [],
+        "cleanup_complete": true,
+        "errors": []
+      }
+    },
+    {
+      "probe": "slowdrip_actively_cancelled",
+      "context_completed_within_1s": true,
+      "elapsed_s": 0.0491970000002766,
+      "errors": []
+    }
+  ]
+}

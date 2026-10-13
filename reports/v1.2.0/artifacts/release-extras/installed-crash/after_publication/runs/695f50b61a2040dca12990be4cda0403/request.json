@@ -1,0 +1,17 @@
+{
+  "capability": "tabular.deduplicate",
+  "constraints": [
+    "preserve_original",
+    "preserve_order"
+  ],
+  "event_id": "installed-crash-after_publication",
+  "execution": {
+    "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/after_publication/source.csv",
+    "key_columns": [
+      "订单号"
+    ],
+    "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/review/installed-crash-release/run-20261014T072213-6ce22196/after_publication/result.csv"
+  },
+  "goal": "按订单号保留首条",
+  "schema_version": 2
+}

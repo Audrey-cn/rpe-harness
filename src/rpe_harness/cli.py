@@ -66,35 +66,91 @@ def main(argv=None):
     hermes_run.add_argument('--prompt-file', type=Path, required=True)
     hermes_run.add_argument('--timeout', type=float, default=180)
     hermes_run.add_argument('--hermes-root', type=Path)
+    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional'), default='strict')
+    hermes_run.add_argument('--request', help='optional fixed JSON task contract')
+    hermes_run.add_argument('--max-task-attempts', type=int, default=3)
     _configuration(hermes_run)
+    recover = commands.add_parser('recover', help='resume an interrupted task before publication')
+    recover.add_argument('run_id')
+    recover.add_argument('--max-attempts', type=int, default=3)
+    _configuration(recover)
+    evolution = commands.add_parser('evolution', help='durable feedback and validated upgrade proposals')
+    evolution_commands = evolution.add_subparsers(dest='evolution_command', required=True)
+    cycle = evolution_commands.add_parser('cycle')
+    cycle.add_argument('--owned-root', type=Path, required=True)
+    cycle.add_argument('--no-auto-apply', action='store_true')
+    _configuration(cycle)
+    for name in ('list', 'experiences'):
+        _configuration(evolution_commands.add_parser(name))
+    proposal = evolution_commands.add_parser('propose')
+    proposal.add_argument('--candidate', type=Path, required=True)
+    proposal.add_argument('--component', required=True)
+    proposal.add_argument('--kind', required=True)
+    proposal.add_argument('--evidence-run-id', action='append', default=[])
+    proposal.add_argument('--base-version-id')
+    proposal.add_argument('--owned-root', type=Path, required=True)
+    _configuration(proposal)
+    for name in ('show', 'validate', 'apply'):
+        operation = evolution_commands.add_parser(name)
+        operation.add_argument('proposal_id')
+        if name != 'show':
+            operation.add_argument('--owned-root', type=Path)
+        _configuration(operation)
+    rollback = evolution_commands.add_parser('rollback')
+    rollback.add_argument('version_id')
+    _configuration(rollback)
     args = parser.parse_args(argv)
     try:
         if args.command == 'hermes':
             import tempfile
             from .runtime import default_db_path
             from .integrations.hermes_session import run_hermes_session
+            from .integrations.hermes_gate import evaluate_session
+            db_path = Path(args.db) if args.db else default_db_path()
+            required_request = read_json(args.request) if args.request else None
             with tempfile.TemporaryDirectory(prefix='rpe-hermes-') as owned:
                 result = run_hermes_session(args.prompt_file.read_text(encoding='utf-8'),
-                    args.workspace, Path(args.db) if args.db else default_db_path(),
+                    args.workspace, db_path,
                     tool_enabled=True, owner_root=Path(owned), timeout=args.timeout,
-                    hermes_root=args.hermes_root)
+                    hermes_root=args.hermes_root, entry_mode=args.entry_mode,
+                    required_request=required_request, max_task_attempts=args.max_task_attempts)
+                verdict = evaluate_session(result, db_path, args.workspace,
+                    required_request=required_request, require_policy=args.entry_mode == 'strict')
             result.pop('session_root', None)
             result.pop('stream_tool_calls', None)
             result['temporary_history_cleaned'] = True
-            result['harness_verified'] = False
-            result['status'] = 'failed' if not result['completed'] else 'unverified'
-            returned = [e for e in result['events'] if e.get('kind') == 'rpe_task_returned']
-            if result['completed'] and returned:
-                last = returned[-1]
-                result['status'] = last.get('status', 'unverified')
-                if last.get('run_id'):
-                    from .storage import RunStore
-                    saved = RunStore(Path(args.db) if args.db else default_db_path()).get(last['run_id'])
-                    verified = ((saved.get('verification') or {}).get('passed') is True
-                                and (saved.get('artifact') or {}).get('published') is True)
-                    result['harness_verified'] = saved.get('status') == 'succeeded' and verified
-                    if result['status'] == 'succeeded' and not result['harness_verified']:
-                        result['status'] = 'unverified'
+            result['entry_validation'] = verdict
+            result.update({key: value for key, value in verdict.items() if key != 'errors'})
+        elif args.command == 'evolution':
+            from .runtime import default_db_path
+            from .evolution.store import EvolutionStore
+            db_path = Path(args.db) if args.db else default_db_path()
+            if args.evolution_command == 'cycle':
+                from .evolution.cycle import cycle
+                result = cycle(db_path, args.owned_root, auto_apply=not args.no_auto_apply)
+            elif args.evolution_command == 'propose':
+                from .evolution.candidates import propose_candidate
+                result = propose_candidate(db_path, args.owned_root,
+                    component=args.component, kind=args.kind,
+                    content=args.candidate.read_text(encoding='utf-8'),
+                    evidence_run_ids=args.evidence_run_id, base_version_id=args.base_version_id)
+            elif args.evolution_command == 'validate':
+                from .evolution.candidates import validate_candidate
+                result = validate_candidate(args.proposal_id, db_path, args.owned_root)
+            elif args.evolution_command == 'apply':
+                from .evolution.candidates import apply_candidate
+                result = apply_candidate(args.proposal_id, db_path, args.owned_root)
+            elif args.evolution_command == 'rollback':
+                from .evolution.candidates import rollback
+                result = rollback(args.version_id, db_path)
+            else:
+                store = EvolutionStore(db_path)
+                if args.evolution_command == 'list':
+                    result = {'proposals': store.list_proposals()}
+                elif args.evolution_command == 'experiences':
+                    result = {'experiences': store.list_experiences()}
+                else:
+                    result = store.get_proposal(args.proposal_id)
         elif args.command == 'benchmark':
             from .experiments.basic_validation import run_basic_validation
             result = run_basic_validation(args.report)
@@ -111,6 +167,9 @@ def main(argv=None):
             runtime = HarnessRuntime(data_dir=args.data_dir, db_path=args.db)
             if args.command == 'run':
                 result = runtime.run(read_json(args.request))
+            elif args.command == 'recover':
+                from .recovery import recover_run
+                result = recover_run(runtime, args.run_id, max_attempts=args.max_attempts)
             elif args.command == 'events':
                 result = runtime.run(read_json(args.event), source='hermes')
             elif args.command == 'runs':
@@ -121,7 +180,8 @@ def main(argv=None):
                           'candidates': [s.skill_id for s in decision.candidates],
                           'fallback_to_llm': decision.fallback_to_llm, 'reason': decision.reason}
         print(json.dumps(result, ensure_ascii=False, allow_nan=False))
-        if args.command == 'runs':
+        if args.command == 'runs' or (args.command == 'evolution' and
+                                     args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
         if status in ['received', 'running']:

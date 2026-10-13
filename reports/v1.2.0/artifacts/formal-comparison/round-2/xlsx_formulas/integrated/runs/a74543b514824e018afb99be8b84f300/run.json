@@ -1,0 +1,213 @@
+{
+  "run_id": "a74543b514824e018afb99be8b84f300",
+  "status": "succeeded",
+  "stage": "complete",
+  "owner_pid": 64814,
+  "started_at": 1791928014.4326558,
+  "finished_at": 1791928014.495481,
+  "skill_id": "builtin/xlsx-deduplicate",
+  "attempted": 1,
+  "verification_ok": 1,
+  "source": "hermes",
+  "event_id": "entry-20aa34e8ffa7c962ffa962df5b183479459105075af3d0ca8669bc966a9621e2",
+  "payload_hash": "571da5347123b083515bb61a280eaa821218575d5850c9012abc50c65a48ad3a",
+  "state": {
+    "constraints": [
+      "preserve_formulas",
+      "preserve_order",
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1791928014.474399,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行；保留其余单元格坐标、公式文本、样式、注释、超链接及其他工作表、隐藏状态、列宽；若保留公式引用被清空的重复行则拒绝。",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "tabular.deduplicate",
+    "session_id": "20261014_054553_bad392",
+    "source_ref": "entry-20aa34e8ffa7c962ffa962df5b183479459105075af3d0ca8669bc966a9621e2",
+    "task_type": "unknown"
+  },
+  "verification": {
+    "checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "formulas_preserved": true,
+      "headers_preserved": true,
+      "non_target_sheets_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "retained_metadata_preserved": true,
+      "source_unchanged": true
+    },
+    "input_rows": 5,
+    "input_sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+    "output_rows": 3,
+    "output_sha256": "945a6c3c17a9f180c50ea12fc25ba40d9c7e18eddc4b24f9528b614fd680f651",
+    "passed": true,
+    "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+    "removed_rows": 2
+  },
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+      "executor_id": "builtin/xlsx-deduplicate",
+      "kind": "builtin",
+      "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+    },
+    "format": "xlsx",
+    "input_rows": 5,
+    "input_sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+    "output_rows": 3,
+    "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx",
+    "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+    "published": true,
+    "removed_rows": 2,
+    "sha256": "945a6c3c17a9f180c50ea12fc25ba40d9c7e18eddc4b24f9528b614fd680f651"
+  },
+  "error": null,
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order",
+      "preserve_formulas"
+    ],
+    "event_id": "entry-20aa34e8ffa7c962ffa962df5b183479459105075af3d0ca8669bc966a9621e2",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/input.xlsx",
+      "keep": "first",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx",
+      "sheet": "订单"
+    },
+    "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行；保留其余单元格坐标、公式文本、样式、注释、超链接及其他工作表、隐藏状态、列宽；若保留公式引用被清空的重复行则拒绝。",
+    "schema_version": 2,
+    "session_id": "20261014_054553_bad392"
+  },
+  "steps": [
+    {
+      "stage": "plan",
+      "evidence": {
+        "plan": {
+          "capability": "tabular.deduplicate",
+          "constraints": [
+            "preserve_formulas",
+            "preserve_order",
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "executor_revision": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "goal": "按列「编号」完整值去重（不去空格、不忽略大小写、不转数字），保留首次出现记录及原顺序；仅清空重复数据行的值/注释/超链接，不删除或移动行；保留其余单元格坐标、公式文本、样式、注释、超链接及其他工作表、隐藏状态、列宽；若保留公式引用被清空的重复行则拒绝。",
+          "input_format": "xlsx",
+          "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/input.xlsx",
+          "input_sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ],
+          "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx",
+          "session_id": "20261014_054553_bad392",
+          "sheet": "订单",
+          "source_ref": "entry-20aa34e8ffa7c962ffa962df5b183479459105075af3d0ca8669bc966a9621e2",
+          "verifier_revision": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+        },
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+      },
+      "created_at": 1791928014.475542
+    },
+    {
+      "stage": "route",
+      "evidence": {
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+        "reason": "registered_contract"
+      },
+      "created_at": 1791928014.476139
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+      },
+      "created_at": 1791928014.476553
+    },
+    {
+      "stage": "execute",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+        },
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+      },
+      "created_at": 1791928014.487465
+    },
+    {
+      "stage": "verify",
+      "evidence": {
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+      },
+      "created_at": 1791928014.488131
+    },
+    {
+      "stage": "publish",
+      "evidence": {
+        "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx",
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "formulas_preserved": true,
+            "headers_preserved": true,
+            "non_target_sheets_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "retained_metadata_preserved": true,
+            "source_unchanged": true
+          },
+          "input_rows": 5,
+          "input_sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+          "output_rows": 3,
+          "output_sha256": "945a6c3c17a9f180c50ea12fc25ba40d9c7e18eddc4b24f9528b614fd680f651",
+          "passed": true,
+          "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+          "removed_rows": 2
+        }
+      },
+      "created_at": 1791928014.493983
+    },
+    {
+      "stage": "complete",
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/xlsx-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435"
+        },
+        "format": "xlsx",
+        "input_rows": 5,
+        "input_sha256": "814c24986fcaa2610d53dab565e0b1c5256b0424050ca0f1405755961d14c688",
+        "output_rows": 3,
+        "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-2/comparison-esv8pj93/workspaces/xlsx_formulas/integrated/output.xlsx",
+        "plan_sha256": "ddb69ddb060fc8c05046529b7f4464fdc8348ea33e28871a0245c06abcf63435",
+        "published": true,
+        "removed_rows": 2,
+        "sha256": "945a6c3c17a9f180c50ea12fc25ba40d9c7e18eddc4b24f9528b614fd680f651"
+      },
+      "created_at": 1791928014.4950411
+    }
+  ]
+}

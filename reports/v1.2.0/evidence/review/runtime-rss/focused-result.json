@@ -1,0 +1,218 @@
+{
+  "scope": "RSS + direct candidate/evolution focused tests",
+  "tests": 40,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "time_seconds_xml": 13.544,
+  "terminal_summary": "40 passed in 13.55s",
+  "test_files": [
+    "tests/test_candidate_rss.py",
+    "tests/test_evolution.py",
+    "tests/test_candidates.py"
+  ],
+  "test_cases": [
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_observer_reads_real_self_inside_outer_sandbox",
+      "time_seconds": 0.063
+    },
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_observer_returns_none_for_actual_reaped_child",
+      "time_seconds": 0.022
+    },
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_unobservable_or_partial_result_fails_closed[0-1]",
+      "time_seconds": 0.0
+    },
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_unobservable_or_partial_result_fails_closed[0-0]",
+      "time_seconds": 0.0
+    },
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_unobservable_or_partial_result_fails_closed[8-0]",
+      "time_seconds": 0.0
+    },
+    {
+      "classname": "tests.test_candidate_rss",
+      "name": "test_rss_unobservable_or_partial_result_fails_closed[8-3]",
+      "time_seconds": 0.0
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_feedback_requires_real_durable_verified_artifact",
+      "time_seconds": 0.03
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_claimed_success_and_summary_do_not_become_verified_feedback",
+      "time_seconds": 0.075
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_changed_published_artifact_is_not_learning_evidence",
+      "time_seconds": 0.02
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_offline_cycle_dedupes_and_generates_all_component_proposals",
+      "time_seconds": 0.165
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_dormant_experience_stays_indexed_and_quarantine_is_visible",
+      "time_seconds": 0.1
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_default_cycle_validates_and_activates_verified_recipe",
+      "time_seconds": 0.115
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_empty_cycle_still_persists_diagnostic_without_fabricating_success",
+      "time_seconds": 0.056
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_cycle_proposer_is_separate_from_acceptance",
+      "time_seconds": 0.116
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_failure_diagnostic_binds_structured_problem_and_expected_change",
+      "time_seconds": 0.072
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_repeated_applied_cycle_does_not_reactivate_identical_recipe",
+      "time_seconds": 0.161
+    },
+    {
+      "classname": "tests.test_evolution",
+      "name": "test_cycle_quarantines_experience_when_supporting_artifact_is_changed",
+      "time_seconds": 0.169
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_real_code_validation_application_use_and_rollback",
+      "time_seconds": 0.767
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_bad_code_is_quarantined_and_cannot_activate[def prepare(plan, staging_path):\\n    open(staging_path,'w').write('wrong')\\n]",
+      "time_seconds": 0.073
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_bad_code_is_quarantined_and_cannot_activate[import csv\\ndef prepare(plan, staging_path):\\n    with open(plan['input_path'], encoding=plan['encoding'], newline='') as source:\\n        rows = list(csv.reader(source, delimiter=plan['delimiter'], strict=True))\\n    columns = [rows[0].index(key) for key in plan['key_columns']]\\n    seen, kept = set(), []\\n    for row in rows[1:]:\\n        key = tuple(row[index] for index in columns)\\n        if key in seen:\\n            seen.add(key)\\n            kept.append(row)\\n    with open(staging_path, 'w', encoding=plan['encoding'], newline='') as result:\\n        csv.writer(result, delimiter=plan['delimiter']).writerows([rows[0], *kept])\\n]",
+      "time_seconds": 0.073
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_bad_code_is_quarantined_and_cannot_activate[import csv\\ndef prepare(plan, staging_path):\\n    with open(plan['input_path'], encoding=plan['encoding'], newline='') as source:\\n        rows = list(csv.reader(source, delimiter=plan['delimiter'], strict=True))\\n    columns = [rows[0].index(key) for key in plan['key_columns']]\\n    seen, kept = set(), []\\n    for row in rows[1:]:\\n        key = tuple(str(int(row[index])) for index in columns)\\n        if key not in seen:\\n            seen.add(key)\\n            kept.append(row)\\n    with open(staging_path, 'w', encoding=plan['encoding'], newline='') as result:\\n        csv.writer(result, delimiter=plan['delimiter']).writerows([rows[0], *kept])\\n]",
+      "time_seconds": 0.127
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_candidate_and_certificate_tampering_leave_pointer_unchanged",
+      "time_seconds": 0.369
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_changed_certificate_is_not_a_validation_gate",
+      "time_seconds": 0.37
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_stale_base_cas_cannot_replace_new_activation",
+      "time_seconds": 1.434
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_activation_crash_is_recovered_without_switch",
+      "time_seconds": 0.795
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_sandbox_denies_source_writes_network_and_other_files",
+      "time_seconds": 0.149
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_timeout_cleans_owned_process_group",
+      "time_seconds": 0.36
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_production_corruption_quarantines_and_returns_core_fallback",
+      "time_seconds": 0.772
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_no_output_overwrite_and_same_plan_source_binding",
+      "time_seconds": 0.737
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_summary_evidence_cannot_activate_code",
+      "time_seconds": 0.035
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_corrupt_active_certificate_json_quarantines_and_falls_back",
+      "time_seconds": 0.753
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_self_consistent_empty_certificate_cannot_activate",
+      "time_seconds": 0.38
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_installed_prefix_cannot_expose_oracle_to_candidate",
+      "time_seconds": 0.078
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_rss_soft_monitor_kills_safe_two_mebibyte_overage",
+      "time_seconds": 0.212
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_validation_certificate_discloses_soft_memory_boundary",
+      "time_seconds": 0.384
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_rollback_invalid_previous_version_restores_builtin",
+      "time_seconds": 1.442
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_certificate_mutation_at_intent_cannot_switch_pointer",
+      "time_seconds": 0.732
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_activation_crash_after_commit_keeps_atomic_active_version",
+      "time_seconds": 0.74
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_production_only_bad_candidate_is_quarantined_and_core_replays_same_plan",
+      "time_seconds": 0.791
+    },
+    {
+      "classname": "tests.test_candidates",
+      "name": "test_explicit_empty_key_rejection_activates_despite_random_diagnostic_paths",
+      "time_seconds": 0.719
+    }
+  ],
+  "model_or_api_calls": 0,
+  "separate_host_pipeline_limit": "Hermes worker reproduced nested sandbox_apply exit71; these focused checks do not establish candidate execution through that host boundary"
+}

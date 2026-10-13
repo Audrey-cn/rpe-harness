@@ -1,0 +1,25 @@
+{
+  "scope": "source-only strict admission review, no model or API calls, unchanged live wheel/environment",
+  "source_path": "/Users/audrey/项目/rpe-harness/src/rpe_harness/integrations/hermes.py",
+  "source_sha256": "8d8df06e7318ac30a722b4db7838707d3392a412b68188490613c8d59854b3e0",
+  "specified_probes": {
+    "passed": 6,
+    "seconds": 0.6
+  },
+  "combined_probe_result": {
+    "passed": 13,
+    "failed": 1,
+    "seconds": 5.46
+  },
+  "remaining_finding": {
+    "severity": "P2",
+    "location": "integrations/hermes.py:444-468,531-550",
+    "scenario": "successful turn, change source bytes, redeliver exact original named native API/call",
+    "expected": "read-only rejection, no additional child or run",
+    "actual": "2 Harness children and 2 durable runs; new run rejected because original output exists; output unchanged",
+    "cause": "fresh source/artifact mismatch makes terminal() return None and reopens admission",
+    "recommendation": "durable linked terminal closes admission independently of fresh replay proof; reject stale/corrupt replay without invoking execution"
+  },
+  "production_source_changed_by_reviewer": false,
+  "model_or_api_calls": 0
+}

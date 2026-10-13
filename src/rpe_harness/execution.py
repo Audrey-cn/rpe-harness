@@ -254,6 +254,7 @@ def prepare_deduplication(
         "input_sha256": _digest(data), "format": file_format,
         "sheet": sheet, "key_columns": list(key_columns), "keep": keep,
         "encoding": encoding, "delimiter": delimiter,
+        "constraints": sorted(set(constraints or [])),
     }
     workbook = None
     try:
@@ -335,11 +336,14 @@ def _owned_stage(prepared: dict[str, Any]) -> tuple[Path, _StageOwnership]:
     return staging, ownership
 
 
-def publish_output(prepared: dict[str, Any]) -> None:
+def publish_output(prepared: dict[str, Any], plan: Any = None) -> None:
     """Publish a verified artifact with an atomic no-overwrite hard link."""
+    if plan is not None and (not plan.matches_prepared(prepared)
+                             or prepared.get('_verified_plan_sha256') != plan.sha256):
+        raise ValueError('publication is not bound to the verified execution plan')
     staging, ownership = _owned_stage(prepared)
-    source = Path(prepared["input_path"])
-    output = Path(prepared["output_path"])
+    source = Path(plan.input_path if plan is not None else prepared["input_path"])
+    output = Path(plan.output_path if plan is not None else prepared["output_path"])
     if source != ownership.input_path or output != ownership.output_path:
         raise ValueError("execution paths changed after preparation")
     verified_hash = prepared.get("_verified_output_sha256")
@@ -347,6 +351,8 @@ def publish_output(prepared: dict[str, Any]) -> None:
         raise ValueError("staging artifact is unverified or changed after verification")
     if _digest(source.read_bytes()) != ownership.input_sha256:
         raise ValueError("input changed after preparation")
+    if plan is not None and ownership.input_sha256 != plan.input_sha256:
+        raise ValueError('prepared source does not match original plan input')
     try:
         os.link(staging, output, follow_symlinks=False)
     except FileExistsError as error:

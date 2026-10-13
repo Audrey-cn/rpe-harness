@@ -1,0 +1,279 @@
+{
+  "generated_source_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+  "proposer_verified_feedback_run_ids": [
+    "36587000ddf94df3971f87514489a1bb",
+    "0d6e52204e2e40679ea7ea38128ace10",
+    "04d4f9ed27b9456eada50716396e91f7",
+    "ec360fd510e64f4c9beb6ba1d082a839"
+  ],
+  "cycle": {
+    "verified_feedback_count": 4,
+    "proposal_count": 10,
+    "proposal_ids": [
+      "7a8474e65ae9141e2a073bfb4b231b0d823ec2117616a3e5620afab6c810fd93",
+      "6e7817a66db9fc3c54854de762a7a8889005c401de8a2a294eb1dd680e7870f8",
+      "be872a434a8b8b38da8853f737af8a68ff55e2396804af26f02217e7aaaad6ab",
+      "a287c2b3f22d4de2f1049cc3e3e17bb4357e2de4a6473c9063e01c153d62dc92",
+      "3fc5e71ab2a6f57002911e0c6d18fe52a7909375ac848b53008acfabacecf4be",
+      "c193ecd17e5cac46ff3c424044339418024fe3738f3274d0eab26be31967edc7",
+      "26db2e0b288e0e8932444db1fe57c2aabc7dc796bbda18e8d4d7193be5e9980e",
+      "d051ee8650462f1953412bdb95d075183322954bdca56a9c0d12f935eb828cff",
+      "0e7b6de31dcd9ef5bc250b0d072779c24e9c9540d6152738f20cfae490207efa",
+      "975ffbeb5ef1648b92ad5e66cb4991b616c66fbfe18924706d1b4bac2116288e"
+    ],
+    "validated": [
+      "d051ee8650462f1953412bdb95d075183322954bdca56a9c0d12f935eb828cff",
+      "0e7b6de31dcd9ef5bc250b0d072779c24e9c9540d6152738f20cfae490207efa",
+      "975ffbeb5ef1648b92ad5e66cb4991b616c66fbfe18924706d1b4bac2116288e"
+    ],
+    "applied": [
+      {
+        "applied": true,
+        "activation_id": "4ebd8e681d0c4b4ab71dc42026ee9a62",
+        "version_id": "e202b5056ddaac72c5a0cba2473016fe44667658a49fd9eadbe6ac16111ced0b",
+        "previous_version_id": null,
+        "component": "recipe",
+        "kind": "recipe",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/evolution-artifacts/9ce811a7388c98f531853fa1a7a64963d40a64c7f3cca53f7cc8804eab79b557.json",
+        "content_hash": "9ce811a7388c98f531853fa1a7a64963d40a64c7f3cca53f7cc8804eab79b557"
+      },
+      {
+        "applied": true,
+        "activation_id": "80a2e0eca19a46958bd25c31a3e4c5de",
+        "version_id": "0261814f540bd11f1aeeee53547024cb9fd61b67f071221009da31bb76282fbb",
+        "previous_version_id": "e202b5056ddaac72c5a0cba2473016fe44667658a49fd9eadbe6ac16111ced0b",
+        "component": "recipe",
+        "kind": "recipe",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/evolution-artifacts/561f5107ccc8b34395fbcaf2affd30fc29d75016236cb4406676018d3d32d857.json",
+        "content_hash": "561f5107ccc8b34395fbcaf2affd30fc29d75016236cb4406676018d3d32d857"
+      },
+      {
+        "applied": true,
+        "activation_id": "da192249b1d441ba9d63f802f4f3b85c",
+        "version_id": "5d9ac3bb47e94997e983e565cf6f01e83b64554ce750395fb168a05db56e8dae",
+        "previous_version_id": null,
+        "component": "executor",
+        "kind": "csv_executor",
+        "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/evolution-artifacts/ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e.py",
+        "content_hash": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e"
+      }
+    ],
+    "rejected": [
+      {
+        "proposal_id": "7a8474e65ae9141e2a073bfb4b231b0d823ec2117616a3e5620afab6c810fd93",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "contract",
+          "proposal_id": "7a8474e65ae9141e2a073bfb4b231b0d823ec2117616a3e5620afab6c810fd93"
+        }
+      },
+      {
+        "proposal_id": "6e7817a66db9fc3c54854de762a7a8889005c401de8a2a294eb1dd680e7870f8",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "discovery",
+          "proposal_id": "6e7817a66db9fc3c54854de762a7a8889005c401de8a2a294eb1dd680e7870f8"
+        }
+      },
+      {
+        "proposal_id": "be872a434a8b8b38da8853f737af8a68ff55e2396804af26f02217e7aaaad6ab",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "recipe",
+          "proposal_id": "be872a434a8b8b38da8853f737af8a68ff55e2396804af26f02217e7aaaad6ab"
+        }
+      },
+      {
+        "proposal_id": "a287c2b3f22d4de2f1049cc3e3e17bb4357e2de4a6473c9063e01c153d62dc92",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "executor",
+          "proposal_id": "a287c2b3f22d4de2f1049cc3e3e17bb4357e2de4a6473c9063e01c153d62dc92"
+        }
+      },
+      {
+        "proposal_id": "3fc5e71ab2a6f57002911e0c6d18fe52a7909375ac848b53008acfabacecf4be",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "host",
+          "proposal_id": "3fc5e71ab2a6f57002911e0c6d18fe52a7909375ac848b53008acfabacecf4be"
+        }
+      },
+      {
+        "proposal_id": "c193ecd17e5cac46ff3c424044339418024fe3738f3274d0eab26be31967edc7",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "core",
+          "proposal_id": "c193ecd17e5cac46ff3c424044339418024fe3738f3274d0eab26be31967edc7"
+        }
+      },
+      {
+        "proposal_id": "26db2e0b288e0e8932444db1fe57c2aabc7dc796bbda18e8d4d7193be5e9980e",
+        "validation": {
+          "passed": false,
+          "reason": "requires_external_trusted_acceptance_suite",
+          "component": "verifier",
+          "proposal_id": "26db2e0b288e0e8932444db1fe57c2aabc7dc796bbda18e8d4d7193be5e9980e"
+        }
+      }
+    ],
+    "quarantined": [],
+    "owned_root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract"
+  },
+  "activation": {
+    "applied": true,
+    "activation_id": "da192249b1d441ba9d63f802f4f3b85c",
+    "version_id": "5d9ac3bb47e94997e983e565cf6f01e83b64554ce750395fb168a05db56e8dae",
+    "previous_version_id": null,
+    "component": "executor",
+    "kind": "csv_executor",
+    "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/evolution-artifacts/ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e.py",
+    "content_hash": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e"
+  },
+  "actual_candidate_production": {
+    "run_id": "914992b9152b4404a67f14e06632a742",
+    "status": "succeeded",
+    "verification": {
+      "checks": {
+        "duplicates_removed": true,
+        "first_records_preserved": true,
+        "headers_preserved": true,
+        "record_order_preserved": true,
+        "request_bound": true,
+        "source_unchanged": true
+      },
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "output_sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea",
+      "passed": true,
+      "plan_sha256": "7560e1d2a38a0c5c85e6e81801732c7c92024e9b04551ab8792b63ffb5cd9db5",
+      "removed_rows": 1
+    },
+    "artifact": {
+      "actual_executor": {
+        "candidate_version_id": "5d9ac3bb47e94997e983e565cf6f01e83b64554ce750395fb168a05db56e8dae",
+        "code_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "candidate",
+        "plan_sha256": "7560e1d2a38a0c5c85e6e81801732c7c92024e9b04551ab8792b63ffb5cd9db5"
+      },
+      "format": "csv",
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/candidate-production/output.csv",
+      "plan_sha256": "7560e1d2a38a0c5c85e6e81801732c7c92024e9b04551ab8792b63ffb5cd9db5",
+      "published": true,
+      "removed_rows": 1,
+      "sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea"
+    },
+    "elapsed_seconds": 0.059
+  },
+  "rollback": {
+    "rolled_back": true,
+    "version_id": "5d9ac3bb47e94997e983e565cf6f01e83b64554ce750395fb168a05db56e8dae",
+    "restored_version_id": null,
+    "reason": "restore_registered_builtin"
+  },
+  "actual_builtin_after_rollback": {
+    "run_id": "bec5868b7a42457c8341fd57762d3bb8",
+    "status": "succeeded",
+    "verification": {
+      "checks": {
+        "duplicates_removed": true,
+        "first_records_preserved": true,
+        "headers_preserved": true,
+        "record_order_preserved": true,
+        "request_bound": true,
+        "source_unchanged": true
+      },
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "output_sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea",
+      "passed": true,
+      "plan_sha256": "a1c7e81f6850076a4d9b6994ff698d49dc62c599060a0132f3375ab9caf31f04",
+      "removed_rows": 1
+    },
+    "artifact": {
+      "actual_executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "a1c7e81f6850076a4d9b6994ff698d49dc62c599060a0132f3375ab9caf31f04"
+      },
+      "format": "csv",
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/rollback-production/output.csv",
+      "plan_sha256": "a1c7e81f6850076a4d9b6994ff698d49dc62c599060a0132f3375ab9caf31f04",
+      "published": true,
+      "removed_rows": 1,
+      "sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea"
+    },
+    "elapsed_seconds": 0.019
+  },
+  "second_activation": {
+    "applied": true,
+    "activation_id": "ff5aedf6c0d6404e8ab65dd079889f3d",
+    "version_id": "07b8589d39a7a90fb04f25610a50b87f1b5ef796402d629ea4fbea89702aebe7",
+    "previous_version_id": null,
+    "component": "executor",
+    "kind": "csv_executor",
+    "artifact_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/evolution-artifacts/ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e.py",
+    "content_hash": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e"
+  },
+  "actual_builtin_after_corruption": {
+    "run_id": "d82a33acee8c411585a6e6b652185acf",
+    "status": "succeeded",
+    "verification": {
+      "checks": {
+        "duplicates_removed": true,
+        "first_records_preserved": true,
+        "headers_preserved": true,
+        "record_order_preserved": true,
+        "request_bound": true,
+        "source_unchanged": true
+      },
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "output_sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea",
+      "passed": true,
+      "plan_sha256": "71e4c9cddda140a188be8669dac9a5dd1cf233da42975988c0ffa65015043838",
+      "removed_rows": 1
+    },
+    "artifact": {
+      "actual_executor": {
+        "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "71e4c9cddda140a188be8669dac9a5dd1cf233da42975988c0ffa65015043838"
+      },
+      "format": "csv",
+      "input_rows": 4,
+      "input_sha256": "8abc3f77f7af0036dba4900268d823550ea885e3e5d6cf0ee39b82c9764caa0a",
+      "output_rows": 3,
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/installed-contract/corruption-production/output.csv",
+      "plan_sha256": "71e4c9cddda140a188be8669dac9a5dd1cf233da42975988c0ffa65015043838",
+      "published": true,
+      "removed_rows": 1,
+      "sha256": "0904268b6c15506851dff72bc8a8e4ab61e617e7da21baaa5328a7401fd30cea"
+    },
+    "elapsed_seconds": 0.021
+  },
+  "corrupted_version_quarantine": true,
+  "active_pointer_after_corruption": [
+    null,
+    4
+  ],
+  "interpretation": "Mechanism demonstrated on the existing CSV contract; not evidence of performance improvement or new capability discovery."
+}

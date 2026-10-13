@@ -1,0 +1,11 @@
+{
+  "wheel_sha256": "97794dfa0b9c92294c32b6b9337b7d99aae927d1c9187efe58de73faa733b1ca",
+  "files": {
+    "checkout-hermes.py": "c994737a2622306a751139fd8088fcfe05b2a73fa99d7712bd44c829a1b626b9",
+    "installed977-hermes.py": "c994737a2622306a751139fd8088fcfe05b2a73fa99d7712bd44c829a1b626b9",
+    "test_hermes_integration.py": "dfb76f4b58a97078242c53dede562f9db45bf4f86e06ae6321636e673fcf0860",
+    "diagnostic-report.json": "65393f0468971eaa412af5acc781b7104504968b512bcbfc318e4a83669af291"
+  },
+  "old_six_outcomes_preserved": true,
+  "diagnostic_not_reproduced": true
+}

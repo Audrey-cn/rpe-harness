@@ -1,0 +1,46 @@
+{
+  "run_id": "748ddfdb3b1442208850199bcf914116",
+  "status": "rejected",
+  "stage": "validate",
+  "owner_pid": 58916,
+  "started_at": 1791927023.021806,
+  "finished_at": 1791927023.023805,
+  "skill_id": null,
+  "attempted": 0,
+  "verification_ok": 0,
+  "source": "hermes",
+  "event_id": "entry-26994029ec9c69b525134857b11240257b0e8453d44b3f306f8d0f13bcf4500f",
+  "payload_hash": "644932922f40dc6ec0c32940693a65cc08ac14ce20ee6dc9f82f026870651d60",
+  "state": null,
+  "verification": null,
+  "artifact": null,
+  "error": {
+    "code": "invalid_request",
+    "message": "input must be a supported csv or xlsx file",
+    "type": "ValueError"
+  },
+  "event": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original"
+    ],
+    "event_id": "entry-26994029ec9c69b525134857b11240257b0e8453d44b3f306f8d0f13bcf4500f",
+    "execution": {
+      "input_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated/input.json",
+      "key_columns": [
+        "编号"
+      ],
+      "output_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v12-development-20261014-fp1l7bvp/formal-pairs-final/round-1/comparison-l_cwqxvz/workspaces/reject_json/integrated/output_probe.json"
+    },
+    "goal": "Placeholder probe to confirm tool contract before reading task input",
+    "schema_version": 2,
+    "session_id": "20261014_052958_0b0e7b"
+  },
+  "steps": [
+    {
+      "stage": "validate",
+      "evidence": {},
+      "created_at": 1791927023.0235782
+    }
+  ]
+}

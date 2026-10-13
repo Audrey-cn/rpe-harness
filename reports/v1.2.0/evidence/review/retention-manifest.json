@@ -1,0 +1,79 @@
+{
+  "scope": "historical_review_and_original_installed_candidate",
+  "final_release_acceptance": false,
+  "original_candidate_wheel_sha256": "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc",
+  "reviewed_source_manifest": "recheck/reviewed-source-sha256.json",
+  "superseded_after_real_formal_observation": "post-none additional tool execution guard gap",
+  "later_fix_component": "src/rpe_harness/integrations/hermes.py",
+  "required_followup": [
+    "independent_guard_recheck",
+    "full_regression",
+    "new_exact_wheel_install_validation"
+  ],
+  "files": [
+    {
+      "path": "independent/independent-review-initial.md",
+      "sha256": "3951941dd512adb6aa92a27913081614455298a75812a713849877556c017eca",
+      "bytes": 7020,
+      "source_relative_to_owned_review": "independent/independent-review-initial.md"
+    },
+    {
+      "path": "independent/independent-review.md",
+      "sha256": "54fa82376360528a852306185e001eea3fea9938f4fca62a2e8fc13598de2943",
+      "bytes": 8110,
+      "source_relative_to_owned_review": "independent/independent-review.md"
+    },
+    {
+      "path": "independent/test_adversarial.py",
+      "sha256": "e7295df54573e34bc1da54ecf26b98b6d4809fa8e5371272c50bbba2e3464fed",
+      "bytes": 3919,
+      "source_relative_to_owned_review": "independent/test_adversarial.py"
+    },
+    {
+      "path": "independent/control_probe.py",
+      "sha256": "755d0a46da0390042d7bc1ce37efdef6d0fb594f089af832a4d96b4491603bea",
+      "bytes": 849,
+      "source_relative_to_owned_review": "independent/control_probe.py"
+    },
+    {
+      "path": "recheck/test_recheck.py",
+      "sha256": "6b6c6a76f809bdccdb2d4ec4af81ccfb3799798af9bdbec2decde54adc042fef",
+      "bytes": 6853,
+      "source_relative_to_owned_review": "recheck/test_recheck.py"
+    },
+    {
+      "path": "recheck/reviewed-source-sha256.json",
+      "sha256": "4b98062ba6fe02e4230eb250480318fa1a46d84e6c7cd21640561322de6db070",
+      "bytes": 3370,
+      "source_relative_to_owned_review": "recheck/reviewed-source-sha256.json"
+    },
+    {
+      "path": "installed-crash/installed-crash-evidence.json",
+      "sha256": "048ba478dedd1ec004002dad9187511f3d2c5e488a7a76366e43f5c63deed835",
+      "bytes": 5457,
+      "source_relative_to_owned_review": "installed-crash/installed-crash-evidence.json"
+    },
+    {
+      "path": "installed-crash/probe-initial-assertion-record.json",
+      "sha256": "9f3a261002132558edf1eb212e128b19745864c53dfe5e8c7da972bd7ad791e4",
+      "bytes": 2455,
+      "source_relative_to_owned_review": "installed-crash/probe-initial-assertion-record.json"
+    },
+    {
+      "path": "installed-crash/reproduce_installed_crash.py",
+      "sha256": "b0f6bfb0ba649b8f07c850ca547b03dae0450daa2e02a9cb295328222a2cedf8",
+      "bytes": 10567,
+      "source_relative_to_owned_review": "installed-crash/reproduce_installed_crash.py"
+    }
+  ],
+  "original_flat_report_sha256": "4ed9b5f28a8604b60c18cc214c6bc8a642de435a69c3d056a1625e2cb1968b92",
+  "original_flat_content_preserved_in": "independent/independent-review.md",
+  "excluded": [
+    "pytest directories",
+    "SQLite databases",
+    "raw histories",
+    "session caches"
+  ],
+  "probes_executed_by_retention_script": 0,
+  "model_or_api_calls_by_retention_script": 0
+}

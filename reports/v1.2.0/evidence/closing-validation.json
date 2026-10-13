@@ -1,0 +1,24 @@
+{
+  "final_wheel_sha256": "73632f86e221f19b58021c74f1b32e470f9292d9ec24d78d9a7774e6693bc3b7",
+  "source_files": 32,
+  "full_regression": {
+    "passed": 421,
+    "subtests_passed": 3,
+    "skipped": 0
+  },
+  "installed_contract_passed": true,
+  "live_fixed_contract_cases": 6,
+  "live_fixed_contract_accepted": 6,
+  "same_agent_two_round_accepted": true,
+  "real_feedback_total": 8,
+  "real_hermes_feedback": 4,
+  "bound_real_csv_feedback": 2,
+  "actual_upgraded_followup_passed": true,
+  "crash_phases_passed": 3,
+  "owned_root_deleted": true,
+  "owned_processes_remaining": 0,
+  "local_links_checked": 59,
+  "missing_local_links": [],
+  "known_unresolved_finding": "Concurrent same-UID directory substitution can escape workspace; trusted stable workspace scope retained; not claimed fixed.",
+  "scope": "Functional release closure; no full security or universal autonomous evolution claim."
+}

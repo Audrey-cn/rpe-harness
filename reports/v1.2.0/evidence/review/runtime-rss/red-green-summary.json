@@ -1,0 +1,18 @@
+{
+  "scope": "actual macOS outer allow-default sandbox + RSS failure cases before fix",
+  "tests": 6,
+  "failed": 5,
+  "passed": 1,
+  "returncode": 1,
+  "actual_outer_profile": "(version 1)(allow default)",
+  "actual_failure": "PermissionError: [Errno 1] Operation not permitted: /bin/ps",
+  "primary_failing_test": "test_rss_observer_reads_real_self_inside_outer_sandbox",
+  "other_failing_cases": [
+    "zero/EPERM",
+    "zero/no errno",
+    "partial/no errno",
+    "partial/ESRCH"
+  ],
+  "source": "observed first pytest-rss command output in this task; safe summary, not a recreated failure",
+  "green_rss_only": "6 passed in 0.11s"
+}

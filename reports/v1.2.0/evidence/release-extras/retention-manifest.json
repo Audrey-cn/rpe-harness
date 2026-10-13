@@ -1,0 +1,921 @@
+{
+  "scope": "final release extras; copy/export only",
+  "identity": {
+    "scope": "final release extras; historical 36-session comparison remains separate",
+    "wheel_sha256": "73632f86e221f19b58021c74f1b32e470f9292d9ec24d78d9a7774e6693bc3b7",
+    "production_python_source_count": 32,
+    "wheel_checkout_installed_sources_identical": true,
+    "source_files": [
+      {
+        "path": "rpe_harness/__init__.py",
+        "sha256": "02313e14fc154a3bf0e18556b8dc7bcafe9ebd7973cdf01be2e750879aa8831f"
+      },
+      {
+        "path": "rpe_harness/__main__.py",
+        "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+      },
+      {
+        "path": "rpe_harness/bridge.py",
+        "sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974"
+      },
+      {
+        "path": "rpe_harness/capability.py",
+        "sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4"
+      },
+      {
+        "path": "rpe_harness/causal_graph.py",
+        "sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e"
+      },
+      {
+        "path": "rpe_harness/cli.py",
+        "sha256": "dc4d19f3971421e0d15f91697c21faf6f37ee7c6014a5a4388bfdb1dd8648eb5"
+      },
+      {
+        "path": "rpe_harness/contracts.py",
+        "sha256": "199d09b2aff24e79eb608ce0ee10b93569473d4d32191c7b06990fd296081c1a"
+      },
+      {
+        "path": "rpe_harness/evolution/__init__.py",
+        "sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007"
+      },
+      {
+        "path": "rpe_harness/evolution/candidates.py",
+        "sha256": "d11c04f4993b419aafad7ea3d35370d0eff8a6a82c6dc8f077596bf1ff8ed611"
+      },
+      {
+        "path": "rpe_harness/evolution/cycle.py",
+        "sha256": "d6830ddc1f4a352969a0456833bd0fb65036e01d357b985fecf9fb1bdfca284f"
+      },
+      {
+        "path": "rpe_harness/evolution/sandbox.py",
+        "sha256": "dfa8c543dd0a59b524dffc701b92b4d7451511796e2bd497f5a25c01e87a0dbb"
+      },
+      {
+        "path": "rpe_harness/evolution/store.py",
+        "sha256": "3037dcaec64107ac96b2afe582da327b907e8a2ab95e6d98b3f0630790c7c516"
+      },
+      {
+        "path": "rpe_harness/execution.py",
+        "sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5"
+      },
+      {
+        "path": "rpe_harness/experiments/__init__.py",
+        "sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8"
+      },
+      {
+        "path": "rpe_harness/experiments/baseline.py",
+        "sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b"
+      },
+      {
+        "path": "rpe_harness/experiments/basic_validation.py",
+        "sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c"
+      },
+      {
+        "path": "rpe_harness/experiments/cold_skill_test.py",
+        "sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35"
+      },
+      {
+        "path": "rpe_harness/experiments/hermes_native.py",
+        "sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340"
+      },
+      {
+        "path": "rpe_harness/experiments/hermes_repeated.py",
+        "sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84"
+      },
+      {
+        "path": "rpe_harness/experiments/stress_test.py",
+        "sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854"
+      },
+      {
+        "path": "rpe_harness/integrations/__init__.py",
+        "sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288"
+      },
+      {
+        "path": "rpe_harness/integrations/hermes.py",
+        "sha256": "60f8fbc4335e55d96ca8a74c23ed6977081d0870e8e26cb898e922d2c8a16af2"
+      },
+      {
+        "path": "rpe_harness/integrations/hermes_bootstrap.py",
+        "sha256": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0"
+      },
+      {
+        "path": "rpe_harness/integrations/hermes_broker.py",
+        "sha256": "fcb1848b762457196930c4389aba571ba46d5ed267a4c12813af001d2b4020cb"
+      },
+      {
+        "path": "rpe_harness/integrations/hermes_gate.py",
+        "sha256": "d420958881877f603070943840b3efb26e857a6a3c05ebde179a9c14a074b08a"
+      },
+      {
+        "path": "rpe_harness/integrations/hermes_session.py",
+        "sha256": "68fc3f96ce4213b94b21625fd2ef3899846464592defb3d3f70c91d28f6a0267"
+      },
+      {
+        "path": "rpe_harness/mcsi.py",
+        "sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db"
+      },
+      {
+        "path": "rpe_harness/recovery.py",
+        "sha256": "80571778eb447c361b6f32ef3276728ec196a35c02cf61f405b8db11a5887304"
+      },
+      {
+        "path": "rpe_harness/runtime.py",
+        "sha256": "3ed35e66fa7dab16c361f1096f963b365fb0ff3481e4941fad09d2b204ca492d"
+      },
+      {
+        "path": "rpe_harness/server.py",
+        "sha256": "207dd8acc8c22e666dbaec6bed4c8d564f976617b7b8f59fa32197c7bc469899"
+      },
+      {
+        "path": "rpe_harness/storage.py",
+        "sha256": "4a4e0ce3e19ae75861f8e6862470efcf49fbbd2982f4bb53ecc6056b6376948c"
+      },
+      {
+        "path": "rpe_harness/verification.py",
+        "sha256": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+      }
+    ],
+    "package_tree_sha256": "c9858b86912af22ed301532b64d40c0bf920718151863c820d9caf63d9f52aaa",
+    "candidate_generated_sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+    "old_snapshot_wheels": {
+      "97794dfa0b9c92294c32b6b9337b7d99aae927d1c9187efe58de73faa733b1ca": "post-broker pre-parameter-feedback; anchored four-of-six and same-source XLSX two-of-two diagnostic",
+      "bee526c7cb37844d2036602a3732b678c1d365f6e832d33c936733afbc47e1fc": "formal 36 / pre-admission-guard",
+      "b9ab6a7e5ec85d59c544f813239e90fabb2178e2c1c1594f083b9f10f53517a7": "pre-runtime-sandbox-fix",
+      "d495baa79c78bdf3855aaa62ffff8758d5af4ed4f252db7a9e778926c2cf4689": "pre-external-executor"
+    },
+    "installed_contract_passed": true,
+    "anchored_completed": true,
+    "anchored_accepted": true,
+    "sdk_probes": [
+      {
+        "path": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/report.json",
+        "matches_final_source": true,
+        "accepted": true,
+        "cleanup_complete": true
+      },
+      {
+        "path": "probes/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/report.json",
+        "matches_final_source": true,
+        "accepted": false,
+        "cleanup_complete": true
+      }
+    ],
+    "crash_passed": true,
+    "retention_model_or_api_calls": 0
+  },
+  "files": [
+    {
+      "path": "evidence/release-extras/installed-contract.json",
+      "role": "compact_installed_contract_report",
+      "bytes": 9333,
+      "sha256": "9980628868cc391326f5ef5100d44b5e1ec68317d438f17d72c7308c6afe59d8",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/report.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_chinese/input.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_chinese/input.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_chinese/output.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_chinese/output.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_chinese/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 629,
+      "sha256": "ea297e2852276d15661c958f44c7d6610f35f59c1c9c6514b98e9b912bea56f2",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_chinese/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_chinese/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 7802,
+      "sha256": "e843288e3b0b517828977b088ba6cfbab81b1b4b393587a6c90d3fb9bf412ba8",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_chinese/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_multiline/input.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_multiline/input.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_multiline/output.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_multiline/output.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_multiline/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 645,
+      "sha256": "edf3a05c24ac70b159416057cb4535979a142048147bc448565dbea4f823f61e",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_multiline/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/csv_multiline/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 7864,
+      "sha256": "88645d1e14f1349ecab4cd16b0e76704b6a29ceff5b87454e3e87ed66adf5ecb",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/csv_multiline/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_typed_keys/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 5055,
+      "sha256": "9d5fa27cadeb79c16023b0353c3a12a9b60939ecee35dd1a4a4ff8d3ae44b9b6",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_typed_keys/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_typed_keys/output.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 5018,
+      "sha256": "2ec7be521dadc130373566451e8213b1a30b72f8020748b46d7d3eb860a006a2",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_typed_keys/output.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_typed_keys/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 672,
+      "sha256": "c5e5e41f3f4d039ba65e23a0c92a60608d3facbd98847b878cca0cf5b196ff78",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_typed_keys/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_typed_keys/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8186,
+      "sha256": "bc84fbc905da0388cbc5addb3a93f5d0d72765a0a2ff7ce51e8172d648a6af54",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_typed_keys/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_formulas/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 7090,
+      "sha256": "ac0ae7fe4970b95701fe093837e65627f7c50c971c344dcbb67a74e2509f5426",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_formulas/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_formulas/output.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 7045,
+      "sha256": "dcdad57e4e4f5a8f8c4a52525b1a1d55bf00b468babb153d9c31e832caf8c794",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_formulas/output.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_formulas/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 656,
+      "sha256": "fe6244dc03722c8fb840f1d1deb8a5548dc59d3bd1480ba889b1353c1fe52144",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_formulas/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/xlsx_formulas/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8125,
+      "sha256": "1f02ced054d0fe1101af8176a2bfbc499af35c84b9a2d3a649859f928a23da0f",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/xlsx_formulas/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_json/input.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_json/input.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_json/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 631,
+      "sha256": "9714df47c5e8f81de15dafc72f5672f7bfaf8a2953fb5568324db84457074d73",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_json/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_json/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 1452,
+      "sha256": "764d3ec1b3d0252a9bffb645ffa4c4934cef8aa5226de93c2330bd4d4e5bdf81",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_json/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_formula_dependency/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 4980,
+      "sha256": "e31aa5a78e01f1852dd06cebda715efa387a72b16b010033324f45c2a85bc9cb",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_formula_dependency/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_formula_dependency/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 692,
+      "sha256": "1f7740f02220dd27f8960acdb26cf79bfc2937470a47caa55609d1882c341e36",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_formula_dependency/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-contract/reject_formula_dependency/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 3983,
+      "sha256": "adfe9436385a5da06c9fe85de3429b9f5645551a3c507f2c7c8aa89091f62f9e",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/fixtures/reject_formula_dependency/run.json"
+    },
+    {
+      "path": "evidence/release-extras/hermes-anchored.json",
+      "role": "compact_real_host_anchored_report",
+      "bytes": 110261,
+      "sha256": "cc8b25eb843726f7dacfcb806b05a513102282bf210ff4d5d9b8572a9a6cd896",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/report.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_chinese/input.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 176,
+      "sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_chinese/input.csv"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_chinese/output.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 114,
+      "sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_chinese/output.csv"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_chinese/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 725,
+      "sha256": "d8cbbb20d9654bc4052664763e311482aa8ad03e28339e9b2fa36f4f89100a64",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_chinese/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_chinese/runs/18beabdb13f04aca8df615876f0530c5/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8223,
+      "sha256": "e98e276ada6c0493958965aecb43193bac712d9f441c77ef44001a00ca4b1b2e",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_chinese/18beabdb13f04aca8df615876f0530c5-run.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_multiline/input.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 171,
+      "sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_multiline/input.csv"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_multiline/output.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 134,
+      "sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_multiline/output.csv"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_multiline/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 747,
+      "sha256": "9831e28e11f0a0217e5c5684178aca92b154306df7388bb5c026c4c68f84765f",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_multiline/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/csv_multiline/runs/82efbb8a4dd54003b4c3b11b48b328dd/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8564,
+      "sha256": "e93833f1fa251cd07b4cf1c7465a32cb3be6f0e8b1ab6a39254dcb32a6bfb5b4",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/csv_multiline/82efbb8a4dd54003b4c3b11b48b328dd-run.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_typed_keys/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 5054,
+      "sha256": "bb7ce678c66531288bf0736178c0fc091815ef90122af8550a726712b20607af",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_typed_keys/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_typed_keys/output.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 5021,
+      "sha256": "24ea20a2a8e64ffb1c80df611aa51c2b1a7cf14a3cdc5cf863f89eaca40f5621",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_typed_keys/output.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_typed_keys/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 778,
+      "sha256": "cb8fe3898bb4b068678179d9e2e63ca52dd3b9c28124cbb7408b5e1bf44391c4",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_typed_keys/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_typed_keys/runs/cc33a7558f1e456bbc8586aa40fc1bb7/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 9240,
+      "sha256": "b110748251aec43d081ee481f00c4a718ae086a59baa6fb8f9e7f3dfcb5921b7",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_typed_keys/cc33a7558f1e456bbc8586aa40fc1bb7-run.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_formulas/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 7089,
+      "sha256": "0fc510e93fb447a4fa151f3ced2436767724358da7be96d5891d94f3300710f8",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_formulas/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_formulas/output.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 7048,
+      "sha256": "ea28f4aee36b637ef0b410866f1fde7d264062f16b745a871c5d218241269566",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_formulas/output.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_formulas/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 756,
+      "sha256": "141107b0fbb5825c7d15ca3ba61537592a298a617007feb268cd0a6b6e35177a",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_formulas/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/xlsx_formulas/runs/8afd7f250abf409e9b0bac2a6d2132f8/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8596,
+      "sha256": "459179c42d58517ec301c83240b16e4189739e66402e7717e761cc2c7f0e2a98",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/xlsx_formulas/8afd7f250abf409e9b0bac2a6d2132f8-run.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_json/input.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 36,
+      "sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_json/input.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_json/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 727,
+      "sha256": "bb5a477e449c6a0941bc734110a821d6c41414b85d15921861324d9fe1a440a9",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_json/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_json/runs/48bc86057c514fb8abcf5be8cd132799/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 1577,
+      "sha256": "92378ac2df2d1d27c9235547e36c520609d247d4cb1e187abca47e076ae4f2c2",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_json/48bc86057c514fb8abcf5be8cd132799-run.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_formula_dependency/input.xlsx",
+      "role": "synthetic_business_fixture",
+      "bytes": 4979,
+      "sha256": "1f2ecbbd7802ab3ed9f32028fcce01ddfa69e8e09cd2075388686185b00bf852",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/input.xlsx"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_formula_dependency/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 792,
+      "sha256": "4b4e91fca601308a2759e7dca19e95c93f8914f2bd40dec3f1b0cd04deb22295",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/hermes-anchored/reject_formula_dependency/runs/0946708e44ac4a9fbd998c0c71a106b6/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 5354,
+      "sha256": "4aceb61cd8c2630c4b8f7b0b0c89d5b5d11ec2a3ec38c9135aabecbbb2d0f5ba",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/hermes-anchored/fixtures/reject_formula_dependency/0946708e44ac4a9fbd998c0c71a106b6-run.json"
+    },
+    {
+      "path": "evidence/release-extras/real-feedback-evolution.json",
+      "role": "compact_real_feedback_cycle_report",
+      "bytes": 8041,
+      "sha256": "10b57e029ebdb6790cb7ddcf039a6586503e722891b295b4368c4cb37d03d4b4",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/real-feedback-evolution.json"
+    },
+    {
+      "path": "artifacts/release-extras/real-feedback-followup/orders.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 40,
+      "sha256": "236e6e4bda31cd08b9c09a37c9cd15a9944896e9519745875bf96e1e36b09ff9",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/real-feedback-followup/orders.csv"
+    },
+    {
+      "path": "artifacts/release-extras/real-feedback-followup/out.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 36,
+      "sha256": "55c16ad650e33cdbad87e76a4ba0193ac2ae56546fe7d6999220f44c8ee3f8d8",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/real-feedback-followup/out.csv"
+    },
+    {
+      "path": "artifacts/release-extras/real-feedback-followup/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 661,
+      "sha256": "55e5974ecdb121a14d91a035290da3a2af0334b900f287520a4560987f4b9156",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/real-feedback-followup/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/real-feedback-followup/run.json",
+      "role": "safe_durable_run_record",
+      "bytes": 8124,
+      "sha256": "1958306e373af9e233300b6010f1b7a7f0339858e5df0fbc1da306daa6ed2ae5",
+      "generated": false,
+      "source_relative_to_owned": "installed-contract-release/real-feedback-followup/run.json"
+    },
+    {
+      "path": "artifacts/release-extras/generated-csv-executor.py",
+      "role": "earlier_isolated_CLI_generated_candidate",
+      "bytes": 1766,
+      "sha256": "ed3882aee3ce8e036071effbf11da6df46e276cb75c3055056c483c5f233698e",
+      "generated": false,
+      "source_relative_to_owned": "codex-candidate-2/workspace/candidate.py"
+    },
+    {
+      "path": "evidence/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/report.json",
+      "role": "compact_same_agent_report_final_source",
+      "bytes": 31289,
+      "sha256": "489ff69047d13cf865aebd8294f2a83d02540bec7b237e694a29a69858d33eec",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/report.json"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/first.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 24,
+      "sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first.csv"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/first-out.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 25,
+      "sha256": "772f8d8e8fb19922a7289ed93fc3b1fd7e8d86a77b2f2c44ba22f50684b0523e",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/first-out.csv"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/second.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 24,
+      "sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/second.csv"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/second-out.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 25,
+      "sha256": "5932cc01b1c8b363f928daf31375fc4d27c74bfd6fcb1fad5eae902d9e8369f3",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-254f36e23ff146529dc77afbbf33fa8e/workspace/second-out.csv"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/runs/a4abd767d91b4fa09510efdcaa9c2d87/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 8212,
+      "sha256": "87a75955414093d6656163c0331c67c9cb9fe153d83dbc2ca7d04d8309853f87",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/runs/a4abd767d91b4fa09510efdcaa9c2d87/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 798,
+      "sha256": "b9913a6296c06ed04bd6500bbb731aa2ecc0e15fc0f1137a1bae3c4b8d1bcba4",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/runs/093b41c209b4490baf69e5dafdc4f960/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 8217,
+      "sha256": "ce730c59cd9b7de946089c6f49adbd7b531406a4f3fa3768fa838627131fa78e",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-254f36e23ff146529dc77afbbf33fa8e/runs/093b41c209b4490baf69e5dafdc4f960/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 800,
+      "sha256": "f18d150d17e5e735bf91995b533e5190a3b3d4f55d9e0f823c08f2912fea6bde",
+      "generated": true
+    },
+    {
+      "path": "evidence/release-extras/sdk-two-rounds/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/report.json",
+      "role": "compact_same_agent_report_final_source",
+      "bytes": 2247,
+      "sha256": "51474aa291205bf3d2792de732fdb2805d0082711b2dc55310f350d43138b166",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/report.json"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/first.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 24,
+      "sha256": "444e9d4f72c6a72dca2130739d2a48d67bfe53a5bd13205b6035350eadd4fa96",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/workspace/first.csv"
+    },
+    {
+      "path": "artifacts/release-extras/sdk-two-rounds/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/second.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 24,
+      "sha256": "b0e952f5f8aca6de1046641c46fd750c7932b9caaf75d0de1df2427ef08e514e",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry-reset-b47f3a2c1abd4123923c5190ee70a5b5/workspace/second.csv"
+    },
+    {
+      "path": "evidence/release-extras/installed-crash/installed-crash-evidence.json",
+      "role": "compact_installed_crash_report",
+      "bytes": 5473,
+      "sha256": "4e58bbc99d31a93e09f0208225d3ad07ac2024c4187e3dc05829e3775456d6e0",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/installed-crash-evidence.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/source.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 62,
+      "sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_execution/source.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/result.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 54,
+      "sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_execution/result.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 641,
+      "sha256": "1e7d43ffc5c066502d709f9718e4b5c0c2255ff9f471c1308d8a0b03cf4586fe",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_execution/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/runs/c7e2610af3684b53a1128789df8d4b95/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 3780,
+      "sha256": "008fec11d1972b4b3a76f2b739a9d872ec50ecaa0c81b88f3a577dfa610e43d6",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/runs/c7e2610af3684b53a1128789df8d4b95/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 696,
+      "sha256": "9d5c2a0eee30c017e8d61da6d5eaa4db2bed16d323830411e8f2ac2e4b70cf37",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/runs/41c19b0f34e84ebb96caed1acb89d9f1/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 8031,
+      "sha256": "5a07e78a1a2d8ce652c8d8594fe9e63126cece7b98d38a301c6ceb60bdfe77ec",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_execution/runs/41c19b0f34e84ebb96caed1acb89d9f1/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 703,
+      "sha256": "155ccdf95ace6e6de6e2cdc24066766edf2cd1d7f58f8b50b204f24f6edaf279",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/source.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 62,
+      "sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/source.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/result.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 54,
+      "sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/result.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 671,
+      "sha256": "6b5a645b1b0b4aacc5f82eda0b064e7cacaeb4619009a64cc6cc7e4bddcc1974",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/before_publication_intent/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/runs/79a8e66933ab41dfb23272fc204b2bb9/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 4557,
+      "sha256": "7c368f588a3a60688532d15ae53a84c6d0c85049c166ae592055d51fca58c594",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/runs/79a8e66933ab41dfb23272fc204b2bb9/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 726,
+      "sha256": "6b32d163158fb3825241f3e31f8a07ae3c782768fe95fcb1cb9f278cf6e76ee8",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/runs/08be45dad1204182a751a32b57f8f0af/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 8103,
+      "sha256": "a28b9facbdbd878eae54063f2186fc2006546b552da6c6136af0bcbdf6b695de",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/before_publication_intent/runs/08be45dad1204182a751a32b57f8f0af/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 723,
+      "sha256": "d7c124aab489b02158a9b2d70fa6b070daf4b24768a357ad8051bb43d38fd119",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_publication/source.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 62,
+      "sha256": "94ed447d492ba80890ec77d134a0831ad7b3de80427ebed815e8ebabbd97e1ff",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_publication/source.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_publication/result.csv",
+      "role": "synthetic_business_fixture",
+      "bytes": 54,
+      "sha256": "c51408f4c9a212c734f2a443afceb38630535b927d85566423eac6a780633d33",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_publication/result.csv"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_publication/request.json",
+      "role": "synthetic_business_fixture",
+      "bytes": 647,
+      "sha256": "649afb371390b2f0623f15da54726673118765da9d43fae9d5bd26fed94f4cd9",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/run-20261014T072213-6ce22196/after_publication/request.json"
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_publication/runs/695f50b61a2040dca12990be4cda0403/run.json",
+      "role": "readonly_RunStore_get_export",
+      "bytes": 5640,
+      "sha256": "3a65a959edb697091ff345c8305cdf49ac243b40244c4c787c4aac05a366308a",
+      "generated": true
+    },
+    {
+      "path": "artifacts/release-extras/installed-crash/after_publication/runs/695f50b61a2040dca12990be4cda0403/request.json",
+      "role": "durable_business_request_export",
+      "bytes": 702,
+      "sha256": "9358de74c8f7b91462812f6f9d2ef3135872f601e054926404d241da9ee2c8ca",
+      "generated": true
+    },
+    {
+      "path": "evidence/release-extras/helpers/check_installed_release.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 4071,
+      "sha256": "6203831361439c0dd67bec0855b1b8028da3096963ca471e44d7a999e58728dd",
+      "generated": false,
+      "source_relative_to_owned": "check_installed_release.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/check_anchored_release.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 5319,
+      "sha256": "b124af7f7e42906990ed0a8f6e9ac66102656c95899a107f9701b743ca218ea2",
+      "generated": false,
+      "source_relative_to_owned": "check_anchored_release.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/check_real_feedback_cycle.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 4288,
+      "sha256": "90f8bb1103331ab92841f6539df554008cba667285096e11bea4702e16dcbaf8",
+      "generated": false,
+      "source_relative_to_owned": "check_real_feedback_cycle.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/entry_reset_parent.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 15395,
+      "sha256": "2b86f596b48d65743fdd850c370f453a02bcdc38c92ebc4d7520a60f1b170b18",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry_reset_parent.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/entry_reset_sdk.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 7287,
+      "sha256": "49b16ae09907b89cdb1806728e69e6dd6eb02292b6971eb46c0e69c1ee662613",
+      "generated": false,
+      "source_relative_to_owned": "probes/entry_reset_sdk.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/reproduce_installed_crash.py",
+      "role": "byte_identical_reproduction_helper",
+      "bytes": 10567,
+      "sha256": "b0f6bfb0ba649b8f07c850ca547b03dae0450daa2e02a9cb295328222a2cedf8",
+      "generated": false,
+      "source_relative_to_owned": "review/installed-crash-release/reproduce_installed_crash.py"
+    },
+    {
+      "path": "evidence/release-extras/helpers/retain_release_extras.py",
+      "role": "byte_identical_retention_helper",
+      "bytes": 27092,
+      "sha256": "b4b229d57de837d4b0f0096e5d1090c966b0b9bc17b4c8984c9b6b6db05d9e48",
+      "generated": false,
+      "source_relative_to_owned": "retain_release_extras.py"
+    },
+    {
+      "path": "evidence/release-extras/source-identity.json",
+      "role": "final_source_identity",
+      "bytes": 6183,
+      "sha256": "9f3d3dd0ec030ac4dcb04e2f80e32d3411606af79b8c17480d7d1bdbb637d695",
+      "generated": true
+    },
+    {
+      "path": "evidence/release-extras/fixture-index.json",
+      "role": "relative_fixture_index",
+      "bytes": 37305,
+      "sha256": "b3408539c1f8cce905f2e4ed86f48fe41e5121d05ec85c368fc94fd527d2fcf0",
+      "generated": true
+    },
+    {
+      "path": "evidence/release-extras/README.md",
+      "role": "retention_and_reproduction_scope",
+      "bytes": 2711,
+      "sha256": "63e7eb3def2ba37cc094b5b090ee77abb01c9c287e49eddd1be4b45a1aad59b2",
+      "generated": true
+    }
+  ],
+  "generated_manifest_not_self_hashed": true,
+  "source_reports_unmodified": true,
+  "history_overwritten": false,
+  "model_or_api_calls": 0,
+  "source_database_copy_count": 0,
+  "excluded": [
+    ".env",
+    "auth",
+    "configuration",
+    "Hermes home",
+    "SQLite files",
+    "raw chats",
+    "stdout/stderr",
+    "logs",
+    "transcripts",
+    "skills",
+    "cache"
+  ]
+}

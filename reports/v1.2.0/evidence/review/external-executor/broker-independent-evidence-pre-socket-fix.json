@@ -1,0 +1,187 @@
+{
+  "scope": "independent authenticated external execution broker, original admission+certificate compatibility",
+  "pytest_exit": 0,
+  "summary": "33 passed in 12.98s",
+  "source_sha256": {
+    "src/rpe_harness/__init__.py": "02313e14fc154a3bf0e18556b8dc7bcafe9ebd7973cdf01be2e750879aa8831f",
+    "src/rpe_harness/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/rpe_harness/bridge.py": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "src/rpe_harness/capability.py": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "src/rpe_harness/causal_graph.py": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "src/rpe_harness/cli.py": "dc4d19f3971421e0d15f91697c21faf6f37ee7c6014a5a4388bfdb1dd8648eb5",
+    "src/rpe_harness/contracts.py": "199d09b2aff24e79eb608ce0ee10b93569473d4d32191c7b06990fd296081c1a",
+    "src/rpe_harness/evolution/__init__.py": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+    "src/rpe_harness/evolution/candidates.py": "d11c04f4993b419aafad7ea3d35370d0eff8a6a82c6dc8f077596bf1ff8ed611",
+    "src/rpe_harness/evolution/cycle.py": "4e1a29d92552bbfac65afa4052729438809631a467270edade7f14deb08ff3a1",
+    "src/rpe_harness/evolution/sandbox.py": "dfa8c543dd0a59b524dffc701b92b4d7451511796e2bd497f5a25c01e87a0dbb",
+    "src/rpe_harness/evolution/store.py": "3037dcaec64107ac96b2afe582da327b907e8a2ab95e6d98b3f0630790c7c516",
+    "src/rpe_harness/execution.py": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+    "src/rpe_harness/experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "src/rpe_harness/experiments/baseline.py": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "src/rpe_harness/experiments/basic_validation.py": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "src/rpe_harness/experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "src/rpe_harness/experiments/hermes_native.py": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+    "src/rpe_harness/experiments/hermes_repeated.py": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+    "src/rpe_harness/experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "src/rpe_harness/integrations/__init__.py": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "src/rpe_harness/integrations/hermes.py": "c994737a2622306a751139fd8088fcfe05b2a73fa99d7712bd44c829a1b626b9",
+    "src/rpe_harness/integrations/hermes_bootstrap.py": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+    "src/rpe_harness/integrations/hermes_broker.py": "67c2003aaaecb06f34f10a1c9f3d6f6c4b8d991e427db775af615f1996799278",
+    "src/rpe_harness/integrations/hermes_gate.py": "d420958881877f603070943840b3efb26e857a6a3c05ebde179a9c14a074b08a",
+    "src/rpe_harness/integrations/hermes_session.py": "68fc3f96ce4213b94b21625fd2ef3899846464592defb3d3f70c91d28f6a0267",
+    "src/rpe_harness/mcsi.py": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "src/rpe_harness/recovery.py": "80571778eb447c361b6f32ef3276728ec196a35c02cf61f405b8db11a5887304",
+    "src/rpe_harness/runtime.py": "3ed35e66fa7dab16c361f1096f963b365fb0ff3481e4941fad09d2b204ca492d",
+    "src/rpe_harness/server.py": "207dd8acc8c22e666dbaec6bed4c8d564f976617b7b8f59fa32197c7bc469899",
+    "src/rpe_harness/storage.py": "4a4e0ce3e19ae75861f8e6862470efcf49fbbd2982f4bb53ecc6056b6376948c",
+    "src/rpe_harness/verification.py": "c313b4e39ac848883487064a3b2644fe828d88ed9a3fe1980c768d84368152f7"
+  },
+  "source_unchanged_during_probe": true,
+  "changed_during_probe": [],
+  "source_file_count": 32,
+  "no_model_provider_calls": true,
+  "daily_writes": false,
+  "junit": "independent-final-1.xml",
+  "log": "independent-final-1-pytest.log",
+  "probes": {
+    "no_models": true,
+    "daily_writes": false,
+    "probes": [
+      {
+        "probe": "strict_event_id_binding",
+        "status": 403,
+        "answer": {
+          "error": {
+            "code": "broker_receipt_invalid"
+          }
+        }
+      },
+      {
+        "probe": "receipt_replay_binding",
+        "statuses": [
+          200,
+          200,
+          403
+        ]
+      },
+      {
+        "probe": "no_execution_none",
+        "status": 403,
+        "answer": {
+          "error": {
+            "code": "broker_receipt_invalid"
+          }
+        }
+      },
+      {
+        "probe": "no_execution_missing_policy",
+        "status": 403,
+        "answer": {
+          "error": {
+            "code": "broker_receipt_invalid"
+          }
+        }
+      },
+      {
+        "probe": "no_execution_unlinked_receipt",
+        "status": 403,
+        "answer": {
+          "error": {
+            "code": "broker_receipt_invalid"
+          }
+        }
+      },
+      {
+        "probe": "no_execution_outside_path",
+        "status": 403,
+        "answer": {
+          "error": {
+            "code": "broker_receipt_invalid"
+          }
+        }
+      },
+      {
+        "probe": "domain_rejection_no_overwrite",
+        "status": 200,
+        "result_status": "rejected"
+      },
+      {
+        "probe": "http_auth_missing",
+        "status": 401,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_auth_nonascii",
+        "status": 401,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_get",
+        "status": 501,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_route",
+        "status": 404,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_transfer_encoding",
+        "status": 400,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_large",
+        "status": 413,
+        "alive_status": 401
+      },
+      {
+        "probe": "http_bad_json",
+        "status": 400,
+        "alive_status": 401
+      },
+      {
+        "probe": "actual_nested_broker_candidate",
+        "executor": {
+          "candidate_version_id": "ea50bf7b8ca00dad18d30096f7316a3f9d0909c777964da061e08d8fd7326696",
+          "code_sha256": "991f0d5df898865073b80c9239c12c50049fdc6a207be74651408fed76ea8e9a",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "c72f22e456903948a4d7ce011409198f70430ed8e3607c03bd16f229169edc16"
+        },
+        "candidate_state": "active",
+        "quarantine_reason": null,
+        "exit_code": 0,
+        "elapsed_s": 0.3590514579991577,
+        "cleanup_intervention_pids": []
+      },
+      {
+        "probe": "actual_nested_broker_timeout",
+        "executor": {
+          "code_sha256": "bf8f75a92d4411d01f7f55b4218d49674eb856dabff070ce4453fd90f394edd5",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "b023dc0802d281e76ba9facbc5b81db2d2e2ad03afb93257351c5f083c155c8c"
+        },
+        "candidate_state": "quarantine",
+        "quarantine_reason": "candidate timeout",
+        "exit_code": 0,
+        "elapsed_s": 3.3283294580032816,
+        "cleanup_intervention_pids": []
+      },
+      {
+        "probe": "context_cancellation_separate_candidate_group",
+        "observed_pids": [
+          84464,
+          84468
+        ],
+        "remaining_after_context": [],
+        "context_exit_seconds": 0.46431654201296624,
+        "response_statuses": [
+          502
+        ],
+        "connection_errors": []
+      }
+    ]
+  }
+}

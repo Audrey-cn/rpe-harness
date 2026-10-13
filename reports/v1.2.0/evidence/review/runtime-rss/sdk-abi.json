@@ -1,0 +1,30 @@
+{
+  "source": "installed Apple macOS SDK headers; read without external requests",
+  "sdk_root": "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+  "struct_header": "usr/include/sys/proc_info.h",
+  "struct_lines": [
+    124,
+    143
+  ],
+  "flavor_lines": [
+    721,
+    722
+  ],
+  "function_header": "usr/include/libproc.h",
+  "function_line": 96,
+  "function": "int proc_pidinfo(int pid, int flavor, uint64_t arg, void *buffer, int buffersize)",
+  "PROC_PIDTASKINFO": 4,
+  "struct_size_bytes": 96,
+  "resident_size_offset_bytes": 8,
+  "resident_unit": "bytes",
+  "layout": "six uint64_t fields, followed by twelve int32_t fields",
+  "success": "complete sizeof(proc_taskinfo) response",
+  "gone": "zero bytes with ESRCH only",
+  "other_failures": "OSError; no silent low-RSS fallback",
+  "unchanged_limits": {
+    "resident_bytes": 134217728,
+    "rss_poll_seconds": 0.02,
+    "timeout": "unchanged",
+    "candidate_permissions": "unchanged"
+  }
+}
