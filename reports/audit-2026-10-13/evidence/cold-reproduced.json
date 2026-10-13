@@ -1,0 +1,813 @@
+{
+  "experiment": "cold_skill_recovery",
+  "timestamp": "2026-10-13T21:41:56+0800",
+  "config": {
+    "seed": 42,
+    "total_skills": 79,
+    "num_dormant": 10,
+    "num_tasks": 20,
+    "num_dormant_tasks": 10,
+    "num_active_tasks": 10,
+    "graph_edges": 12,
+    "graph_profiles": 82
+  },
+  "dormant_skills": [
+    "apple/imessage",
+    "creative/baoyu-infographic",
+    "creative/design-md",
+    "creative/humanizer",
+    "creative/popular-web-designs",
+    "productivity/document-to-action-items",
+    "productivity/maps",
+    "productivity/powerpoint",
+    "root/uaek-memory-management",
+    "software-development/node-inspect-debugger"
+  ],
+  "recovery_rate": 1.0,
+  "recovery": {
+    "total_dormant": 10,
+    "recovered": 10,
+    "recovered_skills": [
+      "apple/imessage",
+      "creative/baoyu-infographic",
+      "creative/design-md",
+      "creative/humanizer",
+      "creative/popular-web-designs",
+      "productivity/document-to-action-items",
+      "productivity/maps",
+      "productivity/powerpoint",
+      "root/uaek-memory-management",
+      "software-development/node-inspect-debugger"
+    ],
+    "missed_skills": []
+  },
+  "false_positive_rate": 0.5238,
+  "false_positives": {
+    "total_discoveries": 21,
+    "false_positives": 11,
+    "by_skill": {
+      "creative/design-md": 9,
+      "creative/humanizer": 1,
+      "software-development/node-inspect-debugger": 1
+    },
+    "discoveries_by_reason": {
+      "场景匹配": 21
+    },
+    "examples": [
+      {
+        "task_id": "t10",
+        "target": "software-development/node-inspect-debugger",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t04",
+        "target": "creative/humanizer",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t02",
+        "target": "creative/baoyu-infographic",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t05",
+        "target": "creative/popular-web-designs",
+        "false_positive": "creative/humanizer"
+      },
+      {
+        "task_id": "t05",
+        "target": "creative/popular-web-designs",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t19",
+        "target": "software-development/codebase-inspection",
+        "false_positive": "software-development/node-inspect-debugger"
+      },
+      {
+        "task_id": "t19",
+        "target": "software-development/codebase-inspection",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t13",
+        "target": "creative/claude-design",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t15",
+        "target": "productivity/google-workspace",
+        "false_positive": "creative/design-md"
+      },
+      {
+        "task_id": "t14",
+        "target": "productivity/box",
+        "false_positive": "creative/design-md"
+      }
+    ]
+  },
+  "latency_ms": {
+    "route": {
+      "avg": 0.001,
+      "p50": 0.001,
+      "p95": 0.003,
+      "max": 0.004
+    },
+    "discover": {
+      "avg": 0.367,
+      "p50": 0.357,
+      "p95": 0.415,
+      "max": 0.418
+    }
+  },
+  "routing": {
+    "top1_accuracy": 0.0,
+    "target_in_top5_rate": 0.0,
+    "score_rank_top1_rate": 0.75,
+    "score_rank_avg": 5.1,
+    "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+  },
+  "tasks": [
+    {
+      "task_id": "t10",
+      "target_skill": "software-development/node-inspect-debugger",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle software-development node-inspect-debugger debugging nodejs node-inspect cdp breakpoints ui-tui Debug Node.js inspect Chrome DevTools Protocol CLI",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 1.0,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "software-development/node-inspect-debugger",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t04",
+      "target_skill": "creative/humanizer",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle creative humanizer writing editing humanize anti-ai-slop voice prose text Humanize strip AI-isms add real",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/humanizer",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t11",
+      "target_skill": "autonomous-ai-agents/codex",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle autonomous-ai-agents codex Coding-Agent Codex OpenAI Code-Review Refactoring Delegate coding CLI features PRs",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 2,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [],
+      "target_discovered": false,
+      "false_positives": []
+    },
+    {
+      "task_id": "t16",
+      "target_skill": "root/yimei-methodology-research",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle root yimei-methodology-research 医美方法论研究增强 用学术文献检索为策略文件补充实证支撑。触发：方法论更新、策略增强、研究支撑、学术引用",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.4,
+      "target_score_rank": 78,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [],
+      "target_discovered": false,
+      "false_positives": []
+    },
+    {
+      "task_id": "t17",
+      "target_skill": "productivity/weekly-review-planning",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle productivity weekly-review-planning Weekly-Review Planning Tasks Calendar Productivity Weekly reset commitments stalled work next-week plan",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [],
+      "target_discovered": false,
+      "false_positives": []
+    },
+    {
+      "task_id": "t20",
+      "target_skill": "research/longitudinal-competitive-research",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle research longitudinal-competitive-research longitudinal competitive-analysis synthesis 深度研究产品、公司、技术或概念，梳理历程、竞品并综合研判。",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 2,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [],
+      "target_discovered": false,
+      "false_positives": []
+    },
+    {
+      "task_id": "t02",
+      "target_skill": "creative/baoyu-infographic",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle creative baoyu-infographic infographic visual-summary image-generation 信息图 可视化(21布局x21风格)；需要信息图大图时加载",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/baoyu-infographic",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t12",
+      "target_skill": "autonomous-ai-agents/claude-code",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle autonomous-ai-agents claude-code Coding-Agent Claude Anthropic Code-Review Refactoring PTY Automation Delegate coding Code CLI features PRs",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [],
+      "target_discovered": false,
+      "false_positives": []
+    },
+    {
+      "task_id": "t05",
+      "target_skill": "creative/popular-web-designs",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle creative popular-web-designs design css html ui web-development design-systems templates 54 real systems Stripe Linear Vercel HTML CSS",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 3,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/humanizer",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "creative/popular-web-designs",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": [
+        "creative/humanizer",
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t06",
+      "target_skill": "productivity/document-to-action-items",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle productivity document-to-action-items Documents OCR Action-Items Deadlines Extraction 从文档提取带出处的任务与期限；材料提炼待办加载",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "productivity/document-to-action-items",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t07",
+      "target_skill": "productivity/maps",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle productivity maps geocoding places routing distance directions nearby location openstreetmap nominatim overpass osrm Geocode POIs routes timezones OpenStreetMap OSRM",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "productivity/maps",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t03",
+      "target_skill": "creative/design-md",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle creative design-md design design-system tokens ui accessibility wcag tailwind dtcg google Author validate export Google's DESIGN.md token spec files",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 2,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 1.0,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t01",
+      "target_skill": "apple/imessage",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle apple imessage iMessage SMS messaging macOS Apple Send receive iMessages imsg CLI",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "apple/imessage",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t19",
+      "target_skill": "software-development/codebase-inspection",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle software-development codebase-inspection LOC Code Analysis pygount Codebase Metrics Repository Inspect codebases languages ratios",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "software-development/node-inspect-debugger",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        },
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": false,
+      "false_positives": [
+        "software-development/node-inspect-debugger",
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t13",
+      "target_skill": "creative/claude-design",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle creative claude-design design html prototype ux ui artifact deck motion design-system Design one-off HTML artifacts landing",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": false,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t09",
+      "target_skill": "root/uaek-memory-management",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle root uaek-memory-management memory context persistence compression 记忆管理 使用分层记忆系统管理长期上下文",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "root/uaek-memory-management",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t15",
+      "target_skill": "productivity/google-workspace",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle productivity google-workspace Google Gmail Calendar Drive Sheets Docs Contacts Email OAuth OAuth2 client credentials downloaded Cloud Console",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": false,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t08",
+      "target_skill": "productivity/powerpoint",
+      "target_is_dormant": true,
+      "task_type": "unknown",
+      "goal": "handle productivity powerpoint pptx presentations slides office python-pptx Create read edit decks",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "productivity/powerpoint",
+          "match_score": 0.7,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": true,
+      "false_positives": []
+    },
+    {
+      "task_id": "t14",
+      "target_skill": "productivity/box",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle productivity box Box Productivity Cloud Storage Collaboration Metadata Content Extraction CLI SDK manages cloud files sharing search metadata",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": false,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    },
+    {
+      "task_id": "t18",
+      "target_skill": "creative/manim-video",
+      "target_is_dormant": false,
+      "task_type": "unknown",
+      "goal": "handle creative manim-video Manim Animation Math Video CE animations 3Blue1Brown math algo videos",
+      "route_top1": "apple/apple-notes",
+      "route_top1_hit": false,
+      "route_target_in_top5": false,
+      "target_score": 0.6,
+      "target_score_rank": 1,
+      "find_dormant": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "software-development/node-inspect-debugger",
+        "root/uaek-memory-management"
+      ],
+      "discovered": [
+        {
+          "skill_id": "creative/design-md",
+          "match_score": 0.65,
+          "reason": "场景匹配"
+        }
+      ],
+      "target_discovered": false,
+      "false_positives": [
+        "creative/design-md"
+      ]
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "command": [
+      "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+    "returncode": 0,
+    "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/unittest.stdout.log",
+    "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/unittest.stderr.log"
+  },
+  {
+    "command": [
+      "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-m",
+      "rpe_harness.experiments.baseline"
+    ],
+    "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+    "returncode": 1,
+    "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/baseline_default.stdout.log",
+    "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/baseline_default.stderr.log"
+  },
+  {
+    "command": [
+      "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-m",
+      "rpe_harness.experiments.cold_skill_test",
+      "--report",
+      "/private/tmp/rpe-validation-20261013-itau_yzd/cold-reproduced.json"
+    ],
+    "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+    "returncode": 0,
+    "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/cold_original.stdout.log",
+    "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/cold_original.stderr.log"
+  },
+  {
+    "command": [
+      "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+      "-c",
+      "import json; from pathlib import Path; from rpe_harness.experiments.stress_test import run_stress_test; report=run_stress_test(); Path('/private/tmp/rpe-validation-20261013-itau_yzd/stress-reproduced.json').write_text(json.dumps(report,indent=2)); print(json.dumps(report,indent=2))"
+    ],
+    "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+    "returncode": 0,
+    "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/stress_original.stdout.log",
+    "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/stress_original.stderr.log"
+  }
+]

@@ -49,7 +49,7 @@
       "evidence_count": 0
     },
     {
-      "source": "web/search-layer",
+      "source": "root/search-layer",
       "target": "research/arxiv",
       "relation": "fallback_for",
       "condition": "学术搜索",
@@ -57,8 +57,8 @@
       "evidence_count": 0
     },
     {
-      "source": "web/search-layer",
-      "target": "deep-research",
+      "source": "root/search-layer",
+      "target": "root/deep-research",
       "relation": "fallback_for",
       "condition": "需要深度调研",
       "confidence": 1.0,
@@ -73,15 +73,15 @@
       "evidence_count": 0
     },
     {
-      "source": "deep-research",
-      "target": "gpt-researcher",
+      "source": "root/deep-research",
+      "target": "root/gpt-researcher",
       "relation": "composes_with",
       "condition": "多源聚合",
       "confidence": 1.0,
       "evidence_count": 0
     },
     {
-      "source": "deep-research",
+      "source": "root/deep-research",
       "target": "research/grounded-citations",
       "relation": "composes_with",
       "condition": "引用标注",
@@ -111,9 +111,7 @@
         "malformed_header",
         "merged_cells"
       ],
-      "alternatives": [
-        "productivity/csv-parser"
-      ],
+      "alternatives": [],
       "composed_with": [
         "productivity/docx"
       ],
@@ -183,8 +181,8 @@
         "python debug code fix traceback"
       ]
     },
-    "web/search-layer": {
-      "skill_id": "web/search-layer",
+    "root/search-layer": {
+      "skill_id": "root/search-layer",
       "preconditions": [],
       "postconditions": [
         "results_found"
@@ -195,7 +193,7 @@
       ],
       "alternatives": [
         "web/blocked-page-recovery",
-        "deep-research"
+        "root/deep-research"
       ],
       "composed_with": [],
       "usage_contexts": [
@@ -219,8 +217,8 @@
         "academic paper arxiv research literature scientific"
       ]
     },
-    "deep-research": {
-      "skill_id": "deep-research",
+    "root/deep-research": {
+      "skill_id": "root/deep-research",
       "preconditions": [],
       "postconditions": [
         "report_generated"
@@ -230,7 +228,7 @@
         "shallow_results"
       ],
       "alternatives": [
-        "gpt-researcher"
+        "root/gpt-researcher"
       ],
       "composed_with": [
         "research/grounded-citations"
@@ -239,8 +237,8 @@
         "deep research comprehensive investigation multi-source"
       ]
     },
-    "gpt-researcher": {
-      "skill_id": "gpt-researcher",
+    "root/gpt-researcher": {
+      "skill_id": "root/gpt-researcher",
       "preconditions": [],
       "postconditions": [
         "report_generated"
@@ -248,7 +246,7 @@
       "failure_modes": [],
       "alternatives": [],
       "composed_with": [
-        "deep-research"
+        "root/deep-research"
       ],
       "usage_contexts": [
         "research report plan solve parallel agent aggregation"

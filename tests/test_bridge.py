@@ -219,6 +219,44 @@ class TestEventToStateConverter(unittest.TestCase):
         self.assertEqual(state.task_type, TaskType.UNKNOWN)
         self.assertEqual(state.source_ref, "e")
 
+    def test_dumped_standard_state_keeps_source_reference(self) -> None:
+        state = self.converter.convert({"event_id": "original", "goal": "清理订单"})
+        dumped = json.loads(self.converter.dump_states([state]))[0]
+        again = self.converter.convert(dumped)
+        self.assertEqual(again.source_ref, "original")
+
+    def test_standard_source_ref_and_facts_take_precedence(self) -> None:
+        state = self.converter.convert({
+            "source_ref": "stored:event", "event_id": "ignored", "goal": "清理订单",
+            "constraints": ["preserve_formulas"], "facts": ["file_exists"],
+            "metadata": {"sourceRef": "nested:ignored"},
+        })
+        self.assertEqual(state.source_ref, "stored:event")
+        self.assertEqual(state.constraints, ["preserve_formulas"])
+        self.assertEqual(state.facts, ["file_exists"])
+
+    def test_camel_case_confirmed_facts_are_normalized(self) -> None:
+        state = self.converter.convert({"goal": "清理订单", "confirmedFacts": ["file_exists"]})
+        self.assertEqual(state.facts, ["file_exists"])
+
+    def test_invalid_priority_is_not_silently_defaulted(self) -> None:
+        for priority in (99, "urgent", True):
+            with self.subTest(priority=priority), self.assertRaises((TypeError, ValueError)):
+                self.converter.convert({"goal": "清理订单", "priority": priority})
+
+    def test_null_priority_is_not_silently_defaulted(self) -> None:
+        with self.assertRaises((TypeError, ValueError)):
+            self.converter.convert({"goal": "清理订单", "priority": None})
+
+    def test_zero_creation_timestamp_survives_standard_roundtrip(self) -> None:
+        state = CausalState(TaskType.CONVERSATION, "问候", source_ref="original", created_at=0.0)
+        dumped = json.loads(self.converter.dump_states([state]))[0]
+        self.assertEqual(self.converter.convert(dumped).created_at, 0.0)
+
+    def test_ignored_metadata_priority_cannot_override_standard_priority(self) -> None:
+        state = self.converter.convert({"goal": "清理订单", "priority": 3, "metadata": {"priority": None}})
+        self.assertEqual(state.priority, 3)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

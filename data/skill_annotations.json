@@ -8,12 +8,16 @@
       "input_formats": [
         "xlsx",
         "csv",
-        "excel",
-        "*"
+        "excel"
       ],
       "priority": 8,
       "tags": [
         "spreadsheet"
+      ],
+      "capabilities": [
+        "spreadsheet",
+        "spreadsheet.cleaning",
+        "tabular.deduplicate"
       ]
     },
     "productivity/docx": {
@@ -23,12 +27,15 @@
       ],
       "input_formats": [
         "docx",
-        "word",
-        "*"
+        "word"
       ],
       "priority": 8,
       "tags": [
         "document"
+      ],
+      "capabilities": [
+        "document",
+        "doc.writing"
       ]
     },
     "productivity/pdf": {
@@ -36,12 +43,15 @@
         "file.operation"
       ],
       "input_formats": [
-        "pdf",
-        "*"
+        "pdf"
       ],
       "priority": 8,
       "tags": [
         "document"
+      ],
+      "capabilities": [
+        "document",
+        "pdf"
       ]
     },
     "software-development/python-debugpy": {
@@ -50,12 +60,16 @@
         "code.review"
       ],
       "input_formats": [
-        "python",
-        "*"
+        "python"
       ],
       "priority": 9,
       "tags": [
         "code"
+      ],
+      "capabilities": [
+        "code",
+        "code.gen",
+        "code.debug"
       ]
     },
     "software-development/github": {
@@ -64,11 +78,13 @@
         "system.admin"
       ],
       "input_formats": [
-        "git",
-        "*"
+        "git"
       ],
       "priority": 7,
       "tags": [
+        "git"
+      ],
+      "capabilities": [
         "git"
       ]
     },
@@ -78,11 +94,13 @@
         "code.review"
       ],
       "input_formats": [
-        "python",
-        "*"
+        "python"
       ],
       "priority": 6,
       "tags": [
+        "testing"
+      ],
+      "capabilities": [
         "testing"
       ]
     },
@@ -91,13 +109,17 @@
         "web.academic"
       ],
       "input_formats": [
-        "*",
         "academic",
-        "paper"
+        "paper",
+        "query"
       ],
       "priority": 9,
       "tags": [
         "academic"
+      ],
+      "capabilities": [
+        "academic",
+        "web.academic"
       ]
     },
     "research/grounded-citations": {
@@ -106,10 +128,16 @@
         "document.writing"
       ],
       "input_formats": [
-        "*"
+        "markdown",
+        "text",
+        "docx",
+        "html"
       ],
       "priority": 6,
       "tags": [
+        "citation"
+      ],
+      "capabilities": [
         "citation"
       ]
     },
@@ -119,11 +147,13 @@
       ],
       "input_formats": [
         "html",
-        "css",
-        "*"
+        "css"
       ],
       "priority": 7,
       "tags": [
+        "design"
+      ],
+      "capabilities": [
         "design"
       ]
     },
@@ -132,11 +162,13 @@
         "document.writing"
       ],
       "input_formats": [
-        "html",
-        "*"
+        "html"
       ],
       "priority": 6,
       "tags": [
+        "design"
+      ],
+      "capabilities": [
         "design"
       ]
     },
@@ -145,11 +177,17 @@
         "web.deep_research"
       ],
       "input_formats": [
-        "*"
+        "query",
+        "text",
+        "markdown"
       ],
       "priority": 9,
       "tags": [
         "research"
+      ],
+      "capabilities": [
+        "research",
+        "web.deep_research"
       ]
     },
     "root/gpt-researcher": {
@@ -157,11 +195,17 @@
         "web.deep_research"
       ],
       "input_formats": [
-        "*"
+        "query",
+        "text",
+        "markdown"
       ],
       "priority": 8,
       "tags": [
         "research"
+      ],
+      "capabilities": [
+        "research",
+        "web.deep_research"
       ]
     },
     "root/search-layer": {
@@ -169,13 +213,17 @@
         "web.search"
       ],
       "input_formats": [
-        "*",
         "web",
-        "search"
+        "search",
+        "query"
       ],
       "priority": 9,
       "tags": [
         "search"
+      ],
+      "capabilities": [
+        "search",
+        "web.search"
       ]
     },
     "web/blocked-page-recovery": {
@@ -183,10 +231,15 @@
         "web.search"
       ],
       "input_formats": [
-        "*"
+        "web",
+        "html",
+        "query"
       ],
       "priority": 5,
       "tags": [
+        "web"
+      ],
+      "capabilities": [
         "web"
       ]
     }

@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -26,17 +25,21 @@ _FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     "task_type": ("task_type", "taskType", "type", "task", "category", "kind"),
     "goal": ("goal", "objective", "intent", "description", "title", "prompt", "query", "content", "text"),
     "constraints": ("constraints", "constraint", "limits", "restrictions"),
+    "facts": ("facts", "confirmed_facts", "confirmedFacts", "environment_facts", "environmentFacts"),
     "input_format": ("input_format", "inputFormat", "format", "input_type", "inputType"),
     "required_capability": ("required_capability", "requiredCapability", "capability", "skill"),
     "priority": ("priority", "prio", "urgency"),
-    "source_ref": ("event_id", "eventId", "event_uid", "message_uid", "messageId", "uid", "id"),
+    "source_ref": ("source_ref", "sourceRef", "event_id", "eventId", "event_uid", "message_uid", "messageId", "uid", "id"),
     "session_id": ("session_id", "sessionId", "session", "conversation_id", "conversationId"),
+    "created_at": ("created_at",),
+    "context_tokens_saved": ("context_tokens_saved",),
 }
 
 # 事件可能把字段包在这些容器里（Hermes 消息行常见 metadata/payload 包装）。
 _NESTED_CONTAINERS: tuple[str, ...] = (
     "payload", "data", "metadata", "event", "body", "context", "attributes", "state",
 )
+_MISSING = object()
 
 
 class EventToStateConverter:
@@ -57,11 +60,11 @@ class EventToStateConverter:
         sources = self._candidate_sources(event)
         out: dict[str, Any] = {}
         for field_name, aliases in self._aliases.items():
-            raw = self._lookup(sources, aliases)
-            if raw is None:
+            raw = self._lookup(sources, aliases, preserve_none=field_name == "priority")
+            if raw is _MISSING:
                 continue
             value = self._normalize(field_name, raw)
-            if value not in (None, "", [], 0) or field_name == "priority":
+            if value not in (None, "", [], 0) or field_name in ("priority", "created_at", "context_tokens_saved"):
                 out[field_name] = value
         if "source_ref" not in out:
             out["source_ref"] = self._fallback_ref(event)
@@ -70,16 +73,7 @@ class EventToStateConverter:
     def convert(self, event: dict[str, Any]) -> CausalState:
         """单个事件 → CausalState。"""
         minimal = self.extract_minimal(event)
-        return CausalState(
-            task_type=minimal.get("task_type", TaskType.UNKNOWN),
-            goal=minimal.get("goal", ""),
-            constraints=minimal.get("constraints", []),
-            required_capability=minimal.get("required_capability"),
-            input_format=minimal.get("input_format"),
-            priority=minimal.get("priority", 5),
-            source_ref=minimal["source_ref"],
-            session_id=minimal.get("session_id"),
-        )
+        return CausalState.from_event(minimal)
 
     def convert_all(self, events: Iterable[dict[str, Any]]) -> list[CausalState]:
         """事件序列 → 状态序列（保持原顺序）。"""
@@ -126,12 +120,7 @@ class EventToStateConverter:
     @staticmethod
     def states_to_dicts(states: Iterable[CausalState]) -> list[dict[str, Any]]:
         """状态序列 → 可 JSON 序列化的 dict 列表（task_type 落为枚举值）。"""
-        out = []
-        for st in states:
-            d = asdict(st)
-            d["task_type"] = st.task_type.value
-            out.append(d)
-        return out
+        return [st.to_dict() for st in states]
 
     def dump_states(self, states: Iterable[CausalState], path: str | Path | None = None) -> str:
         """状态序列 → JSON 文本；给了 path 就同时写文件。"""
@@ -152,40 +141,38 @@ class EventToStateConverter:
         return sources
 
     @staticmethod
-    def _lookup(sources: list[dict[str, Any]], aliases: Iterable[str]) -> Any:
+    def _lookup(sources: list[dict[str, Any]], aliases: Iterable[str], *, preserve_none: bool = False) -> Any:
         # 别名优先级主导：主键名（如 goal）即使在嵌套容器里，
         # 也优先于外层的兜底别名（如 content）。
         for name in aliases:
             for source in sources:
-                if name in source and source[name] is not None:
+                if name in source and (source[name] is not None or preserve_none):
                     return source[name]
-        return None
+        return _MISSING
 
     @staticmethod
     def _normalize(field_name: str, raw: Any) -> Any:
         if field_name == "task_type":
             return EventToStateConverter._normalize_task_type(raw)
-        if field_name == "constraints":
+        if field_name in ("constraints", "facts"):
             return EventToStateConverter._normalize_constraints(raw)
         if field_name == "priority":
-            try:
+            if type(raw) is int:
+                return raw
+            if isinstance(raw, str) and raw.strip().isdecimal():
                 return int(raw)
-            except (TypeError, ValueError):
-                return 5
-        return str(raw).strip()
+            raise TypeError("priority 必须是整数")
+        if field_name in ("created_at", "context_tokens_saved"):
+            return raw
+        if field_name in ("source_ref", "session_id") and type(raw) is int:
+            return str(raw)
+        if not isinstance(raw, str):
+            raise TypeError(f"{field_name} 必须是字符串")
+        return raw.strip()
 
     @staticmethod
     def _normalize_task_type(raw: Any) -> TaskType:
-        if isinstance(raw, TaskType):
-            return raw
-        try:
-            return TaskType(str(raw))
-        except ValueError:
-            pass
-        try:
-            return TaskType.from_legacy(str(raw))  # 旧分类兼容
-        except ValueError:
-            return TaskType.UNKNOWN
+        return TaskType.parse(raw)
 
     @staticmethod
     def _normalize_constraints(raw: Any) -> list[str]:
@@ -195,8 +182,10 @@ class EventToStateConverter:
             parts = [p.strip() for p in raw.replace("；", ";").replace("、", ",").replace("\n", ",").replace(";", ",").split(",")]
             return [p for p in parts if p]
         if isinstance(raw, (list, tuple, set)):
-            return [str(x).strip() for x in raw if str(x).strip()]
-        return [str(raw).strip()]
+            if any(not isinstance(x, str) for x in raw):
+                raise TypeError("约束和事实必须是字符串列表")
+            return [x.strip() for x in raw if x.strip()]
+        raise TypeError("约束和事实必须是字符串列表")
 
     @staticmethod
     def _fallback_ref(event: dict[str, Any]) -> str:

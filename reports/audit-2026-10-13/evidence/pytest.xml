@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="16" time="0.058" timestamp="2026-10-13T21:41:41.783411+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_batch_file_json_array" time="0.001" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_batch_file_jsonl" time="0.001" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_dump_state_sequence" time="0.001" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_five_event_formats_to_five_states" time="0.000" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_minimal_filtering_drops_noise" time="0.000" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_missing_event_id_gets_traceable_fallback_ref" time="0.000" /><testcase classname="tests.test_bridge.TestEventToStateConverter" name="test_unknown_task_type_degrades_to_unknown" time="0.000" /><testcase classname="tests.test_capability" name="test_deterministic_routing" time="0.000" /><testcase classname="tests.test_capability" name="test_relational_routing" time="0.000" /><testcase classname="tests.test_capability" name="test_dormant_skill_discovery" time="0.000" /><testcase classname="tests.test_capability" name="test_usage_tracking" time="0.000" /><testcase classname="tests.test_capability" name="test_stats" time="0.000" /><testcase classname="tests.test_mcsi" name="test_causal_state_creation" time="0.000" /><testcase classname="tests.test_mcsi" name="test_routing_key" time="0.000" /><testcase classname="tests.test_mcsi" name="test_from_event" time="0.000"><failure message="ValueError: 'web.research' is not a valid TaskType">def test_from_event():
+        event = {
+            "task_type": "web.research",
+            "goal": "搜索信息",
+            "constraints": [],
+            "event_id": "evt-001",
+            "session_id": "sess-001",
+        }
+&gt;       state = CausalState.from_event(event)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_mcsi.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/rpe_harness/mcsi.py:75: in from_event
+    task_type=TaskType(event.get("task_type", "unknown")),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py:751: in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = &lt;enum 'TaskType'&gt;, value = 'web.research'
+
+    def __new__(cls, value):
+        # all enum instances are actually created during class construction
+        # without calling this method; this method is called by the metaclass'
+        # __call__ (i.e. Color(3) ), and by pickle
+        if type(value) is cls:
+            # For lookups like Color(Color.RED)
+            return value
+        # by-value search for a matching enum member
+        # see if it's in the reverse mapping (for hashable values)
+        try:
+            return cls._value2member_map_[value]
+        except KeyError:
+            # Not found, no need to do long O(n) search
+            pass
+        except TypeError:
+            # not there, now do long search -- O(n) behavior
+            for member in cls._member_map_.values():
+                if member._value_ == value:
+                    return member
+        # still not found -- verify that members exist, in-case somebody got here mistakenly
+        # (such as via super when trying to override __new__)
+        if not cls._member_map_:
+            raise TypeError("%r has no members defined" % cls)
+        #
+        # still not found -- try _missing_ hook
+        try:
+            exc = None
+            result = cls._missing_(value)
+        except Exception as e:
+            exc = e
+            result = None
+        try:
+            if isinstance(result, cls):
+                return result
+            elif (
+                    Flag is not None and issubclass(cls, Flag)
+                    and cls._boundary_ is EJECT and isinstance(result, int)
+                ):
+                return result
+            else:
+                ve_exc = ValueError("%r is not a valid %s" % (value, cls.__qualname__))
+                if result is None and exc is None:
+&gt;                   raise ve_exc
+E                   ValueError: 'web.research' is not a valid TaskType
+
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py:1170: ValueError</failure></testcase><testcase classname="tests.test_mcsi" name="test_state_transition" time="0.000" /></testsuite></testsuites>

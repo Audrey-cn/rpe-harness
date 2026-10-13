@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "test_runner": "pytest 9.1.1",
+  "test_cases_passed": 142,
+  "subtests_passed": 3,
+  "failures": 0,
+  "errors": 0,
+  "routing_fixed_truth": {
+    "total": 12,
+    "correct": 12,
+    "positive": 3,
+    "rejection": 9,
+    "simple_metadata_baseline_correct": 4
+  },
+  "installed_acceptance_passed": true,
+  "installed_http_passed": true,
+  "independent_review_resolved": 5,
+  "wheel_sha256": "f80df62ac525aecb8c6697bb47a9c660a15a0fcf6e3ee9fdbd19fcf55df69b30",
+  "research_claims_verified": false,
+  "xml_test_count_including_subtests": 145
+}

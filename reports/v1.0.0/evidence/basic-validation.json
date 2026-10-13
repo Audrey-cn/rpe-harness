@@ -1,0 +1,350 @@
+{
+  "experiment": "independent_basic_routing_validation",
+  "scope": "routing_microbenchmark_only",
+  "task_source": "hand-authored-fixed-v1",
+  "catalog_source": "manual builtin-shaped and fixture SkillEntry objects",
+  "sample_count": 12,
+  "positive_samples": 3,
+  "rejection_samples": 9,
+  "metric_definitions": {
+    "accuracy": "correct routes plus correct rejections / all tasks",
+    "top1_accuracy": "correct top-1 routes / positive tasks",
+    "precision": "correct positive routes / non-empty top-1 predictions",
+    "rejection_recall": "correct rejections / rejection tasks",
+    "latency_ms": "one local call per fixed task; excludes catalog construction and IO",
+    "p95": "nearest-rank percentile"
+  },
+  "router": {
+    "sample_count": 12,
+    "correct_tasks": 12,
+    "accuracy": 1.0,
+    "top1_accuracy": 1.0,
+    "precision": 1.0,
+    "selected_count": 3,
+    "correct_positive_routes": 3,
+    "correct_rejections": 9,
+    "rejection_count": 9,
+    "rejection_recall": 1.0,
+    "false_accept_count": 0,
+    "latency_ms": {
+      "mean": 0.059579750086413696,
+      "p50": 0.020625000615837052,
+      "p95": 0.5119999987073243,
+      "max": 0.5119999987073243
+    }
+  },
+  "baseline": {
+    "name": "simple_metadata_task_type_and_format",
+    "is_native_hermes": false,
+    "description": "Local metadata lookup; ignores capabilities, facts, disabled and dormant state.",
+    "sample_count": 12,
+    "correct_tasks": 4,
+    "accuracy": 0.3333333333333333,
+    "top1_accuracy": 1.0,
+    "precision": 0.2727272727272727,
+    "selected_count": 11,
+    "correct_positive_routes": 3,
+    "correct_rejections": 1,
+    "rejection_count": 1,
+    "rejection_recall": 0.1111111111111111,
+    "false_accept_count": 8,
+    "latency_ms": {
+      "mean": 0.0014548325755943854,
+      "p50": 0.0012499949662014842,
+      "p95": 0.0037080026231706142,
+      "max": 0.0037080026231706142
+    }
+  },
+  "file_execution": {
+    "evaluated": false,
+    "note": "This report tests routing only. CSV/XLSX file acceptance is measured separately."
+  },
+  "claims": {
+    "real_token_savings_measured": false,
+    "automatic_learning_evaluated": false,
+    "native_hermes_baseline_measured": false
+  },
+  "limitations": [
+    "Small manually chosen fixture catalog; no production-distribution accuracy claim.",
+    "One routing call per task is a smoke microbenchmark, not stable performance evidence.",
+    "No LLM, Hermes host, execution handler, or file verifier is invoked.",
+    "No learning, cold-skill recovery, API cost, or token-saving gain is established."
+  ],
+  "tasks": [
+    {
+      "task_id": "csv-first-record",
+      "category": "positive",
+      "state": {
+        "task_type": "data.processing",
+        "goal": "Keep the earliest customer record for each email address in this export.",
+        "input_format": "csv",
+        "required_capability": "tabular.deduplicate",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": "builtin.csv.deduplicate",
+      "router_top1": "builtin.csv.deduplicate",
+      "router_candidates": [
+        "builtin.csv.deduplicate"
+      ],
+      "router_level": "DETERMINISTIC",
+      "router_requires_reasoning": false,
+      "router_latency_ms": 0.5119999987073243,
+      "correct": true,
+      "baseline_top1": "builtin.csv.deduplicate",
+      "baseline_latency_ms": 0.0037080026231706142,
+      "baseline_correct": true
+    },
+    {
+      "task_id": "xlsx-first-record",
+      "category": "positive",
+      "state": {
+        "task_type": "data.processing",
+        "goal": "Remove later repeated order numbers from this workbook, keeping the first row.",
+        "input_format": "xlsx",
+        "required_capability": "tabular.deduplicate",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": "builtin.xlsx.deduplicate",
+      "router_top1": "builtin.xlsx.deduplicate",
+      "router_candidates": [
+        "builtin.xlsx.deduplicate"
+      ],
+      "router_level": "DETERMINISTIC",
+      "router_requires_reasoning": false,
+      "router_latency_ms": 0.028915994334965944,
+      "correct": true,
+      "baseline_top1": "builtin.xlsx.deduplicate",
+      "baseline_latency_ms": 0.0020000006770715117,
+      "baseline_correct": true
+    },
+    {
+      "task_id": "approved-document",
+      "category": "positive",
+      "state": {
+        "task_type": "document.writing",
+        "goal": "Export the signed-off meeting draft for the team.",
+        "input_format": "docx",
+        "required_capability": "document.export",
+        "constraints": [],
+        "facts": [
+          "draft_approved"
+        ]
+      },
+      "expected_skill": "fixture.document.export",
+      "router_top1": "fixture.document.export",
+      "router_candidates": [
+        "fixture.document.export"
+      ],
+      "router_level": "DETERMINISTIC",
+      "router_requires_reasoning": false,
+      "router_latency_ms": 0.0212500017369166,
+      "correct": true,
+      "baseline_top1": "fixture.document.export",
+      "baseline_latency_ms": 0.0014999968698248267,
+      "baseline_correct": true
+    },
+    {
+      "task_id": "unknown-request",
+      "category": "unknown",
+      "state": {
+        "task_type": "unknown",
+        "goal": "Organise the material for tomorrow.",
+        "input_format": null,
+        "required_capability": null,
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.009583003702573478,
+      "correct": true,
+      "baseline_top1": "builtin.csv.deduplicate",
+      "baseline_latency_ms": 0.001667001924943179,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "unsupported-format",
+      "category": "format_mismatch",
+      "state": {
+        "task_type": "data.processing",
+        "goal": "Discard later repeated account numbers in this database export.",
+        "input_format": "parquet",
+        "required_capability": "tabular.deduplicate",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.013374999980442226,
+      "correct": true,
+      "baseline_top1": "builtin.csv.deduplicate",
+      "baseline_latency_ms": 0.001334003172814846,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "unsupported-capability",
+      "category": "capability_mismatch",
+      "state": {
+        "task_type": "data.processing",
+        "goal": "Translate the column headings into French.",
+        "input_format": "csv",
+        "required_capability": "tabular.translate",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.01945799886016175,
+      "correct": true,
+      "baseline_top1": "builtin.csv.deduplicate",
+      "baseline_latency_ms": 0.0012499949662014842,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "disabled-skill",
+      "category": "disabled",
+      "state": {
+        "task_type": "file.operation",
+        "goal": "Make a small preview of the product photograph.",
+        "input_format": "png",
+        "required_capability": "image.thumbnail",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.022499996703118086,
+      "correct": true,
+      "baseline_top1": "fixture.image.render",
+      "baseline_latency_ms": 0.0011660013115033507,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "dormant-skill",
+      "category": "dormant",
+      "state": {
+        "task_type": "file.operation",
+        "goal": "Extract the supplied project archive.",
+        "input_format": "zip",
+        "required_capability": "archive.extract",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.019999999494757503,
+      "correct": true,
+      "baseline_top1": "fixture.archive.unpack",
+      "baseline_latency_ms": 0.0010829971870407462,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "missing-fact",
+      "category": "missing_precondition_fact",
+      "state": {
+        "task_type": "document.writing",
+        "goal": "Export the meeting draft after approval has been confirmed.",
+        "input_format": "docx",
+        "required_capability": "document.export",
+        "constraints": [
+          "draft_approved"
+        ],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.024000000848900527,
+      "correct": true,
+      "baseline_top1": "fixture.document.export",
+      "baseline_latency_ms": 0.0008749993867240846,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "insufficient-signal",
+      "category": "low_confidence",
+      "state": {
+        "task_type": "data.processing",
+        "goal": "What is the next operation?",
+        "input_format": null,
+        "required_capability": null,
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.02220800524810329,
+      "correct": true,
+      "baseline_top1": "builtin.csv.deduplicate",
+      "baseline_latency_ms": 0.0011250012903474271,
+      "baseline_correct": false
+    },
+    {
+      "task_id": "unsupported-task",
+      "category": "task_mismatch",
+      "state": {
+        "task_type": "web.academic",
+        "goal": "Find published evidence about the effects of urban noise on birds.",
+        "input_format": "pdf",
+        "required_capability": "scholarly.review",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.011709002137649804,
+      "correct": true,
+      "baseline_top1": null,
+      "baseline_latency_ms": 0.0004999965312890708,
+      "baseline_correct": true
+    },
+    {
+      "task_id": "wrong-task-type",
+      "category": "task_mismatch",
+      "state": {
+        "task_type": "file.operation",
+        "goal": "Copy the received attachment into the archive folder.",
+        "input_format": "csv",
+        "required_capability": "tabular.deduplicate",
+        "constraints": [],
+        "facts": []
+      },
+      "expected_skill": null,
+      "router_top1": null,
+      "router_candidates": [],
+      "router_level": "REASONING",
+      "router_requires_reasoning": true,
+      "router_latency_ms": 0.009957999282050878,
+      "correct": true,
+      "baseline_top1": "fixture.image.render",
+      "baseline_latency_ms": 0.0012499949662014842,
+      "baseline_correct": false
+    }
+  ],
+  "passed": true
+}

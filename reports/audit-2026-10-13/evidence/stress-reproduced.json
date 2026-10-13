@@ -1,0 +1,79 @@
+{
+  "experiment": "stress_test",
+  "config": {
+    "n_skills": 500,
+    "n_tasks": 200,
+    "rounds": 3,
+    "seed": 42,
+    "top_k": 5,
+    "python": "3.12.14"
+  },
+  "index": {
+    "total_skills": 500,
+    "active": 448,
+    "dormant": 52,
+    "deterministic_rules": 132,
+    "registration_ms": 1.599,
+    "index_alloc_mb": 0.023,
+    "index_peak_alloc_mb": 0.029
+  },
+  "task_coverage": {
+    "generated": 200,
+    "task_types_covered": [
+      "code.generation",
+      "code.review",
+      "conversation",
+      "data.processing",
+      "document.writing",
+      "file.operation",
+      "system.admin",
+      "unknown",
+      "web.academic",
+      "web.deep_research",
+      "web.search"
+    ],
+    "task_types_total": 11,
+    "l0_tasks": 100,
+    "l2_tasks": 100
+  },
+  "latency_ms": {
+    "overall": {
+      "count": 600,
+      "mean_ms": 0.0757,
+      "p50_ms": 0.0079,
+      "p95_ms": 0.1607,
+      "p99_ms": 0.5082,
+      "max_ms": 0.5651
+    },
+    "l0_deterministic": {
+      "count": 300,
+      "mean_ms": 0.0004,
+      "p50_ms": 0.0004,
+      "p95_ms": 0.0005,
+      "p99_ms": 0.0006,
+      "max_ms": 0.0008
+    },
+    "l2_relational": {
+      "count": 300,
+      "mean_ms": 0.1499,
+      "p50_ms": 0.1152,
+      "p95_ms": 0.4844,
+      "p99_ms": 0.5265,
+      "max_ms": 0.6042
+    }
+  },
+  "throughput_tps": {
+    "overall": 12999.2,
+    "l0_deterministic": 1210492.6,
+    "l2_relational": 6559.8
+  },
+  "memory": {
+    "peak_rss_mb": 20.0,
+    "index_alloc_mb": 0.023,
+    "routing_peak_alloc_mb": 0.027
+  },
+  "comparison": {
+    "l2_over_l0_p95_ratio": 968.8,
+    "l2_over_l0_throughput_ratio": 184.53
+  }
+}

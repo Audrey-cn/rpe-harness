@@ -1,0 +1,17 @@
+{
+  "scope": ["storage.py", "runtime.py", "server.py", "cli.py", "execution.py", "verification.py", "scripts/rpe", "README.md", "v1 design"],
+  "test_result": "59 runtime/server/execution tests passed",
+  "findings": [
+    {"priority": "P2", "title": "Pending idempotent replays exit with success", "file": "src/rpe_harness/cli.py", "lines": [89, 90], "evidence": "Claim event in a still-live process and invoke CLI run with identical payload: status=received, no output exists, exit code=0.", "suggestion": "Return a documented pending code or wait for terminal result."},
+    {"priority": "P2", "title": "Schema TypeError bypasses JSON error contract or is misclassified", "file": "src/rpe_harness/cli.py", "lines": [91, 93], "related": "src/rpe_harness/runtime.py:189", "evidence": "CLI route task_type=42 emits traceback with empty stdout and exit1; run state.constraints string returns failed/execution_failed at validate stage.", "suggestion": "Treat TypeError from validation as rejected and include it in CLI error handling."},
+    {"priority": "P2", "title": "Retained XLSX rich text loses formatting despite verified success", "file": "src/rpe_harness/execution.py", "lines": [233, 233], "related": "src/rpe_harness/verification.py:79-82", "evidence": "Source B2 CellRichText with bold/italic runs becomes plain str in output. Verification reports retained_metadata_preserved=true.", "suggestion": "Reject unsupported rich text or preserve and independently verify rich-text runs."},
+    {"priority": "P2", "title": "Cross-origin simple POST mutates loopback service state", "file": "src/rpe_harness/server.py", "lines": [158, 178], "evidence": "Own temporary loopback server accepted Origin=https://untrusted.example Content-Type=text/plain POST /skills/state with HTTP200 and disabled CSV skill.", "suggestion": "Reject untrusted Origin and require application/json for POST."},
+    {"priority": "P2", "title": "Launcher dependency probe may create interpreter bytecode caches", "file": "scripts/rpe", "lines": [6, 6], "evidence": "PYTHONDONTWRITEBYTECODE is set only for command execution on line7, after openpyxl import in candidate probe.", "suggestion": "Apply -B or PYTHONDONTWRITEBYTECODE=1 to candidate probe."}
+  ],
+  "residual_risks": [
+    "Crash recovery uses PID liveness only; PID reuse may leave a stale received/running record.",
+    "Killed process can leave an owned .rpe-* staging file; stage path and inode are only in process memory.",
+    "No proof of Excel formula values; only supported formula structures preserved by design.",
+    "Real browser network permission policies may block the cross-origin request; server does not enforce this boundary itself."
+  ]
+}

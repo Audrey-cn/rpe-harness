@@ -1,0 +1,107 @@
+{
+  "log_evidence": {
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-1": [
+      "/tmp/rpe-v1-development-20261013/core/red.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-7": [
+      "/tmp/rpe-v1-development-20261013/core/full-suite-initial.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-15": [
+      "/tmp/rpe-v1-development-20261013/execution/rich-text-red.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-3": [
+      "/tmp/rpe-v1-development-20261013/execution/red.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-13": [
+      "/tmp/rpe-v1-development-20261013/execution/directory-sync-red.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-10": [
+      "/tmp/rpe-v1-development-20261013/execution/malformed-red.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-0": [
+      "/tmp/rpe-v1-development-20261013/evaluation/red-report.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-6": [
+      "/tmp/rpe-v1-development-20261013/evaluation/full-suite.log"
+    ],
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-2": [
+      "/tmp/rpe-v1-development-20261013/evaluation/await-core.log"
+    ]
+  },
+  "existing": [
+    {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-15",
+      "entries": [
+        "test_rich_text_in_retained_rec3",
+        "test_rich_text_in_retained_rec2",
+        "test_rich_text_in_retained_reccurrent",
+        "test_rich_text_in_retained_rec0",
+        "test_rich_text_in_retained_rec1",
+        "test_independent_verifier_rejecurrent",
+        "test_independent_verifier_reje0"
+      ]
+    },
+    {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-16",
+      "entries": [
+        "test_xlsx_verifier_rejects_cha1",
+        "test_rich_text_in_retained_rec3",
+        "test_changed_original_file_fai0",
+        "test_rich_text_in_retained_rec2",
+        "test_existing_output_is_reject2",
+        "test_xlsx_verifier_rejects_cha0",
+        "test_publish_cannot_succeed_whcurrent",
+        "test_staging_change_after_goodcurrent",
+        "test_empty_keys_and_incompletecurrent",
+        "test_csv_verifier_rejects_wroncurrent"
+      ]
+    },
+    {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-17",
+      "entries": [
+        "test_xlsx_verifier_rejects_cha1",
+        "test_usage_requires_real_skill0",
+        "test_rich_text_in_retained_rec3",
+        "test_changed_original_file_fai0",
+        "test_report_persists_same_fixe0",
+        "test_unsupported_request_is_pe1",
+        "test_route_schema_error_is_jsocurrent",
+        "test_dead_process_is_interrupt0",
+        "test_rich_text_in_retained_rec2",
+        "test_existing_output_is_reject2"
+      ]
+    }
+  ],
+  "owned_fixture_directories_by_unique_test_names": [
+    {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-16",
+      "entries": [
+        "test_xlsx_verifier_rejects_cha1",
+        "test_rich_text_in_retained_rec3",
+        "test_changed_original_file_fai0",
+        "test_rich_text_in_retained_rec2",
+        "test_existing_output_is_reject2",
+        "test_xlsx_verifier_rejects_cha0",
+        "test_publish_cannot_succeed_whcurrent",
+        "test_staging_change_after_goodcurrent",
+        "test_empty_keys_and_incompletecurrent",
+        "test_csv_verifier_rejects_wroncurrent"
+      ]
+    },
+    {
+      "path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-17",
+      "entries": [
+        "test_xlsx_verifier_rejects_cha1",
+        "test_usage_requires_real_skill0",
+        "test_rich_text_in_retained_rec3",
+        "test_changed_original_file_fai0",
+        "test_report_persists_same_fixe0",
+        "test_unsupported_request_is_pe1",
+        "test_route_schema_error_is_jsocurrent",
+        "test_dead_process_is_interrupt0",
+        "test_rich_text_in_retained_rec2",
+        "test_existing_output_is_reject2"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+[
+  {
+    "name": "health",
+    "status": 200,
+    "response": {
+      "status": "ok",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "unknown_task",
+    "status": 200,
+    "response": {
+      "level": "DETERMINISTIC",
+      "candidates": [
+        {
+          "skill_id": "apple/apple-notes",
+          "name": "apple-notes",
+          "score": 0.4,
+          "priority": 5,
+          "preconditions_met": true,
+          "missing_preconditions": [],
+          "companions": [],
+          "fallbacks": []
+        }
+      ],
+      "latency_ms": 0.004,
+      "fallback_to_llm": false
+    }
+  },
+  {
+    "name": "known_type_unsupported_format",
+    "status": 200,
+    "response": {
+      "level": "DETERMINISTIC",
+      "candidates": [
+        {
+          "skill_id": "productivity/xlsx",
+          "name": "xlsx",
+          "score": 0.4,
+          "priority": 8,
+          "preconditions_met": false,
+          "missing_preconditions": [
+            "file_exists"
+          ],
+          "companions": [
+            "productivity/docx"
+          ],
+          "fallbacks": []
+        }
+      ],
+      "latency_ms": 0.003,
+      "fallback_to_llm": false
+    }
+  },
+  {
+    "name": "capability_overrides_format",
+    "status": 200,
+    "response": {
+      "level": "DETERMINISTIC",
+      "candidates": [
+        {
+          "skill_id": "productivity/xlsx",
+          "name": "xlsx",
+          "score": 0.4,
+          "priority": 8,
+          "preconditions_met": true,
+          "missing_preconditions": [],
+          "companions": [
+            "productivity/docx"
+          ],
+          "fallbacks": []
+        }
+      ],
+      "latency_ms": 0.002,
+      "fallback_to_llm": false
+    }
+  },
+  {
+    "name": "missing_preconditions",
+    "status": 200,
+    "response": {
+      "level": "DETERMINISTIC",
+      "candidates": [
+        {
+          "skill_id": "productivity/xlsx",
+          "name": "xlsx",
+          "score": 0.6,
+          "priority": 8,
+          "preconditions_met": false,
+          "missing_preconditions": [
+            "file_exists"
+          ],
+          "companions": [
+            "productivity/docx"
+          ],
+          "fallbacks": []
+        }
+      ],
+      "latency_ms": 0.001,
+      "fallback_to_llm": false
+    }
+  },
+  {
+    "name": "cold_discover_default",
+    "status": 200,
+    "response": {
+      "discovered": []
+    }
+  },
+  {
+    "name": "invalid_json",
+    "exception": "RemoteDisconnected: Remote end closed connection without response",
+    "server_error": "Traceback (most recent call last):\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 318, in _handle_request_noblock\n    self.process_request(request, client_address)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 349, in process_request\n    self.finish_request(request, client_address)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 362, in finish_request\n    self.RequestHandlerClass(request, client_address, self)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 766, in __init__\n    self.handle()\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py\", line 440, in handle\n    self.handle_one_request()\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py\", line 428, in handle_one_request\n    method()\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py\", line 123, in do_POST\n    body = self._read_body()\n           ^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py\", line 206, in _read_body\n    return json.loads(self.rfile.read(length))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 338, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/json/decoder.py\", line 354, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ^^^^^^^^^^^^^^^^^^^^^^\njson.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\n"
+  },
+  {
+    "name": "body_is_array",
+    "exception": "RemoteDisconnected: Remote end closed connection without response",
+    "server_error": "Traceback (most recent call last):\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 318, in _handle_request_noblock\n    self.process_request(request, client_address)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 349, in process_request\n    self.finish_request(request, client_address)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 362, in finish_request\n    self.RequestHandlerClass(request, client_address, self)\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/socketserver.py\", line 766, in __init__\n    self.handle()\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py\", line 440, in handle\n    self.handle_one_request()\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/server.py\", line 428, in handle_one_request\n    method()\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py\", line 125, in do_POST\n    self._handle_route(body)\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py\", line 141, in _handle_route\n    task_type=TaskType.from_legacy(body.get(\"task_type\", \"unknown\")),\n                                   ^^^^^^^^\nAttributeError: 'list' object has no attribute 'get'\n"
+  },
+  {
+    "name": "top_k_string",
+    "status": 200,
+    "response": {
+      "level": "REASONING",
+      "candidates": [],
+      "latency_ms": 0.012,
+      "fallback_to_llm": true
+    }
+  },
+  {
+    "name": "unsupported_task_type",
+    "status": 400,
+    "response": {
+      "error": "invalid request: 'spreadsheet.deduplicate' is not a valid TaskType"
+    }
+  },
+  {
+    "name": "missing_skill_usage",
+    "status": 200,
+    "response": {
+      "status": "recorded"
+    }
+  },
+  {
+    "name": "valid_usage",
+    "status": 200,
+    "response": {
+      "status": "recorded"
+    }
+  },
+  {
+    "name": "reload",
+    "status": 200,
+    "response": {
+      "status": "reloaded"
+    }
+  },
+  {
+    "name": "usage_persistence",
+    "before": 0,
+    "after_usage": 1,
+    "after_reload": 0
+  }
+]

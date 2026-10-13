@@ -1,0 +1,205 @@
+{
+  "python": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+  "python_version": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "audit_dir": "/private/tmp/rpe-validation-20261013-itau_yzd",
+  "commands": [
+    {
+      "command": [
+        "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+      "returncode": 0,
+      "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/unittest.stdout.log",
+      "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/unittest.stderr.log"
+    },
+    {
+      "command": [
+        "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "rpe_harness.experiments.baseline"
+      ],
+      "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+      "returncode": 1,
+      "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/baseline_default.stdout.log",
+      "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/baseline_default.stderr.log"
+    },
+    {
+      "command": [
+        "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "rpe_harness.experiments.cold_skill_test",
+        "--report",
+        "/private/tmp/rpe-validation-20261013-itau_yzd/cold-reproduced.json"
+      ],
+      "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+      "returncode": 0,
+      "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/cold_original.stdout.log",
+      "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/cold_original.stderr.log"
+    },
+    {
+      "command": [
+        "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "import json; from pathlib import Path; from rpe_harness.experiments.stress_test import run_stress_test; report=run_stress_test(); Path('/private/tmp/rpe-validation-20261013-itau_yzd/stress-reproduced.json').write_text(json.dumps(report,indent=2)); print(json.dumps(report,indent=2))"
+      ],
+      "cwd": "/private/tmp/rpe-validation-20261013-itau_yzd/snapshot",
+      "returncode": 0,
+      "stdout": "/private/tmp/rpe-validation-20261013-itau_yzd/stress_original.stdout.log",
+      "stderr": "/private/tmp/rpe-validation-20261013-itau_yzd/stress_original.stderr.log"
+    }
+  ],
+  "direct_function_tests": {
+    "framework": "direct function runner (not pytest)",
+    "total": 9,
+    "passed": 8,
+    "failed": 1,
+    "results": [
+      {
+        "test": "test_capability.test_deterministic_routing",
+        "status": "pass"
+      },
+      {
+        "test": "test_capability.test_relational_routing",
+        "status": "pass"
+      },
+      {
+        "test": "test_capability.test_dormant_skill_discovery",
+        "status": "pass"
+      },
+      {
+        "test": "test_capability.test_usage_tracking",
+        "status": "pass"
+      },
+      {
+        "test": "test_capability.test_stats",
+        "status": "pass"
+      },
+      {
+        "test": "test_mcsi.test_causal_state_creation",
+        "status": "pass"
+      },
+      {
+        "test": "test_mcsi.test_routing_key",
+        "status": "pass"
+      },
+      {
+        "test": "test_mcsi.test_from_event",
+        "status": "fail",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/rpe-validation-20261013-itau_yzd/run_audit.py\", line 45, in test_functions\n    value()\n  File \"/private/tmp/rpe-validation-20261013-itau_yzd/snapshot/tests/test_mcsi.py\", line 39, in test_from_event\n    state = CausalState.from_event(event)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/rpe-validation-20261013-itau_yzd/snapshot/src/rpe_harness/mcsi.py\", line 75, in from_event\n    task_type=TaskType(event.get(\"task_type\", \"unknown\")),\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py\", line 751, in __call__\n    return cls.__new__(cls, value)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py\", line 1170, in __new__\n    raise ve_exc\nValueError: 'web.research' is not a valid TaskType\n"
+      },
+      {
+        "test": "test_mcsi.test_state_transition",
+        "status": "pass"
+      }
+    ]
+  },
+  "cold_ablation_metrics": {
+    "original": {
+      "recovery_rate": 1.0,
+      "FDR": 0.5238,
+      "routing": {
+        "top1_accuracy": 0.0,
+        "target_in_top5_rate": 0.0,
+        "score_rank_top1_rate": 0.75,
+        "score_rank_avg": 5.1,
+        "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+      },
+      "passed": true
+    },
+    "original_graph_no_synthetic_contexts": {
+      "recovery_rate": 0.0,
+      "FDR": 0.0,
+      "routing": {
+        "top1_accuracy": 0.0,
+        "target_in_top5_rate": 0.0,
+        "score_rank_top1_rate": 0.75,
+        "score_rank_avg": 5.1,
+        "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+      },
+      "passed": false
+    },
+    "no_graph_edges_with_synthetic_contexts": {
+      "recovery_rate": 1.0,
+      "FDR": 0.2308,
+      "routing": {
+        "top1_accuracy": 0.0,
+        "target_in_top5_rate": 0.0,
+        "score_rank_top1_rate": 0.75,
+        "score_rank_avg": 5.1,
+        "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+      },
+      "passed": true
+    },
+    "graph_edges_only_no_usage_contexts": {
+      "recovery_rate": 0.0,
+      "FDR": 0.0,
+      "routing": {
+        "top1_accuracy": 0.0,
+        "target_in_top5_rate": 0.0,
+        "score_rank_top1_rate": 0.75,
+        "score_rank_avg": 5.1,
+        "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+      },
+      "passed": false
+    }
+  },
+  "independent_probes": {
+    "total": 10,
+    "target_found": 0
+  },
+  "20_seed_recovery_range": [
+    1.0,
+    1.0
+  ],
+  "20_seed_FDR_range": [
+    0.0,
+    0.6552
+  ],
+  "inventory": {
+    "skills": 79,
+    "annotations": 14,
+    "annotations_with_index_matches": 14,
+    "unannotated_skills": 65,
+    "indexed_task_types": {
+      "unknown": 79,
+      "web.research": 14,
+      "code.generation": 12,
+      "file.operation": 7,
+      "data.processing": 9,
+      "document.writing": 4
+    },
+    "unknown_only_skills": 43,
+    "all_zero_use_count": true,
+    "all_zero_last_used": true,
+    "all_success_rate_1": true,
+    "dormant_in_index": 0,
+    "indexed_skill_path_missing": [],
+    "graph_profiles": 8,
+    "graph_edges": 12,
+    "graph_profile_ids_missing_from_index": [
+      "deep-research",
+      "gpt-researcher",
+      "web/search-layer"
+    ],
+    "graph_edge_endpoints_missing_from_index": [
+      "deep-research",
+      "gpt-researcher",
+      "web/search-layer"
+    ],
+    "graph_evidence_counts": {
+      "0": 12
+    },
+    "report_task_types": {
+      "unknown": 20
+    },
+    "report_target_id_in_goal": 20,
+    "report_FDR": 0.5238095238095238
+  },
+  "original_repo_changed_files": []
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "check": "installed_server_module_port_flag_external_data",
+      "passed": true,
+      "skill_count": 81
+    },
+    {
+      "check": "installed_unknown_route_escalates",
+      "passed": true
+    },
+    {
+      "check": "installed_external_usage_reload_separate_from_verified",
+      "passed": true
+    }
+  ],
+  "owned_server_stopped": true,
+  "temporary_database_cleaned": true
+}

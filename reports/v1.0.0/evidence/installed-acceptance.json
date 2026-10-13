@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "check": "installed_csv_first_record_and_source_hash",
+      "passed": true
+    },
+    {
+      "check": "fresh_process_query_and_idempotent_replay",
+      "passed": true
+    },
+    {
+      "check": "conflicting_event_cannot_reexecute",
+      "passed": true
+    },
+    {
+      "check": "installed_xlsx_rows_and_formulas_preserved",
+      "passed": true
+    },
+    {
+      "check": "rejection_is_durable_and_creates_no_output",
+      "passed": true
+    },
+    {
+      "check": "hermes_json_protocol_not_live_host",
+      "passed": true
+    }
+  ],
+  "installed_python": "/tmp/rpe-v1-development-20261013/installed-venv/bin/python",
+  "subprocess_validation": true,
+  "temporary_fixtures_and_database_cleaned": true,
+  "formula_calculation_verified": false,
+  "live_hermes_host_verified": false
+}

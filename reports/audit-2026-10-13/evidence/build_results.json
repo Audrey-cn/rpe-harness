@@ -1,0 +1,29 @@
+{
+  "build_command": [
+    "/tmp/rpe-harness-audit-20261013/venv/bin/python",
+    "-m",
+    "build",
+    "--wheel",
+    "--no-isolation",
+    "--outdir",
+    "/tmp/rpe-harness-audit-20261013/dist"
+  ],
+  "exit_code": 0,
+  "wheel_files": [
+    "rpe_harness/__init__.py",
+    "rpe_harness/bridge.py",
+    "rpe_harness/capability.py",
+    "rpe_harness/causal_graph.py",
+    "rpe_harness/mcsi.py",
+    "rpe_harness/server.py",
+    "rpe_harness/experiments/__init__.py",
+    "rpe_harness/experiments/baseline.py",
+    "rpe_harness/experiments/cold_skill_test.py",
+    "rpe_harness/experiments/stress_test.py",
+    "rpe_harness-0.1.0.dist-info/METADATA",
+    "rpe_harness-0.1.0.dist-info/WHEEL",
+    "rpe_harness-0.1.0.dist-info/RECORD"
+  ],
+  "wheel_import_exit_code": 0,
+  "wheel_state_output": "{\"data_dir\": \"/tmp/rpe-harness-audit-20261013/data\", \"router\": {\"total_skills\": 0, \"active\": 0, \"dormant\": 0, \"deterministic_rules\": 0}, \"graph\": {\"nodes\": 0, \"edges\": 0, \"relations\": {}}}\n"
+}

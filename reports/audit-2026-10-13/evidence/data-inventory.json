@@ -1,0 +1,40 @@
+{
+  "skills": 79,
+  "annotations": 14,
+  "annotations_with_index_matches": 14,
+  "unannotated_skills": 65,
+  "indexed_task_types": {
+    "unknown": 79,
+    "web.research": 14,
+    "code.generation": 12,
+    "file.operation": 7,
+    "data.processing": 9,
+    "document.writing": 4
+  },
+  "unknown_only_skills": 43,
+  "all_zero_use_count": true,
+  "all_zero_last_used": true,
+  "all_success_rate_1": true,
+  "dormant_in_index": 0,
+  "indexed_skill_path_missing": [],
+  "graph_profiles": 8,
+  "graph_edges": 12,
+  "graph_profile_ids_missing_from_index": [
+    "deep-research",
+    "gpt-researcher",
+    "web/search-layer"
+  ],
+  "graph_edge_endpoints_missing_from_index": [
+    "deep-research",
+    "gpt-researcher",
+    "web/search-layer"
+  ],
+  "graph_evidence_counts": {
+    "0": 12
+  },
+  "report_task_types": {
+    "unknown": 20
+  },
+  "report_target_id_in_goal": 20,
+  "report_FDR": 0.5238095238095238
+}

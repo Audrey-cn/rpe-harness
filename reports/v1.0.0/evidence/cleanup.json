@@ -1,0 +1,36 @@
+{
+  "completed": true,
+  "removed_directories": [
+    "/tmp/rpe-harness-audit-20261013",
+    "/tmp/rpe-validation-20261013-itau_yzd",
+    "/tmp/rpe-v1-development-20261013",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-15",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-16",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-17",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-current"
+  ],
+  "already_absent_directories": [
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-1",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-7",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-3",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-13",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-10",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-0",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-6",
+    "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/pytest-of-audrey/pytest-2"
+  ],
+  "repository_cache_directories_removed": [],
+  "owned_file_bytes_removed": 33023598,
+  "owned_processes_remaining": 0,
+  "registered_temp_paths_remaining": [],
+  "shared_user_config_or_history_deleted": false,
+  "shared_cache_parents_deleted": false,
+  "retained": [
+    "source",
+    "tests",
+    "design_and_plan",
+    "audit_and_release_evidence",
+    "release_wheel"
+  ],
+  "cleanup_scope": "Only registered test/CLI state, environments, caches and project bytecode caches. Shared Hermes help logs could not be attributed and were not deleted."
+}

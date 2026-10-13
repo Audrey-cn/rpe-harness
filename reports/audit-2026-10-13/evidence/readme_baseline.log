@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/audrey/项目/rpe-harness/src/rpe_harness/experiments/baseline.py", line 161, in <module>
+    report = run_baseline(skills_dir)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/audrey/项目/rpe-harness/src/rpe_harness/experiments/baseline.py", line 108, in run_baseline
+    task_type=TaskType(task.get("task_type", "unknown")),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'web.research' is not a valid TaskType

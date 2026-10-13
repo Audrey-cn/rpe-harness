@@ -1,0 +1,321 @@
+{
+  "original": {
+    "config": {
+      "seed": 42,
+      "total_skills": 79,
+      "num_dormant": 10,
+      "num_tasks": 20,
+      "num_dormant_tasks": 10,
+      "num_active_tasks": 10,
+      "graph_edges": 12,
+      "graph_profiles": 82
+    },
+    "recovery_rate": 1.0,
+    "recovery": {
+      "total_dormant": 10,
+      "recovered": 10,
+      "recovered_skills": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "root/uaek-memory-management",
+        "software-development/node-inspect-debugger"
+      ],
+      "missed_skills": []
+    },
+    "false_positive_rate": 0.5238,
+    "false_positives": {
+      "total_discoveries": 21,
+      "false_positives": 11,
+      "by_skill": {
+        "creative/design-md": 9,
+        "creative/humanizer": 1,
+        "software-development/node-inspect-debugger": 1
+      },
+      "discoveries_by_reason": {
+        "场景匹配": 21
+      },
+      "examples": [
+        {
+          "task_id": "t10",
+          "target": "software-development/node-inspect-debugger",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t04",
+          "target": "creative/humanizer",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t02",
+          "target": "creative/baoyu-infographic",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t05",
+          "target": "creative/popular-web-designs",
+          "false_positive": "creative/humanizer"
+        },
+        {
+          "task_id": "t05",
+          "target": "creative/popular-web-designs",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t19",
+          "target": "software-development/codebase-inspection",
+          "false_positive": "software-development/node-inspect-debugger"
+        },
+        {
+          "task_id": "t19",
+          "target": "software-development/codebase-inspection",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t13",
+          "target": "creative/claude-design",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t15",
+          "target": "productivity/google-workspace",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t14",
+          "target": "productivity/box",
+          "false_positive": "creative/design-md"
+        }
+      ]
+    },
+    "routing": {
+      "top1_accuracy": 0.0,
+      "target_in_top5_rate": 0.0,
+      "score_rank_top1_rate": 0.75,
+      "score_rank_avg": 5.1,
+      "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+    },
+    "latency_ms": {
+      "route": {
+        "avg": 0.001,
+        "p50": 0.001,
+        "p95": 0.003,
+        "max": 0.004
+      },
+      "discover": {
+        "avg": 0.367,
+        "p50": 0.364,
+        "p95": 0.398,
+        "max": 0.425
+      }
+    },
+    "passed": true
+  },
+  "original_graph_no_synthetic_contexts": {
+    "config": {
+      "seed": 42,
+      "total_skills": 79,
+      "num_dormant": 10,
+      "num_tasks": 20,
+      "num_dormant_tasks": 10,
+      "num_active_tasks": 10,
+      "graph_edges": 12,
+      "graph_profiles": 8
+    },
+    "recovery_rate": 0.0,
+    "recovery": {
+      "total_dormant": 10,
+      "recovered": 0,
+      "recovered_skills": [],
+      "missed_skills": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "root/uaek-memory-management",
+        "software-development/node-inspect-debugger"
+      ]
+    },
+    "false_positive_rate": 0.0,
+    "false_positives": {
+      "total_discoveries": 0,
+      "false_positives": 0,
+      "by_skill": {},
+      "discoveries_by_reason": {},
+      "examples": []
+    },
+    "routing": {
+      "top1_accuracy": 0.0,
+      "target_in_top5_rate": 0.0,
+      "score_rank_top1_rate": 0.75,
+      "score_rank_avg": 5.1,
+      "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+    },
+    "latency_ms": {
+      "route": {
+        "avg": 0.001,
+        "p50": 0.001,
+        "p95": 0.002,
+        "max": 0.002
+      },
+      "discover": {
+        "avg": 0.006,
+        "p50": 0.006,
+        "p95": 0.008,
+        "max": 0.009
+      }
+    },
+    "passed": false
+  },
+  "no_graph_edges_with_synthetic_contexts": {
+    "config": {
+      "seed": 42,
+      "total_skills": 79,
+      "num_dormant": 10,
+      "num_tasks": 20,
+      "num_dormant_tasks": 10,
+      "num_active_tasks": 10,
+      "graph_edges": 0,
+      "graph_profiles": 82
+    },
+    "recovery_rate": 1.0,
+    "recovery": {
+      "total_dormant": 10,
+      "recovered": 10,
+      "recovered_skills": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "root/uaek-memory-management",
+        "software-development/node-inspect-debugger"
+      ],
+      "missed_skills": []
+    },
+    "false_positive_rate": 0.2308,
+    "false_positives": {
+      "total_discoveries": 13,
+      "false_positives": 3,
+      "by_skill": {
+        "creative/design-md": 1,
+        "creative/humanizer": 1,
+        "software-development/node-inspect-debugger": 1
+      },
+      "discoveries_by_reason": {
+        "场景匹配": 13
+      },
+      "examples": [
+        {
+          "task_id": "t10",
+          "target": "software-development/node-inspect-debugger",
+          "false_positive": "creative/design-md"
+        },
+        {
+          "task_id": "t05",
+          "target": "creative/popular-web-designs",
+          "false_positive": "creative/humanizer"
+        },
+        {
+          "task_id": "t19",
+          "target": "software-development/codebase-inspection",
+          "false_positive": "software-development/node-inspect-debugger"
+        }
+      ]
+    },
+    "routing": {
+      "top1_accuracy": 0.0,
+      "target_in_top5_rate": 0.0,
+      "score_rank_top1_rate": 0.75,
+      "score_rank_avg": 5.1,
+      "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+    },
+    "latency_ms": {
+      "route": {
+        "avg": 0.001,
+        "p50": 0.001,
+        "p95": 0.003,
+        "max": 0.004
+      },
+      "discover": {
+        "avg": 0.35,
+        "p50": 0.343,
+        "p95": 0.38,
+        "max": 0.415
+      }
+    },
+    "passed": true
+  },
+  "graph_edges_only_no_usage_contexts": {
+    "config": {
+      "seed": 42,
+      "total_skills": 79,
+      "num_dormant": 10,
+      "num_tasks": 20,
+      "num_dormant_tasks": 10,
+      "num_active_tasks": 10,
+      "graph_edges": 12,
+      "graph_profiles": 8
+    },
+    "recovery_rate": 0.0,
+    "recovery": {
+      "total_dormant": 10,
+      "recovered": 0,
+      "recovered_skills": [],
+      "missed_skills": [
+        "apple/imessage",
+        "creative/baoyu-infographic",
+        "creative/design-md",
+        "creative/humanizer",
+        "creative/popular-web-designs",
+        "productivity/document-to-action-items",
+        "productivity/maps",
+        "productivity/powerpoint",
+        "root/uaek-memory-management",
+        "software-development/node-inspect-debugger"
+      ]
+    },
+    "false_positive_rate": 0.0,
+    "false_positives": {
+      "total_discoveries": 0,
+      "false_positives": 0,
+      "by_skill": {},
+      "discoveries_by_reason": {},
+      "examples": []
+    },
+    "routing": {
+      "top1_accuracy": 0.0,
+      "target_in_top5_rate": 0.0,
+      "score_rank_top1_rate": 0.75,
+      "score_rank_avg": 5.1,
+      "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+    },
+    "latency_ms": {
+      "route": {
+        "avg": 0.001,
+        "p50": 0.001,
+        "p95": 0.001,
+        "max": 0.002
+      },
+      "discover": {
+        "avg": 0.006,
+        "p50": 0.006,
+        "p95": 0.006,
+        "max": 0.009
+      }
+    },
+    "passed": false
+  }
+}

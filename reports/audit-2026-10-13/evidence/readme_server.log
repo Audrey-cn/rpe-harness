@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py", line 235, in <module>
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 18400
+           ^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '--port'

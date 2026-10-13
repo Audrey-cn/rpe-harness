@@ -1,6 +1,7 @@
-"""基线测试——测量当前 Hermes 技能检索性能。
+"""旧元数据诊断：读取 Hermes 技能目录，再运行 Harness Router。
 
-在做任何改造之前，先建立参照数据。
+此脚本没有调用 Hermes 原生检索，不能作为宿主基线或 token 收益证据。
+1.0 基础评测请使用 experiments.basic_validation。
 """
 
 from __future__ import annotations
@@ -105,7 +106,7 @@ def run_baseline(
 
     for task in test_tasks:
         state = CausalState(
-            task_type=TaskType(task.get("task_type", "unknown")),
+            task_type=TaskType.parse(task.get("task_type", "unknown")),
             goal=task.get("goal", ""),
             constraints=task.get("constraints", []),
             input_format=task.get("input_format"),

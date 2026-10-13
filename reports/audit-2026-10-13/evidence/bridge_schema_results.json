@@ -1,0 +1,392 @@
+{
+  "hermes_schema": {
+    "sessions": [
+      {
+        "name": "id",
+        "type": "TEXT"
+      },
+      {
+        "name": "source",
+        "type": "TEXT"
+      },
+      {
+        "name": "created_source",
+        "type": "TEXT"
+      },
+      {
+        "name": "user_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "session_key",
+        "type": "TEXT"
+      },
+      {
+        "name": "chat_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "chat_type",
+        "type": "TEXT"
+      },
+      {
+        "name": "thread_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "display_name",
+        "type": "TEXT"
+      },
+      {
+        "name": "origin_json",
+        "type": "TEXT"
+      },
+      {
+        "name": "expiry_finalized",
+        "type": "INTEGER"
+      },
+      {
+        "name": "model",
+        "type": "TEXT"
+      },
+      {
+        "name": "model_config",
+        "type": "TEXT"
+      },
+      {
+        "name": "system_prompt",
+        "type": "TEXT"
+      },
+      {
+        "name": "system_prompt_hash",
+        "type": "TEXT"
+      },
+      {
+        "name": "parent_session_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "started_at",
+        "type": "REAL"
+      },
+      {
+        "name": "ended_at",
+        "type": "REAL"
+      },
+      {
+        "name": "end_reason",
+        "type": "TEXT"
+      },
+      {
+        "name": "message_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "tool_call_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "input_tokens",
+        "type": "INTEGER"
+      },
+      {
+        "name": "output_tokens",
+        "type": "INTEGER"
+      },
+      {
+        "name": "cache_read_tokens",
+        "type": "INTEGER"
+      },
+      {
+        "name": "cache_write_tokens",
+        "type": "INTEGER"
+      },
+      {
+        "name": "reasoning_tokens",
+        "type": "INTEGER"
+      },
+      {
+        "name": "cwd",
+        "type": "TEXT"
+      },
+      {
+        "name": "git_branch",
+        "type": "TEXT"
+      },
+      {
+        "name": "git_repo_root",
+        "type": "TEXT"
+      },
+      {
+        "name": "git_metadata_generation",
+        "type": "INTEGER"
+      },
+      {
+        "name": "billing_provider",
+        "type": "TEXT"
+      },
+      {
+        "name": "billing_base_url",
+        "type": "TEXT"
+      },
+      {
+        "name": "billing_mode",
+        "type": "TEXT"
+      },
+      {
+        "name": "estimated_cost_usd",
+        "type": "REAL"
+      },
+      {
+        "name": "actual_cost_usd",
+        "type": "REAL"
+      },
+      {
+        "name": "cost_status",
+        "type": "TEXT"
+      },
+      {
+        "name": "cost_source",
+        "type": "TEXT"
+      },
+      {
+        "name": "pricing_version",
+        "type": "TEXT"
+      },
+      {
+        "name": "title",
+        "type": "TEXT"
+      },
+      {
+        "name": "title_source",
+        "type": "TEXT"
+      },
+      {
+        "name": "last_activity_at",
+        "type": "REAL"
+      },
+      {
+        "name": "last_activity_description",
+        "type": "TEXT"
+      },
+      {
+        "name": "last_activity_provenance",
+        "type": "TEXT"
+      },
+      {
+        "name": "api_call_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "handoff_state",
+        "type": "TEXT"
+      },
+      {
+        "name": "handoff_platform",
+        "type": "TEXT"
+      },
+      {
+        "name": "handoff_error",
+        "type": "TEXT"
+      },
+      {
+        "name": "compression_failure_cooldown_until",
+        "type": "REAL"
+      },
+      {
+        "name": "compression_failure_error",
+        "type": "TEXT"
+      },
+      {
+        "name": "compression_fallback_streak",
+        "type": "INTEGER"
+      },
+      {
+        "name": "compression_ineffective_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "compression_recovery_deadline",
+        "type": "REAL"
+      },
+      {
+        "name": "compression_overload_streak",
+        "type": "INTEGER"
+      },
+      {
+        "name": "profile_name",
+        "type": "TEXT"
+      },
+      {
+        "name": "transport_profile",
+        "type": "TEXT"
+      },
+      {
+        "name": "rewind_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "archived",
+        "type": "INTEGER"
+      },
+      {
+        "name": "auto_archived",
+        "type": "INTEGER"
+      },
+      {
+        "name": "pinned",
+        "type": "INTEGER"
+      },
+      {
+        "name": "hidden",
+        "type": "INTEGER"
+      },
+      {
+        "name": "last_read_at",
+        "type": "REAL"
+      },
+      {
+        "name": "tool_names",
+        "type": "TEXT"
+      }
+    ],
+    "messages": [
+      {
+        "name": "id",
+        "type": "INTEGER"
+      },
+      {
+        "name": "session_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "role",
+        "type": "TEXT"
+      },
+      {
+        "name": "content",
+        "type": "TEXT"
+      },
+      {
+        "name": "tool_call_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "tool_calls",
+        "type": "TEXT"
+      },
+      {
+        "name": "tool_name",
+        "type": "TEXT"
+      },
+      {
+        "name": "effect_disposition",
+        "type": "TEXT"
+      },
+      {
+        "name": "timestamp",
+        "type": "REAL"
+      },
+      {
+        "name": "token_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "finish_reason",
+        "type": "TEXT"
+      },
+      {
+        "name": "reasoning",
+        "type": "TEXT"
+      },
+      {
+        "name": "reasoning_content",
+        "type": "TEXT"
+      },
+      {
+        "name": "reasoning_details",
+        "type": "TEXT"
+      },
+      {
+        "name": "codex_reasoning_items",
+        "type": "TEXT"
+      },
+      {
+        "name": "codex_message_items",
+        "type": "TEXT"
+      },
+      {
+        "name": "platform_message_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "observed",
+        "type": "INTEGER"
+      },
+      {
+        "name": "_compressed_summary",
+        "type": "INTEGER"
+      },
+      {
+        "name": "active",
+        "type": "INTEGER"
+      },
+      {
+        "name": "compacted",
+        "type": "INTEGER"
+      },
+      {
+        "name": "api_content",
+        "type": "TEXT"
+      },
+      {
+        "name": "display_kind",
+        "type": "TEXT"
+      },
+      {
+        "name": "display_metadata",
+        "type": "TEXT"
+      },
+      {
+        "name": "display_identity",
+        "type": "BLOB"
+      },
+      {
+        "name": "display_order",
+        "type": "INTEGER"
+      },
+      {
+        "name": "message_uid",
+        "type": "TEXT"
+      },
+      {
+        "name": "absorbed_message_uids",
+        "type": "TEXT"
+      },
+      {
+        "name": "tool_call_uids",
+        "type": "TEXT"
+      },
+      {
+        "name": "tool_call_uid",
+        "type": "TEXT"
+      }
+    ]
+  },
+  "natural_language_event": {
+    "task_type": "unknown",
+    "goal": "清理这份Excel中的重复订单，但不要破坏原有公式。",
+    "constraints": [],
+    "source_ref": "1",
+    "route_level": "DETERMINISTIC",
+    "skill": [
+      "apple/apple-notes"
+    ],
+    "fallback_to_llm": false
+  },
+  "long_event": {
+    "goal_chars": 800,
+    "is_minimal": false,
+    "has_ref": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "review_type": "independent_read_only_recheck",
+  "scope": ["storage.py", "runtime.py", "server.py", "cli.py", "execution.py", "verification.py", "scripts/rpe"],
+  "prior_findings": [
+    {"finding": "pending CLI replay success code", "status": "resolved", "evidence": "Live claim replay returns received with exit3 and no output."},
+    {"finding": "schema TypeError handling", "status": "resolved", "evidence": "Malformed route returns JSON, no traceback, exit2. String constraints persist rejected/invalid_request."},
+    {"finding": "XLSX rich text silently flattened", "status": "resolved", "evidence": "Writer rejects rich-text source without output; independently invoked verifier also returns passed=false and rich-text error."},
+    {"finding": "cross-origin simple POST", "status": "resolved", "evidence": "Foreign Origin returns403; text/plain without Origin returns415; skill state unchanged."},
+    {"finding": "launcher probe bytecode writes", "status": "resolved", "evidence": "Candidate interpreter probe uses -B and actual command uses PYTHONDONTWRITEBYTECODE=1; launcher --version returns1.0.0."}
+  ],
+  "verification": {
+    "pytest": {"selection": "test_runtime.py test_server.py test_execution.py", "passed": 69, "failed": 0, "duration_seconds": 6.79},
+    "process_lease": ["Same-process independent readers do not interrupt live owner", "Separate CLI reader returns pending rather than recovering active owner", "Dead owner with PID set to current live PID still recovers interrupted", "Eight simultaneous CLI processes claim one event; one verified execution and one persisted run; callers return only succeeded/0 or pending/3"],
+    "http_deadline": {"drip_feed": "HTTP408 in0.3175seconds with0.3second total read deadline", "health_after_drip_feed": 200, "complete_body_slow_execution": "Valid CSV run taking0.5seconds succeeds despite0.3second read deadline"},
+    "probe_results": "independent-review/final-probes/results.json"
+  },
+  "unresolved_p1_p2_findings": [],
+  "limitations": [
+    "Read-only code and local functional review, not exhaustive security assessment or long-running load test.",
+    "Crash after artifact publication but before SQLite success intentionally remains interrupted; no automatic success reconstruction. Requires documented manual recovery/new event/output policy.",
+    "SIGKILL can leave an owned .rpe-* staging file; safe automatic cleanup of orphan staging remains future work.",
+    "Formula values are not computed; verification checks supported structure and references.",
+    "fcntl lease implementation targets macOS/Unix; Windows portability is not validated."
+  ],
+  "workspace_changes": "No product source modifications. Probe files and databases only under assigned temporary independent-review path; test base directory explicitly assigned; no installs or user configuration changes."
+}

@@ -1,0 +1,76 @@
+..............F.                                                         [100%]
+=================================== FAILURES ===================================
+_______________________________ test_from_event ________________________________
+
+    def test_from_event():
+        event = {
+            "task_type": "web.research",
+            "goal": "搜索信息",
+            "constraints": [],
+            "event_id": "evt-001",
+            "session_id": "sess-001",
+        }
+>       state = CausalState.from_event(event)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_mcsi.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/rpe_harness/mcsi.py:75: in from_event
+    task_type=TaskType(event.get("task_type", "unknown")),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py:751: in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <enum 'TaskType'>, value = 'web.research'
+
+    def __new__(cls, value):
+        # all enum instances are actually created during class construction
+        # without calling this method; this method is called by the metaclass'
+        # __call__ (i.e. Color(3) ), and by pickle
+        if type(value) is cls:
+            # For lookups like Color(Color.RED)
+            return value
+        # by-value search for a matching enum member
+        # see if it's in the reverse mapping (for hashable values)
+        try:
+            return cls._value2member_map_[value]
+        except KeyError:
+            # Not found, no need to do long O(n) search
+            pass
+        except TypeError:
+            # not there, now do long search -- O(n) behavior
+            for member in cls._member_map_.values():
+                if member._value_ == value:
+                    return member
+        # still not found -- verify that members exist, in-case somebody got here mistakenly
+        # (such as via super when trying to override __new__)
+        if not cls._member_map_:
+            raise TypeError("%r has no members defined" % cls)
+        #
+        # still not found -- try _missing_ hook
+        try:
+            exc = None
+            result = cls._missing_(value)
+        except Exception as e:
+            exc = e
+            result = None
+        try:
+            if isinstance(result, cls):
+                return result
+            elif (
+                    Flag is not None and issubclass(cls, Flag)
+                    and cls._boundary_ is EJECT and isinstance(result, int)
+                ):
+                return result
+            else:
+                ve_exc = ValueError("%r is not a valid %s" % (value, cls.__qualname__))
+                if result is None and exc is None:
+>                   raise ve_exc
+E                   ValueError: 'web.research' is not a valid TaskType
+
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py:1170: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_mcsi.py::test_from_event - ValueError: 'web.research' is no...
+1 failed, 15 passed in 0.06s

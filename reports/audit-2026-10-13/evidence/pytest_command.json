@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/tmp/rpe-harness-audit-20261013/venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/tmp/rpe-harness-audit-20261013/pytest.xml"
+  ],
+  "python": "3.12.14",
+  "pytest": "9.1.1",
+  "cwd": "/Users/audrey/\u9879\u76ee/rpe-harness",
+  "exit_code": 1
+}

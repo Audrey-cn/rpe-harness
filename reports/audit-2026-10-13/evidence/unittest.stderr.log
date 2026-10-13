@@ -1,0 +1,14 @@
+test_batch_file_json_array (test_bridge.TestEventToStateConverter.test_batch_file_json_array) ... ok
+test_batch_file_jsonl (test_bridge.TestEventToStateConverter.test_batch_file_jsonl) ... ok
+test_dump_state_sequence (test_bridge.TestEventToStateConverter.test_dump_state_sequence) ... ok
+test_five_event_formats_to_five_states (test_bridge.TestEventToStateConverter.test_five_event_formats_to_five_states)
+核心用例：5 个不同格式事件 → 5 个字段完整的 CausalState。 ... ok
+test_minimal_filtering_drops_noise (test_bridge.TestEventToStateConverter.test_minimal_filtering_drops_noise)
+MCSI 原则：非必要字段被过滤，只留决策所需最小信息。 ... ok
+test_missing_event_id_gets_traceable_fallback_ref (test_bridge.TestEventToStateConverter.test_missing_event_id_gets_traceable_fallback_ref) ... ok
+test_unknown_task_type_degrades_to_unknown (test_bridge.TestEventToStateConverter.test_unknown_task_type_degrades_to_unknown) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+OK

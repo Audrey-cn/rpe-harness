@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -88,7 +89,7 @@ class CausalGraph:
         if not profile or not profile.preconditions:
             return True, []
 
-        satisfied = set(state.constraints)
+        satisfied = set(state.facts)
         missing = [p for p in profile.preconditions if p not in satisfied]
         return len(missing) == 0, missing
 
@@ -114,6 +115,9 @@ class CausalGraph:
 
     def recommend_chain(self, state: CausalState, primary_skill: str) -> list[str]:
         """推荐技能链——主技能 + 常组合技能。"""
+        known = set(self.profiles) | {sid for edge in self.edges for sid in (edge.source, edge.target)}
+        if primary_skill not in known:
+            return []
         chain = [primary_skill]
         companions = self.get_companions(primary_skill)
         for c in companions:
@@ -121,19 +125,19 @@ class CausalGraph:
                 chain.append(c)
         return chain
 
-    def discover_cold_skills(self, state: CausalState, all_skills: list[str], dormant: set[str]) -> list[dict]:
+    def discover_cold_skills(self, state: CausalState, all_skills: list[str], dormant: set[str], *, min_score: float = 0.6) -> list[dict]:
         """发现休眠但可能适用的技能——冷门技能恢复。"""
+        state.validate()
+        if type(min_score) not in (int, float) or not 0 < min_score <= 1:
+            raise ValueError("min_score 必须在 (0, 1] 之间")
         results = []
-        for skill_id in dormant:
+        known = set(all_skills)
+        for skill_id in sorted(dormant & known):
             profile = self.profiles.get(skill_id)
             if not profile:
                 continue
-            # 1. 场景匹配（主信号，最高 0.7）
-            context_score = 0.0
-            for ctx in profile.usage_contexts:
-                if any(kw in state.goal.lower() for kw in ctx.lower().split()):
-                    context_score += 0.35
-            context_score = min(context_score, 0.7)
+            # 一个充分的独立场景即可触发；同源分组数量不会增加分数。
+            context_score = max((self._scenario_score(state.goal, ctx) for ctx in profile.usage_contexts), default=0.0)
 
             # 2. 关联发现（弱信号，封顶 0.3，且要求任务类型相关）
             relation_score = 0.0
@@ -143,18 +147,44 @@ class CausalGraph:
                         continue
                     path = self.find_path(active, skill_id)
                     if path and len(path) <= 3:
-                        relation_score = 0.3  # 封顶，不累加
+                        relation_score = 0.1  # 只辅助排序，不单独触发。
                         break
 
             match_score = context_score + relation_score
             # 关联分不能单独触发——必须有场景匹配，且总分够高
-            if context_score > 0.3 and match_score > 0.6:
+            if context_score >= min_score and match_score >= min_score:
                 results.append({
                     "skill_id": skill_id,
                     "match_score": round(min(match_score, 1.0), 3),
                     "reason": "场景匹配" if context_score > 0.2 else "关联发现",
                 })
-        return sorted(results, key=lambda x: x["match_score"], reverse=True)
+        return sorted(results, key=lambda x: (-x["match_score"], x["skill_id"]))
+
+    @staticmethod
+    def _scenario_score(goal: str, context: str) -> float:
+        generic = {"a", "an", "the", "to", "for", "and", "of", "from", "with", "in", "on", "data", "research", "code", "file", "files", "task", "handle"}
+        def tokens(text: str) -> set[str]:
+            return set(re.findall(r"[a-z0-9][a-z0-9_-]*|[\u4e00-\u9fff]+", text.lower())) - generic
+        goal_tokens, context_tokens = tokens(goal), tokens(context)
+        if len(goal_tokens & context_tokens) >= 2:
+            return 0.7
+        if context_tokens and goal.strip().lower() == context.strip().lower():
+            return 0.7
+        if len(context_tokens) == 1:
+            phrase = next(iter(context_tokens))
+            if re.fullmatch(r"[\u4e00-\u9fff]{4,}", phrase) and phrase in goal:
+                return 0.7
+        return 0.0
+
+    def validate_skill_ids(self, known_ids: set[str]) -> list[str]:
+        """返回无法在索引中解析的引用，包含档案中的替代和组合引用。"""
+        references = {sid for edge in self.edges for sid in (edge.source, edge.target)}
+        references.update(self.profiles)
+        for profile in self.profiles.values():
+            references.add(profile.skill_id)
+            references.update(profile.alternatives)
+            references.update(profile.composed_with)
+        return sorted(references - known_ids)
 
     def get_stats(self) -> dict[str, Any]:
         relation_counts = {}
@@ -195,5 +225,7 @@ class CausalGraph:
         for e in data.get("edges", []):
             graph.add_edge(CausalEdge(**e))
         for sid, p in data.get("profiles", {}).items():
+            if p.get("skill_id") != sid:
+                raise ValueError(f"档案键与 skill_id 不一致: {sid}")
             graph.set_profile(SkillProfile(**p))
         return graph

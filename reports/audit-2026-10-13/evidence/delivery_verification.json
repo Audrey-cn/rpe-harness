@@ -1,0 +1,29 @@
+{
+  "verified_at": "2026-10-13T21:51:11.966956+08:00",
+  "head": "ddb8fd5c0678e648f12444a838917e8e697a5c35",
+  "original_files_changed": [],
+  "local_links_checked": 34,
+  "broken_local_links": [],
+  "valid_json_files": 17,
+  "pytest": {
+    "tests": 16,
+    "failures": 1,
+    "errors": 0
+  },
+  "cold": {
+    "recovery_rate": 1.0,
+    "FDR": 0.5238,
+    "routing": {
+      "top1_accuracy": 0.0,
+      "target_in_top5_rate": 0.0,
+      "score_rank_top1_rate": 0.75,
+      "score_rank_avg": 5.1,
+      "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+    }
+  },
+  "findings_count": 16,
+  "tracked_diff": "",
+  "status": "?? reports/audit-2026-10-13/\n",
+  "report_chars": 15182,
+  "post_editorial_link_and_source_recheck": "passed"
+}

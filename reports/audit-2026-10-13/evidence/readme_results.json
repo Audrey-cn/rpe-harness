@@ -1,0 +1,17 @@
+[
+  {
+    "name": "readme_server",
+    "exit_code": 1,
+    "output": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py\", line 235, in <module>\n    port = int(sys.argv[1]) if len(sys.argv) > 1 else 18400\n           ^^^^^^^^^^^^^^^^\nValueError: invalid literal for int() with base 10: '--port'\n"
+  },
+  {
+    "name": "readme_comparison",
+    "exit_code": 1,
+    "output": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3: No module named rpe_harness.experiments.comparison\n"
+  },
+  {
+    "name": "readme_baseline",
+    "exit_code": 1,
+    "output": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/experiments/baseline.py\", line 161, in <module>\n    report = run_baseline(skills_dir)\n             ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/项目/rpe-harness/src/rpe_harness/experiments/baseline.py\", line 108, in run_baseline\n    task_type=TaskType(task.get(\"task_type\", \"unknown\")),\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py\", line 751, in __call__\n    return cls.__new__(cls, value)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/enum.py\", line 1170, in __new__\n    raise ve_exc\nValueError: 'web.research' is not a valid TaskType\n"
+  }
+]

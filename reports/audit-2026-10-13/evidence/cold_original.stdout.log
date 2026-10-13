@@ -1,0 +1,27 @@
+{
+  "report_path": "/private/tmp/rpe-validation-20261013-itau_yzd/cold-reproduced.json",
+  "recovery_rate": 1.0,
+  "false_positive_rate": 0.5238,
+  "latency_ms": {
+    "route": {
+      "avg": 0.001,
+      "p50": 0.001,
+      "p95": 0.003,
+      "max": 0.004
+    },
+    "discover": {
+      "avg": 0.367,
+      "p50": 0.357,
+      "p95": 0.415,
+      "max": 0.418
+    }
+  },
+  "routing": {
+    "top1_accuracy": 0.0,
+    "target_in_top5_rate": 0.0,
+    "score_rank_top1_rate": 0.75,
+    "score_rank_avg": 5.1,
+    "note": "route() 受 L0 确定性规则短路；score_rank 为纯打分排名（L2 对照）"
+  },
+  "passed": true
+}

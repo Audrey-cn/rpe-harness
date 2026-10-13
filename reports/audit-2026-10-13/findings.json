@@ -1,0 +1,178 @@
+{
+  "audit_date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "head": "ddb8fd5c0678e648f12444a838917e8e697a5c35",
+  "scope": "assessment only; production code unchanged",
+  "summary": {
+    "P0": 0,
+    "P1": 8,
+    "P2": 8,
+    "tests": {
+      "passed": 15,
+      "failed": 1
+    },
+    "stage": "offline prototype; real execution and persistent learning not implemented"
+  },
+  "findings": [
+    {
+      "id": "A01",
+      "priority": "P1",
+      "title": "能力路由键与确定性规则不一致",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/mcsi.py",
+      "line": 61,
+      "observed": "file.operation/pdf/document返回productivity/xlsx",
+      "recommended_action": "统一规则键语义；避免能力要求导致格式精确规则失效；校验通配候选",
+      "status": "open"
+    },
+    {
+      "id": "A02",
+      "priority": "P1",
+      "title": "UNKNOWN被确定性绑定到Apple Notes",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/capability.py",
+      "line": 157,
+      "observed": "unknown任意goal返回apple/apple-notes且fallback=false",
+      "recommended_action": "未知任务拒识或升级；禁止默认unknown通配绑定",
+      "status": "open"
+    },
+    {
+      "id": "A03",
+      "priority": "P1",
+      "title": "前置条件和硬约束不阻止候选推荐",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py",
+      "line": 160,
+      "observed": "preconditions_met=false的技能仍返回为主推荐",
+      "recommended_action": "区分用户约束与环境事实；筛除不可执行候选并解释缺失信息",
+      "status": "open"
+    },
+    {
+      "id": "A04",
+      "priority": "P1",
+      "title": "使用反馈未持久化且未改变选择",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py",
+      "line": 196,
+      "observed": "usage一次后reload使use_count从1变0",
+      "recommended_action": "建立持久运行记录及技能状态更新；以验证结果驱动再验证和降级",
+      "status": "open"
+    },
+    {
+      "id": "A05",
+      "priority": "P1",
+      "title": "旧分类入口和基线失效",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/mcsi.py",
+      "line": 75,
+      "observed": "pytest1失败；baseline旧web.research报ValueError",
+      "recommended_action": "统一兼容转换；更新过期枚举断言；重建真实Hermes基线",
+      "status": "open"
+    },
+    {
+      "id": "A06",
+      "priority": "P1",
+      "title": "冷门恢复实验含答案线索且验收不足",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/experiments/cold_skill_test.py",
+      "line": 108,
+      "observed": "20个goal含目标ID；无图边仍100%；route top1/top5均0却passed",
+      "recommended_action": "独立真值和保留任务；记录多标签适用性、误发现、执行成功；预登记门槛",
+      "status": "open"
+    },
+    {
+      "id": "A07",
+      "priority": "P1",
+      "title": "wheel不包含可用运行数据且健康检查不能识别",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py",
+      "line": 28,
+      "observed": "实际构建wheel独立加载0技能0图节点",
+      "recommended_action": "配置外置运行数据或合理包资源；增加readiness检查与数据初始化",
+      "status": "open"
+    },
+    {
+      "id": "A08",
+      "priority": "P1",
+      "title": "不完整请求体阻塞串行HTTP服务",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py",
+      "line": 202,
+      "observed": "Content-Length100正文1字符阻塞另一health请求",
+      "recommended_action": "读取超时、长度上限及并发处理；避免慢请求占住服务",
+      "status": "open"
+    },
+    {
+      "id": "A09",
+      "priority": "P2",
+      "title": "HTTP字段和错误响应不统一",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/server.py",
+      "line": 122,
+      "observed": "坏JSON和数组导致RemoteDisconnected",
+      "recommended_action": "请求schema、范围校验、统一4xx响应",
+      "status": "open"
+    },
+    {
+      "id": "A10",
+      "priority": "P2",
+      "title": "标准来源引用转换往返和HTTP丢失",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/bridge.py",
+      "line": 32,
+      "observed": "source_ref字段未作为别名；HTTP构造状态忽略来源",
+      "recommended_action": "保留标准字段；原事件存储及引用解析",
+      "status": "open"
+    },
+    {
+      "id": "A11",
+      "priority": "P2",
+      "title": "MCSI大小和充分性契约未执行",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/mcsi.py",
+      "line": 69,
+      "observed": "长正文is_minimal=false仍接受；priority99不限制",
+      "recommended_action": "明确状态schema；充分性检查、补充状态协议和任务结果对照",
+      "status": "open"
+    },
+    {
+      "id": "A12",
+      "priority": "P2",
+      "title": "独立冷门技能一条场景匹配仍漏报",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/causal_graph.py",
+      "line": 149,
+      "observed": "单场景无边分0.35低于0.6",
+      "recommended_action": "在独立保留任务上校准阈值及拒识；不能靠重复拆词保证命中",
+      "status": "open"
+    },
+    {
+      "id": "A13",
+      "priority": "P2",
+      "title": "图推荐不形成可执行计划",
+      "file": "/Users/audrey/项目/rpe-harness/src/rpe_harness/causal_graph.py",
+      "line": 115,
+      "observed": "忽略state、依赖顺序、条件与证据",
+      "recommended_action": "统一关系语义；检查依赖和条件；图收益以消融验证",
+      "status": "open"
+    },
+    {
+      "id": "A14",
+      "priority": "P2",
+      "title": "图与技能索引ID不一致",
+      "file": "/Users/audrey/项目/rpe-harness/data/causal_graph.json",
+      "line": 186,
+      "observed": "web/search-layer、deep-research、gpt-researcher无对应索引",
+      "recommended_action": "统一逻辑ID；图与索引一致性校验",
+      "status": "open"
+    },
+    {
+      "id": "A15",
+      "priority": "P2",
+      "title": "README和接口文档漂移",
+      "file": "/Users/audrey/项目/rpe-harness/README.md",
+      "line": 33,
+      "observed": "--port报错；comparison和docs/experiments.md缺失",
+      "recommended_action": "同步入口命令、模块存在性和TaskType规范",
+      "status": "open"
+    },
+    {
+      "id": "A16",
+      "priority": "P2",
+      "title": "复现和配置运行管理缺失",
+      "file": "/Users/audrey/项目/rpe-harness/pyproject.toml",
+      "line": 24,
+      "observed": "无锁定/CI/配置数据目录；绝对本机技能路径",
+      "recommended_action": "明确Python环境、锁定验证工具、CI、可迁移路径、结构化运行日志",
+      "status": "open"
+    }
+  ]
+}

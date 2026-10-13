@@ -1,0 +1,44 @@
+{
+  "discovered": [
+    {
+      "name": "Codex",
+      "version": "0.162.0-alpha.17.2",
+      "actual_model_smoke": "passed",
+      "actual_readonly_review": "passed",
+      "tool_calls_during_review": 0
+    },
+    {
+      "name": "Claude Code",
+      "version": "2.1.295",
+      "actual_model_smoke": "isolated_config_not_logged_in"
+    },
+    {
+      "name": "Hermes",
+      "version": "v0.21.7+279.g63d0b94",
+      "help_and_version_checked": true,
+      "actual_model_run": false,
+      "reason": "No verified read-only tool boundary; no global configuration changed"
+    }
+  ],
+  "smoke": [
+    {
+      "name": "codex",
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_seconds": 11.2,
+      "ready_in_output": true,
+      "output_bytes": 347,
+      "diagnostic_bytes": 119
+    },
+    {
+      "name": "claude",
+      "exit_code": 1,
+      "timeout": false,
+      "elapsed_seconds": 0.87,
+      "ready_in_output": false,
+      "output_bytes": 1212,
+      "diagnostic_bytes": 0
+    }
+  ],
+  "policy": "Own ephemeral state and caches only; no deletion of existing user history/configuration."
+}

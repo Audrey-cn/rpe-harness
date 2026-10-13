@@ -1,0 +1,11 @@
+#!/bin/sh
+# Use an available compatible Python without installing or changing user settings.
+set -eu
+rpe_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+for rpe_candidate in "$rpe_root/.venv/bin/python" python3.12 python3.11 python3.10 python3 /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3; do
+    if command -v "$rpe_candidate" >/dev/null 2>&1 && "$rpe_candidate" -B -c 'import sys,openpyxl; assert sys.version_info >= (3,10); assert tuple(map(int,openpyxl.__version__.split(".")[:3])) >= (3,1,5)' >/dev/null 2>&1; then
+        PYTHONPATH="$rpe_root/src${PYTHONPATH:+:$PYTHONPATH}" PYTHONDONTWRITEBYTECODE=1 exec "$rpe_candidate" -m rpe_harness "$@"
+    fi
+done
+printf '%s\n' 'Python >=3.10 and openpyxl >=3.1.5 are required. Install this project into a virtual environment.' >&2
+exit 2

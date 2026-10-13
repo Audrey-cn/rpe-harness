@@ -1,0 +1,12 @@
+{
+  "cli": "codex",
+  "version": "0.162.0-alpha.17.2",
+  "exit_code": 0,
+  "timeout": false,
+  "elapsed_seconds": 38.1,
+  "ephemeral": true,
+  "user_config_ignored": true,
+  "owned_state_directory": "/tmp/rpe-v1-development-20261013/codex-review",
+  "tool_types_seen": [],
+  "review_text": "1. **Medium — `execution.py`, `publish_output`**\n   - **Trigger:** Power loss after publication and recording success.\n   - **Impact:** The staging file is fsynced, but the output directory is never fsynced after `os.link`. SQLite can retain a `succeeded` run whose published output disappears after reboot.\n   - **Minimal remediation:** Fsync the output’s parent directory after linking, before recording success.\n\n2. **Medium — `runtime.py`, `HarnessRuntime.run`; `storage.py`, `RunStore.recover_interrupted`**\n   - **Trigger:** The process exits after `publish_output` creates the output but before `finish(..., 'succeeded')` commits.\n   - **Impact:** Recovery marks the run interrupted despite its published artifact. Replaying the event permanently returns that interrupted record; submitting a new event for the same output is rejected because the output exists.\n   - **Minimal remediation:** Persist publication intent, output path, and verified hash before linking. During recovery, reconcile an existing output against that evidence and finalize a matching artifact.\n\n3. **Medium — `storage.py`, `RunStore.recover_interrupted`**\n   - **Trigger:** A crashed run’s PID is reused by another live process before recovery.\n   - **Impact:** `os.kill(pid, 0)` treats the unrelated process as the owner. The abandoned run remains `received` or `running`, and every replay returns that unfinished record.\n   - **Minimal remediation:** Record and verify process identity beyond PID, such as boot identity plus process start time, or use a process-lifetime ownership lock.\n\n4. **Medium — `server.py`, `HarnessHandler.setup` and `_read_body`**\n   - **Trigger:** Thirty-two clients send incomplete requests, periodically supplying bytes faster than the socket inactivity timeout.\n   - **Impact:** Each client can retain a worker slot indefinitely. All subsequent connections are dropped, despite the intended bounded HTTP handling.\n   - **Minimal remediation:** Enforce an absolute deadline for receiving request headers and body; an inactivity timeout alone does not bound total request duration."
+}

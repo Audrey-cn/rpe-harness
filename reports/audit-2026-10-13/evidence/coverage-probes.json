@@ -1,0 +1,67 @@
+{
+  "test_named_relational_actual_level": "DETERMINISTIC",
+  "baseline_legacy_task_only_normalized": {
+    "total_tasks": 5,
+    "correct_routing": 0,
+    "accuracy": 0.0,
+    "avg_latency_ms": 0.01,
+    "avg_tokens": 0.0,
+    "cold_skill_recovery_rate": 0.0
+  },
+  "baseline_results": [
+    {
+      "task_id": "t01",
+      "expected_skill": "xlsx",
+      "found_skill": null,
+      "latency_ms": 0.008499999239575118,
+      "tokens_used": 0,
+      "success": false,
+      "level": "REASONING"
+    },
+    {
+      "task_id": "t02",
+      "expected_skill": "python-debugpy",
+      "found_skill": null,
+      "latency_ms": 0.006124995707068592,
+      "tokens_used": 0,
+      "success": false,
+      "level": "REASONING"
+    },
+    {
+      "task_id": "t03",
+      "expected_skill": "search-layer",
+      "found_skill": null,
+      "latency_ms": 0.004875000740867108,
+      "tokens_used": 0,
+      "success": false,
+      "level": "REASONING"
+    },
+    {
+      "task_id": "t04",
+      "expected_skill": "docx",
+      "found_skill": null,
+      "latency_ms": 0.004959001671522856,
+      "tokens_used": 0,
+      "success": false,
+      "level": "REASONING"
+    },
+    {
+      "task_id": "t05",
+      "expected_skill": "xlsx",
+      "found_skill": null,
+      "latency_ms": 0.004875000740867108,
+      "tokens_used": 0,
+      "success": false,
+      "level": "REASONING"
+    }
+  ],
+  "metrics_single_target_dormant_pairs": {
+    "TP": 10,
+    "FP": 11,
+    "FN": 0,
+    "TN": 179,
+    "FDR": 0.5238095238095238,
+    "precision": 0.47619047619047616,
+    "FPR": 0.05789473684210526
+  }
+}

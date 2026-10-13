@@ -1,0 +1,31 @@
+{
+  "head": "ddb8fd5c0678e648f12444a838917e8e697a5c35",
+  "tracked_files": 23,
+  "source_sha256": {
+    "README.md": "6cd8b4b978f48cecbb16fe6d62623f9065259a9cd06cebdcf5fd70df985eb9fd",
+    "data/causal_graph.json": "5aa5fa094cd4a8eeecc0e39b06503c8ee060cdabbbf1be9199d1270e05c72b06",
+    "data/skill_annotations.json": "267272613fff16dfb7831ad6f988ea55906e7a9038b594b80f810fa721da7de2",
+    "data/skill_index.json": "1f0ea24e2a5f62b8011886c49f211dbf781b920583f9d48fdd25a53442fc7806",
+    "data/stress_report.json": "3472775a980933fc0e2411c1bde4281b2b784a2bcb1a2672d3a008319fe2c64a",
+    "data/test_index.json": "94f1c234f53b1c25b09fca07ca765cd3f1e7d3f867d9839271375f1860da63fc",
+    "docs/architecture.md": "0d86d8da23526952241c53576a3e14c166ead11c5b93a74f38385060c46975dc",
+    "docs/mcsi-spec.md": "d16b6278a9a9e6326f6154433ac04898f60a79f5fa5ab865dbacdd153eaf4a74",
+    "pyproject.toml": "b9515b9d95b1c570a037596680401553fac28ca0c182be02ba15b32a9d008ee9",
+    "reports/cold_skill_test.json": "4f0d2b64a3a8a87dad18c63c39190d868149a33e865f6151abdb771cf544fb6b",
+    "src/rpe_harness/__init__.py": "eefecf81b8c0e4c4661a31aea40d85ebc0688428a93501a3fd912a9cb27d7c13",
+    "src/rpe_harness/bridge.py": "6d46baf76cf478d53ce4fa790923f5e584a94356cb84dd48408786c25e67a11c",
+    "src/rpe_harness/capability.py": "7f2f30492f4a095c0808d9345200b8869c871be79806f4822051f740ef7a4fe0",
+    "src/rpe_harness/causal_graph.py": "66b4daf190571f9045a00578c9e3f41ee52152a2780f1c4d64686bdbb240948e",
+    "src/rpe_harness/experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "src/rpe_harness/experiments/baseline.py": "4ff24bbf8b9e5539ad40d4f7057b9149700c59f9f976896f89e5f2461012ff0f",
+    "src/rpe_harness/experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "src/rpe_harness/experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "src/rpe_harness/mcsi.py": "4d601bc13483109f68a8508b1a5e90b056302e9d3bcf3280c918f59258bbe206",
+    "src/rpe_harness/server.py": "2cdda04764358b91294e29b5063194e42c0e762d7b415be66664e9b883ec7d8f",
+    "tests/test_bridge.py": "eeaacffaf9e09ab600a4d243c14987e251e51ee4b37489f6d684451065b266eb",
+    "tests/test_capability.py": "40213149b51a5e771d566db5c472fadc8ef97e17ac188622319f0bfb2a11522e",
+    "tests/test_mcsi.py": "7e5119c007face1ca42bacb07d47ed23c8c344a8cd03209267603c87a4684ac9"
+  },
+  "conversation_path": "/Users/audrey/Desktop/量子通信研究总结_完整对话存档/量子通信研究总结_聊天气泡.html",
+  "conversation_sha256": "c012065436956cf21647fd1b386eb97a5b8efe4b18f155dd9bb91db0612c7999"
+}

@@ -1,0 +1,67 @@
+{
+  "design": "10 independently written Chinese paraphrases; exploratory probes, not a representative benchmark",
+  "total": 10,
+  "target_found": 0,
+  "probes": [
+    {
+      "target": "apple/imessage",
+      "goal": "给家人发一条短信，说明我今晚会晚点到家",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "creative/baoyu-infographic",
+      "goal": "把这份年度经营数据整理成一张适合分享的可视化信息图",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "creative/design-md",
+      "goal": "从现有网页提取字体颜色间距和布局规范，写成可复用设计指南",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "creative/humanizer",
+      "goal": "这段文字读起来很像机器写的，请改成自然可信的表达",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "creative/popular-web-designs",
+      "goal": "为新的软件服务首页找几种常见且成熟的网页布局参考",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "productivity/document-to-action-items",
+      "goal": "把会议纪要中的决定、责任人和截止日期整理成待办清单",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "productivity/maps",
+      "goal": "帮我比较从家到机场的开车和公共交通路线",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "productivity/powerpoint",
+      "goal": "把产品方案整理成十页演示文稿，供周会汇报使用",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "root/uaek-memory-management",
+      "goal": "把我这周形成的项目习惯保存到长期记忆，下次继续沿用",
+      "found": [],
+      "target_found": false
+    },
+    {
+      "target": "software-development/node-inspect-debugger",
+      "goal": "给正在运行的服务进程加断点，检查异常请求中的变量值",
+      "found": [],
+      "target_found": false
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "scope": "core",
+    "red_log_sha256": "d162ccffc8873224387fb6a64542dba94bdca8f25cba4e52e7ae2ecae1d224c0",
+    "summary": "41 failed, 17 passed in 0.17s",
+    "green_evidence": "pytest.xml"
+  },
+  {
+    "scope": "execution",
+    "red_log_sha256": "6d768f7d3d99f8f18c900425d4142f04c1e4bc4dc40dd60ebd3069739f407eeb",
+    "summary": "39 failed in 0.38s",
+    "green_evidence": "pytest.xml"
+  },
+  {
+    "scope": "rich_text",
+    "red_log_sha256": "e028c126d713f65492bd77ed6bf1fad46a2c19cb5e1a1ae29fd05ea48b386cd8",
+    "summary": "5 failed, 41 deselected in 0.17s",
+    "green_evidence": "pytest.xml"
+  },
+  {
+    "scope": "directory_sync",
+    "red_log_sha256": "836ac6de773637d8bb5572399cb4b45f7601dd931747abd97e1cf4048dc0ed65",
+    "summary": "1 failed in 0.09s",
+    "green_evidence": "pytest.xml"
+  },
+  {
+    "scope": "evaluation",
+    "red_log_sha256": "81f1eb750c1c10fae6f1964ea36951b41ec205fd672eaf9db8e08b859744a401",
+    "summary": "============================== 3 failed in 0.02s ===============================",
+    "green_evidence": "pytest.xml"
+  },
+  {
+    "scope": "review_boundaries",
+    "red_log_sha256": "05ee797761f079e4f33d99e861287d674d05e9b4a717fd3d8bf57d0ef984f8a1",
+    "summary": "4 failed, 2 passed in 1.30s",
+    "green_evidence": "pytest.xml"
+  }
+]
