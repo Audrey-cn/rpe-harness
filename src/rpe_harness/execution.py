@@ -122,16 +122,52 @@ def _csv_records(data: bytes, encoding: str, delimiter: str) -> list[list[str]]:
     return records
 
 
+def _ordinary_comment_drawing(data: bytes) -> bool:
+    """Permit only ordinary note VML that openpyxl regenerates from comments.
+
+    Pictures, controls and arbitrary shapes remain outside the executor's
+    preservation contract. Comment box geometry is not part of that contract.
+    """
+    try:
+        root = ElementTree.fromstring(data)
+    except ElementTree.ParseError:
+        return False
+    vml = 'urn:schemas-microsoft-com:vml'
+    excel = 'urn:schemas-microsoft-com:office:excel'
+    allowed = {'xml', 'shapelayout', 'idmap', 'shapetype', 'stroke', 'path', 'shape',
+               'fill', 'shadow', 'textbox', 'div', 'ClientData', 'MoveWithCells',
+               'SizeWithCells', 'AutoFill', 'Row', 'Column', 'Anchor', 'Visible'}
+    for node in root.iter():
+        if node.tag.rsplit('}', 1)[-1] not in allowed:
+            return False
+        if any(key.rsplit('}', 1)[-1] in {'href', 'src'} for key in node.attrib):
+            return False
+    types = root.findall('{'+vml+'}shapetype')
+    shapes = root.findall('{'+vml+'}shape')
+    if not shapes or len(types) != 1 or types[0].get('id') != '_x0000_t202':
+        return False
+    for shape in shapes:
+        clients = shape.findall('{'+excel+'}ClientData')
+        if (shape.get('type') != '#_x0000_t202' or len(clients) != 1
+                or clients[0].get('ObjectType') != 'Note'):
+            return False
+    return True
+
+
 def _check_workbook_objects(workbook: Any, data: bytes) -> None:
     with ZipFile(io.BytesIO(data)) as archive:
         unsupported = (
-            "xl/drawings/", "xl/charts/", "xl/media/", "xl/pivot", "xl/embeddings/",
+            "xl/charts/", "xl/media/", "xl/pivot", "xl/embeddings/",
             "xl/externalLinks/", "xl/slicer", "xl/activeX/", "xl/ctrlProps/",
             "xl/queryTables/", "customXml/",
         )
-        if any(name.startswith(unsupported) or "vbaProject" in name
-               or name == "xl/connections.xml" for name in archive.namelist()):
-            raise ValueError("unsupported workbook object")
+        for name in archive.namelist():
+            drawing = name.startswith('xl/drawings/')
+            ordinary_note = (drawing and name.endswith('.vml')
+                             and _ordinary_comment_drawing(archive.read(name)))
+            if ((drawing and not ordinary_note) or name.startswith(unsupported)
+                    or 'vbaProject' in name or name == 'xl/connections.xml'):
+                raise ValueError('unsupported workbook object')
         for name in archive.namelist():
             if name == "xl/sharedStrings.xml" or (
                 name.startswith("xl/worksheets/") and name.endswith(".xml")

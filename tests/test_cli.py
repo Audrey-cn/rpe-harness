@@ -51,3 +51,24 @@ def test_querying_a_rejected_record_is_a_successful_query(tmp_path):
                              '--db', str(db)], capture_output=True, text=True)
     assert result.returncode == 0
     assert json.loads(result.stdout)['status'] == 'rejected'
+
+
+@pytest.mark.parametrize('events,expected_exit,expected_status', [
+    ([], 1, 'unverified'),
+    ([{'kind': 'rpe_task_returned', 'status': 'rejected'}], 2, 'rejected'),
+])
+def test_hermes_completion_does_not_claim_verified_task_success(tmp_path, monkeypatch, capsys,
+                                                               events, expected_exit, expected_status):
+    from rpe_harness.cli import main
+    from rpe_harness.integrations import hermes_session
+    prompt = tmp_path/'prompt.txt'
+    prompt.write_text('task')
+    monkeypatch.setattr(hermes_session, 'run_hermes_session', lambda *args, **kwargs: {
+        'completed': True, 'events': events, 'session_root': 'owned-temp', 'stream_tool_calls': []})
+    code = main(['hermes', 'run', '--workspace', str(tmp_path), '--prompt-file', str(prompt),
+                 '--db', str(tmp_path/'runs.sqlite')])
+    result = json.loads(capsys.readouterr().out)
+    assert code == expected_exit
+    assert result['status'] == expected_status
+    assert result['harness_verified'] is False
+    assert result['temporary_history_cleaned'] is True

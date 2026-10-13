@@ -1,0 +1,590 @@
+{
+  "experiment": "installed-wheel-explicit-tool-e2e",
+  "version": "1.1.0",
+  "module_path": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "source_checkout_used": false,
+  "wheel_sha256": "18bb92283a617733e2424025ca1ab1d2b6f63b2e14718be6b239bb171f453577",
+  "prompt_sha256": "4f597e36bd233105f39ce7e1b56918a0ad07bfcf485fe595d9df8da250bb646d",
+  "session_id": "20261014_003737_caeb07",
+  "completed": true,
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 24.786,
+  "model_identity": {
+    "provider": "xiaomi",
+    "requested_model": "mimo-v2.6-pro",
+    "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+    "response_models": [
+      "mimo-v2.6-pro"
+    ]
+  },
+  "usage": {
+    "api_requests": 4,
+    "missing_observations": 0,
+    "requests_with_usage": 4,
+    "api_errors": 0,
+    "coverage_complete": true,
+    "known_total_tokens": 24465,
+    "prompt_tokens": 23734,
+    "output_tokens": 731,
+    "input_tokens": 3126,
+    "total_tokens": 24465,
+    "cache_read_tokens": 20608,
+    "cache_write_tokens": null,
+    "reasoning_tokens": 265
+  },
+  "events": [
+    {
+      "ingest_event_id": "2b27125072bc485ab5f42a2b6fb4cfe2",
+      "source_event_id": null,
+      "kind": "on_session_start",
+      "received_at": 1791909463.3927512,
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro"
+    },
+    {
+      "ingest_event_id": "269cb881ccc940538c74e573aed4df50",
+      "source_event_id": null,
+      "kind": "pre_llm_call",
+      "received_at": 1791909463.396329,
+      "session_id": "20261014_003737_caeb07",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "model": "mimo-v2.6-pro"
+    },
+    {
+      "ingest_event_id": "b44236e646b34c649fbc325288f9d341",
+      "source_event_id": null,
+      "kind": "pre_api_request",
+      "received_at": 1791909463.405725,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:1",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "api_call_count": 1,
+      "started_at": 1791909463.4006999
+    },
+    {
+      "ingest_event_id": "c7c7d43bc8564a77840b6c6803b6e805",
+      "source_event_id": null,
+      "kind": "post_api_request",
+      "received_at": 1791909467.246117,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:1",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "response_model": "mimo-v2.6-pro",
+      "api_call_count": 1,
+      "api_duration": 3.7627980709075928,
+      "started_at": 1791909463.4006999,
+      "ended_at": 1791909467.163498,
+      "usage": {
+        "input_tokens": 757,
+        "output_tokens": 116,
+        "cache_read_tokens": 4352,
+        "cache_write_tokens": 0,
+        "total_tokens": 5225,
+        "reasoning_tokens": 89,
+        "prompt_tokens": 5109,
+        "raw_provider_usage": {
+          "prompt_tokens": 5109,
+          "completion_tokens": 116,
+          "total_tokens": 5225,
+          "prompt_tokens_details": {
+            "cached_tokens": 4352
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 89
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "response_identity": {
+          "id": "4b022c87-9461-4546-a35b-27fad548f141_2c684ee75d1b46f190a4f4281b354e8e",
+          "model": "mimo-v2.6-pro"
+        }
+      }
+    },
+    {
+      "ingest_event_id": "67509f24f21f4c3f9b1690516b6a07ca",
+      "source_event_id": null,
+      "kind": "pre_tool_call",
+      "received_at": 1791909467.263008,
+      "tool_name": "tool_search",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_b7787038b8eb4ac18e7de52b",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:1"
+    },
+    {
+      "ingest_event_id": "2415f0c6a9c54ba0a40de8c585aaec8d",
+      "source_event_id": null,
+      "kind": "post_tool_call",
+      "received_at": 1791909467.27171,
+      "tool_name": "tool_search",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_b7787038b8eb4ac18e7de52b",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:1",
+      "status": "ok",
+      "error_type": null
+    },
+    {
+      "ingest_event_id": "a91c80980d8e4bc9b6c0afdba63d3f62",
+      "source_event_id": null,
+      "kind": "pre_api_request",
+      "received_at": 1791909467.276453,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:2",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "api_call_count": 2,
+      "started_at": 1791909467.2747352
+    },
+    {
+      "ingest_event_id": "a0d8be147acc40a0a2ed76cecda9accd",
+      "source_event_id": null,
+      "kind": "post_api_request",
+      "received_at": 1791909468.735733,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:2",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "response_model": "mimo-v2.6-pro",
+      "api_call_count": 2,
+      "api_duration": 1.4570317268371582,
+      "started_at": 1791909467.2747352,
+      "ended_at": 1791909468.731767,
+      "usage": {
+        "input_tokens": 419,
+        "output_tokens": 36,
+        "cache_read_tokens": 4992,
+        "cache_write_tokens": 0,
+        "total_tokens": 5447,
+        "reasoning_tokens": 11,
+        "prompt_tokens": 5411,
+        "raw_provider_usage": {
+          "prompt_tokens": 5411,
+          "completion_tokens": 36,
+          "total_tokens": 5447,
+          "prompt_tokens_details": {
+            "cached_tokens": 4992
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 11
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "response_identity": {
+          "id": "fa765feb-5d76-469e-a951-3cdc0c8bca37_5df7faecb699448797d121607aaa3197",
+          "model": "mimo-v2.6-pro"
+        }
+      }
+    },
+    {
+      "ingest_event_id": "89f424e0b1c8485c807b0c9ae0b0e42d",
+      "source_event_id": null,
+      "kind": "pre_tool_call",
+      "received_at": 1791909468.738997,
+      "tool_name": "tool_describe",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_65a5b35b81d84a699f512115",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:2"
+    },
+    {
+      "ingest_event_id": "8a520fdc0dc640c18b3a69eba73eadc9",
+      "source_event_id": null,
+      "kind": "post_tool_call",
+      "received_at": 1791909468.740412,
+      "tool_name": "tool_describe",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_65a5b35b81d84a699f512115",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:2",
+      "status": "ok",
+      "error_type": null
+    },
+    {
+      "ingest_event_id": "b5794aeb5e2340b8bc4fa0f51358ad44",
+      "source_event_id": null,
+      "kind": "pre_api_request",
+      "received_at": 1791909468.744494,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "api_call_count": 3,
+      "started_at": 1791909468.742987
+    },
+    {
+      "ingest_event_id": "cae4a6a16304483d9f9121ed121bb757",
+      "source_event_id": null,
+      "kind": "post_api_request",
+      "received_at": 1791909476.3241541,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "response_model": "mimo-v2.6-pro",
+      "api_call_count": 3,
+      "api_duration": 7.576372146606445,
+      "started_at": 1791909468.742987,
+      "ended_at": 1791909476.319359,
+      "usage": {
+        "input_tokens": 620,
+        "output_tokens": 407,
+        "cache_read_tokens": 5376,
+        "cache_write_tokens": 0,
+        "total_tokens": 6403,
+        "reasoning_tokens": 101,
+        "prompt_tokens": 5996,
+        "raw_provider_usage": {
+          "prompt_tokens": 5996,
+          "completion_tokens": 407,
+          "total_tokens": 6403,
+          "prompt_tokens_details": {
+            "cached_tokens": 5376
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 101
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "response_identity": {
+          "id": "ba3c17b1-3f66-44b9-a3f1-27bb6abcacb4_2f9c2a9029bb4e059131dce7ecc71e89",
+          "model": "mimo-v2.6-pro"
+        }
+      }
+    },
+    {
+      "ingest_event_id": "2b9b3032d71a4f7185094b27c6f613e4",
+      "source_event_id": null,
+      "kind": "pre_tool_call",
+      "received_at": 1791909476.361233,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_21c4775a52ab4624837c2874",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3"
+    },
+    {
+      "ingest_event_id": "e590ea47b0ee4ba89a292e77e5f7522f",
+      "source_event_id": null,
+      "kind": "rpe_task_received",
+      "received_at": 1791909476.3639958,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07"
+    },
+    {
+      "ingest_event_id": "15a15c08e2aa490997d9290c25210ef7",
+      "source_event_id": null,
+      "kind": "rpe_task_returned",
+      "received_at": 1791909476.445506,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "run_id": "21cce4894b6443ec8f04da30b56204f8",
+      "status": "succeeded",
+      "error_code": null
+    },
+    {
+      "ingest_event_id": "df9ac3df507441ce89804c13e53eb9d7",
+      "source_event_id": null,
+      "kind": "post_tool_call",
+      "received_at": 1791909476.447807,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_21c4775a52ab4624837c2874",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3",
+      "status": "ok",
+      "error_type": null,
+      "run_id": "21cce4894b6443ec8f04da30b56204f8"
+    },
+    {
+      "ingest_event_id": "6df4c7ab02ff40d4904c7cff5ac4d47c",
+      "source_event_id": null,
+      "kind": "pre_tool_call",
+      "received_at": 1791909476.453949,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_00d217d98e61",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3"
+    },
+    {
+      "ingest_event_id": "096c193618bf402cbf19be0768473323",
+      "source_event_id": null,
+      "kind": "rpe_task_received",
+      "received_at": 1791909476.4545841,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07"
+    },
+    {
+      "ingest_event_id": "e92349f693264d5d9e81c471c68d5a45",
+      "source_event_id": null,
+      "kind": "rpe_task_returned",
+      "received_at": 1791909476.5236201,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "run_id": "2af5f3512a1b4d42a6246c6dad106ddf",
+      "status": "succeeded",
+      "error_code": null
+    },
+    {
+      "ingest_event_id": "f642369dde174828ad338b18d43d47e4",
+      "source_event_id": null,
+      "kind": "post_tool_call",
+      "received_at": 1791909476.525439,
+      "tool_name": "rpe_task",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "session_id": "20261014_003737_caeb07",
+      "tool_call_id": "call_00d217d98e61",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:3",
+      "status": "ok",
+      "error_type": null,
+      "run_id": "2af5f3512a1b4d42a6246c6dad106ddf"
+    },
+    {
+      "ingest_event_id": "7db165282f3c4303b5276bd1f9eab40d",
+      "source_event_id": null,
+      "kind": "pre_api_request",
+      "received_at": 1791909476.531296,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:4",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "api_call_count": 4,
+      "started_at": 1791909476.529539
+    },
+    {
+      "ingest_event_id": "d6101ecd743b4c03821a236aabba7a9a",
+      "source_event_id": null,
+      "kind": "post_api_request",
+      "received_at": 1791909480.7986639,
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "api_request_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e:api:4",
+      "session_id": "20261014_003737_caeb07",
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "api_mode": "chat_completions",
+      "response_model": "mimo-v2.6-pro",
+      "api_call_count": 4,
+      "api_duration": 4.263922929763794,
+      "started_at": 1791909476.529539,
+      "ended_at": 1791909480.793462,
+      "usage": {
+        "input_tokens": 1330,
+        "output_tokens": 172,
+        "cache_read_tokens": 5888,
+        "cache_write_tokens": 0,
+        "total_tokens": 7390,
+        "reasoning_tokens": 64,
+        "prompt_tokens": 7218,
+        "raw_provider_usage": {
+          "prompt_tokens": 7218,
+          "completion_tokens": 172,
+          "total_tokens": 7390,
+          "prompt_tokens_details": {
+            "cached_tokens": 5888
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 64
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "response_identity": {
+          "id": "1368b700-12c1-4e3b-94f0-d3f783c1c729_ac4c335b55f6491ab30c2c2bca01bc85",
+          "model": "mimo-v2.6-pro"
+        }
+      }
+    },
+    {
+      "ingest_event_id": "213cc31fd02d402c877c262fa553fc8b",
+      "source_event_id": null,
+      "kind": "post_llm_call",
+      "received_at": 1791909480.8059,
+      "session_id": "20261014_003737_caeb07",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "model": "mimo-v2.6-pro"
+    },
+    {
+      "ingest_event_id": "f8e8bbe9a47f43e788a9e36809bce1c4",
+      "source_event_id": null,
+      "kind": "on_session_end",
+      "received_at": 1791909480.806921,
+      "session_id": "20261014_003737_caeb07",
+      "task_id": "8fed3bd3-d849-471f-b13e-8dd0fdba5e18",
+      "turn_id": "20261014_003737_caeb07:8fed3bd3-d849-471f-b13e-8dd0fdba5e18:0c66027e",
+      "model": "mimo-v2.6-pro",
+      "completed": true,
+      "failed": false,
+      "interrupted": false
+    },
+    {
+      "ingest_event_id": "df31f7e7373a4f7cabc0cf466bbb47b8",
+      "source_event_id": null,
+      "kind": "on_session_finalize",
+      "received_at": 1791909480.815031,
+      "session_id": "20261014_003737_caeb07"
+    }
+  ],
+  "tool_counts": {
+    "tool_search": 1,
+    "tool_describe": 1,
+    "rpe_task": 2
+  },
+  "tool_input_sha256": [
+    "940d1502d1661d4b7e9a49d391c93736bfb152c0fea1961d057de24c244f4df4",
+    "c1a914e02328bec8e0a9f9229a835e4bc8ce0712b621b72c2de5be6e9d54a53a",
+    "07f94d55ab6c3e34c215776c01cd64c30b6eea9d1107d49609d50972da60c019",
+    "83dbb6f8f4c1dd38e2366b1b2b88e2046f6240a2769d15078611d575593dca6b"
+  ],
+  "process_cleanup": {
+    "tracked_descendants": 25,
+    "signaled_descendants": 0,
+    "remaining_descendants": [],
+    "cleanup_complete": true,
+    "errors": []
+  },
+  "observer_errors": 0,
+  "input_sha256": {
+    "csv_chinese": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+    "csv_multiline": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b"
+  },
+  "checks": [
+    {
+      "case_id": "csv_chinese",
+      "validation": {
+        "passed": true,
+        "expected": "success",
+        "source_unchanged": true,
+        "manual_truth_ok": true,
+        "verification": {
+          "passed": true,
+          "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+          "output_sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+          "checks": {
+            "source_unchanged": true,
+            "headers_preserved": true,
+            "first_records_preserved": true,
+            "record_order_preserved": true,
+            "duplicates_removed": true
+          },
+          "input_rows": 5,
+          "output_rows": 3,
+          "removed_rows": 2
+        },
+        "linked_run_verified": true,
+        "run_ids": [
+          "21cce4894b6443ec8f04da30b56204f8",
+          "2af5f3512a1b4d42a6246c6dad106ddf"
+        ],
+        "observations_present": true,
+        "host_completed": true,
+        "native_independent": null,
+        "used_rpe_task": true,
+        "native_tool_executed": false,
+        "output_exists": true
+      }
+    },
+    {
+      "case_id": "csv_multiline",
+      "validation": {
+        "passed": true,
+        "expected": "success",
+        "source_unchanged": true,
+        "manual_truth_ok": true,
+        "verification": {
+          "passed": true,
+          "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+          "output_sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+          "checks": {
+            "source_unchanged": true,
+            "headers_preserved": true,
+            "first_records_preserved": true,
+            "record_order_preserved": true,
+            "duplicates_removed": true
+          },
+          "input_rows": 4,
+          "output_rows": 3,
+          "removed_rows": 1
+        },
+        "linked_run_verified": true,
+        "run_ids": [
+          "21cce4894b6443ec8f04da30b56204f8",
+          "2af5f3512a1b4d42a6246c6dad106ddf"
+        ],
+        "observations_present": true,
+        "host_completed": true,
+        "native_independent": null,
+        "used_rpe_task": true,
+        "native_tool_executed": false,
+        "output_exists": true
+      }
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "passed": 2
+  },
+  "interpretation": "Explicit tool protocol verification; separate from optional-tool adoption baseline, not included in paired timing/token comparisons."
+}

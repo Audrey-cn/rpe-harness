@@ -65,6 +65,45 @@ def xlsx_source(tmp_path: Path) -> Path:
     return path
 
 
+def test_standard_cell_comments_are_preserved_and_duplicate_comments_cleared(tmp_path):
+    from openpyxl.comments import Comment
+    source = xlsx_source(tmp_path)
+    workbook = load_workbook(source)
+    workbook['订单']['A2'].comment = Comment('首条中文注释', 'Auditor')
+    workbook['订单']['A3'].comment = Comment('重复注释应清空', 'Auditor')
+    workbook['说明']['A1'].comment = Comment('其他工作表注释', 'Auditor')
+    workbook.save(source)
+    workbook.close()
+    prepared = execution().prepare_deduplication(source, tmp_path/'comments.xlsx', ['订单号'])
+    try:
+        assert verification().verify_deduplication(prepared)['passed']
+        output = load_workbook(prepared['staging_path'])
+        assert output['订单']['A2'].comment.text == '首条中文注释'
+        assert output['订单']['A3'].comment is None
+        assert output['说明']['A1'].comment.author == 'Auditor'
+        output.close()
+    finally:
+        execution().cleanup_staging(prepared)
+
+
+def test_non_note_vml_shapes_are_still_rejected(tmp_path):
+    from openpyxl.comments import Comment
+    source = xlsx_source(tmp_path)
+    workbook = load_workbook(source)
+    workbook['订单']['A2'].comment = Comment('note', 'Auditor')
+    workbook.save(source)
+    workbook.close()
+    replaced = tmp_path/'button.xlsx'
+    with ZipFile(source) as original, ZipFile(replaced, 'w') as changed:
+        for entry in original.infolist():
+            data = original.read(entry.filename)
+            if entry.filename.endswith('.vml'):
+                data = data.replace(b'ObjectType="Note"', b'ObjectType="Button"')
+            changed.writestr(entry, data)
+    with pytest.raises(ValueError, match='unsupported workbook object'):
+        execution().prepare_deduplication(replaced, tmp_path/'out.xlsx', ['订单号'])
+
+
 def test_csv_keeps_first_complete_record_with_leading_zero_and_multiline_text(tmp_path):
     source = csv_source(tmp_path)
     original = source.read_bytes()

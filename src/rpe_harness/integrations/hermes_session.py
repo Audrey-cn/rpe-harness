@@ -1,0 +1,531 @@
+"""Run the installed Hermes host with an owned home and bounded process group.
+
+Only Xiaomi's existing API-key provider is supported by this launcher. OAuth
+refresh state is deliberately never cloned. The native plugin can also be used
+directly with other providers under the host's own configuration.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+import uuid
+
+
+def aggregate_usage(events):
+    requests = [e for e in events if e.get('kind') in {'post_api_request', 'api_request_error'}]
+    outcomes = {e.get('api_request_id') for e in requests if e.get('api_request_id')}
+    missing = {e['api_request_id'] for e in events if e.get('kind') == 'pre_api_request'
+               and e.get('api_request_id') and e['api_request_id'] not in outcomes}
+    requests += [{'kind': 'missing_api_outcome', 'api_request_id': request_id, 'usage': None}
+                 for request_id in missing]
+    usages = [e.get('usage') for e in requests]
+
+    def reported(u, markers):
+        return isinstance(u, dict) and any(p in markers for p in u.get('present_fields', []))
+
+    def counter(value):
+        return value if type(value) is int and value >= 0 else None
+
+    def raw_counter(u, paths):
+        if not isinstance(u, dict):
+            return None
+        for path in paths:
+            if not reported(u, {path}):
+                continue
+            value = u.get('raw_provider_usage')
+            for part in path.split('.'):
+                value = value.get(part) if isinstance(value, dict) else None
+            if counter(value) is not None:
+                return value
+        return None
+
+    prompt_paths = ('prompt_tokens', 'promptTokenCount', 'input_tokens')
+    output_paths = ('completion_tokens', 'output_tokens', 'candidatesTokenCount')
+    total_paths = ('total_tokens', 'totalTokenCount')
+    bucket_paths = {
+        'cache_read_tokens': ('prompt_tokens_details.cached_tokens', 'input_tokens_details.cached_tokens',
+                             'cache_read_input_tokens', 'prompt_cache_hit_tokens', 'cached_tokens',
+                             'cache_read_tokens', 'cached_input_tokens', 'cachedContentTokenCount'),
+        'cache_write_tokens': ('prompt_tokens_details.cache_write_tokens',
+                              'prompt_tokens_details.cache_creation_input_tokens',
+                              'input_tokens_details.cache_write_tokens',
+                              'input_tokens_details.cache_creation_tokens',
+                              'cache_creation_input_tokens', 'cache_write_tokens', 'cache_creation_tokens'),
+        'reasoning_tokens': ('completion_tokens_details.reasoning_tokens',
+                             'output_tokens_details.reasoning_tokens', 'reasoning_tokens', 'thoughtsTokenCount'),
+    }
+
+    def core_value(u, field, paths):
+        if not reported(u, paths):
+            return None
+        # Anthropic input is uncached while canonical prompt includes its cache
+        # buckets; use the host's prompt bucket for that alias.
+        raw = raw_counter(u, paths if field != 'prompt_tokens' else paths[:2])
+        return raw if raw is not None else counter(u.get(field))
+
+    def aligned_bucket(u, field, paths):
+        if not reported(u, paths):
+            return None
+        normalized = counter(u.get(field))
+        raw = raw_counter(u, paths)
+        if isinstance(u.get('raw_provider_usage'), dict) and raw != normalized:
+            return None
+        return normalized
+
+    values = []
+    for u in usages:
+        row = {field: None for field in ('prompt_tokens', 'output_tokens', 'input_tokens',
+                                         'total_tokens', *bucket_paths)}
+        if isinstance(u, dict):
+            row['prompt_tokens'] = core_value(u, 'prompt_tokens', prompt_paths)
+            row['output_tokens'] = core_value(u, 'output_tokens', output_paths)
+            row['total_tokens'] = raw_counter(u, total_paths)
+            if (row['total_tokens'] is None and reported(u, total_paths)
+                    and not isinstance(u.get('raw_provider_usage'), dict)):
+                row['total_tokens'] = counter(u.get('total_tokens'))
+            if (row['total_tokens'] is None and row['prompt_tokens'] is not None
+                    and row['output_tokens'] is not None):
+                row['total_tokens'] = row['prompt_tokens'] + row['output_tokens']
+            for field, paths in bucket_paths.items():
+                row[field] = aligned_bucket(u, field, paths)
+            input_markers = ('input_tokens', 'prompt_cache_miss_tokens', *bucket_paths['cache_read_tokens'])
+            if reported(u, input_markers):
+                row['input_tokens'] = counter(u.get('input_tokens'))
+                raw_miss = raw_counter(u, ('prompt_cache_miss_tokens',))
+                if (reported(u, {'prompt_cache_miss_tokens'})
+                        and raw_miss != row['input_tokens']):
+                    row['input_tokens'] = None
+                if any(reported(u, bucket_paths[field]) and row[field] is None
+                       for field in ('cache_read_tokens', 'cache_write_tokens')):
+                    row['input_tokens'] = None
+        values.append(row)
+
+    core_markers = {'prompt_tokens', 'completion_tokens', 'total_tokens', 'input_tokens',
+                    'output_tokens', 'promptTokenCount', 'candidatesTokenCount', 'totalTokenCount'}
+    complete = bool(requests) and all(row['total_tokens'] is not None for row in values)
+    result = {'api_requests': len(requests),
+              'missing_observations': len(missing),
+              'requests_with_usage': sum(reported(u, core_markers) for u in usages),
+              'api_errors': sum(e.get('kind') == 'api_request_error' for e in requests),
+              'coverage_complete': complete,
+              'known_total_tokens': sum(row['total_tokens'] for row in values
+                                        if row['total_tokens'] is not None)}
+    for field in ('prompt_tokens', 'output_tokens', 'input_tokens', 'total_tokens', *bucket_paths):
+        result[field] = (sum(row[field] for row in values)
+                         if values and all(row[field] is not None for row in values) else None)
+    return result
+
+
+def sandbox_profile(write_roots, real_home, install_root=None, database=None, read_roots=(),
+                    native_import_root=None, owner_read_scope=None):
+    """macOS denies take precedence over allows; scope both writes and signals."""
+    def quote(value):
+        return json.dumps(str(value), ensure_ascii=False)
+    roots = ' '.join('(subpath '+quote(Path(p).resolve())+')' for p in write_roots)
+    if database:
+        database = Path(database).resolve()
+        roots += ' ' + ' '.join('(literal '+quote(str(database)+suffix)+')'
+                                for suffix in ['', '-wal', '-shm', '-journal'])
+        roots += ' (subpath '+quote(database.parent / ('.'+database.name+'.leases'))+')'
+    real_home = Path(real_home).resolve()
+    credentials = '\n'.join('(deny file-read* (literal '+quote(real_home / name)+'))'
+                            for name in ['.env', 'auth.json', 'config.yaml'])
+    private_state = ''
+    if install_root:
+        allowed = ' '.join('(subpath '+quote(Path(p).resolve())+')'
+                           for p in [install_root, *read_roots])
+        private_state = ('(deny file-read* (require-all (subpath '+quote(real_home)+') '
+                         '(require-not (require-any '+allowed+'))))')
+    native_scope = ''
+    if native_import_root:
+        import_root = Path(native_import_root).resolve()
+        package = import_root / 'rpe_harness'
+        repository = import_root.parent if import_root.name == 'src' else package
+        minimal = [import_root, package, package / 'integrations',
+                   package / '__init__.py', package / 'integrations/__init__.py',
+                   package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py']
+        allowed = ' '.join('(literal '+quote(p)+')' for p in minimal)
+        native_scope = ('(deny file-read-data (require-all (subpath '+quote(repository)+') '
+                        '(require-not (require-any '+allowed+'))))\n')
+    owned_scope = ''
+    if owner_read_scope:
+        owner, allowed_paths = owner_read_scope
+        allowed_paths = list(allowed_paths)
+        if database:
+            allowed_paths += [Path(str(database)+suffix) for suffix in ['-wal', '-shm', '-journal']]
+            allowed_paths += [database.parent / ('.'+database.name+'.leases')]
+        allowed = ' '.join('(subpath '+quote(Path(p).resolve())+')' for p in allowed_paths)
+        owned_scope = ('(deny file-read-data (require-all (subpath '+quote(Path(owner).resolve())+') '
+                       '(require-not (require-any '+allowed+'))))\n')
+    return ('(version 1)\n(allow default)\n'
+            '(deny file-write* (require-not (require-any '+roots+' (literal "/dev/null"))))\n'
+            '(deny signal (require-not (target same-sandbox)))\n'+credentials+'\n'+private_state+'\n'
+            +native_scope+owned_scope)
+
+
+def _installed_python(hermes_root):
+    code = ('import sys; from pathlib import Path; sys.path.insert(0,sys.argv[1]); '
+            'from pm.environments import project_python; print(project_python(Path(sys.argv[1])))')
+    process = subprocess.run([str(hermes_root / '.venv/bin/python'), '-B', '-c', code, str(hermes_root)],
+                             capture_output=True, text=True, timeout=15)
+    path = Path(process.stdout.strip())
+    if process.returncode or not path.is_absolute() or not path.is_file():
+        raise ValueError('cannot locate installed Hermes dependency environment')
+    return path
+
+
+def _read_host_settings(hermes_root, host_python=None):
+    # Capture in memory; this subprocess output contains the key and must never
+    # be forwarded to diagnostics, prompts, reports or terminal output.
+    code = '''import json,pathlib,sys
+sys.path.insert(0,sys.argv[1])
+import hermes_yaml as yaml
+from dotenv import dotenv_values
+p=pathlib.Path.home()/'.hermes'
+c=yaml.safe_load((p/'config.yaml').read_text()) or {}
+e=dotenv_values(p/'.env',interpolate=False)
+m=c.get('model',{})
+print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
+'base_url':m.get('base_url') or e.get('XIAOMI_BASE_URL'), 'api_key':e.get('XIAOMI_API_KEY')}))
+'''
+    process = subprocess.run([str(host_python or _installed_python(hermes_root)), '-B', '-c', code, str(hermes_root)],
+                             capture_output=True, text=True, timeout=15)
+    if process.returncode:
+        raise ValueError('cannot read installed Hermes API-key settings')
+    try:
+        return json.loads(process.stdout)
+    except ValueError as exc:
+        raise ValueError('invalid installed Hermes settings') from exc
+
+
+def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings):
+    if settings.get('provider') != 'xiaomi':
+        raise ValueError('isolated launcher currently requires xiaomi API-key provider')
+    if not all(isinstance(settings.get(k), str) and settings[k]
+               for k in ['model', 'base_url', 'api_key']):
+        raise ValueError('missing model, plan endpoint or API key')
+    from urllib.parse import urlsplit
+    url = urlsplit(settings['base_url'])
+    if url.scheme != 'https' or not url.hostname or url.username or url.password or url.query or url.fragment:
+        raise ValueError('provider endpoint must be a plain HTTPS URL')
+    if any('\n' in settings[k] or '\r' in settings[k] for k in ['api_key', 'base_url']):
+        raise ValueError('invalid credential assignment')
+    session_root = Path(session_root)
+    session_root.mkdir(parents=True, exist_ok=False, mode=0o700)
+    home = session_root / 'home'
+    home.mkdir(mode=0o700)
+    credential_path = home / '.env'
+    fd = os.open(credential_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'w') as stream:
+        stream.write('XIAOMI_API_KEY='+json.dumps(settings['api_key'])+'\n')
+        stream.write('XIAOMI_BASE_URL='+json.dumps(settings['base_url'])+'\n')
+    config = {
+        'model': {'default': settings['model'], 'provider': 'xiaomi', 'base_url': settings['base_url']},
+        'agent': {'max_turns': 12, 'run_budget_seconds': 180, 'api_max_retries': 1,
+                  'auto_recovery_cycles': 0, 'environment_probe': False},
+        'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
+        'platform_toolsets': {'cli': ['terminal', 'file'] + (['rpe_harness'] if tool_enabled else [])},
+        'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
+        'skills': {'external_dirs': [], 'project_discovery': False, 'auto_load': []},
+        'curator': {'enabled': False}, 'compression': {'enabled': False},
+        'auxiliary': {'title_generation': {'enabled': False, 'model_upgrade_enabled': False},
+                      'background_review': {'enabled': False}},
+        'plugins': {'enabled': ['rpe-harness'], 'auto_update_check_hours': 0, 'auto_apply': False},
+        'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
+        'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
+    }
+    (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
+    plugin = home / 'plugins/rpe-harness'
+    plugin.mkdir(parents=True)
+    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.1.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
+    (plugin / '__init__.py').write_text(
+        'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
+        'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
+    return home
+
+
+def _stop_group(process):
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        return
+    try:
+        process.wait(timeout=3)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait(timeout=5)
+
+
+def _process_table():
+    """Read PID, parent and kernel-reported start time, without command/env contents."""
+    output = subprocess.run(['/bin/ps', '-axo', 'pid=,ppid=,lstart='],
+                            capture_output=True, text=True, timeout=5, check=True).stdout
+    table = {}
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) == 7 and parts[0].isdigit() and parts[1].isdigit():
+            table[int(parts[0])] = (int(parts[1]), ' '.join(parts[2:]))
+    return table
+
+
+def _capture_descendants(pid, start_time, owned):
+    table = _process_table()
+    if table.get(pid, (None, None))[1] != start_time:
+        return
+    parents = {pid}
+    while True:
+        found = {child for child, (parent, _) in table.items() if parent in parents}
+        new = found - parents
+        for child in new:
+            owned[child] = table[child][1]
+        if not new:
+            break
+        parents.update(new)
+
+
+def _stop_descendants(owned):
+    signaled = []
+    for sig in [signal.SIGTERM, signal.SIGKILL]:
+        table = _process_table()
+        survivors = [pid for pid, identity in owned.items()
+                     if table.get(pid, (None, None))[1] == identity and pid != os.getpid()]
+        if not survivors:
+            break
+        for pid in survivors:
+            try:
+                os.kill(pid, sig)
+                if pid not in signaled:
+                    signaled.append(pid)
+            except ProcessLookupError:
+                pass
+        if sig == signal.SIGTERM:
+            time.sleep(0.3)
+    return signaled
+
+
+def _tagged_processes(token):
+    # Inspect in memory only. Never persist or expose other processes' command
+    # lines/environments. The unique inherited tag covers short-lived parents
+    # whose detached child escaped the periodic ancestry snapshot.
+    output = subprocess.run(['/bin/ps', '-Eww', '-U', str(os.getuid()), '-o', 'pid=,command='],
+                            capture_output=True, text=True, errors='replace', timeout=5, check=True).stdout
+    marker = 'RPE_HERMES_SESSION_TOKEN='+token
+    tagged = set()
+    for line in output.splitlines():
+        parts = line.strip().split(None, 1)
+        if len(parts) == 2 and parts[0].isdigit() and marker in parts[1]:
+            tagged.add(int(parts[0]))
+    table = _process_table()
+    return {pid: table[pid][1] for pid in tagged if pid in table and pid != os.getpid()}
+
+
+def _remaining_descendants(owned):
+    deadline = time.monotonic()+3
+    while True:
+        table = _process_table()
+        remaining = [pid for pid, identity in owned.items()
+                     if table.get(pid, (None, None))[1] == identity and pid != os.getpid()]
+        if not remaining or time.monotonic() >= deadline:
+            return remaining
+        time.sleep(0.1)
+
+
+def _registered_processes(path, host_pid):
+    owned = {}
+    if not path.exists():
+        return owned
+    for line in path.read_text(encoding='utf-8').splitlines():
+        record = json.loads(line)
+        if (not isinstance(record, dict) or type(record.get('pid')) is not int or record['pid'] <= 1
+                or record.get('parent_pid') != host_pid
+                or not isinstance(record.get('lstart'), str) or not record['lstart']):
+            raise ValueError('invalid owned process registration')
+        owned[record['pid']] = record['lstart']
+    return owned
+
+
+def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
+                       timeout=180, hermes_root=None):
+    if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
+        raise ValueError('isolated host launcher requires macOS sandbox-exec')
+    if not isinstance(prompt, str) or not prompt.strip() or len(prompt.encode()) > 1_048_576:
+        raise ValueError('prompt must be nonempty and at most 1 MiB')
+    if not 1 <= timeout <= 1800:
+        raise ValueError('timeout must be between 1 and 1800 seconds')
+    owner_root, workspace = Path(owner_root).resolve(), Path(workspace).resolve()
+    if not workspace.is_dir():
+        raise ValueError('workspace must be an existing directory')
+    owner_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    hermes_root = Path(hermes_root or Path.home() / '.hermes/hermes-agent').resolve()
+    host_python = _installed_python(hermes_root)
+    settings = _read_host_settings(hermes_root, host_python)
+    session_root = owner_root / ('session-'+uuid.uuid4().hex)
+    home = prepare_home(session_root, workspace, Path(db_path).resolve(),
+                        tool_enabled=tool_enabled, settings=settings)
+    for name in ['tmp', 'runtime', 'terminal-tmp']:
+        (session_root / name).mkdir(mode=0o700)
+    prompt_file = session_root / 'prompt.txt'
+    prompt_file.write_text(prompt, encoding='utf-8')
+    db_path = Path(db_path).resolve()
+    # SQLite creates known siblings, not an unrestricted writable DB directory.
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    from .hermes import HostEventStore
+    event_store = HostEventStore(db_path)
+    previous_ids = {e['ingest_event_id'] for e in event_store.list()}
+    profile = session_root / 'hermes.sb'
+    import_root = Path(__file__).resolve().parents[2]
+    profile.write_text(sandbox_profile([session_root, workspace],
+                                       Path.home() / '.hermes', hermes_root, db_path,
+                                       [host_python.parent.parent, Path.home() / '.hermes/tools'],
+                                       native_import_root=None if tool_enabled else import_root,
+                                       owner_read_scope=(owner_root, [session_root, workspace, db_path])))
+    env = {k: v for k, v in os.environ.items() if k in {
+        'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
+        'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
+        'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY',
+    }}
+    env.update({'HERMES_HOME': str(home), 'HERMES_RUNTIME_DIR': str(session_root / 'runtime'),
+                'HERMES_GUEST_ONBOARDING': '0', 'HERMES_ENABLE_PROJECT_PLUGINS': '0',
+                'HERMES_DISABLE_LAZY_INSTALLS': '1',
+                'PYTHONDONTWRITEBYTECODE': '1', 'TMPDIR': str(session_root / 'tmp'),
+                'TMP': str(session_root / 'tmp'), 'TEMP': str(session_root / 'tmp'),
+                'RPE_HERMES_INSTALL_ROOT': str(hermes_root), 'RPE_HERMES_DB': str(db_path),
+                'RPE_HERMES_WORKSPACE': str(workspace),
+                'RPE_HERMES_TOOL_ENABLED': '1' if tool_enabled else '0',
+                'RPE_HERMES_ERROR_PATH': str(session_root / 'observer-errors.jsonl'),
+                'RPE_HERMES_PROCESS_PATH': str(session_root / 'child-processes.jsonl'),
+                'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HARNESS_IMPORT_ROOT': str(import_root),
+                'PYTHONPATH': str(import_root)})
+    session_token = uuid.uuid4().hex
+    env['RPE_HERMES_SESSION_TOKEN'] = session_token
+    if not tool_enabled:
+        env.pop('PYTHONPATH', None)
+    env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
+    tools = 'terminal,file'+(',rpe_harness' if tool_enabled else '')
+    command = ['/usr/bin/sandbox-exec', '-f', str(profile),
+               str(host_python), '-B',
+               str(Path(__file__).with_name('hermes_bootstrap.py')),
+               'chat', '--cli', '--query-file', str(prompt_file), '--oneshot', '-Q',
+               '--format', 'stream-json', '--source', 'rpe-v11', '--provider', 'xiaomi',
+               '--model', settings['model'], '--toolsets', tools, '--max-turns', '12',
+               '--run-budget', str(int(timeout)), '--ignore-rules']
+    stdout_path, stderr_path = session_root / 'stdout.jsonl', session_root / 'stderr.log'
+    started = time.monotonic()
+    timed_out = False
+    with stdout_path.open('w') as output, stderr_path.open('w') as errors:
+        process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
+                                   start_new_session=True)
+        owned_descendants = {}
+        start_identity = None
+        cleanup_errors = []
+        signaled_descendants, remaining_descendants = [], []
+        deadline = started + timeout + 20
+        try:
+            try:
+                start_identity = _process_table().get(process.pid, (None, None))[1]
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                cleanup_errors.append({'stage': 'initial_process_query', 'error_type': type(exc).__name__})
+            while process.poll() is None:
+                if start_identity:
+                    try:
+                        _capture_descendants(process.pid, start_identity, owned_descendants)
+                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                        cleanup_errors.append({'stage': 'capture_descendants', 'error_type': type(exc).__name__})
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    timed_out = True
+                    break
+                try:
+                    process.wait(timeout=min(1, remaining))
+                except subprocess.TimeoutExpired:
+                    pass
+        finally:
+            # Also stop owned terminal descendants after an ordinary host exit.
+            # Discovery errors must never bypass stopping the exact owned host.
+            try:
+                if start_identity:
+                    try:
+                        _capture_descendants(process.pid, start_identity, owned_descendants)
+                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                        cleanup_errors.append({'stage': 'final_capture_descendants', 'error_type': type(exc).__name__})
+            finally:
+                if process.poll() is None:
+                    try:
+                        _stop_group(process)
+                    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                        cleanup_errors.append({'stage': 'stop_host_group', 'error_type': type(exc).__name__})
+            try:
+                owned_descendants.update(_registered_processes(session_root/'child-processes.jsonl', process.pid))
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                cleanup_errors.append({'stage': 'read_process_registry', 'error_type': type(exc).__name__})
+            try:
+                owned_descendants.update(_tagged_processes(session_token))
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                cleanup_errors.append({'stage': 'query_tagged_processes', 'error_type': type(exc).__name__})
+            try:
+                signaled_descendants = _stop_descendants(owned_descendants)
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                cleanup_errors.append({'stage': 'stop_known_descendants', 'error_type': type(exc).__name__})
+            try:
+                remaining_descendants = _remaining_descendants(owned_descendants)
+            except (OSError, ValueError, subprocess.SubprocessError) as exc:
+                cleanup_errors.append({'stage': 'verify_known_descendants', 'error_type': type(exc).__name__})
+    cleanup_complete = not cleanup_errors and not remaining_descendants and process.poll() is not None
+    records = []
+    for line in stdout_path.read_text(errors='replace').splitlines():
+        try:
+            record = json.loads(line)
+            if isinstance(record, dict):
+                records.append(record)
+        except ValueError:
+            pass
+    terminal = next((r for r in reversed(records) if r.get('type') == 'result'), {})
+    events = [e for e in event_store.list() if e['ingest_event_id'] not in previous_ids]
+    session_id = terminal.get('session_id') or next((e.get('session_id') for e in events if e.get('session_id')), None)
+    events = [e for e in events if e.get('session_id') == session_id]
+    ended = any(e.get('kind') == 'on_session_end' and e.get('session_id') == session_id
+                for e in events)
+    observer_error_path = session_root / 'observer-errors.jsonl'
+    observer_errors = (len(observer_error_path.read_text().splitlines())
+                       if observer_error_path.exists() else 0)
+    usage = aggregate_usage(events)
+    if observer_errors:
+        usage.update(coverage_complete=False, prompt_tokens=None, output_tokens=None,
+                     total_tokens=None, input_tokens=None, cache_read_tokens=None,
+                     cache_write_tokens=None, reasoning_tokens=None)
+    result = {'exit_code': process.returncode, 'timed_out': timed_out,
+              'completed': bool(terminal) and ended and not timed_out and process.returncode == 0
+                           and not observer_errors and cleanup_complete,
+              'final_response': terminal.get('text', ''), 'session_id': session_id,
+              'events': events, 'usage': usage, 'observer_errors': observer_errors,
+              'elapsed_seconds': round(time.monotonic()-started, 3),
+              'model_identity': {'provider': settings['provider'], 'requested_model': settings['model'],
+                                 'base_url': settings['base_url'],
+                                 'response_models': sorted({e['response_model'] for e in events if isinstance(e.get('response_model'), str)})},
+              'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
+              'session_root': str(session_root),
+              'process_cleanup': {'tracked_descendants': len(owned_descendants),
+                                  'signaled_descendants': len(signaled_descendants),
+                                  'remaining_descendants': remaining_descendants,
+                                  'cleanup_complete': cleanup_complete,
+                                  'errors': cleanup_errors},
+              'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use']}
+    # Defense in depth: a provider error might include its key. Owned raw logs
+    # are needed only for debugging and are deleted by caller after acceptance.
+    secret = settings['api_key']
+    for path in [stdout_path, stderr_path]:
+        data = path.read_text(errors='replace')
+        if secret in data:
+            path.write_text(data.replace(secret, '[REDACTED]'))
+    if secret in json.dumps(result, ensure_ascii=False):
+        raise ValueError('credential appeared in host response; private output redacted')
+    return result

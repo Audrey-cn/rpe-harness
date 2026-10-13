@@ -1,0 +1,242 @@
+{
+  "checked_at_utc": "2026-10-13T16:33:21.483491+00:00",
+  "version": "1.1.0",
+  "module_path": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "runtime_module_path": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/runtime.py",
+  "validator_module_path": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/experiments/hermes_native.py",
+  "source_checkout_used": false,
+  "environment": {
+    "cwd": "/private/tmp/rpe-v11-development-20261013/package-final-check/final-wheel-18bb9228",
+    "python": "/tmp/rpe-v11-development-20261013/release-venv/bin/python",
+    "python_version": "3.12.14",
+    "pythonpath_removed": true,
+    "bytecode_disabled": true
+  },
+  "wheel": {
+    "path": "/Users/audrey/项目/rpe-harness/reports/v1.1.0/artifacts/rpe_harness-1.1.0-py3-none-any.whl",
+    "sha256": "18bb92283a617733e2424025ca1ab1d2b6f63b2e14718be6b239bb171f453577",
+    "installed_members_match": true,
+    "matched_members": 25,
+    "match_excludes": [
+      "RECORD (installer updates this file)"
+    ]
+  },
+  "dependency": {
+    "name": "openpyxl",
+    "version": "3.1.5",
+    "module_path": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/openpyxl/__init__.py",
+    "provisioning": "existing bundled runtime site-packages via openpyxl-dependency.pth",
+    "fresh_network_dependency_install_tested": false,
+    "bundled_dependency_files_modified": false
+  },
+  "summary": {
+    "total": 6,
+    "passed": 6,
+    "successful_artifacts": 4,
+    "correct_rejections": 2
+  },
+  "checks": [
+    {
+      "case": "csv_chinese",
+      "status": "succeeded",
+      "passed": true,
+      "run_id": "191824a5b46d436ab0753b0b8f16495e",
+      "input_sha256": "d7243b2be908952ad2935760430155bd5287ced58626e4cb39abbfaf042855fa",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": true,
+      "manual_truth_ok": true,
+      "verification_passed": true,
+      "output_sha256": "09385c18aea11960e52815ed934a6b0413d863877462c97994e91845ad95363a",
+      "input_rows": 5,
+      "output_rows": 3,
+      "removed_rows": 2
+    },
+    {
+      "case": "csv_multiline",
+      "status": "succeeded",
+      "passed": true,
+      "run_id": "9a0ac4c99ced4bf486a9100297116b47",
+      "input_sha256": "c0d9cea9c745134538bd39cff7bdff2deaf5ad0dc629976e999b41a8d6013e7b",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": true,
+      "manual_truth_ok": true,
+      "verification_passed": true,
+      "output_sha256": "0a10fc1f93b866a26660886edc4b470ce73e065159bd7692899674788b1196ae",
+      "input_rows": 4,
+      "output_rows": 3,
+      "removed_rows": 1
+    },
+    {
+      "case": "xlsx_typed_keys",
+      "status": "succeeded",
+      "passed": true,
+      "run_id": "d10ad231b11d4fac8d5f0be944eb344b",
+      "input_sha256": "68a158a9cc75ccd5be24bdac763fde09babba864dce56b8e051e1ea4dc7a80b0",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": true,
+      "manual_truth_ok": true,
+      "verification_passed": true,
+      "output_sha256": "1a74bee6cb38cb4100f2f4711f6e0b18b2d0f8ac4fa90e3a44eaeb2525249a4a",
+      "input_rows": 6,
+      "output_rows": 4,
+      "removed_rows": 2
+    },
+    {
+      "case": "xlsx_formulas",
+      "status": "succeeded",
+      "passed": true,
+      "run_id": "9804cb1e598a47debe5860fe9cbba98b",
+      "input_sha256": "7dffb3ce4ff1640fb42bb4c8dea64a2e7404b60acd1e2cbb97a4e4ef2d13befb",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": true,
+      "manual_truth_ok": true,
+      "verification_passed": true,
+      "output_sha256": "9af2ab360a82669fb2c91239f32824b06b8032bdb751f3eb7612c1b3d976fd0a",
+      "input_rows": 5,
+      "output_rows": 3,
+      "removed_rows": 2
+    },
+    {
+      "case": "reject_json",
+      "status": "rejected",
+      "passed": true,
+      "run_id": "e790d9dfad524ce1a277391ae6db3372",
+      "input_sha256": "305c5cffd9a42644ebad298ef0129ce17b30909e2671dc32195841830a26b675",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": false,
+      "rejection_reason_code": "unsupported_format",
+      "rejection_reason_correct": true,
+      "rejection_reason": "input/output extensions and state.input_format must match csv or xlsx"
+    },
+    {
+      "case": "reject_formula_dependency",
+      "status": "rejected",
+      "passed": true,
+      "run_id": "4cdb99f60c0347898ca8154518821013",
+      "input_sha256": "81cbd9c30cb1aaf8fe3b54678e0e79ef1c074ca43c654efdd6df0fd9b77c76d5",
+      "source_unchanged": true,
+      "linked_run_verified": true,
+      "output_exists": false,
+      "rejection_reason_code": "formula_dependency",
+      "rejection_reason_correct": true,
+      "rejection_reason": "retained formula references a row that would be cleared"
+    }
+  ],
+  "validation_boundary": {
+    "scope": "Installed HarnessRuntime local contract execution with actual CSV/XLSX artifacts, manual fixture truth, independent verifier and durable DB/run/hash linkage.",
+    "validator_event_adapter": "Synthetic local post_tool_call/completed wrapper links each real HarnessRuntime run to validate_case. It is not a captured Hermes session or native tool observation.",
+    "real_hermes_session_tested": false,
+    "model_api_called": false,
+    "credentials_read": false,
+    "network_connections": 0,
+    "processes_spawned_by_contract_script": 0,
+    "temporary_artifacts_root": "/private/tmp/rpe-v11-development-20261013/package-final-check/final-wheel-18bb9228",
+    "source_checkout_used_scope": "False refers to Harness modules for contracts and CLI; plugin scaffold/manifest and existing Hermes host loader sources are identified separately above.",
+    "plugin_scope": "Direct registration and real native PluginManager manifest/entry-point loading; handlers/hooks and a Hermes model session were not invoked.",
+    "plugin_host_dependencies": "Existing authorized Hermes runtime dependencies and stdlib are read only; no installation or stub modules used.",
+    "plugin_import_guard": "A read of isolated temporary HERMES_HOME/.env and git rev-parse HEAD creation were blocked before access/process creation; native registration still succeeded.",
+    "created_validation_processes": "All synchronous contract/probe/CLI/register/loader subprocesses have exited and been reaped; no background process was created."
+  },
+  "cli": {
+    "command": [
+      "/tmp/rpe-v11-development-20261013/release-venv/bin/python",
+      "-I",
+      "-B",
+      "/tmp/rpe-v11-development-20261013/release-venv/bin/rpe-harness",
+      "--version"
+    ],
+    "cwd": "/tmp/rpe-v11-development-20261013/package-final-check/plugin-probe",
+    "returncode": 0,
+    "stdout": "1.1.0\n",
+    "passed": true
+  },
+  "hermes_plugin": {
+    "passed": true,
+    "proof_wheel_sha256": "18bb92283a617733e2424025ca1ab1d2b6f63b2e14718be6b239bb171f453577",
+    "proof_reused_from_previous_wheel": false,
+    "scaffold": {
+      "path": "/Users/audrey/项目/rpe-harness/integrations/hermes/rpe-harness/__init__.py",
+      "sha256": "ccee3e65a4902e02e625db72e5ef4d18ccd848b7b2363037d9612235ec20d6e1",
+      "source": "repository entry-point scaffold; not included in wheel"
+    },
+    "manifest": {
+      "path": "/Users/audrey/项目/rpe-harness/integrations/hermes/rpe-harness/plugin.yaml",
+      "sha256": "a66d0448ab01f2e05c22718c04c60197b3160f2f3411cf05a222789268d8f09a",
+      "name": "rpe-harness",
+      "version": "1.1.0",
+      "kind": "standalone",
+      "parsed_by_real_hermes_loader": true
+    },
+    "direct_register": {
+      "passed": true,
+      "integration_source": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes.py",
+      "integration_sha256": "192b91adfb1752da91bcc7b75f693fffdd243f3457d8897959d2c98b820765b9",
+      "all_handlers_callable": true
+    },
+    "native_loader": {
+      "passed": true,
+      "enabled": true,
+      "python": "/Users/audrey/.hermes/installs/f43c737707a612b3/environments/061dc2046fec44beb5331f0ef44899de/venv/bin/python",
+      "python_version": "3.14.7 (main, Sep  1 2026, 14:05:28) [Clang 22.1.3 ]",
+      "manager_source": "/Users/audrey/.hermes/hermes-agent/hermes_cli/plugins.py",
+      "loader_source": "/Users/audrey/.hermes/hermes-agent/hermes_cli/plugins_loader.py",
+      "existing_host_dependency_root": "/Users/audrey/.hermes/installs/f43c737707a612b3/environments/061dc2046fec44beb5331f0ef44899de/venv",
+      "existing_host_stdlib_root": "/Users/audrey/.hermes/tools/python-3.14.7+20260901-darwin-arm64/lib/python3.14",
+      "explicit_sys_path_additions": [
+        "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages",
+        "/Users/audrey/.hermes/hermes-agent"
+      ],
+      "integration_source_after_load": "/tmp/rpe-v11-development-20261013/release-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes.py",
+      "pythonpath_removed": true,
+      "bytecode_disabled": true,
+      "no_repository_src_in_sys_path": true,
+      "process_returncode": 0,
+      "isolated_import_audit": {
+        "blocked_file_reads": [
+          {
+            "event": "open",
+            "path": "/tmp/rpe-v11-development-20261013/package-final-check/plugin-probe/hermes-home/.env",
+            "write": false
+          }
+        ],
+        "blocked_process_attempts": [
+          {
+            "event": "subprocess.Popen",
+            "blocked_before_creation": true,
+            "executable": "git",
+            "argv": [
+              "git",
+              "rev-parse",
+              "HEAD"
+            ]
+          }
+        ],
+        "child_processes_created_inside_stage": 0,
+        "successful_credential_reads": 0,
+        "network_attempts": []
+      }
+    },
+    "tools": [
+      "rpe_task"
+    ],
+    "hooks": [
+      "on_session_start",
+      "pre_llm_call",
+      "post_llm_call",
+      "on_session_end",
+      "on_session_finalize",
+      "pre_tool_call",
+      "post_tool_call",
+      "pre_api_request",
+      "post_api_request",
+      "api_request_error"
+    ],
+    "hook_count": 10,
+    "release_only_loader_limit": "Release-only Python cannot import Hermes PluginManager because ruamel is absent; no dependencies were installed. Native loading is separately verified with the existing authorized Hermes host Python and runtime dependencies."
+  }
+}

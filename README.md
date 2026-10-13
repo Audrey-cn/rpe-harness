@@ -1,8 +1,8 @@
-# RPE-Harness 1.0
+# RPE-Harness 1.1
 
 本地能力路由与可验证任务执行器。1.0 支持 CSV/XLSX 按明确关键列去重，独立检查产物、保留原文件、禁止覆盖输出，并把事件、执行阶段、验证和结果持久保存到 SQLite。
 
-研究原型已具备 MCSI、能力索引、图与 HTTP 接口。1.0 将基础闭环做实；持续学习收益、自动生成技能及真实 Hermes 插件接入仍属于后续工作。
+1.1 增加本机 Hermes 原生插件：真实模型可以调用 `rpe_task`，工具调用、模型请求与已验证运行关联入库。新增隔离启动器和原生流程对照。持续学习收益、自动生成技能和因果图学习仍需独立验证。
 
 ## 本机快速使用
 
@@ -68,7 +68,24 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 # 支持 --event - 从 stdin 读取
 ~~~
 
-这是已验证的旁路协议，不表示已经安装实时 Hermes 宿主插件。幂等键为 `(source,event_id)`；同源同 ID 同内容返回原运行，同 ID 不同内容冲突。执行成功只有在产物验证、无覆盖发布、SQLite 提交都完成后成立；进程意外退出留下的运行在后续启动时按文件租约标 interrupted，不依赖 PID 是否已被复用。发布后、提交成功前崩溃也保留 interrupted，发布意图和 hash 留在 steps；1.0 不自动补记成功。如需重试应使用新 event_id 和新输出路径。
+旁路协议与原生插件共享执行和幂等机制。幂等键为 `(source,event_id)`；同源同 ID 同内容返回原运行，同 ID 不同内容冲突。执行成功只有在产物验证、无覆盖发布、SQLite 提交都完成后成立；进程意外退出留下的运行在后续启动时按文件租约标 interrupted，不依赖 PID 是否已被复用。发布后、提交成功前崩溃也保留 interrupted，发布意图和 hash 留在 steps；不会自动补记成功。如需重试应使用新 event_id 和新输出路径。
+
+## 真实 Hermes 会话
+
+当前隔离启动器支持 macOS、本机 Hermes 0.21.7 的插件 API，以及现有 Xiaomi API key 配置。它读取当前选用的模型和计划端点，为每次调用创建独立 home，关闭记忆、外部插件、MCP、辅助模型请求和自动安装。只复制必要 API key，不复制 OAuth 状态，也不改日常配置或重启网关。
+
+~~~sh
+./scripts/rpe hermes run --workspace /absolute/path/workspace \
+  --prompt-file /absolute/path/task.txt --db /absolute/path/runs.sqlite
+~~~
+
+任务提示可以用工作区相对路径，例如“必须调用 rpe_task：按 input.csv 的订单号列去重，保留首条，写入新的 output.csv；支持性检查和执行均交给该工具”。`rpe_task` 参数仍为 v1 request，路径必须位于指定工作区，禁止符号链接。工具 Schema 明确要求非空 goal 和字符串数组 constraints。可选工具的自然语言任务中，模型可能自行用终端完成文件处理；本轮对照确认了这个选择缺口，生产验证请明确指定工具。
+
+会话临时聊天历史、凭据副本和缓存在命令返回后清理；产物和指定数据库保留。`completed` 表示宿主完成，`harness_verified` 才表示最终 Harness 运行已验证。未调用 Harness 的完成会话返回 unverified，退出码 1。拒绝返回 2。真实宿主事件保存在 `hermes_host_events`；原生 tool_call_id/api_request_id/turn_id 与 Harness run_id 分开保存，缺失原生 event_id 保留 null。事件记录失败会产生独立失败标记并阻止验收通过。
+
+普通 XLSX 注释保留文本和作者，重复行注释清空；不保证注释框尺寸或绘图外观。控件、图片和其他复杂绘图仍拒绝。
+
+插件安装结构、复现实验与边界见 [Hermes 接入说明](integrations/hermes/README.md)，本次真实验收见 [1.1 报告](reports/v1.1.0/1.1开发与验收报告.md)。
 
 `/usage` 是外部未验证报告，和内部 verified_success_count 分开。`/skills/state` 可手动启用/禁用或休眠，重启与 reload 均保留；1.0 不自动学习或生成技能。
 
@@ -78,8 +95,8 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 
 旧 `experiments.baseline` 只是读取 Hermes 目录后调用 Harness Router 的诊断；`cold_skill_test` 和 `stress_test` 为旧合成实验/微基准，不代表独立真实任务效果。
 
-1.1：真实 Hermes 事件接入与原生基线、更多明确执行器、生命周期反馈。
-1.2：独立冷门场景、多会话持续收益、真实 token/成本记录。
+1.1：真实 Hermes 事件和工具接入、原生基线、可复现端到端验证。
+1.2：工具发现与可靠调用、真实故障恢复、重复原生对照，再扩展执行器和宿主。
 2.0：Consolidator 与因果图学习，在证据、回滚和人工控制机制建立后推进。
 
 审核证据见 [完整审核](reports/audit-2026-10-13/项目完整审核报告.md)。1.0 设计和任务计划位于 `docs/superpowers/`，正式验证和清理记录位于 `reports/v1.0.0/`。

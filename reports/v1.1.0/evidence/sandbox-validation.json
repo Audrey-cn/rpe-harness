@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-13T16:00:07.243671+00:00",
+  "scope": "Independent macOS sandbox validation against the installed Hermes Python; zero model calls.",
+  "bootstrap_help": {
+    "exit_code": 0,
+    "help_present": true,
+    "process_registry_failure": false,
+    "observer_error_marker": false,
+    "journaled_direct_children": 3,
+    "registry_mode": "0600",
+    "remaining_owned_children": 0
+  },
+  "direct_child_cleanup": {
+    "exit_code": 0,
+    "git_checks_passed": 2,
+    "journaled_direct_children": 3,
+    "registry_mode": "0600",
+    "registry_fields": [
+      "pid",
+      "parent_pid",
+      "lstart",
+      "start_sec",
+      "start_usec"
+    ],
+    "live_system_child_identity_matches": 1,
+    "signaled_owned_children": 1,
+    "remaining_owned_children": 0,
+    "unrelated_control_survived_owned_cleanup": true
+  },
+  "cleanup": "Each probe stopped only recorded owned children after identity verification. The unrelated control was then terminated and waited by its creating probe. Temporary homes, runtime and caches were removed.",
+  "bounds": "The registry records direct Popen children of the isolated host. Polling ancestry and the inherited tag supplement this; arbitrary daemonizing descendants are outside the claimed guarantee.",
+  "reviewed_source_sha256": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+  "compatible_interpreter_preflight": {
+    "actual_production_native_profile": true,
+    "pythonpath_unset": true,
+    "exit_code": 0,
+    "openpyxl_imported": true,
+    "evaluator_import_denied": true,
+    "denial_type": "PermissionError",
+    "stderr_empty": true,
+    "model_calls": 0
+  },
+  "corrupt_process_registry_cleanup": {
+    "model_calls": 0,
+    "launcher_exception": null,
+    "owned_host_survived_cleanup": false,
+    "completed": false,
+    "remaining_descendants": [],
+    "cleanup_complete": false,
+    "errors": [
+      {
+        "stage": "read_process_registry",
+        "error_type": "JSONDecodeError"
+      }
+    ],
+    "temporary_private_directories_removed": true
+  }
+}

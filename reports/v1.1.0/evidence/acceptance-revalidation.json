@@ -1,0 +1,92 @@
+{
+  "reason": "Exact case-sensitive interpreter identifier and its echoed label were falsely classified as implementation import.",
+  "auditor_sha256": "ad4ca6d13d26ae6e68139a0641bfa94a3c92f589648332e7eaed9d4e637e9e4f",
+  "same_sessions_and_inputs": true,
+  "model_calls_for_revalidation": 0,
+  "changes": [
+    {
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "before": false,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "before": true,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "before": true,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "before": false,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "before": false,
+      "after": false,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "before": false,
+      "after": false,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "before": true,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "xlsx_formulas",
+      "arm": "native",
+      "before": false,
+      "after": false,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "reject_json",
+      "arm": "native",
+      "before": true,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "reject_json",
+      "arm": "integrated",
+      "before": false,
+      "after": false,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "reject_formula_dependency",
+      "arm": "integrated",
+      "before": true,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    },
+    {
+      "case_id": "reject_formula_dependency",
+      "arm": "native",
+      "before": false,
+      "after": true,
+      "input_prompt_tool_hashes_unchanged": true
+    }
+  ]
+}

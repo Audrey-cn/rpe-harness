@@ -1,0 +1,2 @@
+# Keep validation CSV bytes (including CRLF and BOM) identical to their recorded hashes.
+reports/v1.1.0/artifacts/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

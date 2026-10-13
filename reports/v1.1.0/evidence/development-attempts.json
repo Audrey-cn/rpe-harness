@@ -1,0 +1,3000 @@
+{
+  "schema_version": 1,
+  "artifact_type": "development_debug_session_inventory",
+  "generated_at_utc": "2026-10-13T16:21:05.402085+00:00",
+  "included_in_formal_comparison_statistics": false,
+  "formal_means_computed": false,
+  "source_root": "/private/tmp/rpe-v11-development-20261013",
+  "included_stages": [
+    "smoke-owner",
+    "live-comparison",
+    "final-comparison",
+    "acceptance-comparison",
+    "release-comparison",
+    "production-comparison"
+  ],
+  "excluded_stages": [
+    "verified-comparison"
+  ],
+  "read_boundary": {
+    "observer_sqlite_mode": "mode=ro&immutable=1",
+    "observer_source_file_bytes_unchanged": true,
+    "checked_observer_files": 102,
+    "stored_fields": "session identity, lifecycle/API/tool counts, numeric usage, outcome flags, process PID dedup counts, report references only"
+  },
+  "interpretation": [
+    "Debug launch inventory only; do not combine these sessions with the formal verified-comparison means.",
+    "Counts are observed evidence, not proof of zero model calls when observer events or startup identity are missing.",
+    "Observer usage covers available persisted events only; missing/failed observations and unmatched API starts make totals unknown.",
+    "Stream-reported token counters are retained separately and are not provider-field-presence-verified usage.",
+    "Only two manual interruptions were independently confirmed; other unfinished/error outcomes remain unknown unless lifecycle evidence rules interruption out.",
+    "Report references are matched by native session ID; null-ID startup attempts are not guessed into report attempt rows."
+  ],
+  "duplicate_report_aliases": [
+    {
+      "canonical_report": "isolation-pilot-comparison.json",
+      "byte_identical_aliases": [
+        "preliminary-comparison.json"
+      ],
+      "sha256": "f19117236bf13d4db03ef608b44752405bfba775a9bae3c34b76fe81429cdd4d",
+      "attempt_count": 6
+    }
+  ],
+  "stage_evidence_reports": {
+    "release-comparison": [
+      "bootstrap-registry-trials.json"
+    ],
+    "production-comparison": [
+      "dependency-baseline-trials.json"
+    ],
+    "live-comparison": [
+      "isolation-pilot-comparison.json"
+    ],
+    "acceptance-comparison": [
+      "observer-failure-trials.json"
+    ]
+  },
+  "summary": {
+    "launch_directory_count": 34,
+    "unique_native_session_count": 21,
+    "directories_without_native_session_id": 13,
+    "stream_result_present_count": 21,
+    "on_session_end_present_count": 12,
+    "observer_error_attempt_count": 3,
+    "manual_interruption_confirmed_count": 2,
+    "without_saved_session_report_reference_count": 18,
+    "stage_launch_counts": {
+      "smoke-owner": 2,
+      "live-comparison": 7,
+      "final-comparison": 1,
+      "acceptance-comparison": 5,
+      "release-comparison": 12,
+      "production-comparison": 7
+    }
+  },
+  "attempts": [
+    {
+      "attempt_directory": "smoke-owner/session-3a771e11c4894e9493fa1f77d27397a0",
+      "stage": "smoke-owner",
+      "case_id": null,
+      "arm": null,
+      "session_id": "20261013_231716_92eaf3",
+      "native_session_ids": [
+        "20261013_231716_92eaf3"
+      ],
+      "observer_databases": [
+        {
+          "path": "smoke2.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 61
+        }
+      ],
+      "observer_event_count": 61,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 10,
+        "post_llm_call": 1,
+        "post_tool_call": 12,
+        "pre_api_request": 10,
+        "pre_llm_call": 1,
+        "pre_tool_call": 12,
+        "rpe_task_received": 6,
+        "rpe_task_returned": 6
+      },
+      "api_request_counts": {
+        "pre_api_request": 10,
+        "post_api_request": 10,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "read_file": 2,
+          "rpe_task": 6,
+          "search_files": 1,
+          "terminal": 1,
+          "tool_describe": 1,
+          "tool_search": 1
+        },
+        "post_tool_call": {
+          "read_file": 2,
+          "rpe_task": 6,
+          "search_files": 1,
+          "terminal": 1,
+          "tool_describe": 1,
+          "tool_search": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 10,
+        "missing_observations": 0,
+        "requests_with_usage": 10,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 65942,
+        "prompt_tokens": 64044,
+        "output_tokens": 1898,
+        "input_tokens": 6700,
+        "total_tokens": 65942,
+        "cache_read_tokens": 57344,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 568
+      },
+      "stream_reported_token_totals": {
+        "input": 6700,
+        "output": 1898,
+        "total": 65942,
+        "cache_read": 57344,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 52,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "smoke-owner/session-5233929b7d7d49a2afd2c70b6e056e26",
+      "stage": "smoke-owner",
+      "case_id": null,
+      "arm": null,
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "smoke.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": true,
+      "interruption_reason": "manual_interrupt_after_unintended_runtime_install_attempt"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-03a8adbddf024261943089b8c3f6b144",
+      "stage": "live-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "session_id": "20261013_232446_231312",
+      "native_session_ids": [
+        "20261013_232446_231312"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/xlsx_typed_keys/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 41
+        }
+      ],
+      "observer_event_count": 41,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 9,
+        "post_llm_call": 1,
+        "post_tool_call": 9,
+        "pre_api_request": 9,
+        "pre_llm_call": 1,
+        "pre_tool_call": 9
+      },
+      "api_request_counts": {
+        "pre_api_request": 9,
+        "post_api_request": 9,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "search_files": 1,
+          "terminal": 6,
+          "write_file": 2
+        },
+        "post_tool_call": {
+          "search_files": 1,
+          "terminal": 6,
+          "write_file": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 9,
+        "missing_observations": 0,
+        "requests_with_usage": 9,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 71140,
+        "prompt_tokens": 65673,
+        "output_tokens": 5467,
+        "input_tokens": 8073,
+        "total_tokens": 71140,
+        "cache_read_tokens": 57600,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 2974
+      },
+      "stream_reported_token_totals": {
+        "input": 8073,
+        "output": 5467,
+        "total": 71140,
+        "cache_read": 57600,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 27,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 4,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-198a3478a26d43c2a4d31a88e2a09767",
+      "stage": "live-comparison",
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "session_id": "20261013_232113_1df0c7",
+      "native_session_ids": [
+        "20261013_232113_1df0c7"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/csv_chinese/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 25
+        }
+      ],
+      "observer_event_count": 25,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 5,
+        "post_llm_call": 1,
+        "post_tool_call": 5,
+        "pre_api_request": 5,
+        "pre_llm_call": 1,
+        "pre_tool_call": 5
+      },
+      "api_request_counts": {
+        "pre_api_request": 5,
+        "post_api_request": 5,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "read_file": 1,
+          "terminal": 3,
+          "write_file": 1
+        },
+        "post_tool_call": {
+          "read_file": 1,
+          "terminal": 3,
+          "write_file": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 5,
+        "missing_observations": 0,
+        "requests_with_usage": 5,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 29743,
+        "prompt_tokens": 28718,
+        "output_tokens": 1025,
+        "input_tokens": 2990,
+        "total_tokens": 29743,
+        "cache_read_tokens": 25728,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 262
+      },
+      "stream_reported_token_totals": {
+        "input": 2990,
+        "output": 1025,
+        "total": 29743,
+        "cache_read": 25728,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 19,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 0,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-2a39cad7cb7f4c5ba547c088d070ff34",
+      "stage": "live-comparison",
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "session_id": "20261013_232243_ba31e7",
+      "native_session_ids": [
+        "20261013_232243_ba31e7"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/csv_multiline/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": false,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 9575,
+        "output": 1194,
+        "total": 48145,
+        "cache_read": 37376,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 25,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 2,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-4f46bcf380764c35b8c2e9784e8a6214",
+      "stage": "live-comparison",
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "session_id": "20261013_232331_36e2f0",
+      "native_session_ids": [
+        "20261013_232331_36e2f0"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/csv_multiline/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 37
+        }
+      ],
+      "observer_event_count": 37,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 8,
+        "post_llm_call": 1,
+        "post_tool_call": 8,
+        "pre_api_request": 8,
+        "pre_llm_call": 1,
+        "pre_tool_call": 8
+      },
+      "api_request_counts": {
+        "pre_api_request": 8,
+        "post_api_request": 8,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "search_files": 1,
+          "terminal": 5,
+          "write_file": 2
+        },
+        "post_tool_call": {
+          "search_files": 1,
+          "terminal": 5,
+          "write_file": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 8,
+        "missing_observations": 0,
+        "requests_with_usage": 8,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 54946,
+        "prompt_tokens": 52867,
+        "output_tokens": 2079,
+        "input_tokens": 4739,
+        "total_tokens": 54946,
+        "cache_read_tokens": 48128,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 414
+      },
+      "stream_reported_token_totals": {
+        "input": 4739,
+        "output": 2079,
+        "total": 54946,
+        "cache_read": 48128,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 25,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 3,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-7b4f101cb10a49cba87d8e23cede12c8",
+      "stage": "live-comparison",
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "session_id": "20261013_232204_965744",
+      "native_session_ids": [
+        "20261013_232204_965744"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/csv_chinese/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 23
+        }
+      ],
+      "observer_event_count": 23,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 4,
+        "post_llm_call": 1,
+        "post_tool_call": 4,
+        "pre_api_request": 4,
+        "pre_llm_call": 1,
+        "pre_tool_call": 4,
+        "rpe_task_received": 1,
+        "rpe_task_returned": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 4,
+        "post_api_request": 4,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "rpe_task": 1,
+          "terminal": 2,
+          "tool_describe": 1
+        },
+        "post_tool_call": {
+          "rpe_task": 1,
+          "terminal": 2,
+          "tool_describe": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 4,
+        "missing_observations": 0,
+        "requests_with_usage": 4,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 24787,
+        "prompt_tokens": 24262,
+        "output_tokens": 525,
+        "input_tokens": 2502,
+        "total_tokens": 24787,
+        "cache_read_tokens": 21760,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 202
+      },
+      "stream_reported_token_totals": {
+        "input": 2502,
+        "output": 525,
+        "total": 24787,
+        "cache_read": 21760,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 17,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 1,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-83be23e121874c228d774a5527febafe",
+      "stage": "live-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "session_id": "20261013_232756_38bf95",
+      "native_session_ids": [
+        "20261013_232756_38bf95"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/xlsx_typed_keys/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 35
+        }
+      ],
+      "observer_event_count": 35,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 7,
+        "post_llm_call": 1,
+        "post_tool_call": 7,
+        "pre_api_request": 7,
+        "pre_llm_call": 1,
+        "pre_tool_call": 7,
+        "rpe_task_received": 1,
+        "rpe_task_returned": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 7,
+        "post_api_request": 7,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "rpe_task": 1,
+          "terminal": 4,
+          "tool_describe": 1,
+          "write_file": 1
+        },
+        "post_tool_call": {
+          "rpe_task": 1,
+          "terminal": 4,
+          "tool_describe": 1,
+          "write_file": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 7,
+        "missing_observations": 0,
+        "requests_with_usage": 7,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 50648,
+        "prompt_tokens": 48854,
+        "output_tokens": 1794,
+        "input_tokens": 5334,
+        "total_tokens": 50648,
+        "cache_read_tokens": 43520,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 912
+      },
+      "stream_reported_token_totals": {
+        "input": 5334,
+        "output": 1794,
+        "total": 50648,
+        "cache_read": 43520,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 24,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "isolation-pilot-comparison.json",
+          "attempt_index": 5,
+          "byte_identical_aliases": [
+            "preliminary-comparison.json"
+          ],
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "live-comparison/comparison-e2aqvh_r/session-b6380740469d4e119fc616094db4faf5",
+      "stage": "live-comparison",
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "session_id": "20261013_232857_696647",
+      "native_session_ids": [
+        "20261013_232857_696647"
+      ],
+      "observer_databases": [
+        {
+          "path": "live-comparison/comparison-e2aqvh_r/sessions/xlsx_formulas/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 27
+        }
+      ],
+      "observer_event_count": 27,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 5,
+        "post_tool_call": 6,
+        "pre_api_request": 6,
+        "pre_llm_call": 1,
+        "pre_tool_call": 6
+      },
+      "api_request_counts": {
+        "pre_api_request": 6,
+        "post_api_request": 5,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 1
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "read_file": 1,
+          "search_files": 1,
+          "terminal": 1,
+          "tool_describe": 1,
+          "tool_search": 2
+        },
+        "post_tool_call": {
+          "read_file": 1,
+          "search_files": 1,
+          "terminal": 1,
+          "tool_describe": 1,
+          "tool_search": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 130,
+      "stream_error_flag": true,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 5,
+        "missing_observations": 0,
+        "requests_with_usage": 5,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 30728,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 0,
+        "output": 0,
+        "total": 0,
+        "cache_read": 0,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 34,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "final-comparison/comparison-65uzh1qf/session-336db033a78544bfae58b98ff0783791",
+      "stage": "final-comparison",
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "session_id": "20261013_233630_e370e1",
+      "native_session_ids": [
+        "20261013_233630_e370e1"
+      ],
+      "observer_databases": [
+        {
+          "path": "final-comparison/comparison-65uzh1qf/sessions/csv_chinese/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 8
+        }
+      ],
+      "observer_event_count": 8,
+      "observer_event_counts": {
+        "on_session_start": 1,
+        "post_api_request": 3,
+        "post_tool_call": 1,
+        "pre_api_request": 2,
+        "pre_tool_call": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 2,
+        "post_api_request": 3,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 1
+        },
+        "post_tool_call": {
+          "terminal": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 130,
+      "stream_error_flag": true,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": true,
+        "marker_file_count": 29,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 3,
+        "missing_observations": 0,
+        "requests_with_usage": 3,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 17308,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 0,
+        "output": 0,
+        "total": 0,
+        "cache_read": 0,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 4,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "acceptance-comparison/comparison-id30e_3g/session-3f7d33488a03453d8b589f25d3e25355",
+      "stage": "acceptance-comparison",
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "session_id": "20261013_233958_78ac6d",
+      "native_session_ids": [
+        "20261013_233958_78ac6d"
+      ],
+      "observer_databases": [
+        {
+          "path": "acceptance-comparison/comparison-id30e_3g/sessions/csv_multiline/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 9
+        }
+      ],
+      "observer_event_count": 9,
+      "observer_event_counts": {
+        "on_session_start": 1,
+        "post_api_request": 4,
+        "post_tool_call": 1,
+        "pre_api_request": 2,
+        "pre_tool_call": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 2,
+        "post_api_request": 4,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 1
+        },
+        "post_tool_call": {
+          "terminal": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": true,
+        "marker_file_count": 34,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 4,
+        "missing_observations": 0,
+        "requests_with_usage": 4,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 22764,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 2820,
+        "output": 1413,
+        "total": 51593,
+        "cache_read": 47360,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 52,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "observer-failure-trials.json",
+          "attempt_index": 2,
+          "completed": false,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "acceptance-comparison/comparison-id30e_3g/session-4ad2060170ee47379278cbd2bfde4518",
+      "stage": "acceptance-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "session_id": "20261013_234209_542d5c",
+      "native_session_ids": [
+        "20261013_234209_542d5c"
+      ],
+      "observer_databases": [
+        {
+          "path": "acceptance-comparison/comparison-id30e_3g/sessions/xlsx_typed_keys/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 130,
+      "stream_error_flag": true,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 0,
+        "output": 0,
+        "total": 0,
+        "cache_read": 0,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 21,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "acceptance-comparison/comparison-id30e_3g/session-5d618ba43797484ea6334446b1f708c5",
+      "stage": "acceptance-comparison",
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "session_id": "20261013_233909_8179ee",
+      "native_session_ids": [
+        "20261013_233909_8179ee"
+      ],
+      "observer_databases": [
+        {
+          "path": "acceptance-comparison/comparison-id30e_3g/sessions/csv_chinese/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 3750,
+        "output": 1625,
+        "total": 45055,
+        "cache_read": 39680,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 24,
+        "invalid_json_lines": 1
+      },
+      "saved_report_references": [
+        {
+          "report": "observer-failure-trials.json",
+          "attempt_index": 1,
+          "completed": false,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "acceptance-comparison/comparison-id30e_3g/session-bd8d4e0196a045f58928d9f3fe5819c0",
+      "stage": "acceptance-comparison",
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "session_id": "20261013_234111_62c588",
+      "native_session_ids": [
+        "20261013_234111_62c588"
+      ],
+      "observer_databases": [
+        {
+          "path": "acceptance-comparison/comparison-id30e_3g/sessions/csv_multiline/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 5407,
+        "output": 1986,
+        "total": 43873,
+        "cache_read": 36480,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 26,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "observer-failure-trials.json",
+          "attempt_index": 3,
+          "completed": false,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "acceptance-comparison/comparison-id30e_3g/session-c916f1c65fe54e8c8172f81bf6619050",
+      "stage": "acceptance-comparison",
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "session_id": "20261013_233742_028f80",
+      "native_session_ids": [
+        "20261013_233742_028f80"
+      ],
+      "observer_databases": [
+        {
+          "path": "acceptance-comparison/comparison-id30e_3g/sessions/csv_chinese/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 10
+        }
+      ],
+      "observer_event_count": 10,
+      "observer_event_counts": {
+        "on_session_start": 1,
+        "post_api_request": 1,
+        "post_tool_call": 3,
+        "pre_api_request": 4,
+        "pre_tool_call": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 4,
+        "post_api_request": 1,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 3
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 1
+        },
+        "post_tool_call": {
+          "terminal": 3
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 1,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": true,
+        "marker_file_count": 45,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 1,
+        "missing_observations": 0,
+        "requests_with_usage": 1,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 5057,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 5226,
+        "output": 2365,
+        "total": 81447,
+        "cache_read": 73856,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 4,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "observer-failure-trials.json",
+          "attempt_index": 0,
+          "completed": false,
+          "timed_out": false,
+          "exit_code": 1
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-00274816ee7141b5b42bcd8a1673327d",
+      "stage": "release-comparison",
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/csv_multiline/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-1506edad274d480b832afe869a10061b",
+      "stage": "release-comparison",
+      "case_id": "reject_json",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/reject_json/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-2310c2d507d5403a91945bfa3223883e",
+      "stage": "release-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/xlsx_typed_keys/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-38f30da873244586a82159c8e75070f5",
+      "stage": "release-comparison",
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/csv_chinese/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-5bb4b96eb49a497499e94076cca4c71a",
+      "stage": "release-comparison",
+      "case_id": "xlsx_formulas",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/xlsx_formulas/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-7ee7a523a3154802bf7575879995f122",
+      "stage": "release-comparison",
+      "case_id": "reject_json",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/reject_json/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-89c52fa1be7d49fd89ca274d102e74bb",
+      "stage": "release-comparison",
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/xlsx_formulas/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-b229ddb1a35940118acc8a72ecb551ab",
+      "stage": "release-comparison",
+      "case_id": "reject_formula_dependency",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/reject_formula_dependency/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-dba60c72c9db4917bc1122cc6c96ee55",
+      "stage": "release-comparison",
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/csv_chinese/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-e46160b19e764a8ca6238553d97c54eb",
+      "stage": "release-comparison",
+      "case_id": "reject_formula_dependency",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/reject_formula_dependency/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-ec0e7c7ae39242769dd6cc59237bb308",
+      "stage": "release-comparison",
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/csv_multiline/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "release-comparison/comparison-d5qllhby/session-f6bab339730945368b1c086580e30d54",
+      "stage": "release-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "session_id": null,
+      "native_session_ids": [],
+      "observer_databases": [
+        {
+          "path": "release-comparison/comparison-d5qllhby/sessions/xlsx_typed_keys/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": false,
+      "stream_result_count": 0,
+      "stream_exit_code": null,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {},
+      "process_registry": {
+        "present": false,
+        "record_count": 0,
+        "unique_pid_count": 0,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 0,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-0579fc43e193450fa87877a69b069848",
+      "stage": "production-comparison",
+      "case_id": "csv_chinese",
+      "arm": "native",
+      "session_id": "20261013_235927_86c5a6",
+      "native_session_ids": [
+        "20261013_235927_86c5a6"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/csv_chinese/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 35
+        }
+      ],
+      "observer_event_count": 35,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 8,
+        "post_llm_call": 1,
+        "post_tool_call": 7,
+        "pre_api_request": 8,
+        "pre_llm_call": 1,
+        "pre_tool_call": 7
+      },
+      "api_request_counts": {
+        "pre_api_request": 8,
+        "post_api_request": 8,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 5,
+          "write_file": 2
+        },
+        "post_tool_call": {
+          "terminal": 5,
+          "write_file": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 8,
+        "missing_observations": 0,
+        "requests_with_usage": 8,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 50536,
+        "prompt_tokens": 49346,
+        "output_tokens": 1190,
+        "input_tokens": 3906,
+        "total_tokens": 50536,
+        "cache_read_tokens": 45440,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 265
+      },
+      "stream_reported_token_totals": {
+        "input": 3906,
+        "output": 1190,
+        "total": 50536,
+        "cache_read": 45440,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 32,
+        "unique_pid_count": 32,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 23,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 0,
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-239eaa594d334da1bed76b965d83df60",
+      "stage": "production-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "native",
+      "session_id": "20261014_000250_dda4d4",
+      "native_session_ids": [
+        "20261014_000250_dda4d4"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/xlsx_typed_keys/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 35
+        }
+      ],
+      "observer_event_count": 35,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 7,
+        "post_tool_call": 8,
+        "pre_api_request": 8,
+        "pre_llm_call": 1,
+        "pre_tool_call": 8
+      },
+      "api_request_counts": {
+        "pre_api_request": 8,
+        "post_api_request": 7,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 1
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 7,
+          "write_file": 1
+        },
+        "post_tool_call": {
+          "terminal": 7,
+          "write_file": 1
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 130,
+      "stream_error_flag": true,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 7,
+        "missing_observations": 0,
+        "requests_with_usage": 7,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 47689,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 0,
+        "output": 0,
+        "total": 0,
+        "cache_read": 0,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 30,
+        "unique_pid_count": 30,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 25,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 4,
+          "completed": false,
+          "timed_out": true,
+          "exit_code": 130
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-507066348d394b539761cf65498f70e3",
+      "stage": "production-comparison",
+      "case_id": "csv_multiline",
+      "arm": "integrated",
+      "session_id": "20261014_000104_1f2737",
+      "native_session_ids": [
+        "20261014_000104_1f2737"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/csv_multiline/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": false,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 4111,
+        "output": 963,
+        "total": 33234,
+        "cache_read": 28160,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 24,
+        "unique_pid_count": 24,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 20,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 2,
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-60eb1265ff8f4c179fd776e802778ce2",
+      "stage": "production-comparison",
+      "case_id": "csv_chinese",
+      "arm": "integrated",
+      "session_id": "20261014_000008_f442a6",
+      "native_session_ids": [
+        "20261014_000008_f442a6"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/csv_chinese/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": false,
+          "event_count": 0
+        }
+      ],
+      "observer_event_count": 0,
+      "observer_event_counts": {},
+      "api_request_counts": {
+        "pre_api_request": 0,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": false,
+      "on_session_end_count": 0,
+      "on_session_finalize_count": 0,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 3699,
+        "output": 601,
+        "total": 37196,
+        "cache_read": 32896,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 25,
+        "unique_pid_count": 25,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 21,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 1,
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "unknown"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-95828f1f9bca4b3eb9f05183a60f581c",
+      "stage": "production-comparison",
+      "case_id": "xlsx_typed_keys",
+      "arm": "integrated",
+      "session_id": "20261014_000612_eb84d7",
+      "native_session_ids": [
+        "20261014_000612_eb84d7"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/xlsx_typed_keys/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 57
+        }
+      ],
+      "observer_event_count": 57,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 12,
+        "post_llm_call": 1,
+        "post_tool_call": 14,
+        "pre_api_request": 12,
+        "pre_llm_call": 1,
+        "pre_tool_call": 14
+      },
+      "api_request_counts": {
+        "pre_api_request": 12,
+        "post_api_request": 12,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "terminal": 10,
+          "tool_describe": 1,
+          "tool_search": 1,
+          "write_file": 2
+        },
+        "post_tool_call": {
+          "terminal": 10,
+          "tool_describe": 1,
+          "tool_search": 1,
+          "write_file": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 1,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 12,
+        "missing_observations": 0,
+        "requests_with_usage": 12,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 97810,
+        "prompt_tokens": 94495,
+        "output_tokens": 3315,
+        "input_tokens": 7327,
+        "total_tokens": 97810,
+        "cache_read_tokens": 87168,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 1589
+      },
+      "stream_reported_token_totals": {
+        "input": 7327,
+        "output": 3315,
+        "total": 97810,
+        "cache_read": 87168,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 35,
+        "unique_pid_count": 35,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 30,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 5,
+          "completed": false,
+          "timed_out": false,
+          "exit_code": 1
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-afb4f47786f44ec29cce67bcdd80cbea",
+      "stage": "production-comparison",
+      "case_id": "xlsx_formulas",
+      "arm": "integrated",
+      "session_id": "20261014_000817_fdb621",
+      "native_session_ids": [
+        "20261014_000817_fdb621"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/xlsx_formulas/integrated/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 5
+        }
+      ],
+      "observer_event_count": 5,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "pre_api_request": 1,
+        "pre_llm_call": 1
+      },
+      "api_request_counts": {
+        "pre_api_request": 1,
+        "post_api_request": 0,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 1
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {},
+        "post_tool_call": {}
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 130,
+      "stream_error_flag": true,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 0,
+        "missing_observations": 0,
+        "requests_with_usage": 0,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 0,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "stream_reported_token_totals": {
+        "input": 0,
+        "output": 0,
+        "total": 0,
+        "cache_read": 0,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 21,
+        "unique_pid_count": 21,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 2,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [],
+      "manual_interruption_confirmed": true,
+      "interruption_reason": "manual_SIGINT_to_comparison_runner_to_correct_dependency_confounding"
+    },
+    {
+      "attempt_directory": "production-comparison/comparison-n8lfvpt7/session-c21385f1c2724dbe912729e209e85bd2",
+      "stage": "production-comparison",
+      "case_id": "csv_multiline",
+      "arm": "native",
+      "session_id": "20261014_000200_4e04d5",
+      "native_session_ids": [
+        "20261014_000200_4e04d5"
+      ],
+      "observer_databases": [
+        {
+          "path": "production-comparison/comparison-n8lfvpt7/sessions/csv_multiline/native/events.sqlite",
+          "exists": true,
+          "observer_table_present": true,
+          "event_count": 33
+        }
+      ],
+      "observer_event_count": 33,
+      "observer_event_counts": {
+        "on_session_end": 1,
+        "on_session_finalize": 1,
+        "on_session_start": 1,
+        "post_api_request": 7,
+        "post_llm_call": 1,
+        "post_tool_call": 7,
+        "pre_api_request": 7,
+        "pre_llm_call": 1,
+        "pre_tool_call": 7
+      },
+      "api_request_counts": {
+        "pre_api_request": 7,
+        "post_api_request": 7,
+        "api_request_error": 0,
+        "unmatched_pre_api_requests": 0
+      },
+      "tool_name_counts": {
+        "pre_tool_call": {
+          "read_file": 1,
+          "terminal": 4,
+          "write_file": 2
+        },
+        "post_tool_call": {
+          "read_file": 1,
+          "terminal": 4,
+          "write_file": 2
+        }
+      },
+      "stream_result_present": true,
+      "stream_result_count": 1,
+      "stream_exit_code": 0,
+      "stream_error_flag": false,
+      "on_session_end_present": true,
+      "on_session_end_count": 1,
+      "on_session_finalize_count": 1,
+      "observer_errors": {
+        "present": false,
+        "marker_file_count": 0,
+        "stderr_marker_count": 0
+      },
+      "usage_from_available_observer_events": {
+        "api_requests": 7,
+        "missing_observations": 0,
+        "requests_with_usage": 7,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 46728,
+        "prompt_tokens": 45268,
+        "output_tokens": 1460,
+        "input_tokens": 3668,
+        "total_tokens": 46728,
+        "cache_read_tokens": 41600,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 422
+      },
+      "stream_reported_token_totals": {
+        "input": 3668,
+        "output": 1460,
+        "total": 46728,
+        "cache_read": 41600,
+        "cache_write": 0
+      },
+      "process_registry": {
+        "present": true,
+        "record_count": 31,
+        "unique_pid_count": 31,
+        "invalid_json_lines": 0
+      },
+      "stdout_metadata": {
+        "json_record_count": 23,
+        "invalid_json_lines": 0
+      },
+      "saved_report_references": [
+        {
+          "report": "dependency-baseline-trials.json",
+          "attempt_index": 3,
+          "completed": true,
+          "timed_out": false,
+          "exit_code": 0
+        }
+      ],
+      "manual_interruption_confirmed": false,
+      "interruption_reason": "not_applicable_no_interruption_evidence"
+    }
+  ],
+  "validation": {
+    "metadata_only_verified": true,
+    "full_prompt_tool_args_response_error_details_and_credentials_absent": true,
+    "native_session_ids_unique": true,
+    "verified_comparison_excluded": true,
+    "byte_identical_six_session_report_alias_deduplicated": true,
+    "observer_source_file_bytes_unchanged": true,
+    "owned_probe_processes": {
+      "retained_fixture_registry_files": 3,
+      "unique_recorded_process_identities": 3,
+      "remaining_matching_process_identities": 0,
+      "fixture_files_retained_for_parent_cleanup": true,
+      "new_background_processes_started_for_inventory": 0
+    }
+  }
+}

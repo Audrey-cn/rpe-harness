@@ -1,0 +1,17 @@
+{
+  "reviewer": "independent agent",
+  "open_p1_p2": 0,
+  "regression_tests_passed": 230,
+  "paired_attempts_reviewed": 12,
+  "explicit_tool_target_cases_reviewed": 6,
+  "real_tool_requests_reviewed": 8,
+  "durable_event_ids_reconciled": true,
+  "original_tool_input_hashes_reconciled": true,
+  "api_and_tool_pre_post_reconciled": true,
+  "two_timed_out_api_outcomes_retained_as_missing": true,
+  "four_success_artifacts_and_two_rejections_verified": true,
+  "wheel_installed_bytes_and_source_manifest_match": true,
+  "corrupt_registry_cleanup_reproduced_fixed": true,
+  "review_probe_processes_remaining": 0,
+  "scope": "Controlled 1.1 integration, acceptance correctness and owned-process cleanup; no general-agent or arbitrary-daemon guarantee."
+}

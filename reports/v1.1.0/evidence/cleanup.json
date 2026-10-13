@@ -1,0 +1,58 @@
+{
+  "checked_at_utc": "2026-10-13T16:44:43.959067+00:00",
+  "owned_root": "/private/tmp/rpe-v11-development-20261013",
+  "temporary_root_removed": true,
+  "removed_regular_file_bytes": 599639467,
+  "project_cache_directories_removed": 2,
+  "owned_processes_before_cleanup": 0,
+  "owned_processes_signaled": 0,
+  "owned_processes_remaining": 0,
+  "identity_checks_used": true,
+  "daily_host_files": {
+    "config.yaml": {
+      "existence_unchanged": true,
+      "content_sha256_unchanged": true
+    },
+    ".env": {
+      "existence_unchanged": true,
+      "content_sha256_unchanged": true
+    },
+    "auth.json": {
+      "existence_unchanged": true,
+      "content_sha256_unchanged": false
+    },
+    "state.db": {
+      "existence_unchanged": true,
+      "content_sha256_unchanged": false
+    }
+  },
+  "installed_hermes_head": "63d0b94120027d487c9a5235b9ec64b696af1b26",
+  "installed_hermes_head_unchanged": true,
+  "installed_hermes_checkout_clean": true,
+  "shared_caches_deleted": false,
+  "daily_history_deleted": false,
+  "daily_gateway_restarted": false,
+  "preserved": [
+    "source and documentation",
+    "release wheel",
+    "metadata-only evidence",
+    "synthetic validation inputs and artifacts"
+  ],
+  "cleanup_scope": "Only this turn-owned temporary root and project Python/test caches. Current desktop conversation and unrelated services retained.",
+  "daily_activity_readonly_audit": {
+    "known_test_session_ids_checked": 35,
+    "known_test_sessions_in_daily_database": 0,
+    "test_source_or_owned_cwd_sessions_in_daily_database": 0,
+    "concurrent_session_sources": {
+      "cli": 2,
+      "desktop": 1,
+      "oneshot": 3
+    },
+    "auth_provider_names": [
+      "nous"
+    ],
+    "auth_updated_at_observed_after_cleanup": "2026-10-13T16:46:37.817264+00:00",
+    "auth_modification_time": "2026-10-13T16:46:37.817459+00:00",
+    "attribution": "Daily auth/state bytes changed during the observation interval. Known test sessions are absent from the daily database, and Nous auth updates continued after all test processes ended; ongoing daily activity is consistent with these changes. No rollback or deletion was performed; exact auth writer was not attributed."
+  }
+}

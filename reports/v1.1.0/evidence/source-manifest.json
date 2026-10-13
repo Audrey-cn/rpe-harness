@@ -1,0 +1,27 @@
+{
+  "wheel_sha256": "18bb92283a617733e2424025ca1ab1d2b6f63b2e14718be6b239bb171f453577",
+  "source_sha256": {
+    "src/rpe_harness/__init__.py": "a8f963599882578fe13f0a1748b1dedfc05e6a72b6f44408451fdc0d6409efc3",
+    "src/rpe_harness/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/rpe_harness/bridge.py": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "src/rpe_harness/capability.py": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "src/rpe_harness/causal_graph.py": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "src/rpe_harness/cli.py": "94bc69ae8f37a9c28f66a76294a0f3789a5a13d76f4f19dc147558120bb081d1",
+    "src/rpe_harness/execution.py": "608debca280bed2f633fe71c33091a49cfa2454f8331f640bf4a3735026a437b",
+    "src/rpe_harness/experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "src/rpe_harness/experiments/baseline.py": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "src/rpe_harness/experiments/basic_validation.py": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "src/rpe_harness/experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "src/rpe_harness/experiments/hermes_native.py": "ad4ca6d13d26ae6e68139a0641bfa94a3c92f589648332e7eaed9d4e637e9e4f",
+    "src/rpe_harness/experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "src/rpe_harness/integrations/__init__.py": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "src/rpe_harness/integrations/hermes.py": "192b91adfb1752da91bcc7b75f693fffdd243f3457d8897959d2c98b820765b9",
+    "src/rpe_harness/integrations/hermes_bootstrap.py": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+    "src/rpe_harness/integrations/hermes_session.py": "3b958fa0f3b034ef22e40f2e068841b319a0d645566f33a799b080704e9cbc09",
+    "src/rpe_harness/mcsi.py": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "src/rpe_harness/runtime.py": "419df4e07201080c7d3a3a2af7378a61496936844d19383745022916b1944a0d",
+    "src/rpe_harness/server.py": "01b47ebde021831a15a8b8c4e4af3df4f96bac48b0f65694c21decf90e1155d4",
+    "src/rpe_harness/storage.py": "4a4e0ce3e19ae75861f8e6862470efcf49fbbd2982f4bb53ecc6056b6376948c",
+    "src/rpe_harness/verification.py": "132f2866156b08cae40302689b48791c83ea9c902c955eedb7164f0c3416ede4"
+  }
+}

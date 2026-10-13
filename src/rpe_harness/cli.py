@@ -31,7 +31,8 @@ def read_json(path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(prog='rpe-harness', description=__doc__)
-    parser.add_argument('--version', action='version', version='1.0.0')
+    from . import __version__
+    parser.add_argument('--version', action='version', version=__version__)
     commands = parser.add_subparsers(dest='command', required=True)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
@@ -58,9 +59,43 @@ def main(argv=None):
     _configuration(route)
     benchmark = commands.add_parser('benchmark')
     benchmark.add_argument('--report', type=Path)
+    hermes = commands.add_parser('hermes', help='isolated installed Hermes host integration')
+    hermes_commands = hermes.add_subparsers(dest='hermes_command', required=True)
+    hermes_run = hermes_commands.add_parser('run')
+    hermes_run.add_argument('--workspace', type=Path, required=True)
+    hermes_run.add_argument('--prompt-file', type=Path, required=True)
+    hermes_run.add_argument('--timeout', type=float, default=180)
+    hermes_run.add_argument('--hermes-root', type=Path)
+    _configuration(hermes_run)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'benchmark':
+        if args.command == 'hermes':
+            import tempfile
+            from .runtime import default_db_path
+            from .integrations.hermes_session import run_hermes_session
+            with tempfile.TemporaryDirectory(prefix='rpe-hermes-') as owned:
+                result = run_hermes_session(args.prompt_file.read_text(encoding='utf-8'),
+                    args.workspace, Path(args.db) if args.db else default_db_path(),
+                    tool_enabled=True, owner_root=Path(owned), timeout=args.timeout,
+                    hermes_root=args.hermes_root)
+            result.pop('session_root', None)
+            result.pop('stream_tool_calls', None)
+            result['temporary_history_cleaned'] = True
+            result['harness_verified'] = False
+            result['status'] = 'failed' if not result['completed'] else 'unverified'
+            returned = [e for e in result['events'] if e.get('kind') == 'rpe_task_returned']
+            if result['completed'] and returned:
+                last = returned[-1]
+                result['status'] = last.get('status', 'unverified')
+                if last.get('run_id'):
+                    from .storage import RunStore
+                    saved = RunStore(Path(args.db) if args.db else default_db_path()).get(last['run_id'])
+                    verified = ((saved.get('verification') or {}).get('passed') is True
+                                and (saved.get('artifact') or {}).get('published') is True)
+                    result['harness_verified'] = saved.get('status') == 'succeeded' and verified
+                    if result['status'] == 'succeeded' and not result['harness_verified']:
+                        result['status'] = 'unverified'
+        elif args.command == 'benchmark':
             from .experiments.basic_validation import run_basic_validation
             result = run_basic_validation(args.report)
         elif args.command == 'serve':
@@ -91,7 +126,7 @@ def main(argv=None):
         status = result.get('status')
         if status in ['received', 'running']:
             return 3
-        return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted'] or result.get('passed') is False else 0
+        return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted', 'unverified'] or result.get('passed') is False else 0
     except (ValueError, TypeError, KeyError, OSError) as exc:
         print(json.dumps({'status': 'error', 'error_code': 'event_conflict' if isinstance(exc, EventConflict) else 'invalid_request', 'error': str(exc)}, ensure_ascii=False))
         return 2
