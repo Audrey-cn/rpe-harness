@@ -19,11 +19,21 @@ class TaskType(str, Enum):
     CODE_GENERATION = "code.generation"
     CODE_REVIEW = "code.review"
     DATA_PROCESSING = "data.processing"
-    WEB_RESEARCH = "web.research"
+    WEB_SEARCH = "web.search"
+    WEB_ACADEMIC = "web.academic"
+    WEB_DEEP_RESEARCH = "web.deep_research"
     DOCUMENT_WRITING = "document.writing"
     SYSTEM_ADMIN = "system.admin"
     CONVERSATION = "conversation"
     UNKNOWN = "unknown"
+
+    # 兼容旧分类——映射到新子类
+    @classmethod
+    def from_legacy(cls, value: str) -> "TaskType":
+        mapping = {"web.research": cls.WEB_SEARCH}
+        if value in mapping:
+            return mapping[value]
+        return cls(value)
 
 
 class CapabilityLevel(int, Enum):

@@ -31,6 +31,7 @@ class SkillEntry:
     use_count: int = 0
     success_rate: float = 1.0
     is_dormant: bool = False  # 休眠但可发现
+    priority: int = 5  # 1-10, 同类冲突时高优先赢
 
     def matches_state(self, state: CausalState) -> float:
         """计算与给定状态的匹配度（0.0-1.0）。"""
@@ -98,7 +99,7 @@ class CapabilityRouter:
         """从 JSON 文件加载技能索引。"""
         data = json.loads(path.read_text())
         for entry in data.get("skills", []):
-            entry["task_types"] = [TaskType(t) if isinstance(t, str) else t for t in entry.get("task_types", [])]
+            entry["task_types"] = [TaskType.from_legacy(t) if isinstance(t, str) else t for t in entry.get("task_types", [])]
             skill = SkillEntry(**entry)
             self.skills[skill.skill_id] = skill
         self._deterministic_rules = data.get("deterministic_rules", {})
@@ -120,6 +121,7 @@ class CapabilityRouter:
                     "use_count": s.use_count,
                     "success_rate": s.success_rate,
                     "is_dormant": s.is_dormant,
+                    "priority": s.priority,
                 }
                 for s in self.skills.values()
             ],
@@ -130,12 +132,16 @@ class CapabilityRouter:
     def register_skill(self, skill: SkillEntry) -> None:
         """注册技能到索引。"""
         self.skills[skill.skill_id] = skill
-        # 自动生成确定性路由规则
+        # 生成确定性路由规则（高优先才覆盖）
         for tt in skill.task_types:
             for fmt in skill.input_formats or ["*"]:
                 key = f"{tt.value}:{fmt}"
-                if key not in self._deterministic_rules:
+                existing_id = self._deterministic_rules.get(key)
+                if existing_id is None:
                     self._deterministic_rules[key] = skill.skill_id
+                elif existing_id in self.skills:
+                    if skill.priority > self.skills[existing_id].priority:
+                        self._deterministic_rules[key] = skill.skill_id
 
     def route(self, state: CausalState, top_k: int = 5) -> RoutingResult:
         """执行分层能力寻址。"""
@@ -172,10 +178,10 @@ class CapabilityRouter:
                 fallback_to_llm=True,
             )
 
-        # L2: 关系与因果检索（打分排序）
-        scored = [(s.matches_state(state), s) for s in candidates]
-        scored.sort(key=lambda x: x[0], reverse=True)
-        top = [s for _, s in scored[:top_k]]
+        # L2: 关系与因果检索（打分排序，priority 作 tiebreaker）
+        scored = [(s.matches_state(state), s.priority, s) for s in candidates]
+        scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        top = [s for _, _, s in scored[:top_k]]
 
         level = (
             CapabilityLevel.CLASSIFICATION
