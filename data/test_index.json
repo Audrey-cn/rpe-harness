@@ -1,0 +1,27 @@
+{
+  "skills": [
+    {
+      "skill_id": "xlsx",
+      "name": "xlsx",
+      "description": "Excel",
+      "task_types": [
+        "data.processing"
+      ],
+      "input_formats": [
+        "xlsx"
+      ],
+      "preconditions": [],
+      "tags": [
+        "spreadsheet"
+      ],
+      "path": "",
+      "last_used": 1791895188.9593039,
+      "use_count": 1,
+      "success_rate": 1.0,
+      "is_dormant": false
+    }
+  ],
+  "deterministic_rules": {
+    "data.processing:xlsx": "xlsx"
+  }
+}

@@ -98,6 +98,7 @@ class CapabilityRouter:
         """从 JSON 文件加载技能索引。"""
         data = json.loads(path.read_text())
         for entry in data.get("skills", []):
+            entry["task_types"] = [TaskType(t) if isinstance(t, str) else t for t in entry.get("task_types", [])]
             skill = SkillEntry(**entry)
             self.skills[skill.skill_id] = skill
         self._deterministic_rules = data.get("deterministic_rules", {})
@@ -140,18 +141,21 @@ class CapabilityRouter:
         """执行分层能力寻址。"""
         start = time.perf_counter()
 
-        # L0: 确定性路由
+        # L0: 确定性路由（精确匹配 → 通配匹配）
         routing_key = state.to_routing_key()
-        if routing_key in self._deterministic_rules:
-            skill_id = self._deterministic_rules[routing_key]
-            if skill_id in self.skills:
-                skill = self.skills[skill_id]
-                if not skill.is_dormant:
-                    return RoutingResult(
-                        level=CapabilityLevel.DETERMINISTIC,
-                        candidates=[skill],
-                        latency_ms=(time.perf_counter() - start) * 1000,
-                    )
+        skill_id = self._deterministic_rules.get(routing_key)
+        if skill_id is None:
+            wildcard_key = f"{state.task_type.value}:*"
+            skill_id = self._deterministic_rules.get(wildcard_key)
+
+        if skill_id and skill_id in self.skills:
+            skill = self.skills[skill_id]
+            if not skill.is_dormant:
+                return RoutingResult(
+                    level=CapabilityLevel.DETERMINISTIC,
+                    candidates=[skill],
+                    latency_ms=(time.perf_counter() - start) * 1000,
+                )
 
         # L1: 能力分类（基于 task_type 缩小范围）
         candidates = [

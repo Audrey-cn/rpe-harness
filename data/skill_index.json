@@ -1,0 +1,1789 @@
+{
+  "skills": [
+    {
+      "skill_id": "apple/apple-notes",
+      "name": "apple-notes",
+      "description": "Manage Apple Notes via memo CLI: create, search, edit.",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Notes",
+        "Apple",
+        "macOS",
+        "note-taking"
+      ],
+      "path": "/Users/audrey/.hermes/skills/apple/apple-notes/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "apple/apple-reminders",
+      "name": "apple-reminders",
+      "description": "Apple Reminders via remindctl: add, list, complete.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Reminders",
+        "tasks",
+        "todo",
+        "macOS",
+        "Apple"
+      ],
+      "path": "/Users/audrey/.hermes/skills/apple/apple-reminders/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "apple/findmy",
+      "name": "findmy",
+      "description": "Track Apple devices/AirTags via FindMy.app on macOS.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "FindMy",
+        "AirTag",
+        "location",
+        "tracking",
+        "macOS",
+        "Apple"
+      ],
+      "path": "/Users/audrey/.hermes/skills/apple/findmy/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "apple/imessage",
+      "name": "imessage",
+      "description": "Send and receive iMessages/SMS via the imsg CLI on macOS.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "iMessage",
+        "SMS",
+        "messaging",
+        "macOS",
+        "Apple"
+      ],
+      "path": "/Users/audrey/.hermes/skills/apple/imessage/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "autonomous-ai-agents/claude-code",
+      "name": "claude-code",
+      "description": "Delegate coding to Claude Code CLI (features, PRs).",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Coding-Agent",
+        "Claude",
+        "Anthropic",
+        "Code-Review",
+        "Refactoring",
+        "PTY",
+        "Automation"
+      ],
+      "path": "/Users/audrey/.hermes/skills/autonomous-ai-agents/claude-code/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "autonomous-ai-agents/codex",
+      "name": "codex",
+      "description": "Delegate coding to OpenAI Codex CLI (features, PRs).",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Coding-Agent",
+        "Codex",
+        "OpenAI",
+        "Code-Review",
+        "Refactoring"
+      ],
+      "path": "/Users/audrey/.hermes/skills/autonomous-ai-agents/codex/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "autonomous-ai-agents/computer-use",
+      "name": "computer-use",
+      "description": "Drive the desktop background-first; escalate on signal.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "computer-use",
+        "desktop",
+        "automation",
+        "gui",
+        "cross-platform"
+      ],
+      "path": "/Users/audrey/.hermes/skills/autonomous-ai-agents/computer-use/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "autonomous-ai-agents/hermes-agent",
+      "name": "hermes-agent",
+      "description": "Use, configure, theme, extend, and orchestrate Hermes Agent.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "hermes",
+        "setup",
+        "configuration",
+        "multi-agent",
+        "spawning",
+        "cli",
+        "gateway",
+        "bots",
+        "bot-mode",
+        "features",
+        "themes",
+        "skins",
+        "desktop-plugins",
+        "tui-widgets",
+        "petdex",
+        "development"
+      ],
+      "path": "/Users/audrey/.hermes/skills/autonomous-ai-agents/hermes-agent/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "autonomous-ai-agents/opencode",
+      "name": "opencode",
+      "description": "Delegate coding to OpenCode CLI (features, PR review).",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Coding-Agent",
+        "OpenCode",
+        "Autonomous",
+        "Refactoring",
+        "Code-Review"
+      ],
+      "path": "/Users/audrey/.hermes/skills/autonomous-ai-agents/opencode/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/content-extract",
+      "name": "content-extract",
+      "description": "Use when 网页转 Markdown/抽正文（抓取受挡或脏页面）。Robust URL-to-Markdown extraction. Uses the host fetch capability first, then optionally falls back to MinerU via ",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/content-extract/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/architecture-diagram",
+      "name": "architecture-diagram",
+      "description": "架构/基础设施深色SVG图(HTML)；架构图交付加载",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "architecture",
+        "diagrams",
+        "SVG",
+        "HTML",
+        "visualization",
+        "infrastructure",
+        "cloud"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/architecture-diagram/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/ascii-video",
+      "name": "ascii-video",
+      "description": "ASCII video: convert video/audio to colored ASCII MP4/GIF.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "ASCII",
+        "Video",
+        "FFmpeg",
+        "Terminal-Art"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/ascii-video/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/baoyu-infographic",
+      "name": "baoyu-infographic",
+      "description": "信息图/可视化(21布局x21风格)；需要信息图大图时加载",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "infographic",
+        "visual-summary",
+        "creative",
+        "image-generation"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/baoyu-infographic/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/claude-design",
+      "name": "claude-design",
+      "description": "Design one-off HTML artifacts (landing, deck, prototype).",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "design",
+        "html",
+        "prototype",
+        "ux",
+        "ui",
+        "creative",
+        "artifact",
+        "deck",
+        "motion",
+        "design-system"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/claude-design/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/design-md",
+      "name": "design-md",
+      "description": "Author/validate/export Google's DESIGN.md token spec files.",
+      "task_types": [
+        "unknown",
+        "file.operation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "design",
+        "design-system",
+        "tokens",
+        "ui",
+        "accessibility",
+        "wcag",
+        "tailwind",
+        "dtcg",
+        "google"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/design-md/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/humanizer",
+      "name": "humanizer",
+      "description": "Humanize text: strip AI-isms and add real voice.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "writing",
+        "editing",
+        "humanize",
+        "anti-ai-slop",
+        "voice",
+        "prose",
+        "text"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/humanizer/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/manim-video",
+      "name": "manim-video",
+      "description": "Manim CE animations: 3Blue1Brown math/algo videos.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Manim",
+        "Animation",
+        "Math",
+        "Video"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/manim-video/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/p5js",
+      "name": "p5js",
+      "description": "p5.js sketches: gen art, shaders, interactive, 3D.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "creative-coding",
+        "generative-art",
+        "p5js",
+        "canvas",
+        "interactive",
+        "visualization",
+        "webgl",
+        "shaders",
+        "animation"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/p5js/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/popular-web-designs",
+      "name": "popular-web-designs",
+      "description": "54 real design systems (Stripe, Linear, Vercel) as HTML/CSS.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "design",
+        "css",
+        "html",
+        "ui",
+        "web-development",
+        "design-systems",
+        "templates"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/popular-web-designs/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "creative/songwriting-and-ai-music",
+      "name": "songwriting-and-ai-music",
+      "description": "Songwriting craft and Suno AI music prompts.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "songwriting",
+        "music",
+        "suno",
+        "parody",
+        "lyrics",
+        "creative"
+      ],
+      "path": "/Users/audrey/.hermes/skills/creative/songwriting-and-ai-music/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/darwin-skill",
+      "name": "darwin-skill",
+      "description": "Darwin Skill 2.0 (达尔文.skill 2.0): autonomous skill optimizer, v2.0 integrates Microsoft Research SkillLens (arXiv 2605.23899) 9-dim rubric + SkillOpt ",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/darwin-skill/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/deep-research",
+      "name": "deep-research",
+      "description": "Deep Research 方法论集成 — 广度×深度迭代研究 + 递归探索 + 并发处理。19.4K⭐，<500行核心逻辑。触发：迭代调研、层层深挖、广度深度控制、递归研究",
+      "task_types": [
+        "unknown",
+        "web.research",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/deep-research/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "devops/sdlc-review",
+      "name": "sdlc-review",
+      "description": "Review Kanban handoffs and route verified outcomes.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "kanban",
+        "review",
+        "quality",
+        "verification"
+      ],
+      "path": "/Users/audrey/.hermes/skills/devops/sdlc-review/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "email/email-inbox-triage",
+      "name": "email-inbox-triage",
+      "description": "Triage an inbox: prioritize threads, draft replies safely.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Email",
+        "Inbox",
+        "Triage",
+        "Replies",
+        "Productivity"
+      ],
+      "path": "/Users/audrey/.hermes/skills/email/email-inbox-triage/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "email/himalaya",
+      "name": "himalaya",
+      "description": "Himalaya CLI: IMAP/SMTP email from terminal.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Email",
+        "IMAP",
+        "SMTP",
+        "CLI",
+        "Communication"
+      ],
+      "path": "/Users/audrey/.hermes/skills/email/himalaya/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/feishu-streaming-cards",
+      "name": "feishu-streaming-cards",
+      "description": "Use when 部署或维护 Hermes 飞书流式卡片能力（hermes-lark-streaming 插件）：对话回复打字机流式卡片、cron 结果卡片推送、思考/工具调用实时显示。覆盖安装、配置、cron 卡片去题头补丁、升级维护、卸载与排障。",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "feishu",
+        "lark",
+        "streaming",
+        "cardkit",
+        "plugin",
+        "deploy"
+      ],
+      "path": "/Users/audrey/.hermes/skills/feishu-streaming-cards/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/gpt-researcher",
+      "name": "gpt-researcher",
+      "description": "GPT Researcher 方法论集成 — Plan-and-Solve + 并行Agent聚合 + 多源交叉验证。28.7K⭐开源项目核心工作流。触发：深度研究、行业调研、市场分析报告、综合研究",
+      "task_types": [
+        "unknown",
+        "web.research",
+        "document.writing",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/gpt-researcher/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "media/gif-search",
+      "name": "gif-search",
+      "description": "Search/download GIFs from Tenor via curl + jq.",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "GIF",
+        "Media",
+        "Search",
+        "Tenor",
+        "API"
+      ],
+      "path": "/Users/audrey/.hermes/skills/media/gif-search/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "media/songsee",
+      "name": "songsee",
+      "description": "Audio spectrograms/features (mel, chroma, MFCC) via CLI.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Audio",
+        "Visualization",
+        "Spectrogram",
+        "Music",
+        "Analysis"
+      ],
+      "path": "/Users/audrey/.hermes/skills/media/songsee/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "media/youtube-content",
+      "name": "youtube-content",
+      "description": "YouTube transcripts to summaries, threads, blogs.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "YouTube",
+        "Video",
+        "Transcripts",
+        "Media"
+      ],
+      "path": "/Users/audrey/.hermes/skills/media/youtube-content/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "note-taking/obsidian",
+      "name": "obsidian",
+      "description": "Read, search, create, and edit notes in the Obsidian vault.",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Obsidian",
+        "Notes",
+        "Markdown",
+        "Vault"
+      ],
+      "path": "/Users/audrey/.hermes/skills/note-taking/obsidian/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/airtable",
+      "name": "airtable",
+      "description": "Airtable REST API via curl. Records CRUD, filters, upserts.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Airtable",
+        "Productivity",
+        "Database",
+        "API"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/airtable/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/box",
+      "name": "box",
+      "description": "Box manages cloud files, sharing, search, and metadata.",
+      "task_types": [
+        "unknown",
+        "file.operation",
+        "web.research",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Box",
+        "Productivity",
+        "Cloud Storage",
+        "Collaboration",
+        "Metadata",
+        "Content Extraction",
+        "CLI",
+        "SDK"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/box/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/document-to-action-items",
+      "name": "document-to-action-items",
+      "description": "从文档提取带出处的任务与期限；材料提炼待办加载",
+      "task_types": [
+        "unknown",
+        "document.writing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Documents",
+        "OCR",
+        "Action-Items",
+        "Deadlines",
+        "Extraction"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/document-to-action-items/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/docx",
+      "name": "docx",
+      "description": "Create, read, edit, template, and review Word .docx files.",
+      "task_types": [
+        "unknown",
+        "file.operation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "word",
+        "docx",
+        "documents",
+        "office",
+        "templates",
+        "revisions",
+        "comments"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/docx/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/google-workspace",
+      "name": "google-workspace",
+      "description": "Google OAuth2 client credentials (downloaded from Google Cloud Console)",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Google",
+        "Gmail",
+        "Calendar",
+        "Drive",
+        "Sheets",
+        "Docs",
+        "Contacts",
+        "Email",
+        "OAuth"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/google-workspace/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/maps",
+      "name": "maps",
+      "description": "Geocode, POIs, routes, timezones via OpenStreetMap/OSRM.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "maps",
+        "geocoding",
+        "places",
+        "routing",
+        "distance",
+        "directions",
+        "nearby",
+        "location",
+        "openstreetmap",
+        "nominatim",
+        "overpass",
+        "osrm"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/maps/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/meeting-action-items",
+      "name": "meeting-action-items",
+      "description": "Turn meeting notes into cited decisions, owners, tickets.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Meetings",
+        "Action-Items",
+        "Follow-Up",
+        "Productivity"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/meeting-action-items/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/notion",
+      "name": "notion",
+      "description": "Notion API + ntn CLI: pages, databases, markdown, Workers.",
+      "task_types": [
+        "unknown",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Notion",
+        "Productivity",
+        "Notes",
+        "Database",
+        "API",
+        "CLI",
+        "Workers"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/notion/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/pdf",
+      "name": "pdf",
+      "description": "PDF files: create, read, merge, fill, OCR, edit text.",
+      "task_types": [
+        "unknown",
+        "file.operation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "pdf",
+        "documents",
+        "forms",
+        "ocr",
+        "text-extraction",
+        "reportlab",
+        "pypdf",
+        "pdfplumber",
+        "pymupdf",
+        "marker"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/pdf/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/powerpoint",
+      "name": "powerpoint",
+      "description": "Create, read, edit .pptx decks with python-pptx.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "pptx",
+        "powerpoint",
+        "presentations",
+        "slides",
+        "office",
+        "python-pptx"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/powerpoint/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/product-price-monitor",
+      "name": "product-price-monitor",
+      "description": "Watch product, flight, or listing prices; alert on target.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Prices",
+        "Availability",
+        "Shopping",
+        "Travel",
+        "Alerts"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/product-price-monitor/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/teams-meeting-pipeline",
+      "name": "teams-meeting-pipeline",
+      "description": "Teams meeting summaries, job replay, Graph subscriptions.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Teams",
+        "Microsoft Graph",
+        "Meetings",
+        "Productivity",
+        "Operations"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/teams-meeting-pipeline/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/weekly-review-planning",
+      "name": "weekly-review-planning",
+      "description": "Weekly reset: commitments, stalled work, next-week plan.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Weekly-Review",
+        "Planning",
+        "Tasks",
+        "Calendar",
+        "Productivity"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/weekly-review-planning/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "productivity/xlsx",
+      "name": "xlsx",
+      "description": "Create, read, edit Excel .xlsx workbooks and CSVs.",
+      "task_types": [
+        "unknown",
+        "file.operation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "excel",
+        "spreadsheet",
+        "xlsx",
+        "csv",
+        "openpyxl",
+        "productivity"
+      ],
+      "path": "/Users/audrey/.hermes/skills/productivity/xlsx/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "research/arxiv",
+      "name": "arxiv",
+      "description": "Search arXiv by keyword/author/ID；学术找论文加载",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Research",
+        "Arxiv",
+        "Papers",
+        "Academic",
+        "Science",
+        "API"
+      ],
+      "path": "/Users/audrey/.hermes/skills/research/arxiv/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "research/competitor-news-monitor",
+      "name": "competitor-news-monitor",
+      "description": "盯公司重大新闻并给带引用摘要；竞品跟踪加载",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Competitors",
+        "News",
+        "Market-Research",
+        "Monitoring"
+      ],
+      "path": "/Users/audrey/.hermes/skills/research/competitor-news-monitor/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "research/grounded-citations",
+      "name": "grounded-citations",
+      "description": "Ground answers and documents in cited, verifiable sources.",
+      "task_types": [
+        "unknown",
+        "document.writing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Research",
+        "Citations",
+        "Grounding",
+        "Sources",
+        "Web",
+        "Reports"
+      ],
+      "path": "/Users/audrey/.hermes/skills/research/grounded-citations/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "research/llm-wiki",
+      "name": "llm-wiki",
+      "description": "Karpathy's LLM Wiki: build/query interlinked markdown KB.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "wiki",
+        "knowledge-base",
+        "research",
+        "notes",
+        "markdown",
+        "rag-alternative"
+      ],
+      "path": "/Users/audrey/.hermes/skills/research/llm-wiki/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "research/longitudinal-competitive-research",
+      "name": "longitudinal-competitive-research",
+      "description": "深度研究产品、公司、技术或概念，梳理历程、竞品并综合研判。",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "research",
+        "longitudinal",
+        "competitive-analysis",
+        "synthesis"
+      ],
+      "path": "/Users/audrey/.hermes/skills/research/longitudinal-competitive-research/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/research-mode",
+      "name": "research-mode",
+      "description": "科研模式 — 统一入口技能。激活后加载全套学术数据库查询能力（arXiv、Semantic Scholar、OpenAlex、PubMed、Crossref），启用科研工作流策略（文献检索→假设→实验→报告）。触发词：进入科研模式、research mode、文献检索、学术搜索、论文调研。",
+      "task_types": [
+        "unknown",
+        "web.research",
+        "document.writing",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/research-mode/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/search-layer",
+      "name": "search-layer",
+      "description": ">",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/search-layer/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "social-media/xurl",
+      "name": "xurl",
+      "description": "X/Twitter via xurl CLI: raw post search, posting, DM, media.",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "twitter",
+        "x",
+        "social-media",
+        "xurl",
+        "official-api"
+      ],
+      "path": "/Users/audrey/.hermes/skills/social-media/xurl/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/codebase-inspection",
+      "name": "codebase-inspection",
+      "description": "Inspect codebases w/ pygount: LOC, languages, ratios.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "LOC",
+        "Code Analysis",
+        "pygount",
+        "Codebase",
+        "Metrics",
+        "Repository"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/codebase-inspection/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/dogfood",
+      "name": "dogfood",
+      "description": "Exploratory QA of web apps: find bugs, evidence, reports.",
+      "task_types": [
+        "unknown",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "qa",
+        "testing",
+        "browser",
+        "web",
+        "dogfood"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/dogfood/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/github",
+      "name": "github",
+      "description": "GitHub via gh CLI: PRs, issues, reviews, repos, auth.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "github",
+        "gh",
+        "git",
+        "pull-requests",
+        "issues",
+        "code-review",
+        "repos",
+        "auth",
+        "ci"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/github/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/hermes-agent-skill-authoring",
+      "name": "hermes-agent-skill-authoring",
+      "description": "Author in-repo SKILL.md files: frontmatter and structure.",
+      "task_types": [
+        "unknown",
+        "file.operation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "skills",
+        "authoring",
+        "hermes-agent",
+        "conventions",
+        "skill-md"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/hermes-agent-skill-authoring/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/inspecting-hermes-desktop-dom",
+      "name": "inspecting-hermes-desktop-dom",
+      "description": "Read the live Hermes desktop DOM/CSS over CDP.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "desktop",
+        "electron",
+        "cdp",
+        "dom",
+        "ui-verification",
+        "self-inspection"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/inspecting-hermes-desktop-dom/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/local-llm-management",
+      "name": "local-llm-management",
+      "description": "Use when deploying, tuning, or comparing local LLMs on Mac.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "llm",
+        "llama.cpp",
+        "apple-silicon",
+        "model-optimization",
+        "gguf"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/local-llm-management/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/node-inspect-debugger",
+      "name": "node-inspect-debugger",
+      "description": "Debug Node.js via --inspect + Chrome DevTools Protocol CLI.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "debugging",
+        "nodejs",
+        "node-inspect",
+        "cdp",
+        "breakpoints",
+        "ui-tui"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/node-inspect-debugger/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/python-debugpy",
+      "name": "python-debugpy",
+      "description": "Debug Python: pdb REPL + debugpy remote (DAP).",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "debugging",
+        "python",
+        "pdb",
+        "debugpy",
+        "breakpoints",
+        "dap",
+        "post-mortem"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/python-debugpy/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/requesting-code-review",
+      "name": "requesting-code-review",
+      "description": "Pre-commit review: security scan, quality gates, auto-fix.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "code-review",
+        "security",
+        "verification",
+        "quality",
+        "pre-commit",
+        "auto-fix"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/requesting-code-review/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/simplify-code",
+      "name": "simplify-code",
+      "description": "Parallel 4-agent cleanup of recent code changes.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "code-review",
+        "cleanup",
+        "refactor",
+        "delegation",
+        "subagent",
+        "parallel",
+        "simplify"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/simplify-code/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/spike",
+      "name": "spike",
+      "description": "Throwaway experiments to validate an idea before build.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "spike",
+        "prototype",
+        "experiment",
+        "feasibility",
+        "throwaway",
+        "exploration",
+        "research",
+        "planning",
+        "mvp",
+        "proof-of-concept"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/spike/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/systematic-debugging",
+      "name": "systematic-debugging",
+      "description": "4-phase root cause debugging: understand bugs before fixing.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "debugging",
+        "troubleshooting",
+        "problem-solving",
+        "root-cause",
+        "investigation"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/systematic-debugging/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "software-development/test-driven-development",
+      "name": "test-driven-development",
+      "description": "TDD: enforce RED-GREEN-REFACTOR, tests before code.",
+      "task_types": [
+        "unknown",
+        "code.generation"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "testing",
+        "tdd",
+        "development",
+        "quality",
+        "red-green-refactor"
+      ],
+      "path": "/Users/audrey/.hermes/skills/software-development/test-driven-development/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "system-environment/environment-profile",
+      "name": "environment-profile",
+      "description": "本机硬件/软件环境档案与协作约定。做环境判断、装依赖、排障、拉项目前先读这里，不要重复扫描。",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/system-environment/environment-profile/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "system-environment/mimo-multimodal-routing",
+      "name": "mimo-multimodal-routing",
+      "description": "Use when tasks involve images, voice, or MIMO routing.",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "mimo",
+        "multimodal",
+        "routing",
+        "models",
+        "vision",
+        "voice"
+      ],
+      "path": "/Users/audrey/.hermes/skills/system-environment/mimo-multimodal-routing/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/uaek-agent-enhancement",
+      "name": "uaek-agent-enhancement",
+      "description": "Agent 增强套件 - 综合使用验证、Effort、工作流和记忆管理",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "agent",
+        "enhancement",
+        "orchestration",
+        "quality"
+      ],
+      "path": "/Users/audrey/.hermes/skills/uaek-agent-enhancement/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/uaek-effort-control",
+      "name": "uaek-effort-control",
+      "description": "Effort 调度控制 - 根据任务复杂度调整工作深度",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "effort",
+        "optimization",
+        "cost",
+        "dispatch"
+      ],
+      "path": "/Users/audrey/.hermes/skills/uaek-effort-control/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/uaek-memory-management",
+      "name": "uaek-memory-management",
+      "description": "记忆管理 - 使用分层记忆系统管理长期上下文",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "memory",
+        "context",
+        "persistence",
+        "compression"
+      ],
+      "path": "/Users/audrey/.hermes/skills/uaek-memory-management/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/uaek-verification-framework",
+      "name": "uaek-verification-framework",
+      "description": "通用验证框架 - 在完成任务前必须执行验证",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "verification",
+        "quality",
+        "testing"
+      ],
+      "path": "/Users/audrey/.hermes/skills/uaek-verification-framework/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/uaek-workflow-guidance",
+      "name": "uaek-workflow-guidance",
+      "description": "工作流指导 - 使用 DAG 和并行调度管理复杂任务",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "workflow",
+        "dag",
+        "parallel",
+        "orchestration"
+      ],
+      "path": "/Users/audrey/.hermes/skills/uaek-workflow-guidance/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "web/blocked-page-recovery",
+      "name": "blocked-page-recovery",
+      "description": "Fetch 403/429/paywall/WAF? 先加载我再重试",
+      "task_types": [
+        "unknown"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [
+        "Research",
+        "Archives",
+        "Wayback",
+        "Paywall",
+        "WAF",
+        "Fallback"
+      ],
+      "path": "/Users/audrey/.hermes/skills/web/blocked-page-recovery/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/yimei-agent",
+      "name": "yimei-agent",
+      "description": "医美 AI 运营中枢接入门面。处理客户、跟进、经营、渠道、客诉、风险与早报请求；业务能力按 INDEX 按需加载。",
+      "task_types": [
+        "unknown",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/yimei-agent/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/yimei-business-research",
+      "name": "yimei-business-research",
+      "description": "医美业务研究引擎 — 品项产研、商品包装、活动策划、商业调查。双轨检索（PubMed学术 + tvly商业），输出可执行业务情报。触发：新品项、活动方案、市场调研、竞品分析、包装策划",
+      "task_types": [
+        "unknown",
+        "web.research",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/yimei-business-research/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/yimei-framework-engineering",
+      "name": "yimei-framework-engineering",
+      "description": "Use when 医美框架工程整治/增强：模块化、工具开发、口径统一、数据修复、嵌入交付。",
+      "task_types": [
+        "unknown",
+        "code.generation",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/yimei-framework-engineering/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/yimei-methodology-research",
+      "name": "yimei-methodology-research",
+      "description": "医美方法论研究增强 — 用学术文献检索为策略文件补充实证支撑。触发：方法论更新、策略增强、研究支撑、学术引用",
+      "task_types": [
+        "unknown",
+        "file.operation",
+        "web.research"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/yimei-methodology-research/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    },
+    {
+      "skill_id": "root/yimei-product-development",
+      "name": "yimei-product-development",
+      "description": "医美新品研发推演 — 基于院内消费数据 + 市场趋势分析，设计新品项并模拟上线效果",
+      "task_types": [
+        "unknown",
+        "data.processing"
+      ],
+      "input_formats": [],
+      "preconditions": [],
+      "tags": [],
+      "path": "/Users/audrey/.hermes/skills/yimei-product-development/SKILL.md",
+      "last_used": 0.0,
+      "use_count": 0,
+      "success_rate": 1.0,
+      "is_dormant": false
+    }
+  ],
+  "deterministic_rules": {
+    "unknown:*": "apple/apple-notes",
+    "web.research:*": "apple/apple-notes",
+    "code.generation:*": "autonomous-ai-agents/claude-code",
+    "file.operation:*": "creative/design-md",
+    "data.processing:*": "root/deep-research",
+    "document.writing:*": "root/gpt-researcher"
+  }
+}
