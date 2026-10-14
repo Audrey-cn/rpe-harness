@@ -8,3 +8,7 @@ reports/v1.2.0/evidence/** -whitespace
 # v1.8 public inputs and verified outputs retain their exact oracle-bound bytes.
 reports/v1.8.0/**/fixtures/** -text -whitespace
 reports/v1.8.0/**/output.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# v1.9 public fixtures are compared against exact source and output digests.
+reports/v1.9.0/**/fixtures/** -text -whitespace
+reports/v1.9.0/**/output.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
