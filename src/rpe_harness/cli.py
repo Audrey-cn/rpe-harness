@@ -40,6 +40,8 @@ def main(argv=None):
     register_skills_and_context(commands)
     from .address_cli import register_address
     register_address(commands)
+    from .source_cli import register_source
+    register_source(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -74,7 +76,7 @@ def main(argv=None):
     hermes_run.add_argument('--prompt-file', type=Path, required=True)
     hermes_run.add_argument('--timeout', type=float, default=180)
     hermes_run.add_argument('--hermes-root', type=Path)
-    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional', 'skills', 'address'), default='strict')
+    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional', 'skills', 'address', 'clean'), default='strict')
     hermes_run.add_argument('--catalog-root', type=Path)
     hermes_run.add_argument('--skill-snapshot-id')
     hermes_run.add_argument('--context-sources', help='trusted JSON file with a sources array')
@@ -122,7 +124,10 @@ def main(argv=None):
     _configuration(rollback)
     args = parser.parse_args(argv)
     try:
-        if args.command in ('capabilities', 'intent'):
+        if args.command == 'source':
+            from .source_cli import dispatch_source
+            result = dispatch_source(args)
+        elif args.command in ('capabilities', 'intent'):
             from .address_cli import dispatch_address
             result = dispatch_address(args)
         elif args.command in ('skills','context'):
@@ -151,7 +156,11 @@ def main(argv=None):
                     required_request=required_request, max_task_attempts=args.max_task_attempts,
                     catalog_root=args.catalog_root,skill_snapshot_id=args.skill_snapshot_id,
                     context_sources=context_sources)
-                if args.entry_mode == 'address':
+                if args.entry_mode == 'clean':
+                    from .integrations.hermes_clean import evaluate_clean_session
+                    verdict = evaluate_clean_session(result, db_path, args.workspace,
+                        catalog_root=args.catalog_root)
+                elif args.entry_mode == 'address':
                     from .integrations.hermes_address import evaluate_address_session
                     verdict = evaluate_address_session(result, db_path, args.workspace,
                         catalog_root=args.catalog_root, required_request=required_request)
@@ -245,7 +254,7 @@ def main(argv=None):
                                      args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
-        if args.command in ('context', 'intent', 'capabilities'):
+        if args.command in ('context', 'intent', 'capabilities', 'source'):
             if status in ('unsupported', 'rejected', 'conflict'):
                 return 2
             if status in ('needs_context', 'ambiguous'):
