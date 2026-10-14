@@ -84,21 +84,21 @@ def test_cycle_budget_cannot_be_expanded_or_disabled(tmp_path, field, value):
     assert snapshot(database) == before
 
 
-def test_history_over_budget_refuses_before_any_maintenance_write(tmp_path):
+def test_history_over_one_batch_budget_remains_available_for_next_cycle(tmp_path):
     database, _ = json_run(tmp_path)
     json_run(tmp_path, 'second')
-    before = snapshot(database)
-    with pytest.raises(ValueError, match='history.*budget'):
-        cycle(database, tmp_path, max_history_runs=1)
-    assert snapshot(database) == before
+    first = cycle(database, tmp_path, max_history_runs=1)
+    assert first['maintenance']['remaining_run_count'] == 1
+    second = cycle(database, tmp_path, max_history_runs=1)
+    assert second['maintenance']['remaining_run_count'] == 0
+    assert len(EvolutionStore(database).list_feedback()) == 2
 
 
-def test_generated_proposal_over_budget_refuses_before_maintenance_write(tmp_path):
+def test_generated_proposals_over_one_batch_budget_are_durably_pending(tmp_path):
     database, _ = json_run(tmp_path)
-    before = snapshot(database)
-    with pytest.raises(ValueError, match='proposal.*budget'):
-        cycle(database, tmp_path, max_proposals=1)
-    assert snapshot(database) == before
+    result = cycle(database, tmp_path, max_proposals=1)
+    assert result['proposal_count'] == 1
+    assert result['maintenance']['pending_proposal_count'] == 7
 
 
 def test_external_proposer_gets_verified_feedback_not_fixture_answers_and_is_labeled(tmp_path):

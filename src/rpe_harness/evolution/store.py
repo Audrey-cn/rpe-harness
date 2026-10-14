@@ -57,6 +57,20 @@ class EvolutionStore:
                     activation_id TEXT PRIMARY KEY,slot TEXT NOT NULL,version_id TEXT NOT NULL,
                     snapshot_json TEXT NOT NULL,state TEXT NOT NULL,lease_path TEXT,
                     created_at REAL NOT NULL);
+                CREATE TABLE IF NOT EXISTS evolution_maintenance_state(
+                    name TEXT PRIMARY KEY,cursor INTEGER NOT NULL DEFAULT 0);
+                CREATE TABLE IF NOT EXISTS evolution_maintenance_queue(
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT,work_key TEXT NOT NULL UNIQUE,
+                    kind TEXT NOT NULL,subject_id TEXT NOT NULL,payload_json TEXT NOT NULL,
+                    state TEXT NOT NULL CHECK(state IN ('waiting','pending','done')),
+                    created_at REAL NOT NULL,updated_at REAL NOT NULL);
+                CREATE INDEX IF NOT EXISTS evolution_maintenance_pending
+                    ON evolution_maintenance_queue(kind,state,updated_at,sequence);
+                CREATE TABLE IF NOT EXISTS evolution_maintenance_evidence(
+                    diagnosis_key TEXT NOT NULL,source_kind TEXT NOT NULL,source_id TEXT NOT NULL,
+                    evidence_hash TEXT NOT NULL,payload_json TEXT NOT NULL,
+                    created_at REAL NOT NULL,
+                    PRIMARY KEY(diagnosis_key,source_kind,source_id,evidence_hash));
             ''')
             saved = db.execute("SELECT value FROM evolution_meta WHERE key='owned_root'").fetchone()
             root = Path(owned_root).expanduser() if owned_root else (
