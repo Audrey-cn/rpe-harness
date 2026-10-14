@@ -141,8 +141,9 @@ class PhaseLedger:
             raise ValueError('invalid or private outcome fields')
         result = {'status': outcome['status'], 'elapsed_seconds': _number(outcome.get('elapsed_seconds')),
                   'usage': _usage(outcome.get('usage'))}
-        if not reservation['api_expected'] and result['usage'] and result['usage'].get('api_requests', 0):
-            raise ValueError('unexpected API usage in a local-only phase')
+        if not reservation['api_expected'] and result['usage']:
+            if any(type(value) is int and value > 0 for value in result['usage'].values()):
+                raise ValueError('unexpected API usage in a local-only phase')
         for key in ('artifact_correct', 'workflow_verified', 'candidate_reused', 'fallback'):
             if key in outcome:
                 if type(outcome[key]) is not bool:
@@ -189,6 +190,7 @@ def summarize_phases(records):
     token_sum = request_sum = elapsed_sum = 0
     token_complete = request_complete = elapsed_complete = True
     missing = 0
+    unknown_usage_phases = 0
     detailed_fields = ('cache_read_tokens', 'cache_write_tokens', 'input_tokens',
                        'prompt_tokens', 'output_tokens', 'reasoning_tokens')
     detail_sums = {field: 0 for field in detailed_fields}
@@ -215,8 +217,11 @@ def summarize_phases(records):
         token_sum += value.get('known_total_tokens') or tokens or 0
         request_sum += requests or 0
         token_complete &= type(tokens) is int and value.get('coverage_complete') is True
-        request_complete &= type(requests) is int
-        missing += value.get('missing_observations') or (0 if value else 1)
+        request_complete &= (type(requests) is int and
+                             (requests > 0 or value.get('coverage_complete') is True))
+        missing += value.get('missing_observations') or 0
+        if not value or (requests == 0 and value.get('coverage_complete') is not True):
+            unknown_usage_phases += 1
         for field in detailed_fields:
             item = value.get(field)
             if type(item) is int:
@@ -229,6 +234,7 @@ def summarize_phases(records):
         'total_tokens': token_sum if token_complete else None, 'known_total_tokens': token_sum,
         'api_requests': request_sum if request_complete else None, 'known_api_requests': request_sum,
         'usage_complete': bool(token_complete), 'missing_observations': missing,
+        'unknown_usage_phases': unknown_usage_phases,
         'elapsed_seconds_sum': elapsed_sum if elapsed_complete else None,
         'known_elapsed_seconds_sum': elapsed_sum,
         'observed_makespan_seconds': max(ends)-min(starts) if starts and ends else None,

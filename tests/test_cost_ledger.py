@@ -126,3 +126,24 @@ def test_cached_tokens_are_separate_and_absent_cache_write_stays_unknown(tmp_pat
     summary = module.summarize_phases(ledger.records())
     assert summary['total_tokens'] == 200 and summary['cache_read_tokens'] == 150
     assert summary['cache_write_tokens'] is None and summary['known_cache_write_tokens'] == 0
+
+
+def test_unobserved_model_timeout_has_unknown_request_total(tmp_path):
+    module = ledger_module()
+    from rpe_harness.integrations.hermes_session import aggregate_usage
+    ledger = module.PhaseLedger(tmp_path)
+    ledger.reserve('learned', 'generation', 'unobserved')
+    ledger.finish('unobserved', {'status': 'timed_out', 'elapsed_seconds': 180.0,
+                               'usage': aggregate_usage([])})
+    summary = module.summarize_phases(ledger.records())
+    assert summary['api_requests'] is None and summary['known_api_requests'] == 0
+    assert summary['total_tokens'] is None and summary['unknown_usage_phases'] == 1
+
+
+@pytest.mark.parametrize('bucket', ['total_tokens', 'cache_read_tokens', 'output_tokens'])
+def test_local_only_receipt_cannot_hide_nonzero_model_usage(tmp_path, bucket):
+    ledger = ledger_module().PhaseLedger(tmp_path)
+    ledger.reserve('learned', 'qualification', 'local', api_expected=False)
+    with pytest.raises(ValueError):
+        ledger.finish('local', {'status': 'completed', 'elapsed_seconds': 1.0,
+                               'usage': {'api_requests': 0, bucket: 20}})
