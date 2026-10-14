@@ -8,6 +8,7 @@ import sqlite3
 import time
 import uuid
 import fcntl
+import stat
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
@@ -22,8 +23,26 @@ def canonical_json(value: Any) -> str:
                       allow_nan=False)
 
 
+def _read_only_database_path(path):
+    """Require an existing regular database without resolving submitted symlink aliases."""
+    from .path_binding import _directory
+    path = Path(os.path.abspath(Path(path).expanduser()))
+    parent = _directory(path.parent)
+    try:
+        descriptor = os.open(path.name, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW, dir_fd=parent)
+        try:
+            if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+                raise ValueError('read-only database must be an existing regular file')
+        finally:
+            os.close(descriptor)
+    finally:
+        os.close(parent)
+    return path
+
+
 class RunStore:
     def __init__(self, path: Path | str):
+        self._read_only = False
         self.path = Path(path).expanduser().resolve()
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.lease_dir = self.path.parent / ('.' + self.path.name + '.leases')
@@ -54,9 +73,22 @@ class RunStore:
                     skill_id TEXT PRIMARY KEY, enabled INTEGER NOT NULL, dormant INTEGER NOT NULL);
             ''')
 
+    @classmethod
+    def read_only(cls, path):
+        """Inspect existing run records without schema, journal-mode or lease initialization."""
+        view = cls.__new__(cls)
+        view.path = _read_only_database_path(path)
+        view._read_only = True
+        return view
+
     @contextmanager
     def connect(self):
-        db = sqlite3.connect(self.path, timeout=10)
+        if self._read_only:
+            _read_only_database_path(self.path)
+            db = sqlite3.connect(self.path.as_uri() + '?mode=ro', uri=True, timeout=10)
+            db.execute('PRAGMA query_only=ON')
+        else:
+            db = sqlite3.connect(self.path, timeout=10)
         db.row_factory = sqlite3.Row
         db.execute('PRAGMA foreign_keys=ON')
         db.execute('PRAGMA busy_timeout=10000')
@@ -148,6 +180,8 @@ class RunStore:
         return [self.get(r['run_id']) for r in rows]
 
     def recover_interrupted(self) -> int:
+        if self._read_only:
+            raise ValueError('read-only run inspection cannot recover owners')
         with self.connect() as db:
             rows = db.execute("SELECT run_id,owner_pid FROM runs WHERE status IN ('received','running')").fetchall()
         count = 0

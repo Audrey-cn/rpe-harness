@@ -125,7 +125,7 @@ def export_version(version_id, db_path, destination, *, identity=None):
     """Write a new package with code and public digests, excluding private run context."""
     from ..contracts import CAPABILITY, CONTRACT_VERSION
     from ..evolution.candidates import _certificate
-    store = EvolutionStore(db_path)
+    store = EvolutionStore.read_only(db_path)
     version = store.get_version(version_id)
     if version['state'] not in {'validated', 'active', 'dormant', 'rolled_back'}:
         raise ValueError('export requires a locally validated non-quarantined version')

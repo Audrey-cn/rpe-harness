@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ..contracts import ExecutionPlan
+from ..tasks import plan_from_dict, verify_plan
 from ..storage import RunStore, canonical_json
 from .store import EvolutionStore, digest
 
@@ -12,8 +12,26 @@ from .store import EvolutionStore, digest
 def record_verified_feedback(run_id, db_path):
     """Accept durable, plan-bound published results, never model summaries."""
     store = EvolutionStore(db_path)
+    feedback = _inspect_feedback(run_id, RunStore(db_path))
+    return store.add_feedback(feedback) if feedback is not None else None
+
+
+def inspect_verified_feedback(run_id, db_path):
+    """Freshly verify the same evidence without caching feedback or recovering owners."""
+    runs = RunStore.read_only(db_path)
+    feedback = _inspect_feedback(run_id, runs)
+    if feedback is not None:
+        with runs.connect() as db:
+            existing = db.execute('SELECT payload_hash FROM evolution_feedback WHERE run_id=?',
+                                  (run_id,)).fetchone()
+        if existing and existing['payload_hash'] != digest(feedback):
+            raise ValueError('durable verified feedback changed')
+    return feedback
+
+
+def _inspect_feedback(run_id, runs):
     try:
-        run = RunStore(db_path).get(run_id)
+        run = runs.get(run_id)
     except KeyError:
         return None
     if (run['status'] != 'succeeded' or run['verification_ok'] != 1
@@ -24,7 +42,7 @@ def record_verified_feedback(run_id, db_path):
     if len(anchors) != 1:
         return None
     try:
-        plan = ExecutionPlan.from_dict(anchors[0]['plan'])
+        plan = plan_from_dict(anchors[0]['plan'])
         artifact, verification = run['artifact'], run['verification']
         if (anchors[0]['plan_sha256'] != plan.sha256
                 or artifact.get('plan_sha256') != plan.sha256
@@ -35,15 +53,16 @@ def record_verified_feedback(run_id, db_path):
             return None
         source, output = Path(plan.input_path), Path(plan.output_path)
         if (source.is_symlink() or output.is_symlink() or not source.is_file() or not output.is_file()
-                or digest(source.read_bytes()) != plan.input_sha256
-                or digest(output.read_bytes()) != artifact.get('sha256')
-                or artifact['sha256'] != verification.get('output_sha256')):
+                or artifact.get('sha256') != verification.get('output_sha256')):
+            return None
+        if plan.capability != 'json.normalize' and (
+                digest(source.read_bytes()) != plan.input_sha256
+                or digest(output.read_bytes()) != artifact.get('sha256')):
             return None
         # Recheck the actual published bytes using the trusted oracle, independently
         # of both the stored producer counters and its natural-language report.
-        from ..verification import verify_deduplication
         prepared = {**plan.verification_parameters(), 'staging_path': plan.output_path}
-        replay = verify_deduplication(prepared, plan=plan)
+        replay = verify_plan(prepared, plan)
         if replay.get('passed') is not True or replay['output_sha256'] != artifact['sha256']:
             return None
     except (ValueError, OSError, KeyError, TypeError):
@@ -53,7 +72,7 @@ def record_verified_feedback(run_id, db_path):
                 'output_sha256': artifact['sha256'], 'verification_sha256': digest(verification),
                 'artifact_sha256': digest(artifact), 'source': run['source'],
                 'executor_id': plan.executor_id}
-    return store.add_feedback(feedback)
+    return feedback
 
 
 def _recipe(feedback):

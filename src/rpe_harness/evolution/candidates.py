@@ -100,10 +100,11 @@ def propose_candidate(db_path, owned_root, *, component, kind, content,
 
 
 def _evidence(store, proposal):
-    from .cycle import record_verified_feedback
+    from .cycle import record_verified_feedback, inspect_verified_feedback
+    feedback = inspect_verified_feedback if store._read_only else record_verified_feedback
     evidence = {}
     for run_id in proposal['evidence_run_ids']:
-        item = record_verified_feedback(run_id, store.path)
+        item = feedback(run_id, store.path)
         if item is None or item.get('plan_sha256') is None:
             raise ValueError('candidate requires durable verified plan-bound evidence')
         evidence[run_id] = digest(item)

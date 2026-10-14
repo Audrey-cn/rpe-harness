@@ -28,17 +28,25 @@ def _identity(fd):
     return value.st_dev, value.st_ino
 
 
-def _read_descriptor(fd):
+def _read_descriptor(fd, max_bytes=None):
+    if max_bytes is not None:
+        if type(max_bytes) is not int or max_bytes < 1:
+            raise ValueError('source read budget must be a positive integer')
+        if os.fstat(fd).st_size > max_bytes:
+            raise ValueError('source exceeds its read budget')
     chunks, offset = [], 0
     while True:
-        data = os.pread(fd, 1024 * 1024, offset)
+        amount = min(1024 * 1024, max_bytes + 1 - offset) if max_bytes is not None else 1024 * 1024
+        data = os.pread(fd, amount, offset)
         if not data:
             return b''.join(chunks)
+        if max_bytes is not None and offset + len(data) > max_bytes:
+            raise ValueError('source exceeds its read budget')
         chunks.append(data)
         offset += len(data)
 
 
-def source_digest_nofollow(path):
+def source_digest_nofollow(path, max_bytes=None):
     """Broker receipt probing must not read through a raced symlink either."""
     parent = _directory(Path(path).parent)
     try:
@@ -46,7 +54,7 @@ def source_digest_nofollow(path):
         try:
             if not stat.S_ISREG(os.fstat(fd).st_mode):
                 raise ValueError('bound input must be a regular file')
-            return hashlib.sha256(_read_descriptor(fd)).hexdigest()
+            return hashlib.sha256(_read_descriptor(fd, max_bytes)).hexdigest()
         finally:
             os.close(fd)
     finally:
@@ -120,7 +128,7 @@ class BoundExecution:
                 raise ValueError('broker requires staging and output on the same filesystem')
             result = cls(source, output, source_fd, output_fd, staging_root, expected_sha)
             result.check_paths()
-            result.read_source()
+            result.read_source(max_bytes=1048576 if payload.get('capability') == 'json.normalize' else None)
             descriptors.remove(source_fd)
             descriptors.remove(output_fd)
             return result
@@ -161,8 +169,8 @@ class BoundExecution:
             return False
         return True
 
-    def read_source(self):
-        data = _read_descriptor(self.source_fd)
+    def read_source(self, max_bytes=None):
+        data = _read_descriptor(self.source_fd, max_bytes)
         if hashlib.sha256(data).hexdigest() != self.expected_sha:
             raise ValueError('bound input differs from the durable receipt')
         return data
@@ -216,10 +224,27 @@ def inherited_binding():
         binding.close()
 
 
-def read_source(path):
+def read_regular_file(path, *, max_bytes):
+    """Bound a nofollow file read without interpreting it as the broker source."""
+    parent = _directory(Path(path).parent)
+    try:
+        fd = os.open(Path(path).name, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW, dir_fd=parent)
+        try:
+            if not stat.S_ISREG(os.fstat(fd).st_mode):
+                raise ValueError('file must be regular')
+            return _read_descriptor(fd, max_bytes)
+        finally:
+            os.close(fd)
+    finally:
+        os.close(parent)
+
+
+def read_source(path, max_bytes=None):
     binding = current_binding()
     if binding is None:
-        return Path(path).read_bytes()
+        if max_bytes is None:
+            return Path(path).read_bytes()
+        return read_regular_file(path, max_bytes=max_bytes)
     if Path(path) != binding.source:
         raise ValueError('source differs from broker binding')
-    return binding.read_source()
+    return binding.read_source(max_bytes)

@@ -209,7 +209,7 @@ def _workspace_path(value: Any, workspace: Path) -> str:
 
 
 _TASK_PARAMETERS = frozenset({'input_path','output_path','key_columns','goal','constraints',
-                             'sheet','keep','encoding','delimiter'})
+                             'sheet','keep','encoding','delimiter','capability','style'})
 
 
 class TaskArgumentsError(ValueError):
@@ -224,16 +224,18 @@ def _prepare_request(args: dict[str, Any], workspace: Path, session_id: str | No
     if not isinstance(args, dict):
         raise TaskArgumentsError('arguments must be a JSON object', ['arguments'])
     payload = args.get('request')
+    if 'request' in args and set(args) != {'request'}:
+        raise TaskArgumentsError('versioned request cannot include flat task parameters', set(args)-{'request'})
     if 'request' not in args:
         unknown = set(args) - _TASK_PARAMETERS
         if unknown:
             raise TaskArgumentsError('unknown task parameter(s): '+', '.join(sorted(unknown))+
                 '; allowed parameters: '+', '.join(sorted(_TASK_PARAMETERS)), unknown)
         payload = {'schema_version':2, 'event_id':'tool-'+uuid.uuid4().hex,
-                   'capability':'tabular.deduplicate', 'goal':args.get('goal'),
+                   'capability':args.get('capability','tabular.deduplicate'), 'goal':args.get('goal'),
                    'constraints':args.get('constraints',[]),
                    'execution':{key:value for key,value in args.items()
-                                if key not in {'goal','constraints'}}}
+                                if key not in {'goal','constraints','capability'}}}
     if not isinstance(payload, dict):
         raise TaskArgumentsError('request must be a versioned JSON object', ['request'])
     try:
@@ -257,6 +259,7 @@ def _prepare_request(args: dict[str, Any], workspace: Path, session_id: str | No
         if not isinstance(value,str) or not value or '\x00' in value:
             raise TaskArgumentsError(key+' must be a nonempty path string without NUL', [key])
         execution[key] = _workspace_path(value, workspace)
+    _normalize_contract(request)
     if session_id:
         request['session_id'] = session_id
         if isinstance(request.get('state'), dict):
@@ -297,16 +300,67 @@ def _execution_identity(payload):
     return copied
 
 
+def _normalize_contract(payload, workspace=None):
+    """Keep admitted and recorded execution identities identical, without file reads."""
+    if not isinstance(payload, dict) or type(payload.get('schema_version')) is not int:
+        raise TaskArgumentsError('versioned request required', ['schema_version'])
+    version = payload['schema_version']
+    if version not in (1, 2):
+        raise TaskArgumentsError('schema_version must be 1 or 2', ['schema_version'])
+    state = payload.get('state') if version == 1 else payload
+    if not isinstance(state, dict):
+        raise TaskArgumentsError('state must be a JSON object', ['state'])
+    if version == 2:
+        unknown = set(payload) - {'schema_version','event_id','capability','contract_version',
+            'goal','constraints','execution','source_ref','session_id','task_type','input_format'}
+        if unknown:
+            raise TaskArgumentsError('unknown request fields: '+', '.join(sorted(unknown)), unknown)
+    capability = state.get('required_capability') if version == 1 else state.get('capability')
+    if capability not in ('tabular.deduplicate','json.normalize'):
+        raise TaskArgumentsError('capability must be tabular.deduplicate or json.normalize', ['capability'])
+    if capability == 'json.normalize' and version != 2:
+        raise TaskArgumentsError('json.normalize requires schema_version 2', ['schema_version'])
+    contract_version = payload.get('contract_version', 1)
+    if type(contract_version) is not int or contract_version != 1:
+        raise TaskArgumentsError('contract_version must be 1', ['contract_version'])
+    execution = payload.get('execution')
+    if not isinstance(execution, dict):
+        raise TaskArgumentsError('execution must be a JSON object', ['execution'])
+    allowed = ({'input_path','output_path','style'} if capability == 'json.normalize' else
+               {'input_path','output_path','key_columns','sheet','keep','encoding','delimiter'})
+    unknown = set(execution) - allowed
+    if unknown:
+        raise TaskArgumentsError('unknown execution parameter(s): '+', '.join(sorted(unknown)), unknown)
+    constraints = state.get('constraints', [])
+    if not isinstance(constraints, list) or any(not isinstance(c,str) for c in constraints):
+        raise TaskArgumentsError('constraints must be an array of strings', ['constraints'])
+    if capability == 'json.normalize':
+        if set(constraints) - {'preserve_original','preserve_order'}:
+            raise TaskArgumentsError('json.normalize constraints must be preserve_original or preserve_order', ['constraints'])
+        if execution.get('style') not in ('pretty','minify'):
+            raise TaskArgumentsError('json.normalize requires style pretty or minify', ['style'])
+        normalized = {'style':execution['style']}
+    else:
+        columns = execution.get('key_columns')
+        if (not isinstance(columns,list) or not columns or
+                any(not isinstance(c,str) or not c.strip() for c in columns) or
+                len(set(columns)) != len(columns)):
+            raise TaskArgumentsError('tabular.deduplicate requires unique nonempty key_columns', ['key_columns'])
+        normalized = {key:execution.get(key,default) for key,default in
+            [('keep','first'),('encoding','utf-8-sig'),('delimiter',','),('sheet',None)]}
+        normalized['key_columns'] = columns
+    for key in ('input_path','output_path'):
+        value = execution.get(key)
+        if not isinstance(value,str) or not value or '\x00' in value:
+            raise TaskArgumentsError(key+' must be a nonempty path string without NUL', [key])
+        normalized[key] = _workspace_path(value,Path(workspace).resolve()) if workspace is not None else value
+    return {'capability':capability,'contract_version':contract_version,
+            'constraints':sorted(set(constraints)),'execution':normalized}
+
+
 def _recorded_contract(payload):
     """Read original normalized semantics without consulting current file facts."""
-    state=payload['state'] if payload['schema_version']==1 else payload
-    execution=payload['execution']
-    params={key:execution.get(key,default) for key,default in
-            [('keep','first'),('encoding','utf-8-sig'),('delimiter',','),('sheet',None)]}
-    params.update({key:execution[key] for key in ('input_path','output_path','key_columns')})
-    return {'capability':state.get('required_capability') if payload['schema_version']==1 else state.get('capability'),
-            'contract_version':payload.get('contract_version',1),
-            'constraints':sorted(set(state.get('constraints',[]))),'execution':params}
+    return _normalize_contract(payload)
 
 
 def _strict_replay_payload(payload, contract, store, workspace):
@@ -679,6 +733,8 @@ def register(ctx) -> None:
                         task_attempt=attempt,admission_error=admission_error,replay_result=replay_result)
 
     properties = {
+        'capability':{'type':'string','enum':['tabular.deduplicate','json.normalize']},
+        'style':{'type':'string','enum':['pretty','minify']},
         'input_path':{'type':'string','minLength':1},
         'output_path':{'type':'string','minLength':1},
         'key_columns':{'type':'array','minItems':1,'items':{'type':'string','minLength':1}},
@@ -690,13 +746,15 @@ def register(ctx) -> None:
     }
     ctx.register_tool(name='rpe_task', toolset='rpe_harness', handler=handle, schema={
         'name': 'rpe_task',
-        'description':'Deduplicate by explicit key columns, keeping first records and original order. '
-                      'Pass input_path, a new output_path, key_columns and a short goal. Paths are '
-                      'workspace relative. CSV/XLSX outputs are independently verified; unsupported '
-                      'formats and unsafe formula dependencies are durably rejected. For XLSX name '
-                      'the sheet and use preserve_formulas when required; do not use that constraint '
-                      'for CSV. The returned durable status is authoritative.',
+        'description':'Execute an explicit capability with independently verified output. '
+                      'Use capability json.normalize with required style pretty or minify to change '
+                      'only JSON whitespace; do not pass tabular options. Missing capability selects '
+                      'tabular.deduplicate, requiring key_columns and keeping first records in order. '
+                      'Pass input_path, a new output_path and a short goal; paths are workspace relative. '
+                      'For XLSX name the sheet and use preserve_formulas when required. '
+                      'Unsupported formats and unsafe dependencies are durably rejected. '
+                      'The returned durable status is authoritative.',
         'parameters':{'type':'object','properties':properties,
-                      'required':['input_path','output_path','key_columns','goal'],
+                      'required':['input_path','output_path','goal'],
                       'additionalProperties':False},
     })

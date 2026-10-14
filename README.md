@@ -1,10 +1,12 @@
-# RPE-Harness 1.3
+# RPE-Harness 1.4
 
 本地能力路由与可验证任务执行器。1.0 支持 CSV/XLSX 按明确关键列去重，独立检查产物、保留原文件、禁止覆盖输出，并把事件、执行阶段、验证和结果持久保存到 SQLite。
 
 1.2 增加明确能力契约、冻结执行计划、Hermes 强制工具入口，以及持久反馈、升级提案、自动候选验证和回滚。现有 CSV 契约的配方与 Python 执行器候选可自动激活；更广的核心代码与新能力升级保存为提案，等待相应可信验收集。持续学习收益与因果图收益仍需独立验证。
 
 1.3 将阿卡夏的能力包、内容寻址、本地 Registry 获取与来源签名纳入同一产品。执行、独立验证、反馈、激活与回滚仍由 RPE 统一管理。旧 Protocol 不作为运行依赖，旧 Registry 继续作为资源仓；导入的旧基因默认只供发现。运行依赖仍仅 openpyxl，资产与来源层使用标准库。融合设计、迁移边界和命令见 [能力资产与融合](docs/fusion.md)，开发进度见 [todo](docs/superpowers/plans/2026-10-14-akasha-fusion.md)。
+
+1.4 增加 `json.normalize/v1` 明确契约、双签名本地 Registry 发布包与离线发布前验收。JSON 和已有 CSV/XLSX 共用持久执行、独立验证、无覆盖发布、恢复与反馈；JSON 候选仍需专门可信验收集，不能借 CSV 证书自动激活。版本计划见 [1.4 todo](docs/superpowers/plans/2026-10-14-rpe-v14.md)，本地发布包命令见 [Registry 发布前验收](docs/registry-prepublish.md)。
 
 ## 本机快速使用
 
@@ -16,7 +18,7 @@ cd /Users/audrey/项目/rpe-harness
 ./scripts/rpe benchmark --report /tmp/rpe-basic-validation.json
 ~~~
 
-复制 `examples/deduplicate-v2.json`，将输入、输出改为真实绝对路径；输出文件必须不存在。原 V1 示例仍兼容。然后执行和查询：
+复制 `examples/deduplicate-v2.json` 或 [JSON 示例](examples/json-normalize-v2.json)，将输入、输出改为真实绝对路径；输出文件必须不存在。原 tabular V1 示例仍兼容，JSON 要求 V2。然后执行和查询：
 
 ~~~sh
 ./scripts/rpe run --request request.json --db /absolute/path/runs.sqlite
@@ -41,7 +43,7 @@ python3.12 -m venv .venv
 PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider
 ~~~
 
-wheel 自带两个内置执行能力，不依赖源码目录外的 `data/`。需要使用本机技能索引时显式追加 `--data-dir /Users/audrey/项目/rpe-harness/data`；这些外部技能只供路由推荐，不能自动执行其 SKILL.md 或脚本。
+wheel 自带 CSV 去重、XLSX 去重和 JSON 空白规范化三个内置执行器，不依赖源码目录外的 `data/`。需要使用本机技能索引时显式追加 `--data-dir /Users/audrey/项目/rpe-harness/data`；这些外部技能只供路由推荐，不能自动执行其 SKILL.md 或脚本。
 
 ## 文件语义
 
@@ -50,6 +52,21 @@ wheel 自带两个内置执行能力，不依赖源码目录外的 `data/`。需
 - XLSX 保留工作表的原行坐标，清空重复记录的单元格内容，因此可能留下空行；保留记录、公式及受支持样式保持原位置。可指定 sheet；复杂对象和无法证明安全的公式明确拒绝。
 - 独立验证器重新读输入与暂存产物；检查第一条记录、非关键列、顺序、公式及输入 hash。验证通过后以独占原子操作发布，既有文件和 broken symlink 均不得覆盖。
 - openpyxl 不计算公式。验证证明的是公式结构与引用保留，不能证明 Excel 计算值。支持的具体公式/工作簿边界见执行器错误信息与 [设计](docs/superpowers/specs/2026-10-13-rpe-v1-design.md)。
+
+## JSON 契约
+
+请求显式声明 `capability="json.normalize"`、`schema_version=2`、`contract_version=1`。`execution` 只接受绝对 `input_path`、新 `output_path` 和必填 `style`；输入输出扩展名均须为 `.json`。路径各级禁止符号链接，请使用规范绝对路径，macOS 临时路径可使用 `/private/var/...`。
+
+| 参数或边界 | 行为 |
+|---|---|
+| `style="pretty"` | 固定两空格缩进、LF；空对象/数组同行；恰好一个末尾 LF |
+| `style="minify"` | 移除字符串外空白；恰好一个末尾 LF |
+| 词法保留 | 对象成员/数组顺序、字符串转义和数字 token 原样保留；`1`、`1.0`、`1e0`、`-0` 不互换 |
+| 固定预算 | 输入 ≤1 MiB、输出 ≤16 MiB、容器深度 ≤64、token 数 ≤100000、单个数字 token ≤256 字符 |
+| 输入 | 严格 UTF-8、无 BOM；允许对象、数组、字符串、数字、布尔、null 顶层值 |
+| 拒绝 | 重复解码后对象键、NaN/Infinity、非法 UTF-8/语法、孤立代理码位、尾随内容、超预算、覆盖输出 |
+
+预算不能由请求扩大，token 包括结构标点。可选 `constraints` 仅支持 `preserve_original`、`preserve_order`；即使不写 constraints，词法和原输入保留仍是强制行为。独立 oracle 重新读取源与产物，检查非空白 token、精确样式、原 hash 和执行/验证修订；准入、发布、恢复和反馈读取也受对应字节预算限制。JSON 返回 `input_bytes`、`output_bytes`、`root_type` 等指标，不产生表格行计数。它只处理空白，不排序键、不转码字符串、不转换数值，也不提供路径提取或 schema 修复。完整设计见 [1.4 设计](docs/superpowers/specs/2026-10-14-rpe-v14-design.md)。
 
 ## 服务与 Agent 旁路
 
@@ -84,7 +101,7 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
   --db /absolute/path/runs.sqlite
 ~~~
 
-默认严格入口直接暴露 `rpe_task`，通过官方 middleware 发送指定工具选择，获得匹配的持久结果后才允许总结。执行准入还会阻止 `none` 或不完整策略的调用，以及同轮终态后的新任务；有效原调用只读重放，新 turn 可重新进入。工具使用输入/输出路径、关键列和目标等业务参数，内部生成 V2 请求。路径必须位于指定工作区，禁止符号链接。`--request` 是可选的固定契约锚，能检测模型改变关键列、路径和选项；不提供时仍验证产物符合模型抽取的契约，但自然语言意图抽取需业务验收。`--entry-mode optional` 保留可选工具模式用于对照，不会自动降级严格策略。
+默认严格入口直接暴露 `rpe_task`，通过官方 middleware 发送指定工具选择，获得匹配的持久结果后才允许总结。执行准入还会阻止 `none` 或不完整策略的调用，以及同轮终态后的新任务；有效原调用只读重放，新 turn 可重新进入。工具使用输入/输出路径和目标等业务参数，内部生成 V2 请求。JSON 显式传 `capability="json.normalize"` 和 `style`；不传 capability 按原 tabular 契约处理，必须传 key_columns。路径必须位于指定工作区，禁止符号链接。`--request` 是可选的固定契约锚，能检测模型改变关键列、JSON style、路径和选项；不提供时仍验证产物符合模型抽取的契约，但自然语言意图抽取需业务验收。`--entry-mode optional` 保留可选工具模式用于对照，不会自动降级严格策略。
 
 集成模式的启动器父进程按次创建带随机认证凭据的回环执行入口，在 Hermes 沙箱之外启动固定 Harness CLI。Hermes 保留原文件沙箱；CSV 候选由外部 Harness 子进程施加自己的单层沙箱，避免 macOS 拒绝重复 `sandbox_apply`。入口核对固定工作区、真实调用 ID、持久 receipt、契约和当前输入 hash；它不接受任意 shell 或 Python 程序。执行有超时，退出时关闭入口并回收执行进程组和登记的后代，不安装常驻服务或调度任务。严格准入与最终 artifact gate 仍独立检查真实模型策略、调用链和产物。
 
@@ -113,6 +130,8 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 代码候选通过 `evolution propose --candidate candidate.py --component executor --kind csv_executor --evidence-run-id RUN_ID --owned-root ... --db ...` 提交；验证和激活必须有非空、仍可复查的持久已验证运行证据，并通过独立的 CSV 验收集。1.2 的实际代码生成演示绑定了两次 CSV 运行，这不是 API 强制的次数门槛。随后 `evolution validate PROPOSAL_ID`、`evolution apply PROPOSAL_ID`、`evolution rollback VERSION_ID` 均接受 `--db`。代码 ABI 为 `prepare(plan: dict, staging_path: str) -> None`，只产生暂存文件，不能修改源文件或直接发布。
 
 候选生成器与验收器分离；默认周期无需模型，也支持注入本机 Agent 的提案。代码候选在 macOS 子进程沙箱内验证，限制网络、文件写入、派生进程、CPU 时间和输出体积；生产任务仍通过原计划的独立验证。内存使用标准库 ctypes 调用 Darwin libproc 读取 RSS，以 128 MiB 软阈值、20ms 轮询监督；不可观测结果失败关闭，仅目标进程已消失时返回空值。它不能保证瞬时分配峰值，不能描述为任意恶意代码的完整资源隔离。候选失效会隔离并回退内置执行器，原版本快照可回滚。休眠、隔离经验保留索引和来源。
+
+JSON 的已验证文件结果可成为持久反馈，但不会转成 CSV 配方。JSON 执行器升级只能保存提案，状态为待专门外部验证；本轮 Registry 可执行发布包 ABI 仍仅支持已验证 CSV 执行器/配方。跨输入、进程重启、坏候选隔离、原计划回退、回滚及休眠查找序列只证明这些机制可观察地工作，不代表已经证明长期学习或 token 节省。
 
 ## 评测和开发路线
 

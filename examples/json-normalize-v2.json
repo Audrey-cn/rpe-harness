@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "event_id": "json-normalize-001",
+  "capability": "json.normalize",
+  "contract_version": 1,
+  "goal": "只调整JSON空白，保留成员顺序及字符串和数字原始词法",
+  "constraints": ["preserve_original", "preserve_order"],
+  "execution": {
+    "input_path": "/absolute/path/input.json",
+    "output_path": "/absolute/path/output.json",
+    "style": "pretty"
+  }
+}

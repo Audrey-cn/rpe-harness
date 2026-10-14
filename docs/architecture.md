@@ -1,6 +1,8 @@
-# 架构设计（1.3 融合）
+# 架构设计（1.4 明确能力契约）
 
 1.3 按 [融合设计](fusion.md) 选择性吸收阿卡夏资产封装、内容寻址、签名与本地目录获取。RPE 是唯一执行/验收/反馈/激活权威；旧 Registry 是资源仓，旧 Protocol 是历史参考。新资产层不引入旧运行时、第二套 GeneLedger 或额外运行依赖。
+
+1.4 在这个边界内增加 JSON 业务契约、Registry 本地发行包及发布前验收。旧 CSV/XLSX 持久计划形状保持原样；新 JSON 计划使用独立 DTO，经统一分派进入同一运行状态机。版本设计见 [1.4 spec](superpowers/specs/2026-10-14-rpe-v14-design.md)。
 
 ## 核心问题
 
@@ -58,7 +60,23 @@ RPE-Harness 是独立的能力与执行层。模型负责理解和探索，Harne
 2. 每个状态可追溯到原始事件（source_ref）
 3. 下游置信度不足时可请求补充上下文
 
-当前正式执行协议使用 `schema_version=2`、`event_id`、`capability="tabular.deduplicate"`、`goal`、`constraints` 和 `execution`，格式由实际文件探测。V1 保留兼容校验；历史事件按持久记录重放。MCSI 是推荐和交流状态，不能替代文件执行契约。
+当前正式执行协议使用 `schema_version=2`、`event_id`、显式 `capability`、`goal`、`constraints` 和 `execution`，格式由实际文件探测。注册业务契约为 tabular.deduplicate/v1 与 json.normalize/v1；tabular V1 保留兼容校验，JSON 仅支持 V2。历史事件按持久记录重放。MCSI 是推荐和交流状态，不能替代文件执行契约。
+
+## 1.4 JSON 与统一执行权威
+
+`tasks.py` 精确分派请求、持久计划、producer、oracle、修订检查及 artifact 指标；分类器和技能 metadata 不参与授予执行权限。`JsonNormalizePlan` 冻结 .json 源/新目标的绝对路径、输入 hash、style、constraints、契约和实际加载的 producer/oracle 修订。恢复必须匹配这个原计划；goal/source_ref/session_id 是 metadata，不能改变执行语义。
+
+JSON execution 只包含 input_path/output_path/style，style 为必填 pretty|minify。producer 使用自己的有界 token 语法与排版；oracle 不导入 producer 的 tokenizer/formatter，用独立语法解码、词法跨度和空白间隔检查原 token 与精确样式，再封存 output hash 和 plan hash。它保留数字/字符串原 token 与对象/数组顺序，不使用浮点重编码，也不把 Python bool/int 的数值相等当成类型保留。pretty 固定两空格、空容器同行；两种样式恰好一个末尾 LF。
+
+产品契约固定源 1 MiB、产物 16 MiB、深度 64、token 100000、数字 token 256 字符。准入、描述符读取、发布前 hash、恢复和反馈都必须在读取时执行字节预算。输入严格 UTF-8 无 BOM；拒绝重复解码后键、NaN/Infinity、孤立代理码位、尾随内容、非法语法和超预算，允许所有 JSON 顶层类型。这是保守的产品输入范围。JSON artifact 保存字节指标与 root_type，不构造表格行数；验收后仍走已有暂存 inode 所有权检查和无覆盖发布。
+
+JSON 已发布产物经重新读取和独立 oracle 验证后进入反馈，但不进入 CSV 配方生成分支。JSON 候选可形成提案，不能通过 CSV fixtures、证书或当前 CSV sandbox ABI 自动激活。跨任务/重启的固定真值序列记录实际 executor/version、坏产物的 oracle 拒绝、quarantine、同一计划下的内置回退、回滚及休眠寻址；这类确定性机制证据不证明长期学习收益。
+
+## 1.4 Registry 发布前治理
+
+发行包是 catalog.json、audit.json 和 packages/<asset_id>/ 的本地新目录，不修改旧 .akashic_index.json。creator 对 capability-package 签名，registry 对 registry-index 签名；接收方显式提供本地 keyring，并按当前角色、用途和撤销状态重新检查。构建只导出当前修订、证据仍可复查的已验证 CSV 执行器/配方；审计文件只保留公共摘要，不携带私钥、运行正文、运行 ID 或绝对状态路径。
+
+integrity 检查清单、签名、各文件字节摘要、当前修订、文件集合和审计绑定。它确认发行者声明，报告 independent_acceptance=not_run；acceptance 才在显式 owned scratch 内重跑接收方独立 fixtures。含 Python 执行器的沙箱验收要求 macOS 能力可用，缺能力或执行失败关闭。两种模式都不激活、不更新 keyring、不上传或发布远程内容。可调用独立 prepublish 模块接入 CI；参数和可固定 wheel hash 的例子见 [发布前验收](registry-prepublish.md)。
 
 ## 分层路由
 

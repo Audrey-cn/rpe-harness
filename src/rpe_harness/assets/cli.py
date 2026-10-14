@@ -37,6 +37,19 @@ def register_assets(commands):
     export.add_argument('--db')
     export.add_argument('--destination', type=Path, required=True)
     export.add_argument('--identity', type=Path)
+    build = actions.add_parser('registry-build', help='build a local signed release bundle')
+    build.add_argument('--db', type=Path, required=True)
+    build.add_argument('--version-id', action='append', required=True)
+    build.add_argument('--destination', type=Path, required=True)
+    build.add_argument('--creator-identity', type=Path, required=True)
+    build.add_argument('--registry-identity', type=Path, required=True)
+    build.add_argument('--keyring', type=Path, required=True)
+    validate = actions.add_parser('registry-validate', help='validate without activation or publishing')
+    validate.add_argument('--bundle', type=Path, required=True)
+    validate.add_argument('--keyring', type=Path, required=True)
+    validate.add_argument('--mode', choices=('integrity', 'acceptance'), default='integrity')
+    validate.add_argument('--owned-root', type=Path)
+    validate.add_argument('--report', type=Path)
 
 
 def handle_assets(args):
@@ -57,6 +70,19 @@ def handle_assets(args):
         return result
     if action == 'registry-list':
         return {'assets': read_registry(args.registry), 'purpose': 'discovery_only'}
+    if action == 'registry-validate':
+        from .catalog import validate_release_bundle
+        result = validate_release_bundle(args.bundle, keyring=args.keyring,
+            mode=args.mode, owned_root=args.owned_root)
+        if args.report:
+            from .prepublish import write_validation_report
+            write_validation_report(args.report, result, args.bundle)
+        return result
+    if action == 'registry-build':
+        from .catalog import build_release_bundle
+        return build_release_bundle(args.version_id, args.db, args.destination,
+            creator_identity=args.creator_identity, registry_identity=args.registry_identity,
+            keyring=args.keyring)
     db_path = Path(args.db) if args.db else default_db_path()
     if action == 'import':
         return AssetStore(db_path, args.owned_root).import_package(args.package)

@@ -356,9 +356,15 @@ def publish_output(prepared: dict[str, Any], plan: Any = None) -> None:
     if source != ownership.input_path or output != ownership.output_path:
         raise ValueError("execution paths changed after preparation")
     verified_hash = prepared.get("_verified_output_sha256")
-    if not verified_hash or _digest(staging.read_bytes()) != verified_hash:
+    json_task = getattr(plan, 'capability', None) == 'json.normalize' or prepared.get('format') == 'json'
+    if json_task:
+        from .path_binding import read_regular_file
+        staged_bytes = read_regular_file(staging, max_bytes=16 * 1024 * 1024)
+    else:
+        staged_bytes = staging.read_bytes()
+    if not verified_hash or _digest(staged_bytes) != verified_hash:
         raise ValueError("staging artifact is unverified or changed after verification")
-    if _digest(read_source(source)) != ownership.input_sha256:
+    if _digest(read_source(source, max_bytes=1024 * 1024 if json_task else None)) != ownership.input_sha256:
         raise ValueError("input changed after preparation")
     if plan is not None and ownership.input_sha256 != plan.input_sha256:
         raise ValueError('prepared source does not match original plan input')

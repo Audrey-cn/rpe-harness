@@ -51,7 +51,8 @@ def _validated_request(body, database, workspace):
     if payload != body['payload']:
         raise PermissionError('submitted paths and session must already be canonical')
     contract_sha = digest_json(contract_for(payload, workspace))
-    input_sha = source_digest_nofollow(payload['execution']['input_path'])
+    input_sha = source_digest_nofollow(payload['execution']['input_path'],
+        max_bytes=1048576 if payload.get('capability') == 'json.normalize' else None)
     if native.get('contract_sha256') != contract_sha or native.get('input_sha256') != input_sha:
         raise PermissionError('fresh execution contract differs from receipt')
     with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as db:

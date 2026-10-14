@@ -9,7 +9,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
-from .contracts import ExecutionPlan, EXECUTOR_REVISION, VERIFIER_REVISION
+from .contracts import ExecutionPlan
+from .tasks import plan_from_dict, current_plan_revisions
 
 
 def _initialize(store) -> None:
@@ -61,10 +62,12 @@ def _saved_plan(original: dict) -> ExecutionPlan:
     evidence = [step['evidence'] for step in original['steps'] if step['stage'] == 'plan']
     if len(evidence) != 1:
         raise ValueError('original immutable plan is unavailable or ambiguous')
-    plan = ExecutionPlan.from_dict(evidence[0].get('plan'))
+    plan = plan_from_dict(evidence[0].get('plan'))
     if evidence[0].get('plan_sha256') != plan.sha256:
         raise ValueError('original plan hash does not match persisted evidence')
-    if plan.executor_revision != EXECUTOR_REVISION or plan.verifier_revision != VERIFIER_REVISION:
+    revisions = current_plan_revisions(plan)
+    if (plan.executor_revision != revisions['executor_revision']
+            or plan.verifier_revision != revisions['verifier_revision']):
         raise ValueError('original executor or verifier revision is no longer loaded')
     return plan
 
@@ -77,7 +80,13 @@ def _guards(original: dict, plan: ExecutionPlan) -> None:
     source, output = Path(plan.input_path), Path(plan.output_path)
     if not source.is_file() or source.is_symlink():
         raise ValueError('original input is no longer a regular file')
-    if hashlib.sha256(source.read_bytes()).hexdigest() != plan.input_sha256:
+    if plan.capability == 'json.normalize':
+        from .json_contract import MAX_INPUT_BYTES
+        from .path_binding import read_source
+        raw = read_source(source, max_bytes=MAX_INPUT_BYTES)
+    else:
+        raw = source.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != plan.input_sha256:
         raise ValueError('original input changed; recovery cannot reinterpret it')
     if os.path.lexists(output):
         raise ValueError('output already exists; automatic recovery cannot overwrite it')

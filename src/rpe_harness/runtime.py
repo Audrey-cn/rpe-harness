@@ -13,6 +13,7 @@ from .causal_graph import CausalGraph
 from .mcsi import CausalState, TaskType
 from .storage import RunStore, canonical_json
 from .contracts import ExecutionPlan
+from .tasks import plan_from_request, prepare_plan, verify_plan, artifact_metrics
 
 BUILTIN_IDS = {'csv': 'builtin/csv-deduplicate', 'xlsx': 'builtin/xlsx-deduplicate'}
 SUPPORTED_CONSTRAINTS = {'preserve_original', 'preserve_order', 'preserve_formulas'}
@@ -76,6 +77,11 @@ class HarnessRuntime:
                     input_formats=[fmt], tags=['tabular.deduplicate'],
                     capabilities=['tabular.deduplicate'], priority=10,
                     preconditions=['file_exists', 'output_available']))
+            router.register_skill(SkillEntry('builtin/json-normalize', 'JSON whitespace normalization',
+                '严格校验JSON，仅调整字符串外空白并保留数字和字符串词法',
+                task_types=[TaskType.DATA_PROCESSING, TaskType.FILE_OPERATION],
+                input_formats=['json'], tags=['json.normalize'], capabilities=['json.normalize'],
+                priority=10, preconditions=['file_exists', 'output_available']))
             for sid, item in self.store.skill_states().items():
                 if sid in router.skills:
                     router.skills[sid].enabled = item['enabled']
@@ -177,8 +183,7 @@ class HarnessRuntime:
 
     def run(self, payload: dict, source: str = 'local', *,
             expected_plan: ExecutionPlan | None = None, retry_of: str | None = None) -> dict:
-        from .execution import prepare_deduplication, publish_output, cleanup_staging
-        from .verification import verify_deduplication
+        from .execution import publish_output, cleanup_staging
         from .evolution.candidates import prepare_candidate, quarantine_candidate
         if not isinstance(payload, dict):
             raise ValueError('request must be a JSON object')
@@ -196,9 +201,9 @@ class HarnessRuntime:
         try:
             if payload.get('schema_version') == 1:
                 state, _ = self._validate_request(payload)
-                plan = ExecutionPlan.from_request(payload)
+                plan = plan_from_request(payload)
             else:
-                plan = ExecutionPlan.from_request(payload)
+                plan = plan_from_request(payload)
                 state = CausalState(task_type=TaskType.parse(payload.get('task_type')), goal=plan.goal,
                     required_capability=plan.capability, input_format=plan.input_format,
                     constraints=list(plan.constraints), facts=['file_exists', 'output_available'],
@@ -221,10 +226,10 @@ class HarnessRuntime:
             builtin = {'kind': 'builtin', 'executor_id': plan.executor_id,
                        'code_sha256': plan.executor_revision, 'plan_sha256': plan.sha256}
             actual = dict(builtin)
-            prepared = prepare_candidate(plan, self.store.path)
+            prepared = prepare_candidate(plan, self.store.path) if plan.capability == 'tabular.deduplicate' else None
             candidate_version = None
             if prepared is None:
-                prepared = prepare_deduplication(**plan.execution_kwargs())
+                prepared = prepare_plan(plan)
             elif prepared.get('candidate_version_id'):
                 candidate_version = prepared['candidate_version_id']
                 actual.update(kind='candidate', candidate_version_id=candidate_version,
@@ -239,7 +244,7 @@ class HarnessRuntime:
             stage = 'verify'
             self.store.step(run_id, stage, {'plan_sha256': plan.sha256})
             try:
-                verification = verify_deduplication(prepared, plan=plan)
+                verification = verify_plan(prepared, plan)
             except (ValueError, TypeError, OSError, KeyError) as exc:
                 if candidate_version is None:
                     raise
@@ -259,10 +264,10 @@ class HarnessRuntime:
                 stage = 'execute'
                 self.store.step(run_id, stage, {'plan_sha256': plan.sha256,
                                               'actual_executor': actual, 'fallback': True})
-                prepared = prepare_deduplication(**plan.execution_kwargs())
+                prepared = prepare_plan(plan)
                 stage = 'verify'
                 self.store.step(run_id, stage, {'plan_sha256': plan.sha256, 'fallback': True})
-                verification = verify_deduplication(prepared, plan=plan)
+                verification = verify_plan(prepared, plan)
             if verification.get('passed') is not True:
                 raise RuntimeError('independent artifact verification failed')
             stage = 'publish'
@@ -274,8 +279,7 @@ class HarnessRuntime:
                         'format': plan.input_format, 'published': True, 'plan_sha256': plan.sha256,
                         'input_sha256': plan.input_sha256,
                         'actual_executor': actual,
-                        'input_rows': verification['input_rows'], 'output_rows': verification['output_rows'],
-                        'removed_rows': verification['removed_rows']}
+                        **artifact_metrics(verification)}
             self.store.step(run_id, 'complete', artifact)
             answer = self.store.finish(run_id, 'succeeded', verification=verification, artifact=artifact)
         except Exception as exc:

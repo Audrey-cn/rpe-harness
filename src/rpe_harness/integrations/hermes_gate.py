@@ -20,33 +20,18 @@ def digest_json(value):
 
 def contract_for(payload, workspace):
     """Normalize execution semantics, excluding host identity and goal prose."""
-    from .hermes import _workspace_path
-    if not isinstance(payload, dict) or type(payload.get('schema_version')) is not int:
-        raise ValueError('versioned request required')
-    version = payload['schema_version']
-    if version not in (1, 2):
-        raise ValueError('unsupported request version')
-    state = payload.get('state') if version == 1 else payload
-    if not isinstance(state, dict) or not isinstance(payload.get('execution'), dict):
-        raise ValueError('execution contract required')
-    capability = state.get('required_capability') if version == 1 else state.get('capability')
-    execution = payload['execution']
-    normalized = {key: execution.get(key, default) for key, default in
-                  [('keep', 'first'), ('encoding', 'utf-8-sig'), ('delimiter', ','), ('sheet', None)]}
-    normalized.update({key: _workspace_path(execution.get(key), Path(workspace).resolve())
-                       for key in ('input_path', 'output_path')})
-    normalized['key_columns'] = execution.get('key_columns')
-    constraints = state.get('constraints', [])
-    if not isinstance(constraints, list) or any(not isinstance(c, str) for c in constraints):
-        raise ValueError('constraints must be strings')
-    return {'capability': capability, 'contract_version':payload.get('contract_version',1),
-            'constraints': sorted(set(constraints)), 'execution': normalized}
+    from .hermes import _normalize_contract
+    return _normalize_contract(payload, workspace)
 
 
 def request_input_sha(payload, workspace):
-    source = Path(contract_for(payload, workspace)['execution']['input_path'])
+    contract = contract_for(payload, workspace)
+    source = Path(contract['execution']['input_path'])
     if not source.is_file() or source.is_symlink():
         raise ValueError('input must be a regular owned file')
+    if contract['capability'] == 'json.normalize':
+        from ..path_binding import read_source
+        return hashlib.sha256(read_source(source, max_bytes=1_048_576)).hexdigest()
     return hashlib.sha256(source.read_bytes()).hexdigest()
 
 
@@ -133,8 +118,7 @@ def _check_policy(events, errors, admitted_posts):
 
 
 def _verify_run(run, receipt, workspace, required_request):
-    from ..contracts import ExecutionPlan
-    from ..verification import verify_deduplication
+    from ..tasks import plan_from_dict, contract_from_plan, verify_plan
     contract = contract_for(run['event'], workspace)
     contract_sha = digest_json(contract)
     if contract_sha != receipt.get('contract_sha256'):
@@ -143,7 +127,7 @@ def _verify_run(run, receipt, workspace, required_request):
         raise ValueError('required_contract_mismatch')
     source = Path(contract['execution']['input_path'])
     output = Path(contract['execution']['output_path'])
-    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    source_sha = request_input_sha(run['event'], workspace)
     if source_sha != receipt.get('input_sha256'):
         raise ValueError('input_changed')
     entry_key = receipt.get('entry_key')
@@ -161,14 +145,10 @@ def _verify_run(run, receipt, workspace, required_request):
                           if s['stage'] in ('plan','validate') and s['evidence'].get('plan')), None)
     if plan_evidence is None:
         raise ValueError('plan_missing')
-    plan = ExecutionPlan.from_dict(plan_evidence['plan'])
-    planned = {'capability':plan.capability,'contract_version':plan.contract_version,
-               'constraints':list(plan.constraints),'execution':{
-                   'input_path':plan.input_path,'output_path':plan.output_path,
-                   'key_columns':list(plan.key_columns),'sheet':plan.sheet,'keep':plan.keep,
-                   'encoding':plan.encoding,'delimiter':plan.delimiter}}
+    plan = plan_from_dict(plan_evidence['plan'])
+    planned = contract_from_plan(plan)
     # The contract permits the workbook's active sheet to be selected implicitly.
-    if contract['execution']['sheet'] is None and plan.input_format == 'xlsx':
+    if plan.capability == 'tabular.deduplicate' and contract['execution']['sheet'] is None and plan.input_format == 'xlsx':
         from openpyxl import load_workbook
         book = load_workbook(source, read_only=True, data_only=False, keep_links=False)
         try:
@@ -183,11 +163,16 @@ def _verify_run(run, receipt, workspace, required_request):
             or artifact.get('published') is not True or verification.get('passed') is not True
             or Path(artifact.get('path','')).resolve()!=output or not output.is_file()):
         raise ValueError('plan_or_artifact_proof_invalid')
-    current_sha = hashlib.sha256(output.read_bytes()).hexdigest()
+    if plan.capability == 'json.normalize':
+        from ..path_binding import read_source
+        output_data = read_source(output, max_bytes=16*1_048_576)
+    else:
+        output_data = output.read_bytes()
+    current_sha = hashlib.sha256(output_data).hexdigest()
     if current_sha != artifact.get('sha256') or current_sha != verification.get('output_sha256'):
         raise ValueError('artifact_changed')
     prepared = {**plan.verification_parameters(), 'staging_path':str(output)}
-    checked = verify_deduplication(prepared, plan=plan)
+    checked = verify_plan(prepared, plan)
     if checked.get('passed') is not True:
         raise ValueError('independent_verification_failed')
     return {'status':'succeeded', 'verified':True, 'contract_sha256':contract_sha,
@@ -227,7 +212,7 @@ def evaluate_session(result, db_path, workspace, required_request=None, require_
                 errors.append('receipt_run_link_missing')
                 continue
             if not post.get('run_id'):
-                if returned.get('error_code') not in ('workspace_violation','request_contract_mismatch',
+                if returned.get('error_code') not in ('invalid_task_arguments','workspace_violation','request_contract_mismatch',
                                                      'input_changed','task_attempt_limit','entry_context_missing'):
                     errors.append('durable_run_missing')
                 continue

@@ -10,7 +10,7 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
-from ..storage import canonical_json
+from ..storage import canonical_json, _read_only_database_path
 
 
 def digest(value) -> str:
@@ -20,6 +20,7 @@ def digest(value) -> str:
 
 class EvolutionStore:
     def __init__(self, db_path, owned_root=None):
+        self._read_only = False
         submitted = Path(db_path).expanduser()
         if submitted.is_symlink():
             raise ValueError('evolution database must not be a symlink')
@@ -71,9 +72,32 @@ class EvolutionStore:
         self.owned_root.mkdir(parents=True, exist_ok=True)
         self.recover_activations()
 
+    @classmethod
+    def read_only(cls, db_path):
+        """Read an initialized store without migrations, recovery, leases or feedback writes."""
+        from ..path_binding import _directory
+        view = cls.__new__(cls)
+        view.path = _read_only_database_path(db_path)
+        view._read_only = True
+        with view.connect() as db:
+            saved = db.execute("SELECT value FROM evolution_meta WHERE key='owned_root'").fetchone()
+        if saved is None:
+            raise ValueError('read-only evolution inspection requires initialized ownership metadata')
+        view.owned_root = Path(saved['value'])
+        if not view.owned_root.is_absolute() or not view.path.is_relative_to(view.owned_root):
+            raise ValueError('evolution database must be inside its saved owned_root')
+        root_descriptor = _directory(view.owned_root)
+        os.close(root_descriptor)
+        return view
+
     @contextmanager
     def connect(self):
-        db = sqlite3.connect(self.path, timeout=10)
+        if self._read_only:
+            _read_only_database_path(self.path)
+            db = sqlite3.connect(self.path.as_uri() + '?mode=ro', uri=True, timeout=10)
+            db.execute('PRAGMA query_only=ON')
+        else:
+            db = sqlite3.connect(self.path, timeout=10)
         db.row_factory = sqlite3.Row
         db.execute('PRAGMA busy_timeout=10000')
         db.execute('PRAGMA foreign_keys=ON')
@@ -95,6 +119,8 @@ class EvolutionStore:
         return path
 
     def write_artifact(self, content: bytes, suffix: str) -> tuple[str, str]:
+        if self._read_only:
+            raise ValueError('read-only evolution inspection cannot write artifacts')
         content_hash = digest(content)
         directory = self.owned_path(self.owned_root / 'evolution-artifacts')
         directory.mkdir(exist_ok=True)
@@ -224,6 +250,8 @@ class EvolutionStore:
         return self.get_version(identifier) if identifier else None
 
     def recover_activations(self):
+        if self._read_only:
+            raise ValueError('read-only evolution inspection cannot recover activations')
         with self.connect() as db:
             rows = db.execute("SELECT activation_id,lease_path FROM evolution_activations WHERE state='prepared'").fetchall()
         for row in rows:
@@ -242,5 +270,7 @@ class EvolutionStore:
                 lease.close()
 
     def rollback(self, version_id):
+        if self._read_only:
+            raise ValueError('read-only evolution inspection cannot roll back versions')
         from .candidates import rollback
         return rollback(version_id, self.path)

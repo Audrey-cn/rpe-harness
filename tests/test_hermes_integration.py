@@ -151,7 +151,7 @@ def test_observers_remain_active_when_native_arm_disables_tool(tmp_path, monkeyp
 def test_model_facing_schema_requires_goal_and_constraint_array(tmp_path, monkeypatch):
     context, _, _ = configured_plugin(tmp_path, monkeypatch)
     schema = context.tools['rpe_task']['schema']['parameters']
-    assert set(schema['required']) == {'input_path', 'output_path', 'key_columns', 'goal'}
+    assert set(schema['required']) == {'input_path', 'output_path', 'goal'}
     assert 'request' not in schema['properties']
     assert 'task_type' not in schema['properties']
     assert schema['properties']['goal'] == {'type': 'string', 'minLength': 1}
