@@ -1,0 +1,12 @@
+{
+  "schema_version": "rpe.local-delivery-cleanup/v1",
+  "status": "local_integration_and_owned_root_removal_pending",
+  "production_code_commit": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
+  "wheel_sha256": "12725219b551812367caff210eeceeffdfd3dcbcafd3152f56d71b7895ca0d26",
+  "preexisting_design_trace_hashes": {
+    "evidence/provenance.json": "49b4d779c51fc750b7d7d4fc2c06f307243317bf5bc355309a361f3ff82bf752",
+    "原始设计溯源与方向审核.md": "e6b0b8d5652791737b69e00058a9a610b6f578bc561a2cbfb96915ae0cb4de66"
+  },
+  "public_byte_artifacts_verified": 208,
+  "owned_processes_absent_before_removal": true
+}
