@@ -180,8 +180,17 @@ def test_hand_written_cached_formula_fixture(tmp_path):
     with ZipFile(path, 'w') as archive:
         for name, raw in members:
             if name == 'xl/worksheets/sheet1.xml':
-                assert b'<f>A2+1</f><v></v>' in raw
-                raw = raw.replace(b'<f>A2+1</f><v></v>', b'<f>A2+1</f><v>7</v>')
+                from xml.etree import ElementTree as ET
+                namespace = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+                root = ET.fromstring(raw)
+                cell = root.find(f'.//{{{namespace}}}c[@r="B3"]')
+                assert cell is not None
+                formula = cell.find(f'{{{namespace}}}f')
+                cached = cell.find(f'{{{namespace}}}v')
+                assert formula is not None and formula.text == 'A2+1'
+                assert cached is not None and cached.text in (None, '')
+                cached.text = '7'
+                raw = ET.tostring(root, encoding='utf-8')
             archive.writestr(name, raw)
     plan = Plan.from_request(payload)
     prepared = prepare(**plan.execution_kwargs())
