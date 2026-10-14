@@ -1,4 +1,4 @@
-"""Run untrusted CSV producers with an OS boundary, never an AST safety claim."""
+"""Run bounded untrusted producers with an OS boundary, never an AST safety claim."""
 from __future__ import annotations
 
 import ctypes
@@ -16,19 +16,32 @@ import time
 from pathlib import Path
 from functools import lru_cache
 
+SANDBOX_REVISION = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 MAX_INPUT_BYTES = 16 * 1024 * 1024
+JSON_INPUT_BYTES = 1024 * 1024
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 MAX_CODE_BYTES = 64 * 1024
 MAX_RESIDENT_BYTES = 128 * 1024 * 1024
 RSS_POLL_SECONDS = 0.02
 
 
-def resource_limits():
-    return {'input_bytes': MAX_INPUT_BYTES, 'output_bytes': MAX_OUTPUT_BYTES,
+def resource_limits(capability=None):
+    if capability not in {None, 'tabular.deduplicate', 'json.normalize'}:
+        raise ValueError('candidate resource capability is not registered')
+    return {'input_bytes': JSON_INPUT_BYTES if capability == 'json.normalize' else MAX_INPUT_BYTES,
+            'output_bytes': MAX_OUTPUT_BYTES,
             'code_bytes': MAX_CODE_BYTES, 'resident_bytes': MAX_RESIDENT_BYTES,
             'memory_enforcement': 'rss_monitor_soft', 'rss_poll_seconds': RSS_POLL_SECONDS,
             'memory_limitation': 'macOS rlimits do not cap memory; instantaneous allocation peaks are not guaranteed',
             'network': 'denied', 'fork': 'denied', 'open_files': 64}
+
+class CandidateExecutionError(RuntimeError):
+    """A real child ran, but failed; resource failures are not parser rejections."""
+
+
+class CandidateRejected(CandidateExecutionError):
+    """The producer explicitly refused input without leaving an output artifact."""
+
 
 _DRIVER = '''import json, sys
 from pathlib import Path
@@ -38,7 +51,12 @@ exec(compile(Path(sys.argv[1]).read_text(encoding='utf-8'), '<candidate>', 'exec
 producer = namespace.get('prepare')
 if not callable(producer):
     raise ValueError('candidate must define prepare(plan, staging_path)')
-producer(packet['plan'], packet['staging_path'])
+try:
+    producer(packet['plan'], packet['staging_path'])
+except (ValueError, UnicodeError) as error:
+    print('RPE_CANDIDATE_REJECTED:' + json.dumps({'type': type(error).__name__,
+          'message': str(error)[:1000]}, ensure_ascii=True), flush=True)
+    sys.exit(65)
 '''
 
 
@@ -114,9 +132,12 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
         raise ValueError('candidate code exceeds the bounded size')
     source = Path(plan['input_path'])
     from ..path_binding import read_source
-    data = read_source(source)
-    if len(data) > MAX_INPUT_BYTES:
-        raise ValueError('candidate input exceeds the bounded size')
+    capability = plan.get('capability')
+    limits = resource_limits(capability)
+    is_json = capability == 'json.normalize'
+    if is_json and plan.get('input_format') != 'json':
+        raise ValueError('JSON candidate requires the JSON input format')
+    data = read_source(source, max_bytes=limits['input_bytes'])
     if hashlib.sha256(data).hexdigest() != plan['input_sha256']:
         raise ValueError('input changed after the execution plan')
     root = Path(owned_root).resolve()
@@ -124,10 +145,11 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
     if directory.is_symlink():
         raise ValueError('sandbox root must not be a symlink')
     directory.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='csv-', dir=directory) as name:
+    suffix = 'json' if is_json else 'csv'
+    with tempfile.TemporaryDirectory(prefix=suffix + '-', dir=directory) as name:
         job = Path(name).resolve()
-        input_copy, code, driver = job / 'input.csv', job / 'candidate.py', job / 'driver.py'
-        staging, log = job / 'staging.csv', job / 'child.log'
+        input_copy, code, driver = job / ('input.' + suffix), job / 'candidate.py', job / 'driver.py'
+        staging, log = job / ('staging.' + suffix), job / 'child.log'
         input_copy.write_bytes(data)
         code.write_bytes(content)
         driver.write_text(_DRIVER, encoding='utf-8')
@@ -149,12 +171,15 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
             try:
                 deadline = time.monotonic() + timeout
                 while proc.poll() is None:
-                    resident = _resident_bytes(proc.pid)
+                    try:
+                        resident = _resident_bytes(proc.pid)
+                    except OSError as error:
+                        raise CandidateExecutionError('candidate RSS observation failed') from error
                     if resident is not None and resident > memory_limit_bytes:
-                        raise RuntimeError('candidate RSS soft memory threshold exceeded')
+                        raise CandidateExecutionError('candidate RSS soft memory threshold exceeded')
                     remaining = deadline - time.monotonic()
                     if remaining <= 0:
-                        raise RuntimeError('candidate timeout')
+                        raise CandidateExecutionError('candidate timeout')
                     try:
                         proc.wait(timeout=min(RSS_POLL_SECONDS, remaining))
                     except subprocess.TimeoutExpired:
@@ -165,13 +190,30 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                 except ProcessLookupError:
                     pass
                 proc.wait()
-        if proc.returncode != 0:
-            detail = log.read_bytes()[:1000].decode('utf-8', errors='replace')
-            raise RuntimeError(f'candidate exited {proc.returncode}: {detail}')
         if input_copy.read_bytes() != data:
-            raise RuntimeError('candidate altered the frozen source')
+            raise CandidateExecutionError('candidate altered the frozen source')
+        if proc.returncode != 0:
+            # Bounded log inspection never reads an arbitrarily large diagnostic.
+            with log.open('rb') as handle:
+                handle.seek(max(0, os.fstat(handle.fileno()).st_size - 4096))
+                detail = handle.read(4096).decode('utf-8', errors='replace')
+            lines = detail.splitlines()
+            marker = 'RPE_CANDIDATE_REJECTED:'
+            if (proc.returncode == 65 and lines and lines[-1].startswith(marker)
+                    and not os.path.lexists(staging)):
+                try:
+                    receipt = json.loads(lines[-1][len(marker):])
+                except ValueError:
+                    receipt = None
+                if (type(receipt) is dict and set(receipt) == {'type', 'message'}
+                        and receipt['type'] in {'ValueError', 'UnicodeError', 'UnicodeDecodeError',
+                                                'UnicodeEncodeError', 'UnicodeTranslateError',
+                                                'JSONDecodeError'}
+                        and type(receipt['message']) is str):
+                    raise CandidateRejected(f'candidate rejected input in {job}: {receipt["type"]}: {receipt["message"]}')
+            raise CandidateExecutionError(f'candidate exited {proc.returncode}: {detail[:1000]}')
         if staging.is_symlink() or not staging.is_file() or staging.stat().st_nlink != 1:
-            raise RuntimeError('candidate did not create an owned regular staging file')
+            raise CandidateExecutionError('candidate did not create an owned regular staging file')
         if staging.stat().st_size > MAX_OUTPUT_BYTES:
-            raise RuntimeError('candidate output exceeds the bounded size')
+            raise CandidateExecutionError('candidate output exceeds the bounded size')
         return staging.read_bytes()

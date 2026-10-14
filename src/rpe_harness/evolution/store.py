@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from ..storage import canonical_json, _read_only_database_path
+from ..path_binding import read_regular_file
 
 
 def digest(value) -> str:
@@ -129,7 +130,7 @@ class EvolutionStore:
         try:
             fd = os.open(path, flags, 0o400)
         except FileExistsError:
-            if digest(path.read_bytes()) != content_hash:
+            if digest(read_regular_file(path, max_bytes=max(1, len(content)))) != content_hash:
                 raise ValueError('immutable candidate artifact is corrupt')
         else:
             try:
@@ -149,7 +150,7 @@ class EvolutionStore:
 
     def read_artifact(self, record) -> bytes:
         path = self.owned_path(record['artifact_path'])
-        data = path.read_bytes()
+        data = read_regular_file(path, max_bytes=65536)
         if digest(data) != record['content_hash']:
             raise ValueError('candidate artifact hash changed')
         return data

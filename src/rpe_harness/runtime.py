@@ -226,7 +226,7 @@ class HarnessRuntime:
             builtin = {'kind': 'builtin', 'executor_id': plan.executor_id,
                        'code_sha256': plan.executor_revision, 'plan_sha256': plan.sha256}
             actual = dict(builtin)
-            prepared = prepare_candidate(plan, self.store.path) if plan.capability == 'tabular.deduplicate' else None
+            prepared = prepare_candidate(plan, self.store.path)
             candidate_version = None
             if prepared is None:
                 prepared = prepare_plan(plan)

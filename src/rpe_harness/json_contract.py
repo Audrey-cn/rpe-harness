@@ -13,6 +13,7 @@ from .path_binding import current_binding, read_source
 from .json_execution import EXECUTOR_REVISION
 from .json_verification import VERIFIER_REVISION
 
+CONTRACT_REVISION = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 CAPABILITY = 'json.normalize'
 CONTRACT_VERSION = 1
 EXECUTOR_ID = 'builtin/json-normalize'

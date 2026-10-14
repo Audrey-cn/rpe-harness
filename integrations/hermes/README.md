@@ -1,6 +1,8 @@
-# Hermes 1.4 接入
+# Hermes 1.5 接入
 
 推荐使用仓库或已安装 wheel 的 `rpe-harness hermes run`。它按次加载原生插件，结束后清理临时宿主 home，不需要长期安装到日常 Hermes 配置。
+
+1.5 的真实 JSON 任务仍通过相同 `rpe_task`、固定契约锚、宿主外 CLI 与最终独立 gate；新增候选在 Harness 侧选择和验收，模型不选择未经验证的执行器。任务产物记录实际 JSON candidate/recipe 版本和内容hash，候选失败保留结构化步骤及内置回退结果。维护和升级入口见 [JSON 升级](../../docs/json-upgrades.md)；它没有向日常 Hermes 安装常驻维护进程。
 
 原生插件模板在 `rpe-harness/`：`plugin.yaml`、`__init__.py`、`register(ctx)`。工具是 `rpe_task`，toolset 为 `rpe_harness`；观察器在原生对照臂也运行，只关闭这个工具。`pre/post_tool_call`、`pre/post_api_request`、LLM 与 session 事件同步保存元数据。工具执行前持久保存 receipt，执行使用独立兼容 Python，不要求 Hermes 自身环境安装 openpyxl。
 
@@ -32,7 +34,7 @@ JSON 只改字符串外空白，保留成员/数组顺序、字符串转义和�
 
 receipt、稳定 entry ID 和最终 gate 都保留 style，pretty 与 minify 是不同契约身份。未知字段或缺必填项返回可纠正的 invalid_task_arguments，并持久记录元数据；这类无 run 拒绝不会解除真实调用与结果验收要求。只有后来获得匹配的持久终态，严格入口才能允许总结。最终 `harness_verified=true` 仍要求重新验证真实产物；业务拒绝保持 verified=false。
 
-调用隔离启动器可传 `--request /absolute/path/request.json` 锚定用户契约，也可只传任务提示。JSON 返回字节指标和 root_type，保留原计划的恢复、幂等和状态记录。新增 JSON 内置能力不会导入旧 JSON gene，不支持 JSON 候选自动激活；已有 CSV 候选使用其原独立套件。
+调用隔离启动器可传 `--request /absolute/path/request.json` 锚定用户契约，也可只传任务提示。JSON 返回字节指标和 root_type，保留原计划恢复、幂等和状态记录。1.5的JSON代码/配方候选经专用验收和CAS可自动激活，实际版本与hash进入artifact；既有CSV使用原套件，不互借证书。旧JSON gene继续只供发现，不导入执行。
 
 手动加载插件时设置 `RPE_HERMES_DB`、`RPE_HERMES_WORKSPACE`、`RPE_HARNESS_PYTHON`、`RPE_HERMES_TOOL_ENABLED=1`，并使 `rpe_harness` 包可被宿主 Python 导入。插件启用配置为 `plugins.enabled: [rpe-harness]`。执行 Python 需安装 Harness 及其 openpyxl 依赖；默认手动路径直接启动该 Python 的 Harness 子进程，不管理回环入口，也不自动创建启动器的严格会话配置。
 

@@ -17,7 +17,7 @@ release-bundle/
   packages/<asset_id>/candidate.py 或 recipe.json
 ```
 
-catalog 签名覆盖包摘要与 audit 摘要；audit 绑定原版本、证书和 creator key 摘要。audit 是发行者对来源证书与证据的见证，不能替代接收方验收。包不包含私钥、运行正文、数据库、运行 ID 或绝对状态路径。当前发行 ABI 只支持已验证 CSV 执行器/配方；旧 gene 默认供发现，JSON 执行器候选仍需专用可信验收及隔离路径。
+catalog 签名覆盖包摘要与 audit 摘要；audit 绑定原版本、证书和 creator key 摘要。audit 是发行者对来源证书与证据的见证，不能替代接收方验收。包不包含私钥、运行正文、数据库、运行 ID 或绝对状态路径。当前发行 ABI 只支持已验证 CSV 执行器/配方；旧 gene 默认供发现。1.5 的 JSON 本地候选已有专用验收与隔离路径，但尚未接入签名发布包 ABI，详见 [JSON 升级](json-upgrades.md)。
 
 所有路径使用规范绝对路径，各级禁止 symlink；macOS 临时目录可用 `/private/var/...`。构建目标必须不存在，其父目录必须已存在。已有包、坏链接或旧报告都不会覆盖；报告路径必须在发行包之外，且其父目录已存在。
 
