@@ -29,6 +29,7 @@ class HarnessHTTPServer(ThreadingHTTPServer):
         self.request_timeout = request_timeout
         self.catalog_root = catalog_root
         self.skill_snapshot_id = skill_snapshot_id
+        self._unified_catalog = None
         self.slots = threading.BoundedSemaphore(32)
         super().__init__(address, HarnessHandler)
 
@@ -103,8 +104,9 @@ class HarnessHandler(BaseHTTPRequestHandler):
         rt = self.runtime
         if body is None:
             if path == '/capabilities':
-                catalog = self._capability_catalog()
-                return 200, {'catalog_sha256': catalog.snapshot_id, 'entries': catalog.entries()}
+                with rt.lock:
+                    catalog = self._capability_catalog()
+                    return 200, {'catalog_sha256': catalog.snapshot_id, 'entries': catalog.entries()}
             if path == '/health':
                 ready = any(rt.router.skills[sid].enabled and not rt.router.skills[sid].is_dormant
                             for sid in BUILTIN_IDS.values()) and not rt.graph_issues
@@ -132,17 +134,21 @@ class HarnessHandler(BaseHTTPRequestHandler):
         if path == '/capabilities/resolve':
             if set(body) - {'capability', 'input_format', 'constraints'}:
                 raise ValueError('unknown capability resolution fields')
-            return 200, self._capability_catalog().resolve(body.get('capability'),
-                body.get('input_format'), body.get('constraints', []))
+            with rt.lock:
+                return 200, self._capability_catalog().resolve(body.get('capability'),
+                    body.get('input_format'), body.get('constraints', []))
         if path == '/intent/prepare':
             allowed = {'extracted', 'workspace', 'session_id', 'source_ref', 'source_facts'}
             if set(body) - allowed or not allowed - {'source_facts'} <= set(body):
                 raise ValueError('intent prepare fields are incomplete or unknown')
-            from .address_cli import prepare_handoff
-            result = prepare_handoff(body['extracted'], db_path=rt.store.path,
-                workspace=body['workspace'], session_id=body['session_id'], source_ref=body['source_ref'],
-                source_facts=body.get('source_facts'), catalog_root=self.server.catalog_root,
-                skill_snapshot_id=self.server.skill_snapshot_id)
+            from .intent import interpret_intent, MinimalStateStore
+            with rt.lock:
+                result = interpret_intent(body['extracted'], catalog=self._capability_catalog(),
+                    workspace=body['workspace'], session_id=body['session_id'], source_ref=body['source_ref'],
+                    source_facts=body.get('source_facts'))
+                if result['status'] == 'ready':
+                    result = MinimalStateStore(rt.store.path).capture(result,
+                        session_id=body['session_id'], source_ref=body['source_ref'])
             return {'ready': 200, 'needs_context': 422, 'unsupported': 422,
                     'ambiguous': 422, 'conflict': 409, 'rejected': 400}[result['status']], result
         if path == '/intent/show':
@@ -173,7 +179,9 @@ class HarnessHandler(BaseHTTPRequestHandler):
                                dormant=body.get('dormant'))
             return 200, {'status': 'recorded'}
         if path == '/reload':
-            rt.reload()
+            with rt.lock:
+                rt.reload()
+                self.server._unified_catalog = None
             return 200, {'status': 'reloaded'}
         if path == '/causal/discover':
             state = CausalState.from_event(body)
@@ -194,8 +202,12 @@ class HarnessHandler(BaseHTTPRequestHandler):
 
     def _capability_catalog(self):
         from .capability_catalog import build_catalog
-        return build_catalog(db_path=self.runtime.store.path if self.server.catalog_root is not None else None,
-            catalog_root=self.server.catalog_root, skill_snapshot_id=self.server.skill_snapshot_id)
+        with self.runtime.lock:
+            if getattr(self.server, '_unified_catalog', None) is None:
+                self.server._unified_catalog = build_catalog(
+                    db_path=self.runtime.store.path if self.server.catalog_root is not None else None,
+                    catalog_root=self.server.catalog_root, skill_snapshot_id=self.server.skill_snapshot_id)
+            return self.server._unified_catalog
 
     def _skill(self, skill):
         return {'id': skill.skill_id, 'name': skill.name, 'description': skill.description,

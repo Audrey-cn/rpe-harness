@@ -244,6 +244,18 @@ def test_isolated_address_home_and_native_control_preserve_search(tmp_path):
         assert config['curator']['enabled'] is False
 
 
+def test_address_launcher_rejects_old_context_sources_before_host_setup(tmp_path, monkeypatch):
+    from rpe_harness.integrations import hermes_session
+    def unexpected_runtime_setup(*args):
+        pytest.fail('nonempty context_sources were silently ignored before host setup')
+    monkeypatch.setattr(hermes_session, '_installed_python', unexpected_runtime_setup)
+    with pytest.raises(ValueError, match='context_sources'):
+        hermes_session.run_hermes_session('deduplicate', tmp_path, tmp_path / 'runs.sqlite',
+            tool_enabled=True, owner_root=tmp_path / 'owned', entry_mode='address',
+            context_sources=[{'facts': {'key_columns': ['id']}}])
+    assert not (tmp_path / 'owned').exists()
+
+
 def test_task_stage_discards_original_task_and_understanding_history(configured):
     env = configured
     handoff = dispatch(env, 'rpe_understand', extracted())
@@ -270,6 +282,32 @@ def test_address_phase_uses_its_trusted_schema_when_native_search_defers_plugin_
     request = env['sdk'].middleware['llm_request'](request={'tools': [bridge]},
         session_id=env['session'], task_id='address-task', turn_id='address-turn', api_request_id='api-search')['request']
     assert [tool['function']['name'] for tool in request['tools']] == ['rpe_understand']
+
+
+def test_understanding_catalog_ignores_two_thousand_unrelated_rows_and_private_bindings(configured):
+    env = configured
+    schemas = [{'type': 'function', 'function': row['schema']} for row in env['sdk'].tools.values()]
+    def request(sdk, session):
+        return sdk.middleware['llm_request'](request={'tools': schemas}, session_id=session,
+            task_id='catalog-task', turn_id='catalog-turn', api_request_id='catalog-api')['request']
+    baseline = request(env['sdk'], 'catalog-baseline')
+    value = json.loads(env['config'].read_text())
+    for row in value['entries']:
+        row.update(skill_binding={'script_path': '/PRIVATE_SCRIPT_PATH/helper.py'}, script_sha256='0' * 64)
+    value['entries'].extend({'entry_id': f'skill/{index}', 'capability': None,
+        'description': 'UNRELATED_METADATA', 'skill_sha256': '0' * 64,
+        'script_path': f'/PRIVATE_UNRELATED_PATH/{index}'} for index in range(2000))
+    env['config'].write_text(json.dumps(value))
+    replacement = SDK()
+    env['api'].register_address_workflow(replacement, store=env['store'], workspace=env['workspace'],
+        python=sys.executable, error_path=env['config'].parent / 'replacement-errors')
+    actual = request(replacement, 'catalog-augmented')
+    encoded = json.dumps(actual['messages'])
+    assert encoded == json.dumps(baseline['messages'])
+    assert 'PRIVATE_SCRIPT_PATH' not in encoded
+    assert 'PRIVATE_UNRELATED_PATH' not in encoded
+    assert 'UNRELATED_METADATA' not in encoded
+    assert '0' * 64 not in encoded
 
 
 def test_cross_session_state_id_cannot_replace_this_sessions_handoff(configured):

@@ -547,6 +547,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('producer entry requires no Harness tool, fixed task, or skill catalog context')
     if entry_mode == 'skills' and catalog_root is None:
         raise ValueError('skills entry requires an owned skill catalog')
+    if entry_mode == 'address' and context_sources not in (None, []):
+        raise ValueError('address does not consume context_sources; provide explicit task facts or '
+                         'trusted address_extension source_facts instead')
     if type(max_task_attempts) is not int or not 1 <= max_task_attempts <= 20:
         raise ValueError('task attempt limit must be between 1 and 20')
     owner_root, workspace = Path(owner_root).resolve(), Path(workspace).resolve()
@@ -598,11 +601,11 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             settings_path.write_text(json.dumps(native_config,ensure_ascii=False))
     address_config_path = None
     if entry_mode == 'address':
-        from .hermes_address import _catalog
+        from .hermes_address import _catalog, _model_catalog_entries
         unified = _catalog(db_path, catalog_root, snapshot['snapshot_id'] if snapshot else None)
         address_config_path = session_root / 'address-config.json'
         address_config_path.write_text(json.dumps({'catalog_sha256':unified.snapshot_id,
-            'entries':unified.entries()},ensure_ascii=False,allow_nan=False),encoding='utf-8')
+            'entries':_model_catalog_entries(unified.entries())},ensure_ascii=False,allow_nan=False),encoding='utf-8')
         os.chmod(address_config_path,0o600)
     fixed_path = None
     if fixed_request is not None:

@@ -20,6 +20,18 @@ from .hermes_skills import (IDS, WorkflowStore, _identity, _actual_policy, _raw_
 PHASE_TO_TOOL = {'understand': 'rpe_understand', 'task': 'rpe_task', 'none': 'none'}
 TASK_HINT = 'Call rpe_task once with only the state_id in this handoff. Do not reconstruct business parameters.'
 FINAL_HINT = 'The task is terminal. Do not call tools. Report this durable result accurately.'
+REGISTERED_CAPABILITIES = frozenset({'tabular.deduplicate', 'json.normalize', 'xlsx.inspect'})
+
+
+def _model_catalog_entries(entries):
+    """Expose only bounded contract guidance, never discovery rows or bindings."""
+    fields = ('capability', 'description', 'input_formats', 'constraints', 'required_execution',
+              'executable', 'adapter_status')
+    projected = [{key: row[key] for key in fields if key in row}
+                 for row in entries if type(row) is dict and row.get('capability') in REGISTERED_CAPABILITIES]
+    if len(projected) != 3 or {row['capability'] for row in projected} != REGISTERED_CAPABILITIES:
+        raise ValueError('address catalog requires exactly the three registered capabilities')
+    return projected
 
 
 def _json_bytes(value):
@@ -60,6 +72,7 @@ def _configuration():
             or not isinstance(value['catalog_sha256'], str) or len(value['catalog_sha256']) != 64
             or type(value['entries']) is not list or len(value['entries']) > 4096):
         raise ValueError('invalid address configuration')
+    value['entries'] = _model_catalog_entries(value['entries'])
     return value, str(path), hashlib.sha256(raw).hexdigest()
 
 
