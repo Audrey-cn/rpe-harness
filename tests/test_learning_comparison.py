@@ -17,6 +17,7 @@ def test_registration_aligns_48_sessions_and_keeps_holdout_unopened(tmp_path):
     plan = m.preregister_learning(tmp_path)
     assert len(plan['training']) == 6 and len(plan['holdout']) == 8
     assert plan['generation_tool_profile'] == 'producer-only/native-write-file'
+    assert plan['generation_request_policy'] == {'thinking_type': 'disabled', 'max_completion_tokens': 8192}
     assert len(plan['sessions']) == 48
     assert len({c['input_sha256'] for c in plan['training'] + plan['holdout']}) == 14
     assert len({s['attempt_id'] for s in plan['sessions']}) == 48

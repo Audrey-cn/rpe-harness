@@ -151,6 +151,7 @@ def preregister_learning(root, *, timeout=180):
         'timeout': timeout, 'training': training, 'holdout': holdout, 'sessions': sessions,
         'generation_limit': 3, 'generation_max_turns': 6, 'production_max_task_attempts': 3,
         'generation_tool_profile': 'producer-only/native-write-file',
+        'generation_request_policy': {'thinking_type': 'disabled', 'max_completion_tokens': 8192},
         'analysis_units': 8, 'repeats_independent': False,
         'policy': 'native terminal/file; both RPE arms identical strict task tools and budget; only active executor differs',
         'training_cost_policy': '6 actual native sessions and 6 local CLI runs per RPE arm; all measured once; no shared allocation',
