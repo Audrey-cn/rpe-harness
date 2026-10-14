@@ -225,3 +225,40 @@ def test_probe_rejects_bad_hash_budget_and_unknown_fields_before_execution(tmp_p
     with pytest.raises(ValueError):
         module().probe_training_candidate('x' * 65537, packet, tmp_path / 'not-created')
     assert not (tmp_path / 'not-created').exists()
+
+
+@pytest.mark.parametrize('case', ['symlink_parent', 'relative', 'traversal', 'missing_parent'])
+def test_invalid_probe_root_never_creates_directories_before_rejection(tmp_path, monkeypatch, case):
+    _, packet = packet_for(tmp_path / 'training')
+    if case == 'symlink_parent':
+        target = tmp_path / 'outside-requested-root'
+        target.mkdir()
+        alias = tmp_path / 'alias'
+        alias.symlink_to(target, target_is_directory=True)
+        requested = alias / 'new-probe-root'
+        would_be_created = target / 'new-probe-root'
+    elif case == 'relative':
+        monkeypatch.chdir(tmp_path)
+        requested = Path('relative-probe-root')
+        would_be_created = tmp_path / requested
+    elif case == 'traversal':
+        (tmp_path / 'nested').mkdir()
+        requested = tmp_path / 'nested' / '..' / 'traversal-probe-root'
+        would_be_created = tmp_path / 'traversal-probe-root'
+    else:
+        would_be_created = tmp_path / 'missing-parent'
+        requested = would_be_created / 'new-probe-root'
+    with pytest.raises((ValueError, OSError)):
+        module().probe_training_candidate(GOOD_CODE, packet, requested)
+    assert not would_be_created.exists(), 'rejected root created a directory before validation'
+
+
+@SANDBOX
+def test_probe_creates_only_final_owned_root_below_existing_parent(tmp_path):
+    _, packet = packet_for(tmp_path / 'training')
+    root = tmp_path / 'new-probe-root'
+    assert not root.exists()
+    result = module().probe_training_candidate(GOOD_CODE, packet, root)
+    assert result['outcomes'][0]['candidate_invoked']
+    assert result['outcomes'][0]['correct'] and result['outcomes'][0]['source_preserved']
+    assert root.is_dir() and list(root.iterdir()) == []

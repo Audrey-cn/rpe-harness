@@ -200,11 +200,20 @@ def probe_training_candidate(content, packet, owned_root):
     if type(content) is not bytes or not content or len(content) > MAX_CODE_BYTES:
         raise ValueError('training candidate must be nonempty bounded code bytes or text')
     root = Path(owned_root)
-    if root.is_symlink():
-        raise ValueError('training probe root must be an owned directory without symlinks')
-    root.mkdir(parents=True, exist_ok=True)
-    descriptor = _directory(root)
-    os.close(descriptor)
+    if not root.is_absolute() or '..' in root.parts or not root.name:
+        raise ValueError('training probe root must be absolute without traversal')
+    # Validate the existing parent before any writes, then create/open only the
+    # final component through its retained nofollow directory authority.
+    parent = _directory(root.parent)
+    try:
+        try:
+            os.mkdir(root.name, mode=0o700, dir_fd=parent)
+        except FileExistsError:
+            pass
+        descriptor = os.open(root.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+        os.close(descriptor)
+    finally:
+        os.close(parent)
     outcomes = []
     with tempfile.TemporaryDirectory(prefix='training-probe-', dir=root) as name:
         directory = Path(name)
