@@ -1,0 +1,310 @@
+{
+  "passed": true,
+  "version": "1.5.0",
+  "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v15-20261014-fv13br9i/installed/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "wheel_sha256": "2b9b9642c36c9db7516f958319ad15fa65eb45632fe2074fcac41789a3c8197c",
+  "python": "3.12.14",
+  "dependency_mode": "new venv, installed wheel, inherited bundled openpyxl via system-site-packages",
+  "files": [
+    {
+      "path": "rpe_harness/__init__.py",
+      "source_sha256": "c6993e8787fcf43909fd446ec87426bcba9ecd1a548b0f1d309abd966e1a6816",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/__main__.py",
+      "source_sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/__init__.py",
+      "source_sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/catalog.py",
+      "source_sha256": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/cli.py",
+      "source_sha256": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/identity.py",
+      "source_sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/lifecycle.py",
+      "source_sha256": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/manifest.py",
+      "source_sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/prepublish.py",
+      "source_sha256": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/registry.py",
+      "source_sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/store.py",
+      "source_sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/assets/trust.py",
+      "source_sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/bridge.py",
+      "source_sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/capability.py",
+      "source_sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/causal_graph.py",
+      "source_sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/cli.py",
+      "source_sha256": "b91fa254ea578ea9345ec4e28d7c46925f68e3f314ce455d408c7b8f9e87c540",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/contracts.py",
+      "source_sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/__init__.py",
+      "source_sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/candidates.py",
+      "source_sha256": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/cycle.py",
+      "source_sha256": "d2d9123a081dc2ce7e6ea823162c1e8484441316b325100dec4be016bbe60b35",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/json_acceptance.py",
+      "source_sha256": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/sandbox.py",
+      "source_sha256": "cd0895961d7279230ff934fce18d625407b7145017ca1b7df0dc9acdf7a5bf56",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/evolution/store.py",
+      "source_sha256": "6beb8698f14ffbee563e936e13e5e1b93de8ec3fa3b41ac9e0044cb24e8abec2",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/execution.py",
+      "source_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/__init__.py",
+      "source_sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/baseline.py",
+      "source_sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/basic_validation.py",
+      "source_sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/cold_skill_test.py",
+      "source_sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/hermes_native.py",
+      "source_sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/hermes_repeated.py",
+      "source_sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/reuse_sequence.py",
+      "source_sha256": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/stress_test.py",
+      "source_sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/experiments/unattended_sequence.py",
+      "source_sha256": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/__init__.py",
+      "source_sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/hermes.py",
+      "source_sha256": "4faf8836b576b9bb3ae3474159029a9ffc4c705cfda5503f21aa4575170771b7",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/hermes_bootstrap.py",
+      "source_sha256": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/hermes_broker.py",
+      "source_sha256": "563805abf147aad54476020894ca32f591df8d8102d740b4b45cf27310b7d0aa",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/hermes_gate.py",
+      "source_sha256": "dc96e93a26e721cb172e1bb58208edb6768e9aa909765dd477deb9643c5f0bc3",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/integrations/hermes_session.py",
+      "source_sha256": "68fc3f96ce4213b94b21625fd2ef3899846464592defb3d3f70c91d28f6a0267",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/json_contract.py",
+      "source_sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/json_execution.py",
+      "source_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/json_verification.py",
+      "source_sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/mcsi.py",
+      "source_sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/path_binding.py",
+      "source_sha256": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/recovery.py",
+      "source_sha256": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/runtime.py",
+      "source_sha256": "fdd9788f2ebf0b1d87972e445e9e6f9fde50c70b4c514f207c9503f2d3ba2359",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/server.py",
+      "source_sha256": "207dd8acc8c22e666dbaec6bed4c8d564f976617b7b8f59fa32197c7bc469899",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/storage.py",
+      "source_sha256": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/tasks.py",
+      "source_sha256": "e2df828bfc58c8411a078f3815af983bf3c923f9846cf28bcdc1af9aac7b3904",
+      "wheel_matches": true,
+      "installed_matches": true
+    },
+    {
+      "path": "rpe_harness/verification.py",
+      "source_sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+      "wheel_matches": true,
+      "installed_matches": true
+    }
+  ]
+}

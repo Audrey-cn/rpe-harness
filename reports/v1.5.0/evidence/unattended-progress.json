@@ -1,0 +1,409 @@
+{
+  "passed": true,
+  "scope": "bounded cross-process JSON lifecycle acceptance",
+  "attempts": [
+    {
+      "name": "json-seed",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.195
+    },
+    {
+      "name": "default-auto-recipe",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 1.005
+    },
+    {
+      "name": "same-evidence-cycle",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.122
+    },
+    {
+      "name": "independent-cli-proposal",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.06
+    },
+    {
+      "name": "consume-persisted-code-proposal",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 4.134
+    },
+    {
+      "name": "candidate-pretty",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.111
+    },
+    {
+      "name": "candidate-minify",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.112
+    },
+    {
+      "name": "new-evidence-same-code-cycle",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.59
+    },
+    {
+      "name": "validate-intent-variant",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 2.009
+    },
+    {
+      "name": "crash-after-intent",
+      "returncode": 73,
+      "expected_exit": 73,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 1.963
+    },
+    {
+      "name": "restart-aborts-orphan-intent",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.054
+    },
+    {
+      "name": "apply-recovered-intent",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 2.044
+    },
+    {
+      "name": "validate-commit-variant",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 1.995
+    },
+    {
+      "name": "crash-after-commit",
+      "returncode": 74,
+      "expected_exit": 74,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 1.991
+    },
+    {
+      "name": "restart-keeps-committed-pointer",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.053
+    },
+    {
+      "name": "commit-reuse",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.118
+    },
+    {
+      "name": "auto-upgrade-production-variant",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 4.569
+    },
+    {
+      "name": "bad-output",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.121
+    },
+    {
+      "name": "inspect-previous-restoration",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.055
+    },
+    {
+      "name": "previous-reuse",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.115
+    },
+    {
+      "name": "manual-rollback",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.059
+    },
+    {
+      "name": "rollback-reuse",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.119
+    },
+    {
+      "name": "upgrade-before-invalid-previous",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 4.584
+    },
+    {
+      "name": "corrupt-owned-previous",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.047
+    },
+    {
+      "name": "bad-output-2",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.131
+    },
+    {
+      "name": "builtin-after-invalid",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.078
+    },
+    {
+      "name": "final-diagnostics-only-cycle",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.594
+    },
+    {
+      "name": "dormant-lookup",
+      "returncode": 0,
+      "expected_exit": 0,
+      "passed": true,
+      "timeout": false,
+      "elapsed_s": 0.052
+    }
+  ],
+  "cases": [
+    {
+      "name": "json-seed",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "ceec9441f2814844a6c942b6121ffbf5",
+      "actual_executor": {
+        "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+        "executor_id": "builtin/json-normalize",
+        "kind": "builtin",
+        "plan_sha256": "d950e2fd0c89cfa779dfef7a2384413862f904dddbe93e45e6af2a678f442745"
+      },
+      "plan_sha256": "d950e2fd0c89cfa779dfef7a2384413862f904dddbe93e45e6af2a678f442745"
+    },
+    {
+      "name": "candidate-pretty",
+      "style": "pretty",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "0b7e09691593408c9773fdc3b84dd503",
+      "actual_executor": {
+        "candidate_version_id": "feed9ac9f8b8bc15d099bef16d365b3d0252328e0bfafd05e66de122042c50c4",
+        "code_sha256": "fe27f2fd13ebd86878c426429f36628375bd5c8e8b2915cc657332a5f1e586b5",
+        "executor_id": "builtin/json-normalize",
+        "kind": "candidate",
+        "plan_sha256": "87e6299d2d2c21ad6f7fc369dec312747180a7e2b13315ccc101b102503d786f"
+      },
+      "plan_sha256": "87e6299d2d2c21ad6f7fc369dec312747180a7e2b13315ccc101b102503d786f"
+    },
+    {
+      "name": "candidate-minify",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "08e50039083d4be2994662a627c5c703",
+      "actual_executor": {
+        "candidate_version_id": "feed9ac9f8b8bc15d099bef16d365b3d0252328e0bfafd05e66de122042c50c4",
+        "code_sha256": "fe27f2fd13ebd86878c426429f36628375bd5c8e8b2915cc657332a5f1e586b5",
+        "executor_id": "builtin/json-normalize",
+        "kind": "candidate",
+        "plan_sha256": "f0a38696c62e821e84df4906c06f842c1870a2037fed7fb8f845586bb24b4b78"
+      },
+      "plan_sha256": "f0a38696c62e821e84df4906c06f842c1870a2037fed7fb8f845586bb24b4b78"
+    },
+    {
+      "name": "commit-reuse",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "33490bc38cdf417cb997584fad7ecc0d",
+      "actual_executor": {
+        "candidate_version_id": "35d6c4f7b5a99a8658505c6a10f54c145f4486287907c04e6d391b0fcc2d1fa0",
+        "code_sha256": "ba9061f99411dca45021da6d24ec1418f711ed760c653ad8bae0bfc2b03e3c65",
+        "executor_id": "builtin/json-normalize",
+        "kind": "candidate",
+        "plan_sha256": "6a8e802bc1c084c25a745bb336aefe112db5796592056a409522104865d54371"
+      },
+      "plan_sha256": "6a8e802bc1c084c25a745bb336aefe112db5796592056a409522104865d54371"
+    },
+    {
+      "name": "bad-output",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "383827639bf742aa8c55806ab27beb55",
+      "actual_executor": {
+        "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+        "executor_id": "builtin/json-normalize",
+        "kind": "builtin",
+        "plan_sha256": "0e5b5cec2a4a85106e57e7628e867d47cbf721a5b1cde02a4245ae6a0b34a69e"
+      },
+      "plan_sha256": "0e5b5cec2a4a85106e57e7628e867d47cbf721a5b1cde02a4245ae6a0b34a69e"
+    },
+    {
+      "name": "previous-reuse",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "3a20b70a1715451288e160b44e9e9bb6",
+      "actual_executor": {
+        "candidate_version_id": "35d6c4f7b5a99a8658505c6a10f54c145f4486287907c04e6d391b0fcc2d1fa0",
+        "code_sha256": "ba9061f99411dca45021da6d24ec1418f711ed760c653ad8bae0bfc2b03e3c65",
+        "executor_id": "builtin/json-normalize",
+        "kind": "candidate",
+        "plan_sha256": "4d20544d53ba37cac11b0f49ed077f26164b432568519ee93891167bb504be02"
+      },
+      "plan_sha256": "4d20544d53ba37cac11b0f49ed077f26164b432568519ee93891167bb504be02"
+    },
+    {
+      "name": "rollback-reuse",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "893222e817004c61819fde35bfca82f2",
+      "actual_executor": {
+        "candidate_version_id": "97d9bc5ec3cc6fb98ae553813e6e01a1b63586c2f4788ff17cecc2ed07772722",
+        "code_sha256": "f1d0765a0b89a614e6271ada9b618a898d78de42c92913c5aa358ea00f50b7ec",
+        "executor_id": "builtin/json-normalize",
+        "kind": "candidate",
+        "plan_sha256": "a1d3a28dbb731bb41fff29cebad692ebdf878e635f014efd303c54ab628aa39f"
+      },
+      "plan_sha256": "a1d3a28dbb731bb41fff29cebad692ebdf878e635f014efd303c54ab628aa39f"
+    },
+    {
+      "name": "bad-output-2",
+      "style": "minify",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "5a1d174ac3a947f6810f7aa32a8a080d",
+      "actual_executor": {
+        "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+        "executor_id": "builtin/json-normalize",
+        "kind": "builtin",
+        "plan_sha256": "346f465cfe57e367d2a47621efe9abbf844c1ace923ced881d762b2d3a24b976"
+      },
+      "plan_sha256": "346f465cfe57e367d2a47621efe9abbf844c1ace923ced881d762b2d3a24b976"
+    },
+    {
+      "name": "builtin-after-invalid",
+      "style": "pretty",
+      "truth_passed": true,
+      "status": "succeeded",
+      "run_id": "1d79dc49600f46c78a0d7a134fb915b7",
+      "actual_executor": {
+        "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+        "executor_id": "builtin/json-normalize",
+        "kind": "builtin",
+        "plan_sha256": "d6af499e5e678777dd12205b70b1aafca7557b74516f542cb22ce61eb534d1e0"
+      },
+      "plan_sha256": "d6af499e5e678777dd12205b70b1aafca7557b74516f542cb22ce61eb534d1e0"
+    }
+  ],
+  "checks": {
+    "default_recipe_auto_activated": true,
+    "repeated_cycle_did_not_reactivate": true,
+    "persisted_cli_proposal_auto_applied": true,
+    "both_styles_used_candidate": true,
+    "new_evidence_did_not_reactivate": true,
+    "intent_crash_aborted_without_switch": true,
+    "commit_crash_retained_applied": true,
+    "restart_reused_committed_candidate": true,
+    "bad_output_rejected_and_quarantined": true,
+    "bad_output_same_plan_builtin": true,
+    "previous_pointer_restored": true,
+    "next_task_reused_previous": true,
+    "manual_rollback_restored_previous": true,
+    "rollback_reused_previous": true,
+    "invalid_previous_restored_builtin": true,
+    "next_task_used_builtin": true,
+    "diagnostics_recorded_after_fallback": true,
+    "dormant_json_lookup_retained": true
+  },
+  "process_restarts": 28,
+  "cycle_count": 7,
+  "budget": {
+    "max_steps": 32,
+    "step_timeout": 60,
+    "max_proposals_per_cycle": 32,
+    "max_history_runs": 100
+  },
+  "proposal_origin": "external_injected_code",
+  "autonomous_code_generation": false,
+  "learning_benefit_estimated": false,
+  "candidate_reuse_count": 5,
+  "candidate_failure_diagnoses": [
+    {
+      "run_id": "383827639bf742aa8c55806ab27beb55",
+      "candidate_version_id": "1c310fe22b35c232f4bfd384e7fc9197d1ff7509684eb965961132d62cde1ca4",
+      "plan_sha256": "0e5b5cec2a4a85106e57e7628e867d47cbf721a5b1cde02a4245ae6a0b34a69e",
+      "evidence_sha256": "33b54ebf0ed7311c3a3166f8b68d1dfd8ed6540234bdfa1ab95e13744ff9501f"
+    },
+    {
+      "run_id": "5a1d174ac3a947f6810f7aa32a8a080d",
+      "candidate_version_id": "3df5329f04ffe6c131f2db9b2ecdc2d64564b5cf5a3b19a3a60722bc1f5b97c7",
+      "plan_sha256": "346f465cfe57e367d2a47621efe9abbf844c1ace923ced881d762b2d3a24b976",
+      "evidence_sha256": "65bb332b14c20868c5b1ddcc963de5e8d4efb10d818e39f449f8fd858e1e87a1"
+    }
+  ]
+}

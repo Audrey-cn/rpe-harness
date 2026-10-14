@@ -1,0 +1,22 @@
+{
+  "completed": true,
+  "timestamp_utc": "2026-10-14T04:48:38.763836+00:00",
+  "owned_root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v15-20261014-fv13br9i",
+  "owned_root_removed": true,
+  "active_marker_removed": true,
+  "removed": {
+    "entries": 17337,
+    "regular_files": 9923,
+    "logical_bytes": 237094172,
+    "allocated_bytes": 246468608
+  },
+  "removed_private_key_or_identity_files": 22,
+  "owned_processes_found_before": 0,
+  "owned_processes_signaled": 0,
+  "remaining_owned_processes": 0,
+  "live_session_roots_remaining": 0,
+  "cleanup_scope": "only this round owned root and matching marker",
+  "global_history_or_cache_cleared": false,
+  "daily_gateway_or_services_restarted": false,
+  "retained_evidence_is_selected_public_material": true
+}

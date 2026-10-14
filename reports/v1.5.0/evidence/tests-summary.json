@@ -1,0 +1,498 @@
+{
+  "full": {
+    "passed_tests": 801,
+    "passed_subtests": 3,
+    "junit_checks": 804,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "wall_seconds": 176.77,
+    "native_hermes_source_enabled": true
+  },
+  "scoped_evidence": [
+    {
+      "name": "cycle-cli-red.xml",
+      "sha256": "a2f81971e21e3611769470d6a26798d761b942cc833daea9d0e298a969a3326e",
+      "suites": [
+        {
+          "tests": "1",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "8.862"
+        }
+      ],
+      "failed_tests": [
+        "test_cli_persisted_code_is_consumed_and_identical_new_proposal_is_not_reactivated"
+      ]
+    },
+    {
+      "name": "cycle-final.xml",
+      "sha256": "73e8334848e3cc6fc18ae3bd4c44c769ce3d96a08f0019dc68ebe55707d535b2",
+      "suites": [
+        {
+          "tests": "37",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "39.968"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "cycle-green.xml",
+      "sha256": "c371394db5205ae74e1f24ef62c388dbd0e539c824c1a6a82e6fb5daec06ac14",
+      "suites": [
+        {
+          "tests": "35",
+          "failures": "11",
+          "errors": "0",
+          "skipped": "0",
+          "time": "28.496"
+        }
+      ],
+      "failed_tests": [
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-0]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-33]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-True]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-0]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-101]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-True]",
+        "test_history_over_budget_refuses_before_any_maintenance_write",
+        "test_generated_proposal_over_budget_refuses_before_maintenance_write",
+        "test_external_proposal_count_overflow_is_rejected_before_writes",
+        "test_fixed_unattended_sequence_observes_upgrade_rollback_and_crash_recovery",
+        "test_host_return_error_code_without_durable_run_becomes_fact_diagnostic"
+      ]
+    },
+    {
+      "name": "cycle-red.xml",
+      "sha256": "15f22c334e0abea7a594d46d4ce3206d401b13da402a961261684ff79adc77ae",
+      "suites": [
+        {
+          "tests": "22",
+          "failures": "22",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.949"
+        }
+      ],
+      "failed_tests": [
+        "test_default_json_recipe_and_dormant_experience_are_real_and_origin_is_explicit",
+        "test_json_recipe_keeps_same_pointer_for_new_evidence_and_second_style",
+        "test_successful_fallback_is_still_a_structured_failure_diagnosis",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-0]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-33]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_proposals-True]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-0]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-101]",
+        "test_cycle_budget_cannot_be_expanded_or_disabled[max_history_runs-True]",
+        "test_history_over_budget_refuses_before_any_maintenance_write",
+        "test_generated_proposal_over_budget_refuses_before_maintenance_write",
+        "test_external_proposer_gets_verified_feedback_not_fixture_answers_and_is_labeled",
+        "test_external_proposal_count_overflow_is_rejected_before_writes",
+        "test_fixed_unattended_sequence_observes_upgrade_rollback_and_crash_recovery",
+        "test_failed_source_load_keeps_real_completed_attempt_and_failure",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[max_steps-0]",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[max_steps-33]",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[max_steps-True]",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[step_timeout-0]",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[step_timeout-61]",
+        "test_driver_budget_is_fixed_and_invalid_values_do_not_create_scope[step_timeout-True]",
+        "test_cli_timeout_and_step_budget_retain_failed_attempt"
+      ]
+    },
+    {
+      "name": "full-suite-interrupted.xml",
+      "sha256": "3564204e5cb6ab5fb8aa1adefb6d35efd7050635a60d3d3b96f771bc99ac5247",
+      "suites": [
+        {
+          "tests": "579",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "88.898"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "full-suite.xml",
+      "sha256": "0c8b4da800c5e697889b8c3a6dd3c0dfae0917cdf2c9b77b07cfd726b95c817a",
+      "suites": [
+        {
+          "tests": "804",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "176.748"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-acceptance-authority-final.xml",
+      "sha256": "477b9278701ebb2e4ad8067ce7badbdfd34221de3b5e95802c956279230534a0",
+      "suites": [
+        {
+          "tests": "106",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.729"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-acceptance-authority-red.xml",
+      "sha256": "99b8247bee98f3bf09e456b660fd1a87ae2ba1e2d4badc58f2eb9c531e687623",
+      "suites": [
+        {
+          "tests": "1",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.134"
+        }
+      ],
+      "failed_tests": [
+        "test_json_certificate_names_loaded_authorities_even_if_files_change_before_json_import"
+      ]
+    },
+    {
+      "name": "json-acceptance-final.xml",
+      "sha256": "0abf5858ec17b3b25960e45e524f407e9bdb92eea3279c4aa49afdc120931e78",
+      "suites": [
+        {
+          "tests": "28",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.204"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-acceptance-green.xml",
+      "sha256": "c2c01993f3335a790835b3debcdd911d618fc1c048c94a9cc69790affd445102",
+      "suites": [
+        {
+          "tests": "28",
+          "failures": "2",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.812"
+        }
+      ],
+      "failed_tests": [
+        "test_full_real_suite_and_certificate_report_execution_truth[json_executor]",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_recipe]"
+      ]
+    },
+    {
+      "name": "json-acceptance-green2.xml",
+      "sha256": "c0b1e2dbb1bec87829bd4238cd1d5d5155c9637810726917cb5ea9c15a7bee09",
+      "suites": [
+        {
+          "tests": "28",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "2.888"
+        }
+      ],
+      "failed_tests": [
+        "test_full_real_suite_and_certificate_report_execution_truth[json_executor]"
+      ]
+    },
+    {
+      "name": "json-acceptance-green3.xml",
+      "sha256": "1484c1239a21af2905f434fe68db76b47c22974a57fd68dd37a7dd4f110aeb7b",
+      "suites": [
+        {
+          "tests": "51",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "13.550"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-acceptance-hardening-red.xml",
+      "sha256": "99fe4aaa1d0aa80d085f5866307b3b2df6c17c6423fa095359c6b6c4ea11a84b",
+      "suites": [
+        {
+          "tests": "22",
+          "failures": "3",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.101"
+        }
+      ],
+      "failed_tests": [
+        "test_full_real_suite_and_certificate_report_execution_truth[json_executor]",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_recipe]",
+        "test_revision_scope_is_json_specific_and_example_cannot_import_rpe"
+      ]
+    },
+    {
+      "name": "json-acceptance-red.xml",
+      "sha256": "6793da6f0aef32f94fc238ddc89aaa8b48e275ed00504d311ab86b5422931d63",
+      "suites": [
+        {
+          "tests": "22",
+          "failures": "22",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.132"
+        }
+      ],
+      "failed_tests": [
+        "test_literal_fixture_suite_covers_styles_root_types_and_strict_rejections",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_executor]",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_recipe]",
+        "test_rejecting_everything_does_not_produce_a_valid_certificate",
+        "test_oracle_rejecting_an_invalid_input_output_is_not_candidate_parser_rejection",
+        "test_unknown_errors_and_timeout_cannot_masquerade_as_parser_rejections[def prepare(plan, staging_path):\\n    missing_name\\n]",
+        "test_unknown_errors_and_timeout_cannot_masquerade_as_parser_rejections[def prepare(plan, staging_path):\\n    raise RuntimeError(\"broken environment\")\\n]",
+        "test_unknown_errors_and_timeout_cannot_masquerade_as_parser_rejections[import time\\ndef prepare(plan, staging_path):\\n    time.sleep(10)\\n]",
+        "test_only_explicit_parser_rejections_have_typed_sandbox_outcomes[ValueError]",
+        "test_only_explicit_parser_rejections_have_typed_sandbox_outcomes[UnicodeError]",
+        "test_writing_a_result_before_rejection_is_not_an_atomic_parser_rejection",
+        "test_json_and_csv_read_budgets_are_enforced_during_source_read",
+        "test_missing_platform_is_a_real_failure_before_any_false_rejection",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change0]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change1]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change2]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change3]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change4]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change5]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change6]",
+        "test_json_recipe_cannot_change_trusted_procedure_or_cross_contract[change7]",
+        "test_revision_scope_is_json_specific_and_example_cannot_import_rpe"
+      ]
+    },
+    {
+      "name": "json-acceptance-review-final.xml",
+      "sha256": "a45197ff20dbce99cb453abcdd090f99f71a8e531ff527e182f0c5364830b080",
+      "suites": [
+        {
+          "tests": "29",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.197"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-acceptance-review-red.xml",
+      "sha256": "8d1490c0a54f14fc7f8419a71bf532549156bd2a34c22d7372541d770210f811",
+      "suites": [
+        {
+          "tests": "23",
+          "failures": "4",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.165"
+        }
+      ],
+      "failed_tests": [
+        "test_literal_fixture_suite_covers_styles_root_types_and_strict_rejections",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_executor]",
+        "test_full_real_suite_and_certificate_report_execution_truth[json_recipe]",
+        "test_json_certificate_names_loaded_lifecycle_even_if_source_changes_before_json_import"
+      ]
+    },
+    {
+      "name": "json-core-budget-red.xml",
+      "sha256": "183c0d5736f292184a012f16f82cb99eb9c1dd8a0f6750b9f4b5cb5b095b65dd",
+      "suites": [
+        {
+          "tests": "1",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.136"
+        }
+      ],
+      "failed_tests": [
+        "test_csv_candidate_preflight_applies_read_budget_before_allocation"
+      ]
+    },
+    {
+      "name": "json-core-csv.xml",
+      "sha256": "51c0f706872b741ce8f05f67ac33be6505ffac05910b84e5030d418b358a73cc",
+      "suites": [
+        {
+          "tests": "36",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "10.675"
+        }
+      ],
+      "failed_tests": [
+        "test_explicit_empty_key_rejection_activates_despite_random_diagnostic_paths"
+      ]
+    },
+    {
+      "name": "json-core-final.xml",
+      "sha256": "205ea791235620ae5f72d7c6ae0f4522ec2a15f7b661fd04ddda3b64ce2eb994",
+      "suites": [
+        {
+          "tests": "57",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "66.983"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-core-green.xml",
+      "sha256": "45cd0f9208295c3d251b39bef2189d2fd36e54fe48c8a3f1da0a72cd199fd7c3",
+      "suites": [
+        {
+          "tests": "56",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "69.154"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-core-post-review.xml",
+      "sha256": "9e443de632b94caf37ccbf10d0bfe54d508b8e04215dff55a0ac2d7caaa2628b",
+      "suites": [
+        {
+          "tests": "5",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "19.703"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-core-red.xml",
+      "sha256": "f2b2125478b5ba697fc11eca5945b5bf1105393a813950c1590fc4922e6336d6",
+      "suites": [
+        {
+          "tests": "7",
+          "failures": "7",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.884"
+        }
+      ],
+      "failed_tests": [
+        "test_json_revisions_are_explicit_and_csv_default_remains",
+        "test_json_recipe_validation_activation_and_style_scope",
+        "test_evidence_must_match_registered_contract[json_executor]",
+        "test_evidence_must_match_registered_contract[json_recipe]",
+        "test_evidence_must_match_registered_contract[csv_executor]",
+        "test_evidence_must_match_registered_contract[recipe]",
+        "test_csv_certificate_cannot_be_reused_for_json"
+      ]
+    },
+    {
+      "name": "json-core-review-green.xml",
+      "sha256": "227ad7e46e23115f2c1d6c20fffbee0ffe41f6b42f280d74d4e1417342ec044a",
+      "suites": [
+        {
+          "tests": "7",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "7.516"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "json-core-review-red.xml",
+      "sha256": "67aef035e14fa90ceda3eaf39fe970a861dbeb2ef0716f4923f8acaac842f565",
+      "suites": [
+        {
+          "tests": "4",
+          "failures": "4",
+          "errors": "0",
+          "skipped": "0",
+          "time": "6.954"
+        }
+      ],
+      "failed_tests": [
+        "test_fifo_candidate_artifact_is_bounded_and_falls_back",
+        "test_grown_candidate_artifact_rejected_before_unbounded_allocation",
+        "test_immutable_artifact_reuse_does_not_read_unbounded_file",
+        "test_manual_rollback_does_not_resurrect_concurrently_quarantined_previous"
+      ]
+    },
+    {
+      "name": "json-core-rollback-red.xml",
+      "sha256": "89f9e90aa4e472249cb3aaae84bbc7a2f2bc50513482dbe4142ff9daf7f65254",
+      "suites": [
+        {
+          "tests": "1",
+          "failures": "1",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.897"
+        }
+      ],
+      "failed_tests": [
+        "test_manual_json_rollback_rechecks_previous_evidence"
+      ]
+    },
+    {
+      "name": "task3-review-green.xml",
+      "sha256": "4e6b3a9579991545902609ef0cb1b00f4c07d04ec9d60e852f520240b63ff29e",
+      "suites": [
+        {
+          "tests": "11",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.258"
+        }
+      ],
+      "failed_tests": []
+    },
+    {
+      "name": "task3-review-red.xml",
+      "sha256": "566716c449b03a3a98ac2fc61b2dd9e8c99410aa85c5fe5ec42494e8574dfc13",
+      "suites": [
+        {
+          "tests": "3",
+          "failures": "3",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.074"
+        }
+      ],
+      "failed_tests": [
+        "test_inventory_error_still_stops_and_waits_owned_child_and_reports_failure",
+        "test_dormant_step_checks_bound_persisted_candidate_failure_facts[False]",
+        "test_dormant_step_checks_bound_persisted_candidate_failure_facts[True]"
+      ]
+    }
+  ],
+  "raw_failed_diagnostics_retained": false,
+  "interrupted_full_run": {
+    "passed_before_interrupt": 576,
+    "seconds": 88.91,
+    "completed": false,
+    "reason": "stopped to apply scoped review fixes before final frozen-source full run"
+  }
+}

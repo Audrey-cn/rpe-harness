@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "reviewers": [
+    "v15_json_acceptance",
+    "v15_assets",
+    "v15_unattended",
+    "v15_final_review"
+  ],
+  "method": "cross-author scoped static review with RED/GREEN regressions plus independent whole-branch and actual evidence review",
+  "remaining_blockers": [],
+  "findings": [
+    {
+      "id": "evidence_capability_format_binding",
+      "status": "fixed"
+    },
+    {
+      "id": "csv_preflight_bounded_reads",
+      "status": "fixed"
+    },
+    {
+      "id": "candidate_fifo_or_large_artifact_reads",
+      "priority": "P1",
+      "status": "fixed"
+    },
+    {
+      "id": "manual_rollback_reactivated_quarantined_previous",
+      "priority": "P1",
+      "status": "fixed"
+    },
+    {
+      "id": "loaded_lifecycle_contract_sandbox_revision_identity",
+      "priority": "P2",
+      "status": "fixed"
+    },
+    {
+      "id": "complete_certificate_type_and_missing_truth_field",
+      "priority": "P2",
+      "status": "fixed"
+    },
+    {
+      "id": "fallback_diagnosis_not_proved_by_proposal_count",
+      "priority": "P2",
+      "status": "fixed"
+    },
+    {
+      "id": "process_inventory_failure_bypassed_exact_child_cleanup",
+      "priority": "P2",
+      "status": "fixed"
+    },
+    {
+      "id": "same_code_new_cli_proposal_reactivated_pointer",
+      "status": "fixed"
+    }
+  ],
+  "limits": [
+    "candidate code supplied externally; default automatically derives JSON recipes",
+    "bounded batch: 32 proposals/100 runs; driver<=32 steps<=60 seconds each",
+    "macOS sandbox; RSS soft threshold",
+    "JSON Registry export ABI remains unsupported",
+    "no long-term causal learning benefit or autonomous code creation claim"
+  ]
+}

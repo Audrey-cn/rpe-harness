@@ -1,0 +1,52 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/audrey/项目/rpe-harness
+configfile: pyproject.toml
+testpaths: tests
+collected 801 items
+
+tests/test_asset_cli.py ..                                               [  0%]
+tests/test_asset_lifecycle.py ...........                                [  1%]
+tests/test_asset_trust.py .............................................. [  7%]
+..........                                                               [  8%]
+tests/test_assets.py ................................................... [ 14%]
+.....                                                                    [ 15%]
+tests/test_basic_validation.py ......                                    [ 16%]
+tests/test_bridge.py ..............                                      [ 18%]
+tests/test_candidate_rss.py ......                                       [ 18%]
+tests/test_candidates.py .......................                         [ 21%]
+tests/test_capability.py .....................                           [ 24%]
+tests/test_catalog.py ...............................................    [ 30%]
+tests/test_causal_graph.py ........                                      [ 31%]
+tests/test_cli.py .........                                              [ 32%]
+tests/test_contracts.py ...................................              [ 36%]
+tests/test_evolution.py .............                                    [ 38%]
+tests/test_execution.py ................................................ [ 44%]
+                                                                         [ 44%]
+tests/test_hermes_bootstrap.py ..........                                [ 45%]
+tests/test_hermes_broker.py ................................             [ 49%]
+tests/test_hermes_broker_client.py ...........                           [ 50%]
+tests/test_hermes_gate.py ...........................                    [ 54%]
+tests/test_hermes_integration.py ....................................... [ 59%]
+...                                                                      [ 59%]
+tests/test_hermes_json.py ...........................                    [ 62%]
+tests/test_hermes_native.py ..............................               [ 66%]
+tests/test_hermes_session.py ............................                [ 70%]
+tests/test_json_candidates.py .........................                  [ 73%]
+tests/test_json_candidates_acceptance.py .......................         [ 76%]
+tests/test_json_capability.py .......................................... [ 81%]
+...................................                                      [ 85%]
+tests/test_json_cycle.py ..............                                  [ 87%]
+tests/test_json_runtime.py ...........                                   [ 88%]
+tests/test_mcsi.py ..................                                    [ 91%]
+tests/test_path_binding.py .......                                       [ 92%]
+tests/test_prepublish_cli.py .                                           [ 92%]
+tests/test_recovery.py ..............                                    [ 93%]
+tests/test_repeated.py .........                                         [ 95%]
+tests/test_reuse_sequence.py ...                                         [ 95%]
+tests/test_runtime.py .............                                      [ 97%]
+tests/test_server.py ...........                                         [ 98%]
+tests/test_unattended_sequence.py .............                          [100%]
+
+- generated xml file: /private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v15-20261014-fv13br9i/evidence/full-suite.xml -
+======================= 801 passed in 176.77s (0:02:56) ========================
