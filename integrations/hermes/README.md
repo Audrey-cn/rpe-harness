@@ -1,6 +1,8 @@
-# Hermes 1.5 接入
+# Hermes 1.6 接入
 
 推荐使用仓库或已安装 wheel 的 `rpe-harness hermes run`。它按次加载原生插件，结束后清理临时宿主 home，不需要长期安装到日常 Hermes 配置。
+
+1.6 新增 `--entry-mode skills --catalog-root ...`：发现真实快照、原生 skill_view 加载、来源上下文恢复、rpe_task 执行和独立 gate。目录及恢复由认证父入口处理，宿主读取隔离快照。原生对照可以加载同一快照；详细配置与边界见 [真实技能](../../docs/real-skills.md)。
 
 1.5 的真实 JSON 任务仍通过相同 `rpe_task`、固定契约锚、宿主外 CLI 与最终独立 gate；新增候选在 Harness 侧选择和验收，模型不选择未经验证的执行器。任务产物记录实际 JSON candidate/recipe 版本和内容hash，候选失败保留结构化步骤及内置回退结果。维护和升级入口见 [JSON 升级](../../docs/json-upgrades.md)；它没有向日常 Hermes 安装常驻维护进程。
 

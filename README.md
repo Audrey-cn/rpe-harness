@@ -1,4 +1,4 @@
-# RPE-Harness 1.5
+# RPE-Harness 1.6
 
 本地能力路由与可验证任务执行器。1.0 支持 CSV/XLSX 按明确关键列去重，独立检查产物、保留原文件、禁止覆盖输出，并把事件、执行阶段、验证和结果持久保存到 SQLite。
 
@@ -9,6 +9,8 @@
 1.4 增加 `json.normalize/v1` 明确契约、双签名本地 Registry 发布包与离线发布前验收。JSON 和已有 CSV/XLSX 共用持久执行、独立验证、无覆盖发布、恢复与反馈；JSON 候选仍需专门可信验收集，不能借 CSV 证书自动激活。版本计划见 [1.4 todo](docs/superpowers/plans/2026-10-14-rpe-v14.md)，本地发布包命令见 [Registry 发布前验收](docs/registry-prepublish.md)。
 
 1.5 建立 JSON 候选专用验收和独立版本槽，维护循环自动整理已验证 JSON 配方，并处理外部代码提案；生产失败隔离并恢复有效前版本或内置执行器。无人值守验证覆盖跨进程升级、崩溃、错误产物与回滚，自动操作仍受专用证书和固定预算约束。见 [JSON 升级说明](docs/json-upgrades.md)与[1.5 todo](docs/superpowers/plans/2026-10-14-rpe-v15.md)。
+
+1.6 增加真实技能快照与原生 XLSX helper 适配、发现/加载/恢复/调用的独立验收、按来源恢复必要上下文，以及可超过100条历史运行的持久维护。升级生成器沿用既有 ABI，只产生待验收提案。使用与边界见 [真实技能和维护](docs/real-skills.md)，执行 todo 见 [1.6 计划](docs/superpowers/plans/2026-10-14-rpe-v16.md)。
 
 ## 本机快速使用
 

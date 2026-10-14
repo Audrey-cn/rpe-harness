@@ -1,0 +1,40 @@
+{
+  "records": 24,
+  "aggregate_fields_match": true,
+  "record_hashes_match": true,
+  "formal_native_accepted": 0,
+  "arms": {
+    "native": {
+      "attempts_recorded": 12,
+      "finalized_sessions": 12,
+      "artifact_exact": 9,
+      "business_artifact_accuracy": 0.75,
+      "receipt_link_passed": 12,
+      "helper_proof_counts": {
+        "invocation_seen_success_unknown": 2,
+        "unproven": 9,
+        "strict_success": 1
+      },
+      "observed_total_tokens": 928276,
+      "usage_coverage_complete": true,
+      "billed_cost": null,
+      "api_requests": 80,
+      "elapsed_seconds": 712.532
+    },
+    "rpe": {
+      "attempts_recorded": 12,
+      "finalized_sessions": 12,
+      "artifact_exact": 11,
+      "business_artifact_accuracy": 0.9166666666666666,
+      "receipt_link_passed": 0,
+      "helper_proof_counts": {
+        "not_applicable": 12
+      },
+      "observed_total_tokens": 583847,
+      "usage_coverage_complete": true,
+      "billed_cost": null,
+      "api_requests": 70,
+      "elapsed_seconds": 592.385
+    }
+  }
+}

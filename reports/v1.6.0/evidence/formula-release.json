@@ -1,0 +1,197 @@
+{
+  "records": [
+    {
+      "index": 0,
+      "gate": {
+        "status": "succeeded",
+        "verified": true,
+        "harness_verified": true,
+        "errors": [],
+        "contract_sha256": "b1b83ba07bf7c31afb0701dcd36b792533df9c9c2aea7b3b24faf814fb12e403",
+        "plan_sha256": "19a59508573a83f9a05889add61d54ef96e33b9fb48f39a20fb6bdfdfe62978b",
+        "verification": {
+          "passed": true,
+          "checks": {
+            "executor_revision": true,
+            "verifier_revision": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "independent_workbook_result": true
+          },
+          "plan_sha256": "19a59508573a83f9a05889add61d54ef96e33b9fb48f39a20fb6bdfdfe62978b",
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc",
+          "input_bytes": 5350,
+          "output_bytes": 133,
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+          "mode": "formulas",
+          "root_type": "object"
+        },
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "19a59508573a83f9a05889add61d54ef96e33b9fb48f39a20fb6bdfdfe62978b",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 133,
+          "path": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/formula-release/0/output.json",
+          "plan_sha256": "19a59508573a83f9a05889add61d54ef96e33b9fb48f39a20fb6bdfdfe62978b",
+          "published": true,
+          "root_type": "object",
+          "sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc"
+        },
+        "run_id": "9e933f44f5d54c888b3069b95e150d17",
+        "recovery_id": "4ea5fe11255e406789a5df38f9cdb13f",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "execution_kind": "native_helper",
+        "cold_recovery_verified": false
+      },
+      "artifact_exact": true,
+      "accepted": true,
+      "session_id": "20261014_160121_739ebe",
+      "usage": {
+        "api_requests": 5,
+        "missing_observations": 0,
+        "requests_with_usage": 5,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 39242,
+        "prompt_tokens": 38463,
+        "output_tokens": 779,
+        "input_tokens": 15679,
+        "total_tokens": 39242,
+        "cache_read_tokens": 22784,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 409
+      },
+      "elapsed_seconds": 41.362,
+      "process_cleanup": {
+        "tracked_descendants": 23,
+        "signaled_descendants": 0,
+        "remaining_descendants": [],
+        "cleanup_complete": true,
+        "external_executor_cleanup_complete": true,
+        "external_executor_tracked_children": 1,
+        "external_executor_remaining_children": [],
+        "errors": []
+      },
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "gate": {
+        "status": "succeeded",
+        "verified": true,
+        "harness_verified": true,
+        "errors": [],
+        "contract_sha256": "33f4a2d07e92a9db809af72dc78bea9b0c45f02b13b6a9173f2c4e3b416916ac",
+        "plan_sha256": "118a362ac244f0ae49ab888dee8d79b66110fe41a3b692a6a840f75b53af0edf",
+        "verification": {
+          "passed": true,
+          "checks": {
+            "executor_revision": true,
+            "verifier_revision": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "independent_workbook_result": true
+          },
+          "plan_sha256": "118a362ac244f0ae49ab888dee8d79b66110fe41a3b692a6a840f75b53af0edf",
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc",
+          "input_bytes": 5350,
+          "output_bytes": 133,
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+          "mode": "formulas",
+          "root_type": "object"
+        },
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "118a362ac244f0ae49ab888dee8d79b66110fe41a3b692a6a840f75b53af0edf",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 133,
+          "path": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/formula-release/1/output.json",
+          "plan_sha256": "118a362ac244f0ae49ab888dee8d79b66110fe41a3b692a6a840f75b53af0edf",
+          "published": true,
+          "root_type": "object",
+          "sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc"
+        },
+        "run_id": "fbe953b16197486ea10044d5719c049d",
+        "recovery_id": "011907e5301f472b858fbd315d9860ea",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "execution_kind": "native_helper",
+        "cold_recovery_verified": false
+      },
+      "artifact_exact": true,
+      "accepted": true,
+      "session_id": "20261014_160203_b3c7d7",
+      "usage": {
+        "api_requests": 5,
+        "missing_observations": 0,
+        "requests_with_usage": 5,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 41007,
+        "prompt_tokens": 39658,
+        "output_tokens": 1349,
+        "input_tokens": 16490,
+        "total_tokens": 41007,
+        "cache_read_tokens": 23168,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 744
+      },
+      "elapsed_seconds": 49.013,
+      "process_cleanup": {
+        "tracked_descendants": 23,
+        "signaled_descendants": 0,
+        "remaining_descendants": [],
+        "cleanup_complete": true,
+        "external_executor_cleanup_complete": true,
+        "external_executor_tracked_children": 1,
+        "external_executor_remaining_children": [],
+        "errors": []
+      },
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      }
+    }
+  ],
+  "passed": true
+}

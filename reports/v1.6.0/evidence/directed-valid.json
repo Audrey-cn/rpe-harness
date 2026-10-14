@@ -1,0 +1,236 @@
+{
+  "scope": "two directed probes x native/RPE; separate from formal24",
+  "fingerprint": "1417a722162ad2b4019791cb63afea258e5152880e2787be9f66ef92de7a2f67",
+  "records": [
+    {
+      "trial_id": "required-source-context-native",
+      "probe_id": "required-source-context",
+      "arm": "native",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/workspaces/required-source-context-native",
+      "input_name": "input.csv",
+      "output_name": "out.csv",
+      "input_sha256": "3edb00e3ad4964d300adf3b9bfe9b2a22c1c5fe0f50ac94994f8f33ce293e274",
+      "prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "context_sha256": "ee1ea0ce08aa89008034c5893b509dc84d0ca6a03594e8f63ea96ba32cb3b518",
+      "fingerprint": "1417a722162ad2b4019791cb63afea258e5152880e2787be9f66ef92de7a2f67",
+      "status": "completed",
+      "accepted": true,
+      "session_id": "20261014_155538_0221bc",
+      "usage": {
+        "api_requests": 7,
+        "missing_observations": 0,
+        "requests_with_usage": 7,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 119272,
+        "prompt_tokens": 111995,
+        "output_tokens": 7277,
+        "input_tokens": 15099,
+        "total_tokens": 119272,
+        "cache_read_tokens": 96896,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 4775
+      },
+      "elapsed_seconds": 184.355,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "billed_cost": null,
+      "completed": true,
+      "actual_prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "comparable": true,
+      "context_source_unchanged": true,
+      "artifact_exact": true,
+      "no_artifact": false,
+      "gate": {
+        "durable_linked": true,
+        "receipt_proof": {
+          "passed": true,
+          "stream_has_call_ids": false,
+          "stream_identity_policy": "ID-less stream entries match (name,input SHA) equivalence classes; no stream call ID is inferred or invented",
+          "equivalence_classes": [
+            {
+              "tool_name": "read_file",
+              "arguments_sha256": "cd1112ce81f16c9ddb9079f8b12e358d2130d83da681d45c948f3f0a5169e805",
+              "count": 1
+            },
+            {
+              "tool_name": "skill_view",
+              "arguments_sha256": "4a315f4fd2103216242ba873f6cf4c215689f901a19911d7d2df91763e2fc485",
+              "count": 1
+            },
+            {
+              "tool_name": "skills_list",
+              "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "48326acf43e097fc3a059074cba7265575e2f608d78ca535fe00a893f3727560",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "80cee6145f422e0ae299f7ab1631a0e7e691acad193c5a9505f9b01e277a1efd",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "940b1bfdc55904380e8f07f4aa413e26a2e6648c7fa226252b6c33bd24a46d50",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "a63b61365622b31bcc686bdf06987c824458a9ed6ef9e459e0c488e6f7763e6b",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "b89b37c61d2c8ff13b0ea814971e4d32761c05507b888c655022fd108800df38",
+              "count": 1
+            },
+            {
+              "tool_name": "terminal",
+              "arguments_sha256": "ffe633a2a2bfa74c0c0d95206272839b00ea0f22842bfbc559e09162c4fd538b",
+              "count": 1
+            },
+            {
+              "tool_name": "write_file",
+              "arguments_sha256": "d137fb161a05db9247c9acf935e0a36d9b354e4645ca9a0a57dbf6c8013b66ff",
+              "count": 1
+            }
+          ],
+          "errors": []
+        },
+        "load_call_id": "call_8c5e6875bbab4e09a0e5dae1",
+        "execution_call_ids": [
+          "call_e4dd9949c17c4a25a18dcd48"
+        ],
+        "execution_kind": "native_csv_contract"
+      },
+      "output_sha256": "bf6d07bb6238b77338670ccb9eddda5e73166a06eebccce37d260ded8ce005c6"
+    },
+    {
+      "trial_id": "required-source-context-rpe",
+      "probe_id": "required-source-context",
+      "arm": "rpe",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/workspaces/required-source-context-rpe",
+      "input_name": "input.csv",
+      "output_name": "out.csv",
+      "input_sha256": "3edb00e3ad4964d300adf3b9bfe9b2a22c1c5fe0f50ac94994f8f33ce293e274",
+      "prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "context_sha256": "ee1ea0ce08aa89008034c5893b509dc84d0ca6a03594e8f63ea96ba32cb3b518",
+      "fingerprint": "1417a722162ad2b4019791cb63afea258e5152880e2787be9f66ef92de7a2f67",
+      "status": "completed",
+      "accepted": true,
+      "session_id": "20261014_155842_b46d3a",
+      "usage": {
+        "api_requests": 6,
+        "missing_observations": 0,
+        "requests_with_usage": 6,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 59618,
+        "prompt_tokens": 56223,
+        "output_tokens": 3395,
+        "input_tokens": 20255,
+        "total_tokens": 59618,
+        "cache_read_tokens": 35968,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 2431
+      },
+      "elapsed_seconds": 108.543,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "billed_cost": null,
+      "completed": true,
+      "actual_prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "comparable": true,
+      "context_source_unchanged": true,
+      "artifact_exact": true,
+      "no_artifact": false,
+      "gate": {
+        "status": "succeeded",
+        "verified": true,
+        "harness_verified": true,
+        "errors": [],
+        "contract_sha256": "cf4d3fa0c923a59a98b09eb91e2b2dea46678c044f469ab679206572a73f5493",
+        "plan_sha256": "2bbf8c30f007f93d7ef3afa34575e691375cd526bddf8e36875e4050d5a495e6",
+        "verification": {
+          "passed": true,
+          "input_sha256": "3edb00e3ad4964d300adf3b9bfe9b2a22c1c5fe0f50ac94994f8f33ce293e274",
+          "output_sha256": "bf6d07bb6238b77338670ccb9eddda5e73166a06eebccce37d260ded8ce005c6",
+          "checks": {
+            "source_unchanged": true,
+            "request_bound": true,
+            "headers_preserved": true,
+            "first_records_preserved": true,
+            "record_order_preserved": true,
+            "duplicates_removed": true
+          },
+          "plan_sha256": "2bbf8c30f007f93d7ef3afa34575e691375cd526bddf8e36875e4050d5a495e6",
+          "input_rows": 3,
+          "output_rows": 2,
+          "removed_rows": 1
+        },
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+            "executor_id": "builtin/csv-deduplicate",
+            "kind": "builtin",
+            "plan_sha256": "2bbf8c30f007f93d7ef3afa34575e691375cd526bddf8e36875e4050d5a495e6"
+          },
+          "format": "csv",
+          "input_rows": 3,
+          "input_sha256": "3edb00e3ad4964d300adf3b9bfe9b2a22c1c5fe0f50ac94994f8f33ce293e274",
+          "output_rows": 2,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/workspaces/required-source-context-rpe/out.csv",
+          "plan_sha256": "2bbf8c30f007f93d7ef3afa34575e691375cd526bddf8e36875e4050d5a495e6",
+          "published": true,
+          "removed_rows": 1,
+          "sha256": "bf6d07bb6238b77338670ccb9eddda5e73166a06eebccce37d260ded8ce005c6"
+        },
+        "run_id": "15d0be8728e24e71b793571a5f15699c",
+        "recovery_id": "2f4087c19da1460483c546d4c4f27e94",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "execution_kind": "rpe_contract",
+        "cold_recovery_verified": false,
+        "context_evidence": {
+          "recovery_id": "88f50e27e9d24553a528078a59c0548a",
+          "session_id": "20261014_155842_b46d3a",
+          "recovered_fields": [
+            "key_columns"
+          ],
+          "provenance": {
+            "key_columns": [
+              {
+                "event_id": "prior-turn:0e3e6071e0960d27",
+                "sha256": "236a9c40d9e8e4c13900a7d9c991f6cc3b7e964a9784d2250138e66f0124dccf",
+                "source": "user"
+              }
+            ]
+          }
+        }
+      },
+      "output_sha256": "bf6d07bb6238b77338670ccb9eddda5e73166a06eebccce37d260ded8ce005c6"
+    }
+  ],
+  "passed": true,
+  "offline_context_passed": true
+}

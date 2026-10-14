@@ -1,0 +1,2048 @@
+{
+  "accepted_sessions": 10,
+  "cold_policy": "one case is catalog-cold, never disabled; native has no temperature visibility",
+  "comparison_scope": "24 supported XLSX sessions; directed probes reported separately",
+  "completed_sessions": 24,
+  "cost_policy": "provider-observed tokens are not billed cost; absent cost/usage remains null",
+  "directed_probes": [
+    {
+      "capability": "xlsx.inspect",
+      "expected": "selected nonexistent sheet is refused and no output is published",
+      "probe_id": "missing-sheet-refusal",
+      "status": "requires_separate_live_evidence"
+    },
+    {
+      "capability": "tabular.deduplicate",
+      "expected": "missing key_columns restored only from session-bound captured source facts; native receives identical source text and explicit source facts; native uses CSV contract rather than claiming original XLSX-helper execution",
+      "probe_id": "required-source-context",
+      "status": "requires_separate_live_evidence"
+    }
+  ],
+  "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+  "helper_python": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/installed/bin/python",
+  "helper_python_version": {
+    "openpyxl": "3.1.5",
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]"
+  },
+  "model_identities_consistent": true,
+  "model_identity_coverage": 24,
+  "pilot_policy": "pilot records remain in separate roots; formal sessions are never replaced",
+  "planned_sessions": 24,
+  "records": [
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_mixed",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 42.389,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 1,
+      "session_id": "20261014_152103_97a609",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "terminal",
+        "terminal",
+        "read_file"
+      ],
+      "trial_id": "rows_mixed-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 41856,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 7978,
+        "known_total_tokens": 51192,
+        "missing_observations": 0,
+        "output_tokens": 1358,
+        "prompt_tokens": 49834,
+        "reasoning_tokens": 578,
+        "requests_with_usage": 5,
+        "total_tokens": 51192
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r1-native"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_mixed",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 46.649,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "28d1ed09ffa8c5323b43091bd78041e58348d9a9b34be5e3a37e505255a3a28b",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 4989,
+          "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+          "output_bytes": 158,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r1-rpe/output.json",
+          "plan_sha256": "28d1ed09ffa8c5323b43091bd78041e58348d9a9b34be5e3a37e505255a3a28b",
+          "published": true,
+          "root_type": "object",
+          "sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "bd274417e32885098ccabbc24d36c7ddf5c27baae0c23f65b9fa7642b2f35e95",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "28d1ed09ffa8c5323b43091bd78041e58348d9a9b34be5e3a37e505255a3a28b",
+        "recovery_id": "538359edecbd454187820bd7c967e780",
+        "run_id": "904ae65821c446239e03d507748f2084",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 4989,
+          "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+          "mode": "rows",
+          "output_bytes": 158,
+          "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+          "passed": true,
+          "plan_sha256": "28d1ed09ffa8c5323b43091bd78041e58348d9a9b34be5e3a37e505255a3a28b",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 1,
+      "session_id": "20261014_152146_d38684",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "rows_mixed-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 23040,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 16145,
+        "known_total_tokens": 40401,
+        "missing_observations": 0,
+        "output_tokens": 1216,
+        "prompt_tokens": 39185,
+        "reasoning_tokens": 754,
+        "requests_with_usage": 5,
+        "total_tokens": 40401
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r1-rpe"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 30.413,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "b05f6649a53ff8306b2b9c8a5af5db10431995cc64a25ef4348291e9461c4e5b",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 59,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r1-rpe/output.json",
+          "plan_sha256": "b05f6649a53ff8306b2b9c8a5af5db10431995cc64a25ef4348291e9461c4e5b",
+          "published": true,
+          "root_type": "object",
+          "sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a"
+        },
+        "cold_recovery_verified": true,
+        "contract_sha256": "af04df7f7fbd3691edcbe1167dfc51bbe36ee49db916f5bfb115b066660bd830",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "b05f6649a53ff8306b2b9c8a5af5db10431995cc64a25ef4348291e9461c4e5b",
+        "recovery_id": "d77ad4aa8526423c833d07cb1cf3cd48",
+        "run_id": "7715996186e84845a7b0313c8884b763",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "mode": "rows",
+          "output_bytes": 59,
+          "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+          "passed": true,
+          "plan_sha256": "b05f6649a53ff8306b2b9c8a5af5db10431995cc64a25ef4348291e9461c4e5b",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+      "prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "repeat": 1,
+      "session_id": "20261014_152233_060c2c",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "cold",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "rows_second-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 22784,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 15907,
+        "known_total_tokens": 39476,
+        "missing_observations": 0,
+        "output_tokens": 785,
+        "prompt_tokens": 38691,
+        "reasoning_tokens": 219,
+        "requests_with_usage": 5,
+        "total_tokens": 39476
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r1-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 47.167,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+      "prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "repeat": 1,
+      "session_id": "20261014_152304_d5a8b7",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "cold",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "read_file",
+        "terminal",
+        "terminal",
+        "terminal"
+      ],
+      "trial_id": "rows_second-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 53760,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 6544,
+        "known_total_tokens": 61715,
+        "missing_observations": 0,
+        "output_tokens": 1411,
+        "prompt_tokens": 60304,
+        "reasoning_tokens": 507,
+        "requests_with_usage": 6,
+        "total_tokens": 61715
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r1-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_empty",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 30.424,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 1,
+      "session_id": "20261014_152351_fae44d",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "skill_view",
+        "terminal"
+      ],
+      "trial_id": "rows_empty-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 4,
+        "cache_read_tokens": 34688,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 6658,
+        "known_total_tokens": 42202,
+        "missing_observations": 0,
+        "output_tokens": 856,
+        "prompt_tokens": 41346,
+        "reasoning_tokens": 307,
+        "requests_with_usage": 4,
+        "total_tokens": 42202
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_empty-r1-native"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_empty",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 69.252,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "a54e2bae7a8e06ec0544053b8905bed5cece39aebd18ea40f06fded309171827",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 4786,
+          "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+          "output_bytes": 31,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_empty-r1-rpe/output.json",
+          "plan_sha256": "a54e2bae7a8e06ec0544053b8905bed5cece39aebd18ea40f06fded309171827",
+          "published": true,
+          "root_type": "object",
+          "sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "234b40dea2d8c3547c70d26074e187e5e81f83407a8520d7e20119fa39c2e048",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "a54e2bae7a8e06ec0544053b8905bed5cece39aebd18ea40f06fded309171827",
+        "recovery_id": "8e6f136d84364a5d86f3261fb484cd2e",
+        "run_id": "c608f5097953424c9e21f8b0e95586f7",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 4786,
+          "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+          "mode": "rows",
+          "output_bytes": 31,
+          "output_sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5",
+          "passed": true,
+          "plan_sha256": "a54e2bae7a8e06ec0544053b8905bed5cece39aebd18ea40f06fded309171827",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 1,
+      "session_id": "20261014_152422_cb7f26",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "rows_empty-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 32512,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 16917,
+        "known_total_tokens": 51490,
+        "missing_observations": 0,
+        "output_tokens": 2061,
+        "prompt_tokens": 49429,
+        "reasoning_tokens": 1132,
+        "requests_with_usage": 6,
+        "total_tokens": 51490
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_empty-r1-rpe"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "sheets_names",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 58.671,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "f1229b696886a0759fca96dad8e03eb7d0b65c0d77ad4f67be80a42541f90f4a",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5485,
+          "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+          "output_bytes": 563,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r1-rpe/output.json",
+          "plan_sha256": "f1229b696886a0759fca96dad8e03eb7d0b65c0d77ad4f67be80a42541f90f4a",
+          "published": true,
+          "root_type": "object",
+          "sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "721a1a59b9c9ff5d4c9d9e0fdad930816c75fef00005035b78d6bcba52f10824",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "f1229b696886a0759fca96dad8e03eb7d0b65c0d77ad4f67be80a42541f90f4a",
+        "recovery_id": "7c75060c4bab44ab845c6e843b17ca7c",
+        "run_id": "2feefb3a460c4f729232ba062aa7a39e",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5485,
+          "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+          "mode": "sheets",
+          "output_bytes": 563,
+          "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+          "passed": true,
+          "plan_sha256": "f1229b696886a0759fca96dad8e03eb7d0b65c0d77ad4f67be80a42541f90f4a",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+      "prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "repeat": 1,
+      "session_id": "20261014_152531_44167e",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "sheets_names-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 32000,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 17926,
+        "known_total_tokens": 51737,
+        "missing_observations": 0,
+        "output_tokens": 1811,
+        "prompt_tokens": 49926,
+        "reasoning_tokens": 899,
+        "requests_with_usage": 6,
+        "total_tokens": 51737
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r1-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "sheets_names",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 38.904,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+      "prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "repeat": 1,
+      "session_id": "20261014_152631_d87260",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "search_files",
+        "terminal",
+        "terminal",
+        "read_file",
+        "terminal"
+      ],
+      "trial_id": "sheets_names-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 44160,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 5626,
+        "known_total_tokens": 51073,
+        "missing_observations": 0,
+        "output_tokens": 1287,
+        "prompt_tokens": 49786,
+        "reasoning_tokens": 296,
+        "requests_with_usage": 5,
+        "total_tokens": 51073
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r1-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "arm": "native",
+      "artifact_exact": false,
+      "billed_cost": null,
+      "case_id": "formulas_all",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 118.459,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "22a0fbb2f0c52bb6ea973fe29dddbf4e08c500e070b92a9c22da3fd1009502ec",
+      "prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "repeat": 1,
+      "session_id": "20261014_152710_10496a",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "terminal",
+        "terminal",
+        "terminal",
+        "read_file",
+        "read_file",
+        "read_file",
+        "write_file",
+        "terminal",
+        "read_file",
+        "terminal"
+      ],
+      "trial_id": "formulas_all-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 9,
+        "cache_read_tokens": 102656,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 11951,
+        "known_total_tokens": 119542,
+        "missing_observations": 0,
+        "output_tokens": 4935,
+        "prompt_tokens": 114607,
+        "reasoning_tokens": 2713,
+        "requests_with_usage": 9,
+        "total_tokens": 119542
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r1-native"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "formulas_all",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 34.957,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "944a98aba07f8d788b26b4b8fce552a8782bb800f97bf688ab78b22cd15ff660",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 345,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r1-rpe/output.json",
+          "plan_sha256": "944a98aba07f8d788b26b4b8fce552a8782bb800f97bf688ab78b22cd15ff660",
+          "published": true,
+          "root_type": "object",
+          "sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "1071d8cf4c251e34de3ce9f284893917d97e30f24768d37524bf5fc504d7f5f2",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "944a98aba07f8d788b26b4b8fce552a8782bb800f97bf688ab78b22cd15ff660",
+        "recovery_id": "5e3e463a774340b4b2463bb613bc26ce",
+        "run_id": "cd960b31093b4e7d9878b50c4c801946",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "mode": "formulas",
+          "output_bytes": 345,
+          "output_sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498",
+          "passed": true,
+          "plan_sha256": "944a98aba07f8d788b26b4b8fce552a8782bb800f97bf688ab78b22cd15ff660",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498",
+      "prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "repeat": 1,
+      "session_id": "20261014_152908_e7f12d",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "formulas_all-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 22784,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 15971,
+        "known_total_tokens": 39850,
+        "missing_observations": 0,
+        "output_tokens": 1095,
+        "prompt_tokens": 38755,
+        "reasoning_tokens": 397,
+        "requests_with_usage": 5,
+        "total_tokens": 39850
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r1-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "arm": "rpe",
+      "artifact_exact": false,
+      "billed_cost": null,
+      "case_id": "formulas_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 82.381,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "matching_terminal_task_missing"
+        ],
+        "harness_verified": false,
+        "status": "unverified",
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": null,
+      "prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "repeat": 1,
+      "session_id": "20261014_152944_a0251f",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "formulas_second-r1-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 43264,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 17905,
+        "known_total_tokens": 64023,
+        "missing_observations": 0,
+        "output_tokens": 2854,
+        "prompt_tokens": 61169,
+        "reasoning_tokens": 1566,
+        "requests_with_usage": 7,
+        "total_tokens": 64023
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_second-r1-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "formulas_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 66.55,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc",
+      "prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "repeat": 1,
+      "session_id": "20261014_153106_0a6504",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "skill_view",
+        "terminal",
+        "terminal",
+        "terminal",
+        "terminal",
+        "terminal"
+      ],
+      "trial_id": "formulas_second-r1-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 74240,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 8462,
+        "known_total_tokens": 84912,
+        "missing_observations": 0,
+        "output_tokens": 2210,
+        "prompt_tokens": 82702,
+        "reasoning_tokens": 855,
+        "requests_with_usage": 7,
+        "total_tokens": 84912
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_second-r1-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_mixed",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 32.796,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 2,
+      "session_id": "20261014_153213_219911",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "search_files",
+        "terminal",
+        "read_file"
+      ],
+      "trial_id": "rows_mixed-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 4,
+        "cache_read_tokens": 32640,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 5268,
+        "known_total_tokens": 38667,
+        "missing_observations": 0,
+        "output_tokens": 759,
+        "prompt_tokens": 37908,
+        "reasoning_tokens": 253,
+        "requests_with_usage": 4,
+        "total_tokens": 38667
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r2-native"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_mixed",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 48.301,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "1adf3105c9418b246dce645de6fb5a7387490efa41af79bc2af8bdc43daed0b7",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 4989,
+          "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+          "output_bytes": 158,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r2-rpe/output.json",
+          "plan_sha256": "1adf3105c9418b246dce645de6fb5a7387490efa41af79bc2af8bdc43daed0b7",
+          "published": true,
+          "root_type": "object",
+          "sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "478bc1e674435e745852cd66b669165e0d7534ae6747caa756a0eb7f48b4a9d5",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "1adf3105c9418b246dce645de6fb5a7387490efa41af79bc2af8bdc43daed0b7",
+        "recovery_id": "413f826705b7461bb75e5869809652f9",
+        "run_id": "02e996e512df4565920b0f8af0b546cd",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 4989,
+          "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+          "mode": "rows",
+          "output_bytes": 158,
+          "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+          "passed": true,
+          "plan_sha256": "1adf3105c9418b246dce645de6fb5a7387490efa41af79bc2af8bdc43daed0b7",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "4b64f74b65e75c9767bbc0edfe2d94cace1340ec167167f8578830f0cbc38e7e",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "80e4e4349ca23ece938d93be55972c417e1473dfa9fddedc48182eb99f200813",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 2,
+      "session_id": "20261014_153246_863cbc",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "rows_mixed-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 42240,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 16333,
+        "known_total_tokens": 59953,
+        "missing_observations": 0,
+        "output_tokens": 1380,
+        "prompt_tokens": 58573,
+        "reasoning_tokens": 343,
+        "requests_with_usage": 7,
+        "total_tokens": 59953
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_mixed-r2-rpe"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 53.016,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "90b2cf739feab95a2e5de28cf6be7fca3ffe42f8efaf640e321f1be79b843770",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 59,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r2-rpe/output.json",
+          "plan_sha256": "90b2cf739feab95a2e5de28cf6be7fca3ffe42f8efaf640e321f1be79b843770",
+          "published": true,
+          "root_type": "object",
+          "sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a"
+        },
+        "cold_recovery_verified": true,
+        "contract_sha256": "0d389d4b2fb58b7cd41a9801850c3d9e100f8eee9e81c84f78b1fd21543c3ffa",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "90b2cf739feab95a2e5de28cf6be7fca3ffe42f8efaf640e321f1be79b843770",
+        "recovery_id": "9a0de7a90a85487c85856f7347a387ee",
+        "run_id": "3872f921fade4e54acfb883fcc65a685",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "mode": "rows",
+          "output_bytes": 59,
+          "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+          "passed": true,
+          "plan_sha256": "90b2cf739feab95a2e5de28cf6be7fca3ffe42f8efaf640e321f1be79b843770",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+      "prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "repeat": 2,
+      "session_id": "20261014_153335_b5543f",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "cold",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "rows_second-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 32640,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 16373,
+        "known_total_tokens": 50557,
+        "missing_observations": 0,
+        "output_tokens": 1544,
+        "prompt_tokens": 49013,
+        "reasoning_tokens": 502,
+        "requests_with_usage": 6,
+        "total_tokens": 50557
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r2-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 47.947,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "f53c7fc2abd723c9b4cffcbb0113b0338f514504cc4c64a032f8db566de59a3a",
+      "prompt_sha256": "6ca76b5f35b97c010b0465f069c199d92083bb3e04a4e3eb900b3b2d63a3782f",
+      "repeat": 2,
+      "session_id": "20261014_153428_97398a",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "cold",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "process_manage",
+        "terminal",
+        "terminal",
+        "read_file"
+      ],
+      "trial_id": "rows_second-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 54528,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 6255,
+        "known_total_tokens": 62030,
+        "missing_observations": 0,
+        "output_tokens": 1247,
+        "prompt_tokens": 60783,
+        "reasoning_tokens": 435,
+        "requests_with_usage": 6,
+        "total_tokens": 62030
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_second-r2-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_empty",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 43.471,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 2,
+      "session_id": "20261014_153516_3f6d8a",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "terminal",
+        "terminal",
+        "read_file",
+        "terminal"
+      ],
+      "trial_id": "rows_empty-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 55424,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 5929,
+        "known_total_tokens": 62807,
+        "missing_observations": 0,
+        "output_tokens": 1454,
+        "prompt_tokens": 61353,
+        "reasoning_tokens": 543,
+        "requests_with_usage": 6,
+        "total_tokens": 62807
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_empty-r2-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "rows_empty",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 35.286,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "actual_model_policy_ignored"
+        ],
+        "harness_verified": false,
+        "status": "unverified",
+        "verified": false
+      },
+      "input_sha256": "0beedc7f9044c7ded8b1b1b3385b5797854b9a3c3f2c3d670344f0bfda1be6cc",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "4d2ff62623c92b1c167246555c5a86688daab16e41446ef3fecfe71ad531afb5",
+      "prompt_sha256": "e4b60eec229d6e0eb191a61971c20c810b4045801e43b2bfa9c538a96931e516",
+      "repeat": 2,
+      "session_id": "20261014_153600_b132d8",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "rows_empty-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 28288,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 15738,
+        "known_total_tokens": 44694,
+        "missing_observations": 0,
+        "output_tokens": 668,
+        "prompt_tokens": 44026,
+        "reasoning_tokens": 168,
+        "requests_with_usage": 6,
+        "total_tokens": 44694
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/rows_empty-r2-rpe"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "sheets_names",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 60.568,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "245ca807caa50b582b95beaad13b82bd219f7391f069b00de6ae6105ee469404",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5485,
+          "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+          "output_bytes": 563,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r2-rpe/output.json",
+          "plan_sha256": "245ca807caa50b582b95beaad13b82bd219f7391f069b00de6ae6105ee469404",
+          "published": true,
+          "root_type": "object",
+          "sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "54b0383d273174ac67cba79ddf401f8e83a256cea163f9a1a0b279763376a29d",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "245ca807caa50b582b95beaad13b82bd219f7391f069b00de6ae6105ee469404",
+        "recovery_id": "90c5ff07f04d487899b5159be1bfda78",
+        "run_id": "bc9a1e2c3033497f8125ed27a17bf05f",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5485,
+          "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+          "mode": "sheets",
+          "output_bytes": 563,
+          "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+          "passed": true,
+          "plan_sha256": "245ca807caa50b582b95beaad13b82bd219f7391f069b00de6ae6105ee469404",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+      "prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "repeat": 2,
+      "session_id": "20261014_153636_76451a",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task",
+        "rpe_task",
+        "rpe_task"
+      ],
+      "trial_id": "sheets_names-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 42624,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 18591,
+        "known_total_tokens": 63451,
+        "missing_observations": 0,
+        "output_tokens": 2236,
+        "prompt_tokens": 61215,
+        "reasoning_tokens": 815,
+        "requests_with_usage": 7,
+        "total_tokens": 63451
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r2-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "arm": "native",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "sheets_names",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 47.179,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "30fc738b74fb39438442dbd062c4ba58b9ab5a8ba8c24428fe766ded584e13a7",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "e70e4241adc92b770bbb30039cd6f5de8965553683d92803be8a5d2dd2f32ec9",
+      "prompt_sha256": "247db6f01e3863bd763dc73c8831549ea73890fb165b5bdf5e5a84f8a124f268",
+      "repeat": 2,
+      "session_id": "20261014_153737_d54109",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "search_files",
+        "search_files",
+        "terminal",
+        "read_file",
+        "terminal",
+        "terminal"
+      ],
+      "trial_id": "sheets_names-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 55552,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 6188,
+        "known_total_tokens": 63184,
+        "missing_observations": 0,
+        "output_tokens": 1444,
+        "prompt_tokens": 61740,
+        "reasoning_tokens": 594,
+        "requests_with_usage": 6,
+        "total_tokens": 63184
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/sheets_names-r2-native"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "arm": "native",
+      "artifact_exact": false,
+      "billed_cost": null,
+      "case_id": "formulas_all",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 98.961,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "470c9b195ad6e7986d21659c803a84f0b9e35ff418a3d1c2e0a7ac9ae26a8c4f",
+      "prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "repeat": 2,
+      "session_id": "20261014_153824_7601b1",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "terminal",
+        "terminal",
+        "terminal",
+        "terminal",
+        "read_file",
+        "read_file",
+        "read_file",
+        "write_file",
+        "terminal",
+        "terminal",
+        "write_file",
+        "terminal"
+      ],
+      "trial_id": "formulas_all-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 11,
+        "cache_read_tokens": 130816,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 11430,
+        "known_total_tokens": 146905,
+        "missing_observations": 0,
+        "output_tokens": 4659,
+        "prompt_tokens": 142246,
+        "reasoning_tokens": 1372,
+        "requests_with_usage": 11,
+        "total_tokens": 146905
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r2-native"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "formulas_all",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 36.769,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "1ee519ca7fb61f98fc0f91dc3bc21499b564406d0ed6da338129b0830b0844cc",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 345,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r2-rpe/output.json",
+          "plan_sha256": "1ee519ca7fb61f98fc0f91dc3bc21499b564406d0ed6da338129b0830b0844cc",
+          "published": true,
+          "root_type": "object",
+          "sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "513a3f33c24fe57fddf18849d9940f58274019593899003180869ea646c5583e",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "1ee519ca7fb61f98fc0f91dc3bc21499b564406d0ed6da338129b0830b0844cc",
+        "recovery_id": "8bf6c288be5c4943ae6e0bb225917ceb",
+        "run_id": "84f614eb5f6a4604b66331d76446967d",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "mode": "formulas",
+          "output_bytes": 345,
+          "output_sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498",
+          "passed": true,
+          "plan_sha256": "1ee519ca7fb61f98fc0f91dc3bc21499b564406d0ed6da338129b0830b0844cc",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "ee720f84a6cfea1fda3cf2ea075929a8fa0314701a87b0b77cf678c52d58e498",
+      "prompt_sha256": "d798d63be00f7d530d2a403df25cdd74fd099834454988fe96bbf8ed2765e6cb",
+      "repeat": 2,
+      "session_id": "20261014_154004_58a620",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "formulas_all-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 22656,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 15602,
+        "known_total_tokens": 39043,
+        "missing_observations": 0,
+        "output_tokens": 785,
+        "prompt_tokens": 38258,
+        "reasoning_tokens": 196,
+        "requests_with_usage": 5,
+        "total_tokens": 39043
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_all-r2-rpe"
+    },
+    {
+      "accepted": true,
+      "actual_prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "arm": "rpe",
+      "artifact_exact": true,
+      "billed_cost": null,
+      "case_id": "formulas_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 36.122,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+            "executor_id": "builtin/xlsx-inspect",
+            "kind": "builtin",
+            "native_helper": "xlsx_read.py",
+            "plan_sha256": "6cf6f6a212e4379c8f7115dcbae2fbccfc933d73ed56124156f164abc7e469ea",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+          },
+          "format": "xlsx",
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "output_bytes": 133,
+          "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_second-r2-rpe/output.json",
+          "plan_sha256": "6cf6f6a212e4379c8f7115dcbae2fbccfc933d73ed56124156f164abc7e469ea",
+          "published": true,
+          "root_type": "object",
+          "sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc"
+        },
+        "cold_recovery_verified": false,
+        "contract_sha256": "0ad201b156ae2902e6ef23acea402ecb679fd0f7b2fb00e830dd85be45ff943b",
+        "errors": [],
+        "execution_kind": "native_helper",
+        "harness_verified": true,
+        "plan_sha256": "6cf6f6a212e4379c8f7115dcbae2fbccfc933d73ed56124156f164abc7e469ea",
+        "recovery_id": "5bde863fb9804fc5b5c239a7528d4492",
+        "run_id": "16ac9988145c42b7b2f10e3d50f4f223",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 5350,
+          "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+          "mode": "formulas",
+          "output_bytes": 133,
+          "output_sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc",
+          "passed": true,
+          "plan_sha256": "6cf6f6a212e4379c8f7115dcbae2fbccfc933d73ed56124156f164abc7e469ea",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "verified": true
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "9a09a1f6f76bfe77193f967fb385f8da0b5e38edf84aaa614932ba5eb8959edc",
+      "prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "repeat": 2,
+      "session_id": "20261014_154041_9d8c99",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "rpe_discover",
+        "skill_view",
+        "rpe_context",
+        "rpe_task"
+      ],
+      "trial_id": "formulas_second-r2-rpe",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 22784,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 15527,
+        "known_total_tokens": 39172,
+        "missing_observations": 0,
+        "output_tokens": 861,
+        "prompt_tokens": 38311,
+        "reasoning_tokens": 347,
+        "requests_with_usage": 5,
+        "total_tokens": 39172
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_second-r2-rpe"
+    },
+    {
+      "accepted": false,
+      "actual_prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "arm": "native",
+      "artifact_exact": false,
+      "billed_cost": null,
+      "case_id": "formulas_second",
+      "catalog_snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "comparable": true,
+      "elapsed_seconds": 98.285,
+      "fingerprint": "59ea57283f82413228a5a2bac0a6791d93f3d8fe2f613c201bd655f0cf46e6c0",
+      "gate": {
+        "errors": [
+          "native_stream_arguments_link_missing"
+        ],
+        "verified": false
+      },
+      "input_sha256": "96f5c43a2d9124e1d87f117d1e98188750d75f6ac39bb041697f250b6482eda3",
+      "model_identity": {
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "output_sha256": "6b96b259e38af7104ae10e3f9fe5801734591fb00d62aacdd7401ffbfb276cdb",
+      "prompt_sha256": "6c6da56a9903c44788a2367719f5a5ccad8ccf1a6fc081bd2423219177d96100",
+      "repeat": 2,
+      "session_id": "20261014_154117_e5bfc8",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "source_unchanged": true,
+      "status": "completed",
+      "temperature": "warm",
+      "tool_names": [
+        "skill_view",
+        "search_files",
+        "search_files",
+        "terminal",
+        "terminal",
+        "read_file",
+        "read_file",
+        "read_file",
+        "terminal",
+        "terminal",
+        "write_file",
+        "terminal",
+        "read_file",
+        "terminal"
+      ],
+      "trial_id": "formulas_second-r2-native",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 11,
+        "cache_read_tokens": 129024,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 10651,
+        "known_total_tokens": 144047,
+        "missing_observations": 0,
+        "output_tokens": 4372,
+        "prompt_tokens": 139675,
+        "reasoning_tokens": 1674,
+        "requests_with_usage": 11,
+        "total_tokens": 144047
+      },
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/comparison-final/workspaces/formulas_second-r2-native"
+    }
+  ],
+  "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+  "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+  "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+  "source_module_sha256": {
+    "__init__.py": "b411004d3bbc545d9ab636915a8c28037f90b37b1a1f63edfb28ff023aa45f83",
+    "__main__.py": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+    "assets/__init__.py": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+    "assets/catalog.py": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+    "assets/cli.py": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+    "assets/identity.py": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+    "assets/lifecycle.py": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+    "assets/manifest.py": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+    "assets/prepublish.py": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+    "assets/registry.py": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+    "assets/store.py": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+    "assets/trust.py": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+    "bridge.py": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "capability.py": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "causal_graph.py": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "cli.py": "a3ed62672c5b21d7259b6016993326b4688a04a844852ed021870860892a95c7",
+    "context.py": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+    "contracts.py": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+    "evolution/__init__.py": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+    "evolution/candidates.py": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+    "evolution/cycle.py": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+    "evolution/json_acceptance.py": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+    "evolution/maintenance.py": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+    "evolution/sandbox.py": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+    "evolution/store.py": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+    "evolution/worker.py": "8e7652facd081a01a8fc215cfc3890537541f596eccc0c13922a5d9c6c3af214",
+    "execution.py": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+    "experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "experiments/baseline.py": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "experiments/basic_validation.py": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "experiments/hermes_native.py": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+    "experiments/hermes_repeated.py": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+    "experiments/reuse_sequence.py": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+    "experiments/skill_comparison.py": "675f4e4df580626548ceaa0d4f735a06fad4f288263544f0dba0159d4d7ec5f5",
+    "experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "experiments/unattended_sequence.py": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+    "integrations/__init__.py": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "integrations/hermes.py": "aa8e7986ea40bd3f639e34c2fccf23d07408b4d555cbfb452a239d43437d05f3",
+    "integrations/hermes_bootstrap.py": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+    "integrations/hermes_broker.py": "f6fd4a5eb0dc03dc675c573ecc946bc293e355252d678c38230ca3c42d27124c",
+    "integrations/hermes_gate.py": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+    "integrations/hermes_session.py": "e80512f0af426031bdda0d3ce69125c01fd772772e36fa987c667b443d957bd5",
+    "integrations/hermes_skills.py": "72948728ccf4a2343d1d0a5a7b0979357bed129c6bba2e085700772163608e82",
+    "integrations/skill_gate.py": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+    "json_contract.py": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+    "json_execution.py": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+    "json_verification.py": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+    "mcsi.py": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "path_binding.py": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+    "recovery.py": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+    "runtime.py": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+    "server.py": "78d184ea5787c8e1cadc039d931773618a243b665deb177dd6f41f212075320b",
+    "skill_catalog.py": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+    "skill_cli.py": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+    "skill_inspection.py": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+    "skill_verification.py": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+    "storage.py": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+    "tasks.py": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+    "verification.py": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+    "xlsx_resource.py": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b"
+  },
+  "tool_policy": "native optional terminal/file/skills versus RPE mandatory single-stage skill workflow"
+}

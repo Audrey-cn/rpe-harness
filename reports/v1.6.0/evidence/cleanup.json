@@ -1,0 +1,13 @@
+{
+  "owned_root": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1",
+  "ownership_marker_verified": true,
+  "registered_process_identities": 890,
+  "remaining_registered_processes": 0,
+  "other_root_marked_processes": 0,
+  "all_recorded_host_cleanups_complete": true,
+  "worker_workspaces_cleaned": true,
+  "retained_live_credential_absent": true,
+  "temporary_root_removed": false,
+  "daily_state_evidence": "daily-state-check.json",
+  "shared_caches_or_daily_history_deleted": false
+}

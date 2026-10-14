@@ -1,5 +1,5 @@
 name: rpe-harness
-version: 1.2.0
+version: 1.6.0
 description: Verified tabular tasks and durable metadata-only native Hermes observations
 kind: standalone
 provides_tools:

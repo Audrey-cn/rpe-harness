@@ -1,0 +1,10 @@
+{
+  "105_real_cli_runs": true,
+  "tested_module_byte_equal_to_release": {
+    "evolution/cycle.py": true,
+    "evolution/maintenance.py": true,
+    "evolution/store.py": true
+  },
+  "draft_result": "19/19 independent checks passed",
+  "note": "Only host workflow and benchmark acceptance corrections followed the first installed long-maintenance run."
+}

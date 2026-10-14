@@ -1,0 +1,12 @@
+{
+  "release_suite": {
+    "passed": 1092,
+    "subtests_passed": 3,
+    "skipped": 0,
+    "seconds": 260.03
+  },
+  "directed_method_tests": {
+    "passed": 5
+  },
+  "scope": "Full production release plus separate directed driver checks"
+}

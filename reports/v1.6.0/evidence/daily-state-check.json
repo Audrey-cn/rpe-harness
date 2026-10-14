@@ -1,0 +1,75 @@
+{
+  "daily": {
+    ".env": {
+      "before": {
+        "exists": true,
+        "sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1"
+      },
+      "equal": true
+    },
+    "config.yaml": {
+      "before": {
+        "exists": true,
+        "sha256": "50158b3258eac7168785e87cf01891162a240d08c4b632fe87f9183a57a6ec55"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "50158b3258eac7168785e87cf01891162a240d08c4b632fe87f9183a57a6ec55"
+      },
+      "equal": true
+    },
+    "auth.json": {
+      "before": {
+        "exists": true,
+        "sha256": "85683d03b014e92638f1540a98043e338d82010fb35527cff5100dfd1e6a5fbd"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "e7c0a74d7b1d40c2595e84c39657f257cbb25e060602b50ded4157081d9ed47b"
+      },
+      "equal": false
+    },
+    "state.db": {
+      "before": {
+        "exists": true,
+        "sha256": "b095826fa6c4daef8275da20ecd9fa1d04298f0fe24eda25f6c897309dd89516"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "b095826fa6c4daef8275da20ecd9fa1d04298f0fe24eda25f6c897309dd89516"
+      },
+      "equal": true
+    }
+  },
+  "old_repos": {
+    "progenitor-protocol": {
+      "before": {
+        "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+        "status": ""
+      },
+      "after": {
+        "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+        "status": ""
+      },
+      "equal": true
+    },
+    "progenitor-registry": {
+      "before": {
+        "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+        "status": ""
+      },
+      "after": {
+        "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+        "status": ""
+      },
+      "equal": true
+    }
+  },
+  "test_session_count": 39,
+  "test_session_ids_in_daily_database": [],
+  "changed_state_is_never_automatically_reverted": true
+}

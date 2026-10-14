@@ -1,0 +1,70 @@
+{
+  "baseline": {
+    "log_sha256": "78bce8fbe1c78c437ef3b8561af31e8649cb182fb7f0ba926df287c0cbfb908f",
+    "tail": "FAILED tests/test_json_candidates_acceptance.py::test_full_real_suite_and_certificate_report_execution_truth[json_executor]\nFAILED tests/test_json_candidates_acceptance.py::test_rejecting_everything_does_not_produce_a_valid_certificate\nFAILED tests/test_json_candidates_acceptance.py::test_only_explicit_parser_rejections_have_typed_sandbox_outcomes[ValueError]\nFAILED tests/test_json_candidates_acceptance.py::test_only_explicit_parser_rejections_have_typed_sandbox_outcomes[UnicodeError]\nFAILED tests/test_json_cycle.py::test_cli_persisted_code_is_consumed_and_identical_new_proposal_is_not_reactivated\nFAILED tests/test_reuse_sequence.py::test_independent_process_sequence_records_actual_reuse_and_failure_fallback\nFAILED tests/test_unattended_sequence.py::test_fixed_unattended_sequence_observes_upgrade_rollback_and_crash_recovery\n42 failed, 756 passed, 3 skipped, 3 subtests passed in 66.02s (0:01:06)"
+  },
+  "unicode-red": {
+    "log_sha256": "72ff7c419f833bffdb2c3cffc86e99999418fd64c273ebe70d4362e1c3535b9d",
+    "tail": "                        raise CandidateRejected(f'candidate rejected input in {job}: {receipt[\"type\"]}: {receipt[\"message\"]}')\n>               raise CandidateExecutionError(f'candidate exited {proc.returncode}: {detail[:1000]}')\nE               rpe_harness.evolution.sandbox.CandidateExecutionError: candidate exited 71: sandbox-exec: execvp() of '/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/venv/bin/python' failed: Operation not permitted\n\nsrc/rpe_harness/evolution/sandbox.py:214: CandidateExecutionError\n=========================== short test summary info ============================\nFAILED ../../../../../.codex/worktrees/rpe-v16/rpe-harness/tests/test_v16_entry.py::test_unicode_owned_candidate_paths_execute_without_granting_extra_writes\n1 failed in 0.08s"
+  },
+  "merge-red": {
+    "log_sha256": "7520e3d3ea4239a5cc926e48a97cb9d040071c30442cf1728989f124ac924e65",
+    "tail": ">       raise MergeAllocationProbe('ordinary loader reached merge expansion: ' + str(merged_range))\nE       test_skill_inspection.MergeAllocationProbe: ordinary loader reached merge expansion: A1:XFD1048576\n\ntests/test_skill_inspection.py:288: MergeAllocationProbe\n=========================== short test summary info ============================\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[producer]\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[oracle]\n2 failed, 18 deselected in 0.22s"
+  },
+  "merge-alias-red": {
+    "log_sha256": "12aab3f8b674da71bfb734e7f7abf3cc99e26faa29135c0353472d29ebbc75db",
+    "tail": "\ntests/test_skill_inspection.py:306: MergeAllocationProbe\n=========================== short test summary info ============================\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[wrong_root-producer]\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[wrong_root-oracle]\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_wrong_type-producer]\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_wrong_type-oracle]\n4 failed, 2 passed, 18 deselected in 0.33s"
+  },
+  "merge-namespace-red": {
+    "log_sha256": "502a37094b04635eeb1214e50f49796b8cfc3bd4a137591169d8a22626d943a9",
+    "tail": ">       raise MergeAllocationProbe('ordinary loader reached merge expansion: ' + str(merged_range))\nE       test_skill_inspection.MergeAllocationProbe: ordinary loader reached merge expansion: A1:XFD1048576\n\ntests/test_skill_inspection.py:308: MergeAllocationProbe\n=========================== short test summary info ============================\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_namespace_alias-producer]\nFAILED tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_namespace_alias-oracle]\n2 failed, 33 deselected in 0.22s"
+  },
+  "merge-green": {
+    "log_sha256": "fcb805e53864bfe0a0366b1b25e1e31d0ab35d42f9984f8c7c67805a9017694b",
+    "tail": ".......................................                                  [100%]\n39 passed in 2.67s"
+  },
+  "worker-isolation-red": {
+    "log_sha256": "1228a93c7cfbcba2eb7cce3a06af2c8de3c7156a856c44ccf2ea3ca80f0661f7",
+    "tail": "E         \nE         At index 0 diff: False != True\nE         Use -v to get more diff\n\ntests/test_worker.py:267: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_worker.py::test_real_worker_sandbox_denies_feedback_and_heldout_while_public_workspace_is_usable\n1 failed in 0.36s"
+  },
+  "worker-isolation-green": {
+    "log_sha256": "26e5d2f95298ca0367065dec682d1b1bb8f0a395dbf4e238c313146b9c283c63",
+    "tail": ".....................                                                    [100%]\n21 passed in 0.92s"
+  },
+  "sdk-red": {
+    "log_sha256": "4edbc4f9bc9ae7f4432e7a14ececfeb7a52c6375e6a988693fcde335d5fe1c7a",
+    "tail": "E         \nE         - discovered\nE         + rejected\n\ntests/test_hermes_skills.py:442: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_hermes_skills.py::test_real_sdk_hook_projection_and_pre_tool_ordering_without_model\n1 failed, 27 deselected in 1.20s"
+  },
+  "sdk-green": {
+    "log_sha256": "d0502600241ac6c0155503afbf29233edb38d56dc9db160a6ad02f20db898fa9",
+    "tail": "............................                                             [100%]\n28 passed in 6.58s"
+  },
+  "context-config-green": {
+    "log_sha256": "ad3eb908421c444024983c08962f2147014d4367369531813c4d73b30e976c17",
+    "tail": "...................................                                      [100%]\n35 passed in 8.71s"
+  },
+  "constraint-red": {
+    "log_sha256": "2a1670c58a6f0e4a6b8deb939946bd18ef61a8f9c62e5b57654ef998b04e03c1",
+    "tail": "FAILED tests/test_hermes_skills.py::test_inspection_bad_constraints_are_correctable_and_durable[constraints1]\nFAILED tests/test_hermes_skills.py::test_inspection_bad_constraints_are_correctable_and_durable[preserve_original]\nFAILED tests/test_hermes_skills.py::test_inspection_bad_constraints_are_correctable_and_durable[constraints3]\nFAILED tests/test_hermes_skills.py::test_inspection_bad_constraints_are_correctable_and_durable[None]\nFAILED tests/test_hermes_skills.py::test_inspection_bad_constraints_are_correctable_and_durable[constraints5]\nFAILED tests/test_hermes_skills.py::test_bad_contract_flags_stop_after_three_attempts_and_valid_retry_preserves_flags\nFAILED tests/test_hermes_skills.py::test_three_bad_constraints_close_task_admission\n10 failed, 35 deselected in 1.82s"
+  },
+  "constraint-green": {
+    "log_sha256": "2cc1e8d9c2fe6ba271fdb4f493efebff0c6b0585a9927d3f21aff9f73d98617b",
+    "tail": "..............................................                           [100%]\n46 passed in 10.67s"
+  },
+  "root-constraint-red": {
+    "log_sha256": "82d2dbb5f89aeb9b6f02571d77e6d1ba0c8e677a2348594c1b7a50fce496f7fb",
+    "tail": "E         \nE         - invalid_task_arguments\nE         + workspace_violation\n\ntests/test_skill_dispatch.py:71: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_skill_dispatch.py::test_unknown_inspection_constraint_is_correctable_argument_error\n1 failed, 2 deselected in 0.19s"
+  },
+  "root-constraint-green": {
+    "log_sha256": "668a751a314e80c55cdb9bad63d59094a09c936067299f2368fbd0aad8f10f63",
+    "tail": ".............................................                            [100%]\n45 passed in 5.04s"
+  },
+  "protected-green": {
+    "log_sha256": "226c2ee0470b606a1018ad12ec8962ecd88392a69d5c67a5f908a2c24a0e486d",
+    "tail": "........................................................                 [100%]\n56 passed in 6.96s"
+  },
+  "directed-method": {
+    "log_sha256": "e685482bc79b1c30a576069e042ca8daa87ca3224ee46f3a4ddf9dfe075a69f7",
+    "tail": ".....                                                                    [100%]\n5 passed in 0.57s"
+  }
+}

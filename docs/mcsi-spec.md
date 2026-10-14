@@ -60,3 +60,7 @@ assert state.is_minimal()
 2. 不包含完整历史上下文
 3. 必须保留 source_ref 以便回溯
 4. 下游可请求补充上下文（通过 source_ref）
+
+## 1.6 来源恢复
+
+上述 CausalState 仍是路由推荐状态，不能授予执行权限。可执行能力使用独立版本化契约；必要事实由 `ContextStore` 以 `SourceRef(source,event_id,sha256)` 引用恢复，来源还绑定真实 session。正文、技能排名和分类结果不补全事实。恢复记录有 ready/needs_context/conflict/rejected 状态、字段 provenance 和 requirement_version；历史 show 不等于当前可执行，冻结计划前需 fresh revalidate。详细预算和接口见 [真实技能与维护](real-skills.md)。

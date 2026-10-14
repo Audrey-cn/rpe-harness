@@ -1,0 +1,166 @@
+{
+  "passed": true,
+  "missing": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [],
+    "facts": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/input.csv",
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/out.csv"
+    },
+    "issues": [],
+    "missing": [
+      "key_columns"
+    ],
+    "provenance": {},
+    "recovered_fields": [],
+    "recovery_id": "5cce9041a2234f819ef33f18e2beb7c6",
+    "request_sha256": "3d8d98ea086ae6bd69125a48f6b3bcdca7125d89f06ee2839db203fdb9e8e841",
+    "requirement_version": 1,
+    "session_id": "directed-offline-450b58a39da144f6bcfac143e0c51673",
+    "source_refs": [],
+    "status": "needs_context"
+  },
+  "source_ref": {
+    "source": "user",
+    "event_id": "prior-turn",
+    "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63"
+  },
+  "ready": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [],
+    "facts": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/input.csv",
+      "key_columns": [
+        "id"
+      ],
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/out.csv"
+    },
+    "issues": [],
+    "missing": [],
+    "provenance": {
+      "key_columns": [
+        {
+          "event_id": "prior-turn",
+          "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+          "source": "user"
+        }
+      ]
+    },
+    "recovered_fields": [
+      "key_columns"
+    ],
+    "recovery_id": "dd3351a4ecc34bc89082e9e357384acf",
+    "request_sha256": "6f47922e90d840e5618c877583fe3bb70eb5906bdfee3f84a989ef01df6d8740",
+    "requirement_version": 1,
+    "session_id": "directed-offline-450b58a39da144f6bcfac143e0c51673",
+    "source_refs": [
+      {
+        "event_id": "prior-turn",
+        "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+        "source": "user"
+      }
+    ],
+    "status": "ready"
+  },
+  "restart_history": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [],
+    "facts": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/input.csv",
+      "key_columns": [
+        "id"
+      ],
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/out.csv"
+    },
+    "issues": [],
+    "missing": [],
+    "provenance": {
+      "key_columns": [
+        {
+          "event_id": "prior-turn",
+          "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+          "source": "user"
+        }
+      ]
+    },
+    "recovered_fields": [
+      "key_columns"
+    ],
+    "recovery_id": "dd3351a4ecc34bc89082e9e357384acf",
+    "request_sha256": "6f47922e90d840e5618c877583fe3bb70eb5906bdfee3f84a989ef01df6d8740",
+    "requirement_version": 1,
+    "session_id": "directed-offline-450b58a39da144f6bcfac143e0c51673",
+    "source_refs": [
+      {
+        "event_id": "prior-turn",
+        "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+        "source": "user"
+      }
+    ],
+    "status": "ready",
+    "historical": true
+  },
+  "restart_fresh": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [],
+    "facts": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/input.csv",
+      "key_columns": [
+        "id"
+      ],
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/out.csv"
+    },
+    "issues": [],
+    "missing": [],
+    "provenance": {
+      "key_columns": [
+        {
+          "event_id": "prior-turn",
+          "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+          "source": "user"
+        }
+      ]
+    },
+    "recovered_fields": [
+      "key_columns"
+    ],
+    "recovery_id": "147ed1241cff440b925ed1666c15872e",
+    "request_sha256": "6f47922e90d840e5618c877583fe3bb70eb5906bdfee3f84a989ef01df6d8740",
+    "requirement_version": 1,
+    "session_id": "directed-offline-450b58a39da144f6bcfac143e0c51673",
+    "source_refs": [
+      {
+        "event_id": "prior-turn",
+        "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+        "source": "user"
+      }
+    ],
+    "status": "ready"
+  },
+  "conflict": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [
+      "key_columns"
+    ],
+    "facts": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/input.csv",
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-valid/offline/out.csv"
+    },
+    "issues": [],
+    "missing": [],
+    "provenance": {},
+    "recovered_fields": [],
+    "recovery_id": "6e0a4d832422476d849816a5250d2e4e",
+    "request_sha256": "1e8acca82cb64c5827a95faab3e2bac1a3026a3e69b632c8be2362b5221fabc7",
+    "requirement_version": 1,
+    "session_id": "directed-offline-450b58a39da144f6bcfac143e0c51673",
+    "source_refs": [
+      {
+        "event_id": "prior-turn",
+        "sha256": "c65343906c82ef0fe2c053ff211563a074434941646aa24defb8bcea2c838a63",
+        "source": "user"
+      }
+    ],
+    "status": "conflict"
+  }
+}

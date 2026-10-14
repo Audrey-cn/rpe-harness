@@ -1,0 +1,238 @@
+[
+  {
+    "file": "pilot-result.json",
+    "gate": {
+      "status": "unverified",
+      "verified": false,
+      "harness_verified": false,
+      "errors": [
+        "actual_policy_differs_from_workflow"
+      ]
+    },
+    "session_id": "20261014_143802_77c03a",
+    "completed": true,
+    "usage": {
+      "api_requests": 3,
+      "missing_observations": 0,
+      "requests_with_usage": 3,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 12433,
+      "prompt_tokens": 11823,
+      "output_tokens": 610,
+      "input_tokens": 4271,
+      "total_tokens": 12433,
+      "cache_read_tokens": 7552,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 256
+    },
+    "elapsed_seconds": 23.533,
+    "process_cleanup": {
+      "tracked_descendants": 23,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 0,
+      "external_executor_remaining_children": [],
+      "errors": []
+    }
+  },
+  {
+    "file": "pilot-2-result.json",
+    "gate": {
+      "status": "unverified",
+      "verified": false,
+      "harness_verified": false,
+      "errors": [
+        "actual_model_policy_ignored"
+      ]
+    },
+    "session_id": "20261014_145117_265fd5",
+    "completed": true,
+    "usage": {
+      "api_requests": 11,
+      "missing_observations": 0,
+      "requests_with_usage": 11,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 92146,
+      "prompt_tokens": 89214,
+      "output_tokens": 2932,
+      "input_tokens": 24574,
+      "total_tokens": 92146,
+      "cache_read_tokens": 64640,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 2109
+    },
+    "elapsed_seconds": 154.579,
+    "process_cleanup": {
+      "tracked_descendants": 21,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 0,
+      "external_executor_remaining_children": [],
+      "errors": []
+    }
+  },
+  {
+    "file": "pilot-3-result.json",
+    "gate": {
+      "status": "unverified",
+      "verified": false,
+      "harness_verified": false,
+      "errors": [
+        "matching_terminal_task_missing"
+      ]
+    },
+    "session_id": "20261014_150410_9617f7",
+    "completed": true,
+    "usage": {
+      "api_requests": 7,
+      "missing_observations": 0,
+      "requests_with_usage": 7,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 56507,
+      "prompt_tokens": 55249,
+      "output_tokens": 1258,
+      "input_tokens": 21201,
+      "total_tokens": 56507,
+      "cache_read_tokens": 34048,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 398
+    },
+    "elapsed_seconds": 43.691,
+    "process_cleanup": {
+      "tracked_descendants": 21,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 0,
+      "external_executor_remaining_children": [],
+      "errors": []
+    }
+  },
+  {
+    "file": "pilot-4-result.json",
+    "gate": {
+      "status": "succeeded",
+      "verified": true,
+      "harness_verified": true,
+      "errors": [],
+      "contract_sha256": "18f94ec03fc49ff7987e3f84db741c2c58b4dfbb6d28291d9b5eaa8674339250",
+      "plan_sha256": "5b3fdf8fbf28ddb32154124f31f19e095ee33356ea99d796feb3e7c7317c2231",
+      "verification": {
+        "passed": true,
+        "checks": {
+          "executor_revision": true,
+          "verifier_revision": true,
+          "request_bound": true,
+          "skill_binding": true,
+          "source_unchanged": true,
+          "independent_workbook_result": true
+        },
+        "plan_sha256": "5b3fdf8fbf28ddb32154124f31f19e095ee33356ea99d796feb3e7c7317c2231",
+        "input_sha256": "4269de415ab0598d19d42fdb56c4fc8f03bf8f1b8b72fa06b058d949e972dd00",
+        "output_sha256": "8c89186e6e6cefc777dd91035168ec70a3440a06a444834ef86b2f5aaeb868c9",
+        "input_bytes": 4857,
+        "output_bytes": 62,
+        "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "mode": "rows",
+        "root_type": "object"
+      },
+      "artifact": {
+        "actual_executor": {
+          "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+          "executor_id": "builtin/xlsx-inspect",
+          "kind": "builtin",
+          "native_helper": "xlsx_read.py",
+          "plan_sha256": "5b3fdf8fbf28ddb32154124f31f19e095ee33356ea99d796feb3e7c7317c2231",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680"
+        },
+        "format": "xlsx",
+        "input_bytes": 4857,
+        "input_sha256": "4269de415ab0598d19d42fdb56c4fc8f03bf8f1b8b72fa06b058d949e972dd00",
+        "output_bytes": 62,
+        "path": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/live/pilot-4/out-pilot-4.json",
+        "plan_sha256": "5b3fdf8fbf28ddb32154124f31f19e095ee33356ea99d796feb3e7c7317c2231",
+        "published": true,
+        "root_type": "object",
+        "sha256": "8c89186e6e6cefc777dd91035168ec70a3440a06a444834ef86b2f5aaeb868c9"
+      },
+      "run_id": "6578e76be40e46d89c1fb459f8e2544b",
+      "recovery_id": "2f937bf98fdd473a845d00bc0f391dac",
+      "skill_id": "productivity/xlsx",
+      "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+      "execution_kind": "native_helper",
+      "cold_recovery_verified": false
+    },
+    "session_id": "20261014_151829_282e50",
+    "completed": true,
+    "usage": {
+      "api_requests": 5,
+      "missing_observations": 0,
+      "requests_with_usage": 5,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 37309,
+      "prompt_tokens": 36692,
+      "output_tokens": 617,
+      "input_tokens": 20308,
+      "total_tokens": 37309,
+      "cache_read_tokens": 16384,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 200
+    },
+    "elapsed_seconds": 29.873,
+    "process_cleanup": {
+      "tracked_descendants": 21,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 1,
+      "external_executor_remaining_children": [],
+      "errors": []
+    }
+  },
+  {
+    "file": "native-pilot-result.json",
+    "session_id": "20261014_144532_bba88f",
+    "completed": true,
+    "usage": {
+      "api_requests": 11,
+      "missing_observations": 0,
+      "requests_with_usage": 11,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 126078,
+      "prompt_tokens": 123171,
+      "output_tokens": 2907,
+      "input_tokens": 14371,
+      "total_tokens": 126078,
+      "cache_read_tokens": 108800,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 634
+    },
+    "elapsed_seconds": 82.35,
+    "process_cleanup": {
+      "tracked_descendants": 43,
+      "signaled_descendants": 0,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 0,
+      "external_executor_remaining_children": [],
+      "errors": []
+    },
+    "note": "Dependency-installing pilot excluded from formal same-runtime comparison."
+  }
+]

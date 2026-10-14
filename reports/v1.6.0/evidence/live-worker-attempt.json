@@ -1,0 +1,1 @@
+{"status": "error", "error_code": "invalid_request", "error": "worker database already belongs to another owned_root"}

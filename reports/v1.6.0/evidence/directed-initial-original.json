@@ -1,0 +1,170 @@
+{
+  "scope": "two directed probes x native/RPE; separate from formal24",
+  "fingerprint": "25821e04593350980ef278c561aff0a89a59251932036da4346a0a8e611b3668",
+  "records": [
+    {
+      "trial_id": "missing-sheet-refusal-native",
+      "probe_id": "missing-sheet-refusal",
+      "arm": "native",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-final/workspaces/missing-sheet-refusal-native",
+      "input_name": "input.xlsx",
+      "output_name": "out.json",
+      "input_sha256": "ab87ebfe1f430b749847e7750dee96e036e6fa5dcdd90cdbffda28ebb88adb88",
+      "prompt_sha256": "cf130f95de0eb6eedf5be77e6a49f4340552bc8ec3d7113d79ed76d861f1248e",
+      "context_sha256": null,
+      "fingerprint": "25821e04593350980ef278c561aff0a89a59251932036da4346a0a8e611b3668",
+      "status": "failed",
+      "accepted": false,
+      "error_type": "ValueError"
+    },
+    {
+      "trial_id": "missing-sheet-refusal-rpe",
+      "probe_id": "missing-sheet-refusal",
+      "arm": "rpe",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-final/workspaces/missing-sheet-refusal-rpe",
+      "input_name": "input.xlsx",
+      "output_name": "out.json",
+      "input_sha256": "ab87ebfe1f430b749847e7750dee96e036e6fa5dcdd90cdbffda28ebb88adb88",
+      "prompt_sha256": "cf130f95de0eb6eedf5be77e6a49f4340552bc8ec3d7113d79ed76d861f1248e",
+      "context_sha256": null,
+      "fingerprint": "25821e04593350980ef278c561aff0a89a59251932036da4346a0a8e611b3668",
+      "status": "completed",
+      "accepted": true,
+      "source_unchanged": true,
+      "comparable": true,
+      "context_source_unchanged": true,
+      "artifact_exact": false,
+      "no_artifact": true,
+      "session_id": "20261014_154655_346870",
+      "elapsed_seconds": 50.278,
+      "usage": {
+        "api_requests": 6,
+        "missing_observations": 0,
+        "requests_with_usage": 6,
+        "api_errors": 0,
+        "coverage_complete": true,
+        "known_total_tokens": 47910,
+        "prompt_tokens": 46536,
+        "output_tokens": 1374,
+        "input_tokens": 18376,
+        "total_tokens": 47910,
+        "cache_read_tokens": 28160,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 802
+      },
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "gate": {
+        "status": "rejected",
+        "verified": false,
+        "harness_verified": false,
+        "errors": [],
+        "contract_sha256": "a0ee70a7593c7bcdb5be638fdda5f54b8447767ffcb434455bd8a1bbb7c98b1b",
+        "error": {
+          "code": "invalid_request",
+          "message": "selected sheet does not exist",
+          "type": "ValueError"
+        },
+        "run_id": "4dd899f0b6ec4739a9fbef16cc6b273f",
+        "recovery_id": "56ad20044f3346eb94778f96ef54dfd2",
+        "skill_id": "productivity/xlsx",
+        "snapshot_id": "c5fb40dc1de9b90e842ab509cfacf1d347ee80e6ba97fa9b208c411de82a0680",
+        "execution_kind": "native_helper",
+        "cold_recovery_verified": false
+      },
+      "output_sha256": null
+    },
+    {
+      "trial_id": "required-source-context-native",
+      "probe_id": "required-source-context",
+      "arm": "native",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-final/workspaces/required-source-context-native",
+      "input_name": "input.csv",
+      "output_name": "out.csv",
+      "input_sha256": "8d55d58c4724b5db00fd96c83197cf086675ab0a766c2dfcace6e61b95d47bde",
+      "prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "context_sha256": "ee1ea0ce08aa89008034c5893b509dc84d0ca6a03594e8f63ea96ba32cb3b518",
+      "fingerprint": "25821e04593350980ef278c561aff0a89a59251932036da4346a0a8e611b3668",
+      "status": "failed",
+      "accepted": false,
+      "error_type": "ValueError"
+    },
+    {
+      "trial_id": "required-source-context-rpe",
+      "probe_id": "required-source-context",
+      "arm": "rpe",
+      "workspace": "/Users/audrey/项目/缓存/test/rpe-v16-ff8adcfb22624660a181566da2ff60c1/directed-final/workspaces/required-source-context-rpe",
+      "input_name": "input.csv",
+      "output_name": "out.csv",
+      "input_sha256": "8d55d58c4724b5db00fd96c83197cf086675ab0a766c2dfcace6e61b95d47bde",
+      "prompt_sha256": "ca6189f413a43fbe87291ffd4de41078e9bfa99ffe03e16da7359b0fe167d02c",
+      "context_sha256": "ee1ea0ce08aa89008034c5893b509dc84d0ca6a03594e8f63ea96ba32cb3b518",
+      "fingerprint": "25821e04593350980ef278c561aff0a89a59251932036da4346a0a8e611b3668",
+      "status": "completed",
+      "accepted": false,
+      "source_unchanged": true,
+      "comparable": true,
+      "context_source_unchanged": true,
+      "artifact_exact": false,
+      "no_artifact": true,
+      "session_id": "20261014_154932_ca9bd8",
+      "elapsed_seconds": 202.134,
+      "usage": {
+        "api_requests": 5,
+        "missing_observations": 1,
+        "requests_with_usage": 4,
+        "api_errors": 0,
+        "coverage_complete": false,
+        "known_total_tokens": 39490,
+        "prompt_tokens": null,
+        "output_tokens": null,
+        "input_tokens": null,
+        "total_tokens": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "gate": {
+        "status": "unverified",
+        "verified": false,
+        "harness_verified": false,
+        "errors": [
+          "host_or_observation_incomplete"
+        ],
+        "context_evidence": {
+          "recovery_id": "3cedcc2d6a82467396d766853dc54946",
+          "session_id": "20261014_154932_ca9bd8",
+          "recovered_fields": [
+            "key_columns"
+          ],
+          "provenance": {
+            "key_columns": [
+              {
+                "event_id": "prior-turn:e45accc2cfb619d1",
+                "sha256": "1a2043f5dde8da040e6e805a18c64c514d3364a7c206c70d7718378d82c56a38",
+                "source": "user"
+              }
+            ]
+          }
+        }
+      },
+      "output_sha256": null
+    }
+  ],
+  "passed": false,
+  "offline_context_passed": true
+}
