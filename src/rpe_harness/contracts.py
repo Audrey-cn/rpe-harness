@@ -18,6 +18,7 @@ from typing import Any
 from zipfile import BadZipFile
 
 from .mcsi import CausalState, TaskType
+from .path_binding import current_binding, read_source
 
 CAPABILITY = 'tabular.deduplicate'
 CONTRACT_VERSION = 1
@@ -231,12 +232,16 @@ class ExecutionPlan:
         if any(not isinstance(path, str) or not Path(path).is_absolute() for path in (source, target)):
             raise ValueError('input_path and output_path must be absolute paths')
         source_path, target_path = Path(source), Path(target)
-        if not source_path.is_file() or source_path.is_symlink():
-            raise ValueError('input must be an existing regular file, not a symlink')
-        if not target_path.parent.is_dir() or os.path.lexists(target_path):
-            raise ValueError('output must be a new path in an existing directory')
-        source_path = source_path.resolve(strict=True)
-        target_path = target_path.parent.resolve(strict=True) / target_path.name
+        binding = current_binding()
+        if binding is not None:
+            binding.require_paths(source_path, target_path)
+        else:
+            if not source_path.is_file() or source_path.is_symlink():
+                raise ValueError('input must be an existing regular file, not a symlink')
+            if not target_path.parent.is_dir() or os.path.lexists(target_path):
+                raise ValueError('output must be a new path in an existing directory')
+            source_path = source_path.resolve(strict=True)
+            target_path = target_path.parent.resolve(strict=True) / target_path.name
         fmt = source_path.suffix.lower().lstrip('.')
         if target_path.suffix.lower() != '.' + fmt:
             raise ValueError('input/output extensions must match')
@@ -247,12 +252,12 @@ class ExecutionPlan:
                    executor_id=resolve_executor(capability, fmt, contract_version),
                    executor_revision=EXECUTOR_REVISION, verifier_revision=VERIFIER_REVISION,
                    input_path=str(source_path), output_path=str(target_path), input_format=fmt,
-                   input_sha256=hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                   input_sha256=hashlib.sha256(read_source(source_path)).hexdigest(),
                    key_columns=tuple(columns), constraints=tuple(sorted(set(constraints))),
                    sheet=params.get('sheet'), keep=params.get('keep', 'first'),
                    encoding=params.get('encoding', 'utf-8-sig'), delimiter=params.get('delimiter', ','),
                    goal=goal, source_ref=source_ref, session_id=session_id)
-        data = source_path.read_bytes()
+        data = read_source(source_path)
         if hashlib.sha256(data).hexdigest() != plan.input_sha256:
             raise ValueError('input changed during contract probing')
         selected = _probe(data, fmt, plan.key_columns, plan.sheet, plan.encoding, plan.delimiter)

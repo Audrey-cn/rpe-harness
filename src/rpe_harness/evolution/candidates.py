@@ -54,7 +54,7 @@ def current_revisions():
 
 
 def propose_candidate(db_path, owned_root, *, component, kind, content,
-                      evidence_run_ids, base_version_id=None):
+                      evidence_run_ids, base_version_id=None, provenance=None):
     if component not in COMPONENTS or not isinstance(kind, str) or not kind:
         raise ValueError('candidate must name a known component and a kind')
     if not isinstance(evidence_run_ids, list) or any(not isinstance(x, str) or not x for x in evidence_run_ids):
@@ -83,6 +83,10 @@ def propose_candidate(db_path, owned_root, *, component, kind, content,
                'budget': {'max_fixture_cases': len(_FIXTURES), 'timeout_per_case_s': 3.0},
                'rollback': {'strategy': 'restore_previous_pointer_or_registered_builtin'},
                'revisions': current_revisions()}
+    if provenance is not None:
+        if not isinstance(provenance, dict) or len(canonical_json(provenance).encode()) > 65536:
+            raise ValueError('candidate provenance must be a bounded object')
+        payload['provenance'] = provenance
     fingerprint = digest({'component': component, 'kind': kind, 'content_hash': content_hash,
                           'base': base, 'base_generation': generation, **payload})
     identifier = fingerprint
@@ -108,18 +112,45 @@ def _evidence(store, proposal):
     return evidence
 
 
+def _proposal_identity(store, proposal):
+    """Freeze every proposal input, including the presence of source provenance."""
+    with store.connect() as db:
+        row = db.execute('SELECT * FROM evolution_proposals WHERE proposal_id=?',
+                         (proposal['proposal_id'],)).fetchone()
+    if row is None:
+        raise ValueError('candidate proposal identity is missing')
+    payload = json.loads(row['payload_json'])
+    expected = digest({'component': row['component'], 'kind': row['kind'],
+                       'content_hash': row['content_hash'], 'base': row['base_version_id'],
+                       'base_generation': row['base_generation'], **payload})
+    fields = ('proposal_id', 'fingerprint', 'component', 'kind', 'content_hash',
+              'base_version_id', 'base_generation')
+    if (expected != row['fingerprint'] or expected != row['proposal_id']
+            or any(proposal.get(key) != row[key] for key in fields)
+            or any(proposal.get(key) != value for key, value in payload.items())):
+        raise ValueError('candidate proposal fingerprint or source provenance changed')
+
+
 def _preflight(plan):
+    from ..path_binding import current_binding, read_source
     if plan.input_format != 'csv' or plan.capability != 'tabular.deduplicate':
         raise ValueError('code candidate is only registered for the existing CSV contract')
-    if os.path.lexists(plan.output_path):
-        raise ValueError('output already exists; overwriting is forbidden')
     source = Path(plan.input_path)
-    if source.is_symlink() or not source.is_file() or digest(source.read_bytes()) != plan.input_sha256:
+    binding = current_binding()
+    if binding is not None:
+        binding.require_paths(source, plan.output_path)
+    else:
+        if os.path.lexists(plan.output_path):
+            raise ValueError('output already exists; overwriting is forbidden')
+        if source.is_symlink() or not source.is_file():
+            raise ValueError('source changed after the execution plan')
+    if digest(read_source(source)) != plan.input_sha256:
         raise ValueError('source changed after the execution plan')
 
 
 def _prepare_code(plan, content, root, *, timeout=3.0):
     from ..execution import _new_staging, cleanup_staging
+    from ..path_binding import read_source
     _preflight(plan)
     data = run_candidate(content, plan.to_dict(), root, timeout=timeout)
     prepared = plan.verification_parameters()
@@ -130,7 +161,7 @@ def _prepare_code(plan, content, root, *, timeout=3.0):
             handle.write(data)
             handle.flush()
             os.fsync(handle.fileno())
-        original = list(csv.reader(io.StringIO(Path(plan.input_path).read_text(encoding=plan.encoding), newline=''),
+        original = list(csv.reader(io.StringIO(read_source(plan.input_path).decode(plan.encoding), newline=''),
                                    delimiter=plan.delimiter, strict=True))
         produced = list(csv.reader(io.StringIO(data.decode(plan.encoding), newline=''),
                                    delimiter=plan.delimiter, strict=True))
@@ -210,7 +241,12 @@ def validate_candidate(proposal_id, db_path, owned_root=None, *, timeout=3.0):
               'revisions': current_revisions(), 'resource_limits': resource_limits(),
               'checks': [], 'train_count': 0, 'heldout_count': 0}
     try:
+        _proposal_identity(store, proposal)
         content = store.read_artifact(proposal)
+        if proposal.get('provenance') is not None:
+            from ..assets.lifecycle import verify_proposal_source
+            verify_proposal_source(proposal, store)
+            report['provenance_sha256'] = digest(proposal['provenance'])
         report['evidence_hashes'] = _evidence(store, proposal)
         if proposal['revisions'] != current_revisions():
             raise ValueError('proposal contract/verifier/acceptance revision is stale')
@@ -270,6 +306,7 @@ def _acceptance_predicates(checks):
 
 
 def _certificate(store, proposal, *, fresh_evidence=False):
+    _proposal_identity(store, proposal)
     report = proposal['validation']
     if (not report or not _complete_certificate(report)
             or report.get('passed') is not True or digest(report) != proposal['validation_hash']
@@ -278,6 +315,13 @@ def _certificate(store, proposal, *, fresh_evidence=False):
             or proposal.get('version_id') != digest({'proposal_id': proposal['proposal_id'],
                                                    'certificate_hash': proposal['validation_hash']})):
         raise ValueError('candidate validation certificate is missing, stale or corrupt')
+    if (report.get('provenance_sha256') is not None) != (proposal.get('provenance') is not None):
+        raise ValueError('candidate source provenance was removed or added after validation')
+    if proposal.get('provenance') is not None:
+        from ..assets.lifecycle import verify_proposal_source
+        if report.get('provenance_sha256') != digest(proposal['provenance']):
+            raise ValueError('candidate source certificate is missing or corrupt')
+        verify_proposal_source(proposal, store)
     if fresh_evidence and report['evidence_hashes'] != _evidence(store, proposal):
         raise ValueError('candidate verified evidence changed')
     return store.read_artifact(proposal)

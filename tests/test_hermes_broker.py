@@ -158,6 +158,40 @@ def test_same_receipt_replay_is_read_only_and_changed_event_is_rejected(admitted
         assert connection.execute('SELECT COUNT(*) FROM runs').fetchone()[0]==1
 
 
+def test_broker_launch_failure_replays_terminal_response_and_allows_new_task(admitted_task,monkeypatch):
+    from rpe_harness.integrations.hermes import HostEventStore
+    workspace,db,body=admitted_task
+    module=broker_api()
+    original=module.subprocess.Popen
+    launches=[]
+    def launch(argv,*args,**kwargs):
+        if argv[:5]==[sys.executable,'-B','-m','rpe_harness','events']:
+            launches.append(argv)
+            if len(launches)==1:
+                raise OSError('injected fixed CLI launch failure')
+        return original(argv,*args,**kwargs)
+    monkeypatch.setattr(module.subprocess,'Popen',launch)
+    with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
+        first=post(env,body)
+        assert first==(502,{'error':{'code':'harness_launch_error'}})
+        assert post(env,body)==first
+        changed=json.loads(json.dumps(body))
+        changed['payload']['event_id']='changed-failed-envelope'
+        assert post(env,changed)==(403,{'error':{'code':'broker_receipt_changed'}})
+        next_task=json.loads(json.dumps(body))
+        next_task['payload']['event_id']='task-after-launch-failure'
+        next_task['native'].update(task_id='next-task',turn_id='next-turn',
+                                   api_request_id='next-api',tool_call_id='next-call')
+        next_task['receipt_id']=HostEventStore(db).record(
+            'rpe_task_received',next_task['native'])['ingest_event_id']
+        status,answer=post(env,next_task)
+        assert status==200 and answer['result']['status']=='succeeded',answer
+    assert len(launches)==2
+    assert (workspace/'result.csv').read_text(encoding='utf-8-sig')=='id,value\na,first\nb,second\n'
+    assert env.cleanup['cleanup_complete'] is True
+    assert env.cleanup['tracked_children']==1
+
+
 def test_broker_context_closes_a_half_open_http_worker(admitted_task):
     import socket
     from urllib.parse import urlsplit
@@ -270,7 +304,7 @@ print(json.dumps({'status':'error','temporary_file':str(path),
         status,answer=post(env,body)
         assert status==200
         file=Path(answer['result']['temporary_file'])
-        assert file.is_relative_to(workspace) and file.read_text()=='private temporary execution bytes'
+        assert file.is_relative_to(db.parent) and file.read_text()=='private temporary execution bytes'
         directory=file.parent
         assert directory.stat().st_mode & 0o777==0o700
         assert answer['result']['temp_values']==[str(directory)]*3
@@ -360,3 +394,96 @@ def test_broker_stops_owned_child_group_on_timeout_or_context_exit(admitted_task
         assert response[0][0]==504 and not transport_errors
     assert env.cleanup['cleanup_complete'] is True
     assert env.cleanup['remaining_children']==[]
+
+
+def test_broker_directory_swap_after_validation_cannot_publish_outside(admitted_task,tmp_path,monkeypatch):
+    from rpe_harness.integrations.hermes import HostEventStore
+    from rpe_harness.integrations.hermes_gate import contract_for,digest_json
+    workspace,db,body=admitted_task
+    output_dir=workspace/'output'
+    output_dir.mkdir()
+    outside=tmp_path/'outside'
+    outside.mkdir()
+    body['payload']['execution']['output_path']=str(output_dir/'result.csv')
+    body['native']['contract_sha256']=digest_json(contract_for(body['payload'],workspace))
+    body['receipt_id']=HostEventStore(db).record('rpe_task_received',body['native'])['ingest_event_id']
+    module=broker_api()
+    original=module._validated_request
+    def swap(*args):
+        result=original(*args)
+        output_dir.rename(workspace/'original-output')
+        output_dir.symlink_to(outside,target_is_directory=True)
+        return result
+    monkeypatch.setattr(module,'_validated_request',swap)
+    with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
+        status,answer=post(env,body)
+    assert not (outside/'result.csv').exists(),(status,answer)
+    assert not list(outside.iterdir())
+    assert status in {200,403},answer
+    if status==200:
+        assert answer['result']['status']!='succeeded',answer
+
+
+@pytest.mark.parametrize('phase',['prepare','publish'])
+@pytest.mark.parametrize('input_format',['csv','xlsx'])
+def test_broker_child_directory_swap_keeps_writes_bound(admitted_task,tmp_path,monkeypatch,phase,input_format):
+    from rpe_harness.integrations.hermes import HostEventStore
+    from rpe_harness.integrations.hermes_gate import contract_for,digest_json,request_input_sha
+    workspace,db,body=admitted_task
+    output_dir=workspace/'output'
+    output_dir.mkdir()
+    outside=tmp_path/'outside'
+    outside.mkdir()
+    if input_format=='xlsx':
+        from openpyxl import Workbook
+        book=Workbook()
+        book.active.append(['id','value'])
+        for row in [('a','first'),('a','later'),('b','second')]: book.active.append(row)
+        book.save(workspace/'source.xlsx')
+        book.close()
+        body['payload']['execution']['input_path']=str(workspace/'source.xlsx')
+    body['payload']['execution']['output_path']=str(output_dir/('result.'+input_format))
+    body['native']['contract_sha256']=digest_json(contract_for(body['payload'],workspace))
+    body['native']['input_sha256']=request_input_sha(body['payload'],workspace)
+    body['receipt_id']=HostEventStore(db).record('rpe_task_received',body['native'])['ingest_event_id']
+    module=broker_api()
+    original=module.subprocess.Popen
+    def launch(argv,*args,**kwargs):
+        if argv[:5]!=[sys.executable,'-B','-m','rpe_harness','events']:
+            return original(argv,*args,**kwargs)
+        function='_new_staging' if phase=='prepare' else 'publish_output'
+        script=f'''import runpy,sys
+from pathlib import Path
+from rpe_harness import execution
+original=execution.{function}
+def swap(*args,**kwargs):
+    Path({str(output_dir)!r}).rename({str(workspace/'original-output')!r})
+    Path({str(output_dir)!r}).symlink_to({str(outside)!r},target_is_directory=True)
+    return original(*args,**kwargs)
+execution.{function}=swap
+sys.argv=['rpe_harness',*{argv[4:]!r}]
+runpy.run_module('rpe_harness',run_name='__main__')
+'''
+        return original([sys.executable,'-B','-c',script],*args,**kwargs)
+    monkeypatch.setattr(module.subprocess,'Popen',launch)
+    with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
+        status,answer=post(env,body)
+    assert not list(outside.iterdir()),(status,answer)
+    assert status==200,answer
+    assert answer['result']['status']!='succeeded',answer
+
+
+def test_broker_input_mutation_after_fd_capture_rejects_receipt_drift(admitted_task,monkeypatch):
+    workspace,db,body=admitted_task
+    module=broker_api()
+    original=module.subprocess.Popen
+    def launch(argv,*args,**kwargs):
+        if argv[:5]==[sys.executable,'-B','-m','rpe_harness','events']:
+            (workspace/'source.csv').write_text('id,value\na,altered-after-admission\n')
+        return original(argv,*args,**kwargs)
+    monkeypatch.setattr(module.subprocess,'Popen',launch)
+    with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
+        status,answer=post(env,body)
+    assert status==200,answer
+    assert answer['result']['status']=='rejected',answer
+    assert not (workspace/'result.csv').exists()

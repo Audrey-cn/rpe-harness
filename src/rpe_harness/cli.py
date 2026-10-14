@@ -34,6 +34,8 @@ def main(argv=None):
     from . import __version__
     parser.add_argument('--version', action='version', version=__version__)
     commands = parser.add_subparsers(dest='command', required=True)
+    from .assets.cli import register_assets
+    register_assets(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -101,7 +103,10 @@ def main(argv=None):
     _configuration(rollback)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'hermes':
+        if args.command == 'assets':
+            from .assets.cli import handle_assets
+            result = handle_assets(args)
+        elif args.command == 'hermes':
             import tempfile
             from .runtime import default_db_path
             from .integrations.hermes_session import run_hermes_session

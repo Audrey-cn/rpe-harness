@@ -30,7 +30,7 @@ Python >=3.10；运行依赖继续只有 openpyxl>=3.1.5,<3.2。新资产与信�
 
 `assets propose ASSET_ID` 必须重新读取并验证本地包、显式 keyring、兼容 ABI/契约以及非空持久已验证 run IDs，随后调用现有 propose_candidate。提案携带资产 manifest/content/signature 来源关联。`evolution validate/apply/rollback` 继续是唯一验证与激活实现。外部资产不能直接调用旧 GeneLedger 激活。
 
-导出只读取本地已验收版本的原始代码、契约与谱系，写入新包，不输出数据库、路径、用户原文、凭据或完整运行内容；导出证据只用内容/证书摘要。可选择签署身份文件；默认未签名的包可检查和导入，但不能走来源可信的资产采纳入口。导出不自动公开发布。
+导出只读取本地已验收版本的原始代码、契约与谱系，写入新包。附带清单及证据不输出数据库、路径、用户原文、凭据或完整运行内容，仅使用内容/证书摘要；代码字节原样保留，不对代码内部的秘密承诺自动脱敏。可选择签署身份文件；默认未签名的包可检查和导入，但不能走来源可信的资产采纳入口。导出不自动公开发布。
 
 CLI 统一为现有 `rpe-harness assets` 子命令：inspect、import、list、show、propose、registry-list、registry-import、export。标准输出 JSON、错误退出 2；来源不足时返回明确状态和原因。示例与文档体现实际命令与限制。
 

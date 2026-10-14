@@ -1,0 +1,24 @@
+{
+  "schema_version": "rpe.capability-package/v1",
+  "name": "examples/csv-deduplicate",
+  "component": "executor",
+  "kind": "csv_executor",
+  "contract": {
+    "capability": "tabular.deduplicate",
+    "version": 1,
+    "input_format": "csv"
+  },
+  "entrypoint": "prepare",
+  "content_file": "candidate.py",
+  "content_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+  "parents": [],
+  "dependencies": [],
+  "resources": {
+    "network": false,
+    "subprocess": false
+  },
+  "provenance": {
+    "producer": "rpe-harness example",
+    "license": "MIT"
+  }
+}

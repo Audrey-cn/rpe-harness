@@ -113,7 +113,8 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
     if len(content) > MAX_CODE_BYTES:
         raise ValueError('candidate code exceeds the bounded size')
     source = Path(plan['input_path'])
-    data = source.read_bytes()
+    from ..path_binding import read_source
+    data = read_source(source)
     if len(data) > MAX_INPUT_BYTES:
         raise ValueError('candidate input exceeds the bounded size')
     if hashlib.sha256(data).hexdigest() != plan['input_sha256']:

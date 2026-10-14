@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree
 from zipfile import BadZipFile, ZipFile
+from .path_binding import current_binding, read_source
 
 
 @dataclass(frozen=True)
@@ -79,12 +80,16 @@ def _validate_request(
         raise ValueError("input and output must have the same csv or xlsx extension")
     if file_format == "csv" and "preserve_formulas" in (constraints or []):
         raise ValueError("preserve_formulas requires xlsx")
-    if os.path.lexists(output):
-        raise ValueError("output already exists; overwriting is forbidden")
-    source = source.resolve(strict=True)
-    output = output.parent.resolve(strict=True) / output.name
-    if source == output or not source.is_file():
-        raise ValueError("input must be a file distinct from output")
+    binding = current_binding()
+    if binding is not None:
+        binding.require_paths(source, output)
+    else:
+        if os.path.lexists(output):
+            raise ValueError("output already exists; overwriting is forbidden")
+        source = source.resolve(strict=True)
+        output = output.parent.resolve(strict=True) / output.name
+        if source == output or not source.is_file():
+            raise ValueError("input must be a file distinct from output")
     return source, output, file_format
 
 
@@ -225,7 +230,11 @@ def _check_retained_formulas(workbook: Any, sheet: str, removed_rows: set[int]) 
 
 
 def _new_staging(source: Path, output: Path, input_hash: str) -> Path:
-    descriptor, name = tempfile.mkstemp(prefix=".rpe-", suffix=output.suffix, dir=output.parent)
+    binding = current_binding()
+    if binding is not None:
+        binding.require_paths(source, output)
+    descriptor, name = tempfile.mkstemp(prefix=".rpe-", suffix=output.suffix,
+                                      dir=binding.staging_root if binding else output.parent)
     os.close(descriptor)
     path = Path(name)
     stat = path.stat()
@@ -248,7 +257,7 @@ def prepare_deduplication(
         raise ValueError("sheet must be a nonempty string")
     if file_format == "csv" and sheet is not None:
         raise ValueError("sheet is only supported for xlsx")
-    data = source.read_bytes()
+    data = read_source(source)
     prepared: dict[str, Any] = {
         "input_path": str(source), "output_path": str(output),
         "input_sha256": _digest(data), "format": file_format,
@@ -349,11 +358,15 @@ def publish_output(prepared: dict[str, Any], plan: Any = None) -> None:
     verified_hash = prepared.get("_verified_output_sha256")
     if not verified_hash or _digest(staging.read_bytes()) != verified_hash:
         raise ValueError("staging artifact is unverified or changed after verification")
-    if _digest(source.read_bytes()) != ownership.input_sha256:
+    if _digest(read_source(source)) != ownership.input_sha256:
         raise ValueError("input changed after preparation")
     if plan is not None and ownership.input_sha256 != plan.input_sha256:
         raise ValueError('prepared source does not match original plan input')
     try:
+        binding = current_binding()
+        if binding is not None:
+            binding.publish(staging)
+            return
         os.link(staging, output, follow_symlinks=False)
     except FileExistsError as error:
         raise ValueError("output already exists; overwriting is forbidden") from error

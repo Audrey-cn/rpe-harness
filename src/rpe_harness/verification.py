@@ -161,7 +161,8 @@ def verify_deduplication(prepared: dict[str, Any], plan: Any = None) -> dict[str
     if plan is not None and not plan.matches_prepared(prepared):
         return {'passed': False, 'plan_sha256': plan.sha256,
                 'checks': {'request_bound': False}, 'error': 'producer parameters differ from original plan'}
-    source = Path(parameters["input_path"]).read_bytes()
+    from .path_binding import read_source
+    source = read_source(parameters["input_path"])
     artifact = Path(prepared["staging_path"]).read_bytes()
     input_hash = hashlib.sha256(source).hexdigest()
     output_hash = hashlib.sha256(artifact).hexdigest()

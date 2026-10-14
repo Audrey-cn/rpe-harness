@@ -34,7 +34,8 @@ class _Environment(dict):
 
 def _validated_request(body, database, workspace):
     from .hermes import _prepare_request
-    from .hermes_gate import contract_for, digest_json, request_input_sha
+    from .hermes_gate import contract_for, digest_json
+    from ..path_binding import source_digest_nofollow
     if (not isinstance(body, dict) or set(body) != {'payload', 'receipt_id', 'native'}
             or not isinstance(body['native'], dict) or set(body['native']) - _NATIVE
             or not isinstance(body['receipt_id'], str) or not body['receipt_id']):
@@ -50,7 +51,7 @@ def _validated_request(body, database, workspace):
     if payload != body['payload']:
         raise PermissionError('submitted paths and session must already be canonical')
     contract_sha = digest_json(contract_for(payload, workspace))
-    input_sha = request_input_sha(payload, workspace)
+    input_sha = source_digest_nofollow(payload['execution']['input_path'])
     if native.get('contract_sha256') != contract_sha or native.get('input_sha256') != input_sha:
         raise PermissionError('fresh execution contract differs from receipt')
     with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as db:
@@ -140,19 +141,21 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
                 job['errors'].append(type(exc).__name__)
             job['stopped'] = True
 
-    def execute(payload):
+    def execute(payload, binding):
         from .hermes_session import _process_table, _capture_descendants
         child_env = {key: value for key, value in os.environ.items()
                      if key in {'HOME', 'USER', 'LOGNAME', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
         child_env.update(PYTHONPATH=package_root, PYTHONDONTWRITEBYTECODE='1',
                          TMPDIR=temporary.name, TMP=temporary.name, TEMP=temporary.name)
+        child_env.update(binding.child_environment())
         argv = [str(interpreter), '-B', '-m', 'rpe_harness', 'events', 'submit',
                 '--event', '-', '--db', str(database)]
         with lock:
             if closing.is_set():
                 return 503, {'error': {'code': 'broker_closed'}}
             process = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE, text=True, cwd=directory, env=child_env, start_new_session=True)
+                stderr=subprocess.PIPE, text=True, cwd=temporary.name, env=child_env,
+                pass_fds=binding.pass_fds, start_new_session=True)
             job = {'process': process, 'identity': None, 'descendants': {}, 'remaining': [],
                    'errors': [], 'lock': threading.RLock(), 'stopped': False}
             jobs.append(job)
@@ -257,7 +260,20 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
             try:
                 with lock:
                     denied = (native.get('entry_key') and turn in closed_turns) or closing.is_set()
-                response = ((403, {'error': {'code': 'broker_entry_closed'}}) if denied else execute(payload))
+                if denied:
+                    response = (403, {'error': {'code': 'broker_entry_closed'}})
+                else:
+                    from ..path_binding import BoundExecution
+                    try:
+                        binding = BoundExecution.capture(payload, directory, temporary.name,
+                                                         native['input_sha256'])
+                    except (OSError, ValueError):
+                        response = (403, {'error': {'code': 'broker_path_binding_unavailable'}})
+                    else:
+                        try:
+                            response = execute(payload, binding)
+                        finally:
+                            binding.close()
                 with lock:
                     claims[receipt_id]['response'] = response
                     result = response[1].get('result', {})
@@ -266,6 +282,8 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
                         closed_turns.add(turn)
             except OSError:
                 response = (502, {'error': {'code': 'harness_launch_error'}})
+                with lock:
+                    claims[receipt_id]['response'] = response
             finally:
                 execution_lock.release()
             self.reply(*response)
@@ -307,7 +325,9 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
         def handle_error(self, *_):
             pass
 
-    temporary = tempfile.TemporaryDirectory(prefix='.rpe-execution-', dir=directory)
+    # Database and its parent are the trusted broker state boundary. Temporary
+    # writes must not resolve through attacker-replaceable workspace parents.
+    temporary = tempfile.TemporaryDirectory(prefix='.rpe-execution-', dir=database.parent)
     try:
         server = Server(('127.0.0.1', 0), Handler)
     except BaseException:
