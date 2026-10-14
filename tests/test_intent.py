@@ -233,3 +233,53 @@ def test_large_ready_state_is_rejected_before_runtime_not_truncated(tmp_path):
     result = interpret_intent(extracted, catalog=CapabilityCatalog(), workspace=tmp_path,
                               session_id='s', source_ref='r')
     assert result['status'] == 'rejected' and 'request' not in result
+
+
+def test_source_sheet_omission_cannot_fall_back_to_other_active_sheet(tmp_path):
+    from openpyxl import Workbook
+    from rpe_harness.capability_catalog import CapabilityCatalog
+    from rpe_harness.intent import interpret_intent
+    workbook = Workbook()
+    workbook.active.title = 'Wrong'
+    workbook.active.append(['id', 'value'])
+    workbook.active.append([1, 'wrong'])
+    workbook.create_sheet('Requested').append(['id', 'value'])
+    workbook['Requested'].append([2, 'requested'])
+    workbook.save(tmp_path / 'book.xlsx')
+    workbook.close()
+    extracted = {'goal': 'Deduplicate requested sheet', 'capability': 'tabular.deduplicate',
+        'constraints': ['preserve_original'], 'execution': {'input_path': str(tmp_path / 'book.xlsx'),
+        'output_path': str(tmp_path / 'out.xlsx'), 'key_columns': ['id']}}
+    arguments = {'catalog': CapabilityCatalog(), 'workspace': tmp_path, 'session_id': 's',
+                 'source_ref': 'r', 'source_facts': {'execution': {'sheet': 'Requested'}}}
+    result = interpret_intent(extracted, **arguments)
+    assert result['status'] == 'needs_context'
+    assert 'execution.sheet' in result['missing'] and 'request' not in result
+    assert 'sheet' not in extracted['execution']
+    extracted['execution']['sheet'] = 'Wrong'
+    assert interpret_intent(extracted, **arguments)['status'] == 'conflict'
+    extracted['execution']['sheet'] = 'Requested'
+    assert interpret_intent(extracted, **arguments)['status'] == 'ready'
+
+
+@pytest.mark.parametrize('field,value', [('keep', 'first'), ('encoding', 'utf-8-sig'), ('delimiter', ',')])
+def test_even_matching_contract_defaults_require_explicit_source_option(tmp_path, field, value):
+    from rpe_harness.capability_catalog import CapabilityCatalog
+    from rpe_harness.intent import interpret_intent
+    _, extracted = prepare(tmp_path)
+    result = interpret_intent(extracted, catalog=CapabilityCatalog(), workspace=tmp_path,
+        session_id='s', source_ref='r', source_facts={'execution': {field: value}})
+    assert result['status'] == 'needs_context'
+    assert 'execution.' + field in result['missing'] and 'request' not in result
+
+
+@pytest.mark.parametrize('field', ['goal', 'capability', 'constraints', 'execution'])
+def test_top_level_source_fields_are_not_filled_when_extraction_omits_them(tmp_path, field):
+    from rpe_harness.capability_catalog import CapabilityCatalog
+    from rpe_harness.intent import interpret_intent
+    _, extracted = prepare(tmp_path)
+    fact = extracted.pop(field)
+    result = interpret_intent(extracted, catalog=CapabilityCatalog(), workspace=tmp_path,
+        session_id='s', source_ref='r', source_facts={field: fact})
+    assert result['status'] == 'needs_context'
+    assert field in result['missing'] and 'request' not in result

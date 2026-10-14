@@ -133,9 +133,12 @@ def interpret_intent(extracted, *, catalog, workspace, session_id, source_ref, s
             conflicts = []
             for name, value in facts.items():
                 if name == 'execution':
+                    missing += ['execution.' + key for key in value if key not in execution]
                     conflicts += ['execution.' + key for key, fact in value.items()
                                   if key in execution and execution[key] != fact]
-                elif name in extracted:
+                elif name not in extracted:
+                    missing.append(name)
+                else:
                     observed = extracted[name]
                     if (set(observed) != set(value) if name == 'constraints'
                             and type(value) is list and type(observed) is list else observed != value):
@@ -143,7 +146,7 @@ def interpret_intent(extracted, *, catalog, workspace, session_id, source_ref, s
             if conflicts:
                 return _failure('conflict', errors=['source conflict: ' + ', '.join(sorted(conflicts))])
         if missing:
-            return _failure('needs_context', missing=missing)
+            return _failure('needs_context', missing=sorted(set(missing)))
         if known is None:
             return _failure('unsupported', errors=['capability is not registered'],
                             catalog_sha256=catalog.snapshot_id)
