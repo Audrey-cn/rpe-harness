@@ -1,0 +1,27 @@
+{
+  "immutable_records_ledger_and_export_checked": true,
+  "frozen_formal_production_business_correct": {
+    "native": 4,
+    "address": 0,
+    "denominator_each": 4
+  },
+  "frozen_formal_production_complete_chain": {
+    "native": 3,
+    "address": 0,
+    "denominator_each": 4
+  },
+  "frozen_probe_complete_chain": {
+    "native": 0,
+    "address": 0,
+    "denominator_each": 2
+  },
+  "old_pilot_plus_formal": {
+    "sessions": 14,
+    "tokens": 319731,
+    "api_requests": 49,
+    "elapsed_seconds_sum": 586.273,
+    "usage_complete": true
+  },
+  "benefit_established": false,
+  "reason": "address consumed fewer tokens while completing zero production artifacts; this is not an efficiency gain"
+}

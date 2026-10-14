@@ -1,0 +1,13 @@
+{
+  "reviewed_source_commits": [
+    "3390de8",
+    "1174b18",
+    "d1f4254"
+  ],
+  "unresolved_p1_p2": 0,
+  "postformal_independent_real_sdk_and_catalog_checks": 10,
+  "actual_model_calls_by_reviewer": 0,
+  "negative_formal_scores_preserved": true,
+  "source_of_enum": "trusted catalog constraints union; parent retains per-capability validation",
+  "semantic_limit": "goal faithfully reflecting every natural-language requirement is not established; schema guidance is not an independent semantic verifier"
+}

@@ -1,0 +1,8 @@
+{
+  "artifact_sha256": "ca6a6dc4d14aa9f9b92d8e55714b2d6290663e2cb64a4845f5e8d07b883c6e48",
+  "business_correct": true,
+  "product_oracle_passed": true,
+  "sha256": "8da807a3e65ceb5c50fd83182d71c74c585ea06368467baa3dacfc3179b9d4bb",
+  "source_preserved": true,
+  "structured_terminal": null
+}

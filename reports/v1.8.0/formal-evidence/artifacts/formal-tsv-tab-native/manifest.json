@@ -1,0 +1,19 @@
+{
+  "artifacts": [
+    {
+      "name": "output.csv",
+      "raw_exported": true,
+      "reason": "reverified_public_business_truth",
+      "sha256": "96c859388539b738fc1d9b955d48c7c19afce7ed7ed650bf206f923cf0cacd8a",
+      "size_bytes": 27
+    },
+    {
+      "name": "terminal.json",
+      "raw_exported": false,
+      "reason": "unverified_or_changed_artifact",
+      "sha256": null,
+      "size_bytes": null
+    }
+  ],
+  "sha256": "2588118fb3b17f576dd5d5b43266e08e92e2c3242565560af17f193e2760fdbe"
+}

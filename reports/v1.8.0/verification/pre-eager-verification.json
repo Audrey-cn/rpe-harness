@@ -1,0 +1,6 @@
+{
+  "source_commit": "3390de8",
+  "full_suite": "1435 passed, 3 subtests passed in 313.30s",
+  "real_model_pilot": "native accepted; address failed before tool dispatch",
+  "release_conclusion": "full tests alone did not establish actual address usability; repair required"
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "d1f425493673f648c6c684b497447b1d8a86b17e",
+  "package_version": "1.8.0",
+  "full_suite": {
+    "passed": 1444,
+    "subtests_passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 322.32,
+    "real_hermes_sdk_enabled": true
+  },
+  "installed_wheel": {
+    "checks": 38,
+    "python_files_matched": 69,
+    "sha256": "c0535bbac273acf6c6a17fac1648f851cc95ecae1b43557e4162ce57e4adc0c0"
+  },
+  "verification_scope": "code/package usability; frozen formal comparison and postformal repair smoke reported separately"
+}

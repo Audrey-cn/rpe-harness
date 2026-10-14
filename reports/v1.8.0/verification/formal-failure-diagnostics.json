@@ -1,0 +1,275 @@
+{
+  "policy": "metadata only; raw model arguments and histories removed during cleanup; frozen results never regraded",
+  "trials": [
+    {
+      "trial_id": "formal-csv-zh-composite-address",
+      "understand_calls": [
+        {
+          "capability": "tabular.deduplicate",
+          "registered_constraint_ids": [
+            "preserve_order",
+            "preserve_original"
+          ],
+          "unrecognized_constraint_count": 5,
+          "execution_field_names": [
+            "delimiter",
+            "encoding",
+            "input_path",
+            "key_columns",
+            "output_path"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "unsupported"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    },
+    {
+      "trial_id": "formal-json-lossless-address",
+      "understand_calls": [
+        {
+          "capability": "json.normalize",
+          "registered_constraint_ids": [],
+          "unrecognized_constraint_count": 10,
+          "execution_field_names": [
+            "input_path",
+            "output_path",
+            "style"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "unsupported"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    },
+    {
+      "trial_id": "formal-missing-keys-address",
+      "understand_calls": [
+        {
+          "capability": "tabular.deduplicate",
+          "registered_constraint_ids": [],
+          "unrecognized_constraint_count": 6,
+          "execution_field_names": [
+            "input_path",
+            "output_path"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "needs_context"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    },
+    {
+      "trial_id": "formal-tsv-tab-address",
+      "understand_calls": [
+        {
+          "capability": "tabular.deduplicate",
+          "registered_constraint_ids": [],
+          "unrecognized_constraint_count": 8,
+          "execution_field_names": [
+            "delimiter",
+            "encoding",
+            "input_path",
+            "key_columns",
+            "output_path"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "unsupported"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    },
+    {
+      "trial_id": "formal-unsupported-sum-address",
+      "understand_calls": [
+        {
+          "capability": "按地区求金额合计（分组求和，非保留首条去重、非JSON空白规范化、非XLSX只读检查）",
+          "registered_constraint_ids": [],
+          "unrecognized_constraint_count": 7,
+          "execution_field_names": [
+            "input_path",
+            "output_path"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "unsupported"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    },
+    {
+      "trial_id": "formal-xlsx-original-address",
+      "understand_calls": [
+        {
+          "capability": "xlsx.inspect",
+          "registered_constraint_ids": [],
+          "unrecognized_constraint_count": 8,
+          "execution_field_names": [
+            "input_path",
+            "mode",
+            "output_path",
+            "sheet"
+          ]
+        }
+      ],
+      "terminal_statuses": [
+        "unsupported"
+      ],
+      "snapshot_recorded": [
+        false
+      ],
+      "frozen_gate": {
+        "capability": null,
+        "catalog_sha256": null,
+        "context_minimized": null,
+        "error_codes": [
+          "capability_catalog_changed"
+        ],
+        "error_count": 1,
+        "handoff_bytes": null,
+        "handoff_sha256": null,
+        "harness_verified": false,
+        "interpreter_sha256": null,
+        "invocation_status": null,
+        "rejection_reason": null,
+        "rejection_verified": null,
+        "run_id": null,
+        "state_id": null,
+        "state_sha256": null,
+        "status": "unverified",
+        "task_context_bytes": null,
+        "task_context_sha256": null,
+        "verified": false
+      }
+    }
+  ]
+}

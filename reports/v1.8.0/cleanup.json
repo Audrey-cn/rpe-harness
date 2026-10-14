@@ -1,0 +1,60 @@
+{
+  "scope": "only this round owned root; global caches, daily histories and other worktrees not cleaned",
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v18-998fc04c37ff4060b36c3da3fb4d01a0",
+  "root_removed": true,
+  "removed_file_count": 52622,
+  "removed_bytes_approx": 1074926388,
+  "real_model_sessions": 16,
+  "all_session_cleanup_complete": true,
+  "remaining_owned_processes": [],
+  "daily_own_session_ids_found": 0,
+  "daily_files": {
+    "/Users/audrey/.hermes/config.yaml": {
+      "unchanged": true,
+      "initial_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+      "current_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+      "modified_by_cleanup": false
+    },
+    "/Users/audrey/.hermes/.env": {
+      "unchanged": true,
+      "initial_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "current_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "modified_by_cleanup": false
+    },
+    "/Users/audrey/.hermes/state.db": {
+      "unchanged": false,
+      "initial_sha256": "feccf5c99ada27068651b014360ee57d94cac97e59ee4b44c47b3ecf8c3f8ec7",
+      "current_sha256": "eaf28b77d6a71fbf067047d0f3ed0b7cc2f6f4f927c78ed6f4e7e8306d35926c",
+      "modified_by_cleanup": false
+    },
+    "/Users/audrey/.hermes/auth.json": {
+      "unchanged": false,
+      "initial_sha256": "8ace723051867e9318f69e5754e6a5faf5d5884a98020f490351a9a257d614b8",
+      "current_sha256": "e5177ceb5f184b7ab91367f54f9cab0c9b07b69b6480b125d91120a001c7622e",
+      "modified_by_cleanup": false
+    }
+  },
+  "daily_drift_policy": "auth.json and state.db changed during the round; hashes alone cannot attribute the changes; preserve live state without restoring snapshots; no round session IDs found",
+  "preserved_reports": {
+    "/Users/audrey/项目/rpe-harness/reports/direction-review-2026-10-15/开发方向与最小状态寻址讨论.md": true,
+    "/Users/audrey/项目/rpe-harness/reports/direction-review-2026-10-15/原稿复盘与主体开发方向重审.md": true,
+    "/Users/audrey/项目/rpe-harness/reports/design-trace-2026-10-14/原始设计溯源与方向审核.md": true,
+    "/Users/audrey/项目/rpe-harness/reports/design-trace-2026-10-14/evidence/provenance.json": true
+  },
+  "old_repositories": {
+    "/Users/audrey/项目/progenitor-protocol": {
+      "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+      "status_unchanged": true
+    },
+    "/Users/audrey/项目/progenitor-registry": {
+      "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+      "status_unchanged": true
+    }
+  },
+  "credentials_and_raw_history_exported": false,
+  "preserved_wheel": "/Users/audrey/项目/rpe-harness/dist/rpe_harness-1.8.0-py3-none-any.whl",
+  "worktree_cleanup": {
+    "status": "pending_local_integration"
+  },
+  "completed_at_unix": 1792020460.421576
+}

@@ -18,6 +18,8 @@
 
 1.8 将开发重心回到统一能力目录、任务理解与必要状态寻址。新增路径先让 Hermes 提取当前任务的结构化意图，再由可信父进程查找适用能力、绑定输入与约束并保存最小状态；下一阶段只交接状态 ID，实际执行仍经现有独立验收。三项既有业务能力构成当前范围，外部技能 metadata 不注册执行权限。通用学习、技能整理与调度继续复用宿主，不新增训练框架或常驻服务。命令与限制见 [统一目录和状态交接](docs/capability-addressing.md)，设计与执行边界见 [1.8 设计](docs/superpowers/specs/2026-10-15-rpe-v18-design.md)和 [1.8 todo](docs/superpowers/plans/2026-10-15-rpe-v18.md)。原生收益以对应实际验收结果为准，不能从接口结构推导一般优势。
 
+1.8 本地版修后的两个真实任务已通过最小状态交接和独立验收，完整回归1444项通过。原冻结对照暴露接口缺陷，其负结果原样保留；修后冒烟不替换对照成绩，尚未证明相对Hermes原生的收益。实际用量、限制和清理见 [1.8验收报告](reports/v1.8.0/1.8开发与验收报告.md)。
+
 ## 本机快速使用
 
 仓库提供 `scripts/rpe`，自动寻找具备 openpyxl 的 Python >=3.10，包括本机 Codex bundled runtime。它不安装软件、不修改全局配置，也不生成 Python 缓存。
@@ -85,8 +87,8 @@ wheel 自带 CSV 去重、XLSX 去重和 JSON 空白规范化三个内置执行�
 # 原模块入口仍可用：python -m rpe_harness.server --port 18400 --db ...
 ~~~
 
-GET：`/health`、`/stats`、`/skills`、`/skills/ID`、`/runs`、`/runs/RUN_ID`。
-POST：`/route`、`/run`、`/events`、`/usage`、`/skills/state`、`/reload`、`/causal/discover`、`/causal/chain`。
+GET：`/health`、`/stats`、`/skills`、`/skills/ID`、`/runs`、`/runs/RUN_ID`、`/capabilities`。
+POST：`/route`、`/run`、`/events`、`/usage`、`/skills/state`、`/reload`、`/causal/discover`、`/causal/chain`、`/capabilities/resolve`、`/intent/prepare`、`/intent/show`。1.8 新入口的参数和边界见 [统一目录和状态交接](docs/capability-addressing.md)。
 
 请求体只接受 JSON 对象，最多 1 MiB；POST 要求 application/json，拒绝外部 Origin；请求接收有总时限、并发数有上限。默认回环监听。`/route` 只给推荐，不执行任务；UNKNOWN、缺事实、不兼容或低匹配会返回升级信号，未内置自动 LLM 升级器。`constraints` 是用户要求，`facts` 是已确认条件；执行路径重新探测文件事实。
 

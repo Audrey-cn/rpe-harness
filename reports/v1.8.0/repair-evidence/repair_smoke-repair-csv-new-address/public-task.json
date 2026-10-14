@@ -1,0 +1,51 @@
+{
+  "capability": "tabular.deduplicate",
+  "case_id": "repair-csv-new",
+  "category": "production",
+  "constraints": [
+    "preserve_original",
+    "preserve_order"
+  ],
+  "expected_rows": [
+    [
+      "门店",
+      "批次",
+      "品名"
+    ],
+    [
+      "北仓",
+      "007",
+      "甲"
+    ],
+    [
+      "南仓",
+      "007",
+      "乙"
+    ],
+    [
+      "北仓",
+      "7",
+      "丙"
+    ],
+    [
+      "南仓",
+      "0007",
+      "丁"
+    ]
+  ],
+  "expected_status": "ready",
+  "input_name": "input.csv",
+  "input_sha256": "6910c892f56997e9a916464ac0f65ae6d4f866b4e2bca4281917c86623b5baa0",
+  "output_name": "output.csv",
+  "parameters": {
+    "delimiter": ",",
+    "encoding": "utf-8",
+    "keep": "first",
+    "key_columns": [
+      "门店",
+      "批次"
+    ]
+  },
+  "sha256": "193a9ba856dd934e65cfe76ea91ec8128521e90b6996bd40ae6ecdeeccb68f6f",
+  "task": "请将input.csv按“门店”和“批次”两列组合去重，同组合保留第一次出现的完整行，保持表头、所有单元格及原来顺序。批次是精确字符串，007、7和0007不同。文件是utf-8编码的逗号CSV，请另存为output.csv。"
+}

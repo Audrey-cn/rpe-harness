@@ -1,0 +1,81 @@
+{
+  "records": [
+    {
+      "api_expected": true,
+      "arm": "address",
+      "artifact_correct": false,
+      "attempt_id": "pilot-csv-zh-composite-address",
+      "elapsed_seconds": 22.563,
+      "finished_at": 1792018340.7783911,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "pilot",
+      "record_sha256": "20adfada857cb95c36476031ea436b1d44d004edeb379ac59af405a0bfdcb269",
+      "reservation_sha256": "10a9d1a76681ce3f64b4a27761656f3e0e68c2747b90fb57634541c390c3cec3",
+      "reserved_at": 1792018317.760226,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "failed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 3,
+        "cache_read_tokens": 2432,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 3573,
+        "known_total_tokens": 6665,
+        "missing_observations": 0,
+        "output_tokens": 660,
+        "prompt_tokens": 6005,
+        "reasoning_tokens": 246,
+        "requests_with_usage": 3,
+        "total_tokens": 6665
+      },
+      "workflow_verified": false
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "pilot-csv-zh-composite-native",
+      "elapsed_seconds": 37.683,
+      "finished_at": 1792018317.1372118,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "pilot",
+      "record_sha256": "47c85b8bf4ed498bd1fd345a2da5d854c1392c87b24b4a52068a23cee065d941",
+      "reservation_sha256": "108b8c6dca403f97d6d63f6257b14fdd73153c37a7f406748b7184a2e13d11f2",
+      "reserved_at": 1792018279.0962272,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 39808,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 8237,
+        "known_total_tokens": 49280,
+        "missing_observations": 0,
+        "output_tokens": 1235,
+        "prompt_tokens": 48045,
+        "reasoning_tokens": 390,
+        "requests_with_usage": 6,
+        "total_tokens": 49280
+      },
+      "workflow_verified": true
+    }
+  ],
+  "sha256": "8824152da55bc2363e54d312ee1afc8375afb24972c72e6f10ddc86965334246"
+}

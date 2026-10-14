@@ -1,0 +1,18 @@
+{
+  "source_commit": "1174b180fd1a087d6899f54f55be3f18f5b48319",
+  "full_suite": {
+    "passed": 1435,
+    "subtests_passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 314.31,
+    "RPE_HERMES_SOURCE": "/Users/audrey/.hermes/hermes-agent"
+  },
+  "installed_wheel": {
+    "checks": 38,
+    "python_files_matched": 69,
+    "sha256": "568db4e64fcdf346d7657d869e3c9e186792f6a9e65c5e31d7854a8592713fae"
+  },
+  "package_version": "1.8.0",
+  "actual_model_validation": "separate frozen comparison; not inferred from this test report"
+}

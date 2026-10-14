@@ -1,0 +1,43 @@
+{
+  "capability": "xlsx.inspect",
+  "case_id": "repair-xlsx-new",
+  "category": "production",
+  "constraints": [
+    "preserve_original"
+  ],
+  "expected": {
+    "rows": [
+      [
+        "货号",
+        "件数",
+        "核对"
+      ],
+      [
+        "0009",
+        12,
+        true
+      ],
+      [
+        "螺钉",
+        3.75,
+        false
+      ],
+      [
+        "数量零",
+        0,
+        true
+      ]
+    ],
+    "sheet": "库存"
+  },
+  "expected_status": "ready",
+  "input_name": "input.xlsx",
+  "input_sha256": "6cc9dcb5b06b8d20cb64e5e199af3202546fffc799c4c13a824ad295fac41061",
+  "output_name": "output.json",
+  "parameters": {
+    "mode": "rows",
+    "sheet": "库存"
+  },
+  "sha256": "d53719cc6a784b3d75695f9f04670ac3c7d7a72fa7450b33b8e5c8ae42239a28",
+  "task": "请用已审核XLSX技能的原始xlsx_read.py helper，只读读取input.xlsx的“库存”工作表全部行，将其--json --sheet 库存的原始输出结构保存为output.json。保留字段、行顺序和JSON中的字符串、整数、小数、布尔类型，不重写helper。"
+}

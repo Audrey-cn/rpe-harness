@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "checks": {
+    "request_bound": true,
+    "source_unchanged": true,
+    "strict_json": true,
+    "root_type_preserved": true,
+    "raw_tokens_preserved": false,
+    "requested_style": true
+  },
+  "plan_sha256": "8509419a6081efd652d8ab5c632bf3b007e011655744250c96f393e72f5f8250",
+  "input_sha256": "03cbdf8ab59d7fe6102ed9f4668bc1b2f64c47d5e711e48bd44a5a66d8831bac",
+  "output_sha256": "5c3c0854400c4aedd78e38255523124fc37b22c026c5e6143e0eaf2e7067e9f0",
+  "input_bytes": 51,
+  "output_bytes": 37,
+  "root_type": "object"
+}

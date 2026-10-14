@@ -1,0 +1,485 @@
+[
+  {
+    "path": "rpe_harness/__init__.py",
+    "wheel_sha256": "3d77886cad5275a39ba254fccbbca997c5825e81e3fd4239e692088c5eb2b74e",
+    "source_sha256": "3d77886cad5275a39ba254fccbbca997c5825e81e3fd4239e692088c5eb2b74e",
+    "installed_sha256": "3d77886cad5275a39ba254fccbbca997c5825e81e3fd4239e692088c5eb2b74e",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/__main__.py",
+    "wheel_sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+    "source_sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+    "installed_sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/address_cli.py",
+    "wheel_sha256": "1adbf020eb03236f5e5798ef83f0a1a0b6d7d07267f52c5baad9926e02e1c033",
+    "source_sha256": "1adbf020eb03236f5e5798ef83f0a1a0b6d7d07267f52c5baad9926e02e1c033",
+    "installed_sha256": "1adbf020eb03236f5e5798ef83f0a1a0b6d7d07267f52c5baad9926e02e1c033",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/__init__.py",
+    "wheel_sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+    "source_sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+    "installed_sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/catalog.py",
+    "wheel_sha256": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+    "source_sha256": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+    "installed_sha256": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/cli.py",
+    "wheel_sha256": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+    "source_sha256": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+    "installed_sha256": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/identity.py",
+    "wheel_sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+    "source_sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+    "installed_sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/lifecycle.py",
+    "wheel_sha256": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+    "source_sha256": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+    "installed_sha256": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/manifest.py",
+    "wheel_sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+    "source_sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+    "installed_sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/prepublish.py",
+    "wheel_sha256": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+    "source_sha256": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+    "installed_sha256": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/registry.py",
+    "wheel_sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+    "source_sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+    "installed_sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/store.py",
+    "wheel_sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+    "source_sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+    "installed_sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/assets/trust.py",
+    "wheel_sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+    "source_sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+    "installed_sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/bridge.py",
+    "wheel_sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "source_sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "installed_sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/capability.py",
+    "wheel_sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "source_sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "installed_sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/capability_catalog.py",
+    "wheel_sha256": "df8ddd3d596131fbef136b2a18cd5d815ff1bd4621049ff38840a0022ec2c8bb",
+    "source_sha256": "df8ddd3d596131fbef136b2a18cd5d815ff1bd4621049ff38840a0022ec2c8bb",
+    "installed_sha256": "df8ddd3d596131fbef136b2a18cd5d815ff1bd4621049ff38840a0022ec2c8bb",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/causal_graph.py",
+    "wheel_sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "source_sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "installed_sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/cli.py",
+    "wheel_sha256": "3086d83fe6324412f9fcbf21b34c84b36633637fbf2a9df7c7a4391206faccae",
+    "source_sha256": "3086d83fe6324412f9fcbf21b34c84b36633637fbf2a9df7c7a4391206faccae",
+    "installed_sha256": "3086d83fe6324412f9fcbf21b34c84b36633637fbf2a9df7c7a4391206faccae",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/context.py",
+    "wheel_sha256": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+    "source_sha256": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+    "installed_sha256": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/contracts.py",
+    "wheel_sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+    "source_sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+    "installed_sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/__init__.py",
+    "wheel_sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+    "source_sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+    "installed_sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/candidates.py",
+    "wheel_sha256": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+    "source_sha256": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+    "installed_sha256": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/cycle.py",
+    "wheel_sha256": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+    "source_sha256": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+    "installed_sha256": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/json_acceptance.py",
+    "wheel_sha256": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+    "source_sha256": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+    "installed_sha256": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/maintenance.py",
+    "wheel_sha256": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+    "source_sha256": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+    "installed_sha256": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/sandbox.py",
+    "wheel_sha256": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+    "source_sha256": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+    "installed_sha256": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/store.py",
+    "wheel_sha256": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+    "source_sha256": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+    "installed_sha256": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/training_feedback.py",
+    "wheel_sha256": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+    "source_sha256": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+    "installed_sha256": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/evolution/worker.py",
+    "wheel_sha256": "66f961d94ce01f3d2058c1d60c8c5cd1d3611cee621907a6fc0ab2716fe50450",
+    "source_sha256": "66f961d94ce01f3d2058c1d60c8c5cd1d3611cee621907a6fc0ab2716fe50450",
+    "installed_sha256": "66f961d94ce01f3d2058c1d60c8c5cd1d3611cee621907a6fc0ab2716fe50450",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/execution.py",
+    "wheel_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+    "source_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+    "installed_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/__init__.py",
+    "wheel_sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "source_sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "installed_sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/address_comparison.py",
+    "wheel_sha256": "bb05ced42a2c91ac7fead02e39a7fe2fd72459c3f4e94fb817cb95ecc1d15581",
+    "source_sha256": "bb05ced42a2c91ac7fead02e39a7fe2fd72459c3f4e94fb817cb95ecc1d15581",
+    "installed_sha256": "bb05ced42a2c91ac7fead02e39a7fe2fd72459c3f4e94fb817cb95ecc1d15581",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/baseline.py",
+    "wheel_sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "source_sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "installed_sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/basic_validation.py",
+    "wheel_sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "source_sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "installed_sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/cold_skill_test.py",
+    "wheel_sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "source_sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "installed_sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/cost_ledger.py",
+    "wheel_sha256": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+    "source_sha256": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+    "installed_sha256": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/hermes_native.py",
+    "wheel_sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+    "source_sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+    "installed_sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/hermes_repeated.py",
+    "wheel_sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+    "source_sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+    "installed_sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/learning_comparison.py",
+    "wheel_sha256": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+    "source_sha256": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+    "installed_sha256": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/reuse_sequence.py",
+    "wheel_sha256": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+    "source_sha256": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+    "installed_sha256": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/skill_comparison.py",
+    "wheel_sha256": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+    "source_sha256": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+    "installed_sha256": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/stress_test.py",
+    "wheel_sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "source_sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "installed_sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/experiments/unattended_sequence.py",
+    "wheel_sha256": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+    "source_sha256": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+    "installed_sha256": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/__init__.py",
+    "wheel_sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "source_sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "installed_sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes.py",
+    "wheel_sha256": "95061c0dda126e4ba2e67f19d8a60b40d18cdba7ddf802fcefd11e2841428177",
+    "source_sha256": "95061c0dda126e4ba2e67f19d8a60b40d18cdba7ddf802fcefd11e2841428177",
+    "installed_sha256": "95061c0dda126e4ba2e67f19d8a60b40d18cdba7ddf802fcefd11e2841428177",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_address.py",
+    "wheel_sha256": "80f1b10f9d37061aded3f5d8bad25fe42aa672b322c24f9ffb220cf0299dfdc8",
+    "source_sha256": "80f1b10f9d37061aded3f5d8bad25fe42aa672b322c24f9ffb220cf0299dfdc8",
+    "installed_sha256": "80f1b10f9d37061aded3f5d8bad25fe42aa672b322c24f9ffb220cf0299dfdc8",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_bootstrap.py",
+    "wheel_sha256": "7ace62a2f23b2a3b55903952969119e2288f2767abe64db0f834d7e5fc266117",
+    "source_sha256": "7ace62a2f23b2a3b55903952969119e2288f2767abe64db0f834d7e5fc266117",
+    "installed_sha256": "7ace62a2f23b2a3b55903952969119e2288f2767abe64db0f834d7e5fc266117",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_broker.py",
+    "wheel_sha256": "312a87ba489df7b8386c988ed257db72087e1a451b7cce11f58f6dc0eba0f1d5",
+    "source_sha256": "312a87ba489df7b8386c988ed257db72087e1a451b7cce11f58f6dc0eba0f1d5",
+    "installed_sha256": "312a87ba489df7b8386c988ed257db72087e1a451b7cce11f58f6dc0eba0f1d5",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_gate.py",
+    "wheel_sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+    "source_sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+    "installed_sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_session.py",
+    "wheel_sha256": "3fb941bd6fbfa9805cfaf23ef02622ecbca001cedeede8c07be453fa93b4a8de",
+    "source_sha256": "3fb941bd6fbfa9805cfaf23ef02622ecbca001cedeede8c07be453fa93b4a8de",
+    "installed_sha256": "3fb941bd6fbfa9805cfaf23ef02622ecbca001cedeede8c07be453fa93b4a8de",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/hermes_skills.py",
+    "wheel_sha256": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+    "source_sha256": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+    "installed_sha256": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/integrations/skill_gate.py",
+    "wheel_sha256": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+    "source_sha256": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+    "installed_sha256": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/intent.py",
+    "wheel_sha256": "be33b09f3a6b2a41ac9a77d4c8b75363c6c0dad75447740ab9acc5a411b47608",
+    "source_sha256": "be33b09f3a6b2a41ac9a77d4c8b75363c6c0dad75447740ab9acc5a411b47608",
+    "installed_sha256": "be33b09f3a6b2a41ac9a77d4c8b75363c6c0dad75447740ab9acc5a411b47608",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/json_contract.py",
+    "wheel_sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+    "source_sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+    "installed_sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/json_execution.py",
+    "wheel_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+    "source_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+    "installed_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/json_verification.py",
+    "wheel_sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+    "source_sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+    "installed_sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/mcsi.py",
+    "wheel_sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "source_sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "installed_sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/path_binding.py",
+    "wheel_sha256": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+    "source_sha256": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+    "installed_sha256": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/recovery.py",
+    "wheel_sha256": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+    "source_sha256": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+    "installed_sha256": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/runtime.py",
+    "wheel_sha256": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+    "source_sha256": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+    "installed_sha256": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/server.py",
+    "wheel_sha256": "971d3da04ce60feda62612823d5b8821c4d557e8165054b822255cfcc53bc7e3",
+    "source_sha256": "971d3da04ce60feda62612823d5b8821c4d557e8165054b822255cfcc53bc7e3",
+    "installed_sha256": "971d3da04ce60feda62612823d5b8821c4d557e8165054b822255cfcc53bc7e3",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/skill_catalog.py",
+    "wheel_sha256": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+    "source_sha256": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+    "installed_sha256": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/skill_cli.py",
+    "wheel_sha256": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+    "source_sha256": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+    "installed_sha256": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/skill_inspection.py",
+    "wheel_sha256": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+    "source_sha256": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+    "installed_sha256": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/skill_verification.py",
+    "wheel_sha256": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+    "source_sha256": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+    "installed_sha256": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/storage.py",
+    "wheel_sha256": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+    "source_sha256": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+    "installed_sha256": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/tasks.py",
+    "wheel_sha256": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+    "source_sha256": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+    "installed_sha256": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/verification.py",
+    "wheel_sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+    "source_sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+    "installed_sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+    "matches": true
+  },
+  {
+    "path": "rpe_harness/xlsx_resource.py",
+    "wheel_sha256": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b",
+    "source_sha256": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b",
+    "installed_sha256": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b",
+    "matches": true
+  }
+]

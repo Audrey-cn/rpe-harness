@@ -1,0 +1,2 @@
+请只读检查 input.xlsx 的“明细”工作表，把全部行按原始XLSX技能 xlsx_read.py 的 --json --sheet 明细 输出结构保存为 output.json。先用原生技能加载入口阅读已安装xlsx技能，再使用其原始helper（专门任务入口可经其已审核adapter调用），不可自行重写helper。保留JSON类型、字段与行顺序。
+保留所有输入文件，输出只能写到指定新路径，不得覆盖。可用已有的terminal、file、技能搜索/加载及专用能力入口；不安装依赖，不训练或升级技能。已有openpyxl的Python解释器：<frozen-helper-python>。不得读取控制器、数据库、其他会话、实验报告、RPE实现或标准答案。

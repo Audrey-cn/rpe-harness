@@ -1,0 +1,19 @@
+{
+  "artifacts": [
+    {
+      "name": "output.json",
+      "raw_exported": false,
+      "reason": "unverified_or_changed_artifact",
+      "sha256": null,
+      "size_bytes": null
+    },
+    {
+      "name": "terminal.json",
+      "raw_exported": false,
+      "reason": "unverified_or_changed_artifact",
+      "sha256": null,
+      "size_bytes": null
+    }
+  ],
+  "sha256": "099f081cf29dd4e6485f42e1d685ca0260d8a714fcac9aa4d601da078c8a9f3a"
+}
