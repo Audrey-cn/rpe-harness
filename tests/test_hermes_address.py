@@ -233,14 +233,17 @@ def test_assistant_success_prose_without_native_chain_does_not_pass(configured):
     assert verdict['errors']
 
 
-def test_isolated_address_home_and_native_control_preserve_search(tmp_path):
+def test_isolated_address_tools_are_eager_while_native_control_preserves_search(tmp_path):
     from rpe_harness.integrations.hermes_session import prepare_home
     settings = {'provider': 'xiaomi', 'model': 'test', 'base_url': 'https://example.invalid/v1', 'api_key': 'test-key'}
     for entry_mode, enabled in [('address', True), ('optional', False)]:
         home = prepare_home(tmp_path / entry_mode, tmp_path, tmp_path / 'runs.sqlite', tool_enabled=enabled,
                             settings=settings, entry_mode=entry_mode, preserve_native_tool_search=True)
         config = json.loads((home / 'config.yaml').read_text())
-        assert config.get('tools', {}).get('tool_search', {}).get('enabled') != 'off'
+        if entry_mode == 'address':
+            assert config['tools']['tool_search']['enabled'] == 'off'
+        else:
+            assert config.get('tools', {}).get('tool_search', {}).get('enabled') != 'off'
         assert config['curator']['enabled'] is False
 
 
@@ -276,7 +279,7 @@ def test_task_stage_discards_original_task_and_understanding_history(configured)
             session_id=env['session'], task_id='address-task', turn_id='address-turn', api_request_id='api-minimal')
 
 
-def test_address_phase_uses_its_trusted_schema_when_native_search_defers_plugin_tools(configured):
+def test_phase_schema_projection_uses_only_the_trusted_registered_schema(configured):
     env = configured
     bridge = {'type': 'function', 'function': {'name': 'tool_search', 'parameters': {'type': 'object'}}}
     request = env['sdk'].middleware['llm_request'](request={'tools': [bridge]},
@@ -387,44 +390,59 @@ def test_real_hermes_sdk_binds_both_native_calls_and_minimal_messages_without_mo
     interpreter = sdk_root / '.venv/bin/python'
     if not interpreter.is_file():
         pytest.skip('installed Hermes SDK unavailable')
-    home = env['config'].parent / 'sdk-home'
-    plugin = home / 'plugins/rpe-harness'
-    plugin.mkdir(parents=True)
-    (home / 'config.yaml').write_text('plugins:\n  enabled: [rpe-harness]\n  disabled: []\n')
-    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.8.0\n')
-    (plugin / '__init__.py').write_text('from rpe_harness.integrations.hermes import register\n')
+    from rpe_harness.integrations.hermes_session import prepare_home
+    home = prepare_home(env['config'].parent / 'sdk-session', env['workspace'], env['db'],
+        tool_enabled=True, entry_mode='address', preserve_native_tool_search=True,
+        settings={'provider': 'xiaomi', 'model': 'test', 'api_key': 'fake-no-model-key',
+                  'base_url': 'https://example.invalid/v1'})
     environment = {**os.environ, 'HOME': str(home), 'XDG_CACHE_HOME': str(home / 'cache'),
         'HERMES_HOME': str(home), 'HERMES_RUNTIME_DIR': str(home / 'runtime'),
         'HERMES_SAFE_MODE': '0', 'HERMES_ENABLE_PROJECT_PLUGINS': '0',
+        'HERMES_DISABLE_LAZY_INSTALLS': '1',
         'RPE_HERMES_DB': str(env['db']), 'RPE_HERMES_WORKSPACE': str(env['workspace']),
         'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HERMES_TOOL_ENABLED': '1',
+        'RPE_HARNESS_IMPORT_ROOT': str(Path(__file__).resolve().parents[1] / 'src'),
         'RPE_HERMES_ENTRY_MODE': 'address', 'RPE_HERMES_ERROR_PATH': str(home / 'observer-errors'),
         'PYTHONPATH': str(Path(__file__).resolve().parents[1] / 'src') + os.pathsep + str(sdk_root)}
     environment.pop('HERMES_IGNORE_USER_CONFIG', None)
     program = '''import json,sys
+from types import SimpleNamespace
 from hermes_cli.plugins import get_plugin_manager
-from hermes_cli.middleware import apply_llm_request_middleware,run_llm_execution_middleware,run_tool_execution_middleware
+from hermes_cli.middleware import apply_llm_request_middleware,run_llm_execution_middleware
 from agent.api_request_hooks import ApiRequestHooksMixin
-from model_tools import handle_function_call
+from agent.agent_init import _load_tools
+from agent.agent_runtime_helpers import invoke_tool
+from agent.message_sanitization import uniquify_tool_call_ids
+from agent.turn_tool_validation import validate_tool_calls
+from openai.types.chat import ChatCompletionMessageToolCall
 manager=get_plugin_manager();manager.discover_and_load()
 assert manager._plugins['rpe-harness'].enabled,manager._plugins['rpe-harness'].error
+agent=SimpleNamespace(quiet_mode=True,platform='cli',enabled_toolsets=['rpe_harness'],
+    _context_engine_tool_names=set(),_memory_manager=None,_uniquify_tool_call_ids=uniquify_tool_call_ids)
+_load_tools(agent,['rpe_harness'],None)
+assert {'rpe_understand','rpe_task'} <= agent.valid_tool_names,sorted(agent.valid_tool_names)
 hook=ApiRequestHooksMixin()
-bridge={'type':'function','function':{'name':'tool_search','parameters':{'type':'object'}}}
 def call(index,name,args):
     ids={'session_id':'sdk-address','task_id':'sdk-task','turn_id':'sdk-turn',
          'api_request_id':'sdk-api-'+str(index),'tool_call_id':'sdk-call-'+str(index)}
-    body=apply_llm_request_middleware({'tools':[bridge],'messages':[{'role':'user','content':'PRIVATE_UPSTREAM'}]},**ids).payload
+    body=apply_llm_request_middleware({'tools':agent.tools,'messages':[{'role':'user','content':'PRIVATE_UPSTREAM'}]},**ids).payload
     if index>1: assert 'PRIVATE_UPSTREAM' not in json.dumps(body['messages'])
     manager.invoke_hook('pre_api_request',request=hook._api_request_payload_for_hook(body),**ids)
     run_llm_execution_middleware(body,lambda value:value,**ids)
     manager.invoke_hook('post_api_request',response={'assistant_message':{'tool_calls':[{'id':ids['tool_call_id'],'name':name}]}},**ids)
-    return json.loads(run_tool_execution_middleware(name,args,
-        lambda value:handle_function_call(name,value,skip_tool_execution_middleware=True,skip_tool_request_middleware=True,**ids),**ids))
+    message=SimpleNamespace(tool_calls=[ChatCompletionMessageToolCall(id=ids['tool_call_id'],type='function',
+        function={'name':name,'arguments':json.dumps(args)})])
+    validation=validate_tool_calls(agent,message,'tool_calls',messages=[],conversation_history=[],
+        api_call_count=index,effective_task_id=ids['task_id'])
+    assert validation.action=='ok',validation.action
+    agent.session_id=ids['session_id'];agent._current_turn_id=ids['turn_id']
+    agent._current_api_request_id=ids['api_request_id']
+    return json.loads(invoke_tool(agent,name,args,ids['task_id'],tool_call_id=ids['tool_call_id'],messages=[]))
 handoff=call(1,'rpe_understand',json.loads(sys.argv[1]))
 assert handoff['status']=='ready',handoff
 result=call(2,'rpe_task',{'state_id':handoff['state_id']})
 ids={'session_id':'sdk-address','task_id':'sdk-task','turn_id':'sdk-turn','api_request_id':'sdk-api-final'}
-body=apply_llm_request_middleware({'tools':[bridge],'messages':[{'role':'user','content':'PRIVATE_UPSTREAM'}]},**ids).payload
+body=apply_llm_request_middleware({'tools':agent.tools,'messages':[{'role':'user','content':'PRIVATE_UPSTREAM'}]},**ids).payload
 assert 'PRIVATE_UPSTREAM' not in json.dumps(body['messages'])
 manager.invoke_hook('pre_api_request',request=hook._api_request_payload_for_hook(body),**ids)
 run_llm_execution_middleware(body,lambda value:value,**ids)

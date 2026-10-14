@@ -368,7 +368,11 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
-    if entry_mode in ('strict','skills','producer') and not preserve_native_tool_search:
+    # Address is a fixed two-tool strategy. Hermes snapshots valid_tool_names
+    # before request middleware; its plugin deferral must be disabled here so
+    # the native validator admits both registered tools. The native control arm
+    # continues to use its existing search/progressive-disclosure configuration.
+    if entry_mode == 'address' or (entry_mode in ('strict','skills','producer') and not preserve_native_tool_search):
         config['tools'] = {'tool_search':{'enabled':'off'}}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
@@ -576,7 +580,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
                         tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode,
-                        preserve_native_tool_search=preserve_native_tool_search or entry_mode=='address')
+                        preserve_native_tool_search=preserve_native_tool_search)
     skill_config_path = None
     snapshot = None
     if catalog_root is not None:

@@ -217,9 +217,9 @@ def register_address_workflow(ctx, *, store, workspace, python, error_path):
                 chosen = [tool for tool in request.get('tools', []) if isinstance(tool, dict) and
                           (tool.get('function') or {}).get('name') == ('rpe_task' if name == 'none' else name)]
                 if not chosen:
-                    # Hermes may progressively defer plugin tools behind tool_search.
-                    # This strategy admits our own trusted phase schema directly;
-                    # the native comparison keeps its existing discovery policy.
+                    # This projects only our trusted schema. Projection does not
+                    # change Hermes's native valid_tool_names; the launcher's
+                    # eager address profile supplies that separate prerequisite.
                     chosen = [{'type': 'function', 'function': tool_schemas['rpe_task' if name == 'none' else name]}]
                 if len(chosen) != 1:
                     raise ValueError('current address tool unavailable')
