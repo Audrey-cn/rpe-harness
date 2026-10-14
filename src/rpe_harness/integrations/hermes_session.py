@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 from contextlib import ExitStack
 from pathlib import Path
@@ -16,6 +17,89 @@ import subprocess
 import sys
 import time
 import uuid
+
+
+_SAFE_TEXT = ('kind', 'session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id',
+    'tool_name', 'provider', 'model', 'response_model', 'status', 'error_type', 'error_code',
+    'turn_exit_reason', 'finish_reason', 'arguments_sha256', 'content_sha256', 'request_tools_sha256',
+    'target_path_sha256')
+
+
+def _safe_diagnostics(value, secret):
+    """Only bounded public metadata may cross a failed observation boundary."""
+    def safe_text(item):
+        return item[:256] if isinstance(item, str) and (not secret or secret not in item) else None
+    def number(item):
+        return (type(item) is int and abs(item) <= 2**63 - 1) or (type(item) is float and math.isfinite(item))
+    def rows(items):
+        result = []
+        for row in items[:256] if isinstance(items, list) else []:
+            if not isinstance(row, dict):
+                continue
+            saved = {key: safe_text(row[key]) for key in _SAFE_TEXT if safe_text(row.get(key)) is not None}
+            saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code')
+                          if number(row.get(key))})
+            saved.update({key: row[key] for key in ('completed','failed','interrupted','verified') if type(row.get(key)) is bool})
+            calls = row.get('model_tool_calls')
+            if isinstance(calls, list):
+                saved['model_tool_calls'] = [{key: safe_text(call[key]) for key in ('tool_call_id','tool_name')
+                    if safe_text(call.get(key)) is not None} for call in calls[:32] if isinstance(call, dict)]
+            result.append(saved)
+        return result
+    result = {'completed': False, 'session_id': safe_text(value.get('session_id')),
+              'events': rows(value.get('events')), 'file_write_observations': rows(value.get('file_write_observations')),
+              'usage': None, 'model_identity': None, 'process_cleanup': None}
+    for key in ('exit_code','observer_errors','elapsed_seconds','max_turns','max_task_attempts'):
+        if number(value.get(key)):
+            result[key] = value[key]
+    for key in ('timed_out','contract_prompt_injected'):
+        if type(value.get(key)) is bool:
+            result[key] = value[key]
+    if isinstance(value.get('session_root'), str) and len(value['session_root']) <= 4096 and (not secret or secret not in value['session_root']):
+        result['session_root'] = value['session_root']
+    for key in ('prompt_sha256','original_prompt_sha256','input_sha256','entry_mode','catalog_snapshot_id'):
+        if safe_text(value.get(key)) is not None:
+            result[key] = safe_text(value[key])
+    usage = value.get('usage')
+    if isinstance(usage, dict):
+        allowed = {'api_requests','missing_observations','requests_with_usage','api_errors','coverage_complete',
+            'known_total_tokens','prompt_tokens','output_tokens','input_tokens','total_tokens',
+            'cache_read_tokens','cache_write_tokens','reasoning_tokens'}
+        result['usage'] = {key: item for key,item in usage.items() if key in allowed
+            and (item is None or number(item) or type(item) is bool)}
+        # Finalization failure means overall observation coverage is unproven.
+        # Already observed costs remain known; unknown completion never becomes zero.
+        result['usage'].update(coverage_complete=False, total_tokens=None)
+    identity = value.get('model_identity')
+    if isinstance(identity, dict):
+        result['model_identity'] = {key:safe_text(identity[key]) for key in ('provider','requested_model')
+                                   if safe_text(identity.get(key)) is not None}
+        models = identity.get('response_models')
+        result['model_identity']['response_models'] = [safe_text(item) for item in models[:16]
+            if safe_text(item) is not None] if isinstance(models, list) else []
+    cleanup = value.get('process_cleanup')
+    if isinstance(cleanup, dict):
+        saved = {key:cleanup[key] for key in ('cleanup_complete','external_executor_cleanup_complete')
+                 if type(cleanup.get(key)) is bool}
+        saved.update({key:cleanup[key] for key in ('tracked_descendants','signaled_descendants','external_executor_tracked_children')
+                      if type(cleanup.get(key)) is int and 0 <= cleanup[key] <= 2**63 - 1})
+        for key in ('remaining_descendants','external_executor_remaining_children'):
+            items = cleanup.get(key)
+            saved[key] = [item for item in items[:64] if type(item) is int and 1 < item <= 2**31 - 1] if isinstance(items,list) else None
+        errors = cleanup.get('errors')
+        saved['errors'] = [{key:safe_text(row[key]) for key in ('stage','error_type') if safe_text(row.get(key)) is not None}
+            for row in errors[:32] if isinstance(row,dict)] if isinstance(errors,list) else None
+        result['process_cleanup'] = saved
+    return result
+
+
+class SessionObservationError(ValueError):
+    """A failed postlaunch gate with safe, already observed session facts."""
+    def __init__(self, diagnostics, *, secret='', code='postlaunch_diagnostics_failed', error_type=None):
+        super().__init__('host observation finalization failed')
+        self.diagnostics = _safe_diagnostics(diagnostics, secret)
+        self.code = code
+        self.error_type = error_type
 
 
 def aggregate_usage(events):
@@ -279,7 +363,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
-    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.6.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
+    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.7.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
     (plugin / '__init__.py').write_text(
         'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
         'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
@@ -408,7 +492,8 @@ def _file_write_observations(records, workspace):
         if len(matches) != 1:
             continue
         args = matches[0].get('input')
-        if not isinstance(args, dict) or not isinstance(args.get('path'), str) or not isinstance(args.get('content'), str):
+        if (not isinstance(args, dict) or not isinstance(args.get('path'), str)
+                or len(args['path']) > 4096 or not isinstance(args.get('content'), str)):
             continue
         try:
             output = json.loads(record.get('output', ''))
@@ -423,7 +508,7 @@ def _file_write_observations(records, workspace):
                 'arguments_sha256': hashlib.sha256(json.dumps(args, sort_keys=True, ensure_ascii=False,
                     allow_nan=False, separators=(',', ':')).encode()).hexdigest(),
                 'target_path_sha256': hashlib.sha256(str(path.resolve()).encode()).hexdigest()}
-        except (ValueError, TypeError, OSError):
+        except (ValueError, TypeError, OSError, RuntimeError):
             continue
         if type(record.get('duration_ms')) is int and record['duration_ms'] >= 0:
             observed['duration_ms'] = record['duration_ms']
@@ -641,66 +726,101 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                     cleanup_errors.append({'stage': 'verify_known_descendants', 'error_type': type(exc).__name__})
     finally:
         broker_stack.close()
-    external_cleanup = getattr(broker_environment, 'cleanup', {
-        'tracked_children': 0, 'remaining_children': [], 'cleanup_complete': True, 'errors': []})
-    cleanup_errors.extend(external_cleanup['errors'])
-    cleanup_complete = (not cleanup_errors and not remaining_descendants and process.poll() is not None
-                        and external_cleanup['cleanup_complete'])
-    records = []
-    for line in stdout_path.read_text(errors='replace').splitlines():
-        try:
-            record = json.loads(line)
-            if isinstance(record, dict):
-                records.append(record)
-        except ValueError:
-            pass
-    terminal = next((r for r in reversed(records) if r.get('type') == 'result'), {})
-    events = [e for e in event_store.list() if e['ingest_event_id'] not in previous_ids]
-    session_id = terminal.get('session_id') or next((e.get('session_id') for e in events if e.get('session_id')), None)
-    events = [e for e in events if e.get('session_id') == session_id]
-    ended = any(e.get('kind') == 'on_session_end' and e.get('session_id') == session_id
-                for e in events)
-    observer_error_path = session_root / 'observer-errors.jsonl'
-    observer_errors = (len(observer_error_path.read_text().splitlines())
-                       if observer_error_path.exists() else 0)
-    usage = aggregate_usage(events)
-    if observer_errors:
-        usage.update(coverage_complete=False, prompt_tokens=None, output_tokens=None,
-                     total_tokens=None, input_tokens=None, cache_read_tokens=None,
-                     cache_write_tokens=None, reasoning_tokens=None)
-    result = {'exit_code': process.returncode, 'timed_out': timed_out,
-              'completed': bool(terminal) and ended and not timed_out and process.returncode == 0
-                           and not observer_errors and cleanup_complete,
-              'final_response': terminal.get('text', ''), 'session_id': session_id,
-              'events': events, 'usage': usage, 'observer_errors': observer_errors,
-              'elapsed_seconds': round(time.monotonic()-started, 3),
-              'model_identity': {'provider': settings['provider'], 'requested_model': settings['model'],
-                                 'base_url': settings['base_url'],
-                                 'response_models': sorted({e['response_model'] for e in events if isinstance(e.get('response_model'), str)})},
-              'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
-              'original_prompt_sha256':original_prompt_sha,
-              'contract_prompt_injected':fixed_request is not None,
-              'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,'max_turns':max_turns,
-              'input_sha256':fixed_input_sha,
-              'session_root': str(session_root),
-              'catalog_snapshot_id': snapshot['snapshot_id'] if snapshot else None,
-              'process_cleanup': {'tracked_descendants': len(owned_descendants),
-                                  'signaled_descendants': len(signaled_descendants),
-                                  'remaining_descendants': remaining_descendants,
-                                  'cleanup_complete': cleanup_complete,
-                                  'external_executor_cleanup_complete': external_cleanup['cleanup_complete'],
-                                  'external_executor_tracked_children': external_cleanup['tracked_children'],
-                                  'external_executor_remaining_children': external_cleanup['remaining_children'],
-                                  'errors': cleanup_errors},
-              'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use'],
-              'file_write_observations': _file_write_observations(records, workspace)}
-    # Defense in depth: a provider error might include its key. Owned raw logs
-    # are needed only for debugging and are deleted by caller after acceptance.
-    secret = settings['api_key']
-    for path in [stdout_path, stderr_path]:
-        data = path.read_text(errors='replace')
-        if secret in data:
-            path.write_text(data.replace(secret, '[REDACTED]'))
-    if secret in json.dumps(result, ensure_ascii=False):
-        raise ValueError('credential appeared in host response; private output redacted')
-    return result
+    # Preserve actual cleanup and observation facts even if private transcript
+    # parsing, extraction or credential redaction fails after the process exits.
+    partial = {'completed': False, 'exit_code': process.returncode, 'timed_out': timed_out,
+        'session_id': None, 'usage': None, 'events': [], 'session_root': str(session_root),
+        'elapsed_seconds': round(time.monotonic()-started, 3),
+        'model_identity': {'provider': settings['provider'], 'requested_model': settings['model'],
+                           'response_models': []},
+        'process_cleanup': {'tracked_descendants': len(owned_descendants),
+            'signaled_descendants': len(signaled_descendants),
+            'remaining_descendants': remaining_descendants, 'cleanup_complete': False,
+            'external_executor_cleanup_complete': False,
+            'external_executor_tracked_children': 0,
+            'external_executor_remaining_children': [], 'errors': cleanup_errors}}
+    observation_error_code = 'postlaunch_diagnostics_failed'
+    try:
+        external_cleanup = getattr(broker_environment, 'cleanup', {
+            'tracked_children': 0, 'remaining_children': [], 'cleanup_complete': True, 'errors': []})
+        cleanup_errors.extend(external_cleanup['errors'])
+        cleanup_complete = (not cleanup_errors and not remaining_descendants and process.poll() is not None
+                            and external_cleanup['cleanup_complete'])
+        partial['process_cleanup'].update(
+            cleanup_complete=cleanup_complete,
+            external_executor_cleanup_complete=external_cleanup['cleanup_complete'],
+            external_executor_tracked_children=external_cleanup['tracked_children'],
+            external_executor_remaining_children=external_cleanup['remaining_children'],
+            errors=cleanup_errors)
+        observed_events = [e for e in event_store.list() if e['ingest_event_id'] not in previous_ids]
+        partial.update(events=observed_events,
+            session_id=next((e.get('session_id') for e in observed_events if e.get('session_id')), None))
+        partial['model_identity']['response_models'] = sorted({e['response_model'] for e in observed_events if isinstance(e.get('response_model'), str)})
+        partial['usage'] = aggregate_usage(observed_events)
+        records = []
+        for line in stdout_path.read_text(errors='replace').splitlines():
+            try:
+                record = json.loads(line)
+                if isinstance(record, dict):
+                    records.append(record)
+            except ValueError:
+                pass
+        terminal = next((r for r in reversed(records) if r.get('type') == 'result'), {})
+        events = observed_events
+        session_id = terminal.get('session_id') or next((e.get('session_id') for e in events if e.get('session_id')), None)
+        events = [e for e in events if e.get('session_id') == session_id]
+        ended = any(e.get('kind') == 'on_session_end' and e.get('session_id') == session_id
+                    for e in events)
+        observer_error_path = session_root / 'observer-errors.jsonl'
+        observer_errors = (len(observer_error_path.read_text().splitlines())
+                           if observer_error_path.exists() else 0)
+        usage = aggregate_usage(events)
+        if observer_errors:
+            usage.update(coverage_complete=False, prompt_tokens=None, output_tokens=None,
+                         total_tokens=None, input_tokens=None, cache_read_tokens=None,
+                         cache_write_tokens=None, reasoning_tokens=None)
+        result = {'exit_code': process.returncode, 'timed_out': timed_out,
+                  'completed': bool(terminal) and ended and not timed_out and process.returncode == 0
+                               and not observer_errors and cleanup_complete,
+                  'final_response': terminal.get('text', ''), 'session_id': session_id,
+                  'events': events, 'usage': usage, 'observer_errors': observer_errors,
+                  'elapsed_seconds': round(time.monotonic()-started, 3),
+                  'model_identity': {'provider': settings['provider'], 'requested_model': settings['model'],
+                                     'base_url': settings['base_url'],
+                                     'response_models': sorted({e['response_model'] for e in events if isinstance(e.get('response_model'), str)})},
+                  'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
+                  'original_prompt_sha256':original_prompt_sha,
+                  'contract_prompt_injected':fixed_request is not None,
+                  'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,'max_turns':max_turns,
+                  'input_sha256':fixed_input_sha,
+                  'session_root': str(session_root),
+                  'catalog_snapshot_id': snapshot['snapshot_id'] if snapshot else None,
+                  'process_cleanup': {'tracked_descendants': len(owned_descendants),
+                                      'signaled_descendants': len(signaled_descendants),
+                                      'remaining_descendants': remaining_descendants,
+                                      'cleanup_complete': cleanup_complete,
+                                      'external_executor_cleanup_complete': external_cleanup['cleanup_complete'],
+                                      'external_executor_tracked_children': external_cleanup['tracked_children'],
+                                      'external_executor_remaining_children': external_cleanup['remaining_children'],
+                                      'errors': cleanup_errors},
+                  'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use']}
+        # A malformed/untrusted terminal identity must not replace observations
+        # already read from the trusted DB with an empty filtered session.
+        partial.update({key: value for key, value in result.items()
+                        if key not in {'events', 'usage', 'session_id', 'model_identity'}})
+        result['file_write_observations'] = _file_write_observations(records, workspace)
+        # Defense in depth: a provider error might include its key. Owned raw logs
+        # are needed only for debugging and are deleted by caller after acceptance.
+        secret = settings['api_key']
+        for path in [stdout_path, stderr_path]:
+            data = path.read_text(errors='replace')
+            if secret in data:
+                path.write_text(data.replace(secret, '[REDACTED]'))
+        if secret in json.dumps(result, ensure_ascii=False):
+            observation_error_code = 'credential_in_host_response'
+            raise ValueError('credential appeared in host response; private output redacted')
+        return result
+    except Exception as error:
+        partial['elapsed_seconds'] = round(time.monotonic()-started, 3)
+        raise SessionObservationError(partial, secret=settings['api_key'],
+            code=observation_error_code, error_type=type(error).__name__) from None

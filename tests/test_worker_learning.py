@@ -343,3 +343,153 @@ print(json.dumps({'type':'result','session_id':'external-source-probe','text':'d
     assert report['usage']['api_requests'] == 0
     assert report['generation_link']['proven'] is False
     assert report['workspace_cleaned'] and not list(owned.glob('proposal-worker-*'))
+
+
+def test_unresolvable_tool_path_keeps_receipt_code_and_cleans_private_root(tmp_path, monkeypatch):
+    worker, database, _, packet = setup(tmp_path)
+    def generate(prompt, workspace, host_db, **options):
+        (Path(workspace) / 'candidate.py').write_text(CODE)
+        (Path(workspace) / 'loop').symlink_to('loop')
+        return session_result(stream_tool_calls=[{'type':'tool_use','name':'write_file','tool_call_id':'bad-path',
+            'input':{'path':'loop/candidate.py','content':CODE}}])
+    monkeypatch.setattr(worker, 'run_hermes_session', generate)
+    report = worker.run_proposal_worker(database, tmp_path, kind='csv_executor', training_packet=packet)
+    assert report['generation_link']['proven'] is False
+    assert report['workspace_cleaned'] and not list(tmp_path.glob('proposal-worker-*'))
+    assert Path(report['code_artifact_path']).read_text() == CODE
+    assert Path(report['report_path']).is_file()
+
+
+def test_launcher_unresolvable_verified_write_path_is_unproven(tmp_path):
+    launcher = importlib.import_module('rpe_harness.integrations.hermes_session')
+    (tmp_path / 'loop').symlink_to('loop')
+    records = [{'type':'tool_use','name':'write_file','tool_call_id':'bad-path',
+                'input':{'path':'loop/candidate.py','content':CODE}},
+        {'type':'tool_result','name':'write_file','tool_call_id':'bad-path','is_error':False,
+         'output':json.dumps({'verified':True,'bytes_written':len(CODE.encode())})}]
+    assert launcher._file_write_observations(records, tmp_path) == []
+
+
+def test_unexpected_provenance_failure_cannot_skip_private_cleanup_or_receipt(tmp_path, monkeypatch):
+    worker, database, _, packet = setup(tmp_path)
+    def generate(prompt, workspace, host_db, **options):
+        (Path(workspace) / 'candidate.py').write_text(CODE)
+        return session_result()
+    def fail(*args):
+        raise RuntimeError('PRIVATE_DIAGNOSTIC_FAILURE')
+    monkeypatch.setattr(worker, 'run_hermes_session', generate)
+    monkeypatch.setattr(worker, '_generation_link', fail)
+    report = worker.run_proposal_worker(database, tmp_path, kind='csv_executor', training_packet=packet)
+    assert report['generation_link']['proven'] is False
+    assert report['error']['code'] == 'provenance_diagnostics_failed'
+    assert report['proposal_id'] is None
+    assert report['workspace_cleaned'] and not list(tmp_path.glob('proposal-worker-*'))
+    assert Path(report['code_artifact_path']).read_text() == CODE
+    assert 'PRIVATE_DIAGNOSTIC_FAILURE' not in Path(report['report_path']).read_text()
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(), reason='macOS real postlaunch diagnostics')
+@pytest.mark.parametrize('fault', ['credential', 'extractor', 'redaction', 'stdout_read', 'metadata', 'terminal_identity'])
+def test_postlaunch_failure_preserves_observed_cost_identity_and_cleanup_without_secrets(tmp_path, monkeypatch, fault):
+    from rpe_harness.integrations import hermes, hermes_session as launcher
+    worker, database, _, packet = setup(tmp_path / 'owned')
+    owned = database.parent
+    integrations = tmp_path / 'runtime/lib/python/site-packages/rpe_harness/integrations'
+    integrations.mkdir(parents=True)
+    import_root = integrations.parents[1]
+    (integrations.parent / '__init__.py').write_text('')
+    (integrations / '__init__.py').write_text('')
+    shutil.copyfile(hermes.__file__, integrations / 'hermes.py')
+    dummy = 'isolated-dummy-key-for-redaction-test'
+    program = '''import json,os,sys
+from pathlib import Path
+sys.path.insert(0,IMPORT_ROOT)
+from rpe_harness.integrations.hermes import HostEventStore
+store=HostEventStore(os.environ['RPE_HERMES_DB'])
+identity={'session_id':'observed-session','task_id':'observed-task','turn_id':'observed-turn','api_request_id':'observed-api'}
+store.record('pre_api_request',identity)
+store.record('post_api_request',{**identity,'response_model':RESPONSE_MODEL,'usage':{'total_tokens':11,'present_fields':['total_tokens'],'raw_provider_usage':{'total_tokens':11}}})
+store.record('on_session_end',{'session_id':'observed-session','completed':True})
+(Path(os.environ['RPE_HERMES_WORKSPACE'])/'candidate.py').write_text(CODE)
+print(json.dumps({'type':'result','session_id':TERMINAL_SESSION,'text':RESULT_TEXT}))
+'''
+    (integrations / 'hermes_bootstrap.py').write_text('IMPORT_ROOT=' + repr(str(import_root)) + '\nCODE=' + repr(CODE) +
+        '\nRESULT_TEXT=' + repr(dummy if fault in {'credential','redaction'} else 'safe-response') +
+        '\nRESPONSE_MODEL=' + repr(dummy if fault == 'metadata' else 'observed-model') +
+        '\nTERMINAL_SESSION=' + repr(dummy if fault == 'terminal_identity' else 'observed-session') + '\n' + program)
+    monkeypatch.setattr(launcher, '__file__', str(integrations / 'hermes_session.py'))
+    monkeypatch.setattr(launcher, '_installed_python', lambda *a: Path(sys.executable).resolve())
+    monkeypatch.setattr(launcher, '_read_host_settings', lambda *a: {'provider':'xiaomi','model':'no-model',
+        'base_url':'https://example.invalid', 'api_key':dummy})
+    if fault == 'extractor':
+        def fail(*args):
+            raise RuntimeError('PRIVATE_EXTRACTOR_FAILURE')
+        monkeypatch.setattr(launcher, '_file_write_observations', fail)
+    elif fault == 'redaction':
+        original = Path.write_text
+        def fail_redaction(path, data, *args, **kwargs):
+            if path.name == 'stdout.jsonl' and '[REDACTED]' in data:
+                raise OSError('PRIVATE_REDACTION_FAILURE')
+            return original(path, data, *args, **kwargs)
+        monkeypatch.setattr(Path, 'write_text', fail_redaction)
+    elif fault == 'stdout_read':
+        original = Path.read_text
+        def fail_read(path, *args, **kwargs):
+            if path.name == 'stdout.jsonl':
+                raise OSError('PRIVATE_TRANSCRIPT_READ_FAILURE')
+            return original(path, *args, **kwargs)
+        monkeypatch.setattr(Path, 'read_text', fail_read)
+    carriers = []
+    def launch(*args, **kwargs):
+        try:
+            return launcher.run_hermes_session(*args, **kwargs)
+        except Exception as error:
+            carriers.append(error)
+            raise
+    monkeypatch.setattr(worker, 'run_hermes_session', launch)
+    report = worker.run_proposal_worker(database, owned, kind='csv_executor', training_packet=packet,
+        hermes_root=tmp_path/'fake-host', timeout=5)
+    assert report['usage'] is not None
+    assert report['usage']['known_total_tokens'] == 11
+    assert report['usage']['api_requests'] == 1
+    assert report['usage']['total_tokens'] is None and report['usage']['coverage_complete'] is False
+    assert report['session_id'] == 'observed-session'
+    assert report['model_identity']['response_models'] == ([] if fault == 'metadata' else ['observed-model'])
+    assert any(e.get('api_request_id') == 'observed-api' for e in report['observations'])
+    assert report['process_cleanup']['cleanup_complete'] is True
+    assert report['process_cleanup']['remaining_descendants'] == []
+    assert report['workspace_cleaned'] and not list(owned.glob('proposal-worker-*'))
+    assert report['proposal_id'] is None and not report['completed']
+    assert Path(report['code_artifact_path']).read_text() == CODE
+    serialized = Path(report['report_path']).read_text()
+    assert dummy not in serialized and 'PRIVATE_' not in serialized
+    assert len(carriers) == 1
+    assert isinstance(carriers[0], getattr(launcher, 'SessionObservationError', ()))
+    assert dummy not in str(carriers[0])
+    assert dummy not in json.dumps(carriers[0].diagnostics)
+    assert 'stream_tool_calls' not in carriers[0].diagnostics and 'final_response' not in carriers[0].diagnostics
+
+
+def test_safe_observation_error_preserves_pids_and_drops_malformed_private_fields():
+    launcher = importlib.import_module('rpe_harness.integrations.hermes_session')
+    secret = 'dummy-private-key'
+    error = launcher.SessionObservationError({'session_id':'known-session',
+        'session_root':'/tmp/' + 'x' * 280,
+        'usage':{'api_requests':1,'known_total_tokens':11,'total_tokens':11,'raw_provider_usage':{'secret':secret}},
+        'model_identity':{'provider':'xiaomi','requested_model':'known-model','response_models':[secret,'known-model',{}]},
+        'events':[{'kind':'post_api_request','api_request_id':'known-api','status':secret,'arguments':secret,
+                   'duration_ms':{},'model_tool_calls':[None,{'tool_call_id':'known-call','tool_name':'write_file'}]}],
+        'process_cleanup':{'tracked_descendants':2,'signaled_descendants':0,'remaining_descendants':[12345,23456],
+            'cleanup_complete':False,'external_executor_cleanup_complete':True,
+            'external_executor_tracked_children':1,'external_executor_remaining_children':[34567],
+            'errors':[{'stage':'verify_known_descendants','error_type':'ValueError','message':secret}]},
+        'final_response':secret,'stream_tool_calls':[{'input':secret}]}, secret=secret)
+    assert secret not in str(error) and secret not in json.dumps(error.diagnostics)
+    assert error.diagnostics['process_cleanup']['remaining_descendants'] == [12345,23456]
+    assert error.diagnostics['process_cleanup']['external_executor_remaining_children'] == [34567]
+    assert error.diagnostics['model_identity']['response_models'] == ['known-model']
+    assert error.diagnostics['usage']['known_total_tokens'] == 11
+    assert error.diagnostics['usage']['total_tokens'] is None
+    assert len(error.diagnostics['session_root']) > 256
+    assert 'raw_provider_usage' not in error.diagnostics['usage']
+    assert 'duration_ms' not in error.diagnostics['events'][0]

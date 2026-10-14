@@ -11,7 +11,7 @@ import time
 import uuid
 from pathlib import Path
 
-from ..integrations.hermes_session import run_hermes_session
+from ..integrations.hermes_session import run_hermes_session, SessionObservationError
 from ..path_binding import _directory, read_regular_file
 from ..storage import RunStore, canonical_json
 from .candidates import propose_candidate
@@ -247,14 +247,20 @@ def _generation_link(result, workspace, raw):
         if not isinstance(stream, dict) or stream.get('name') != 'write_file':
             continue
         args = stream.get('input')
-        if not isinstance(args, dict) or not isinstance(args.get('content'), str) or not isinstance(args.get('path'), str):
+        if (not isinstance(args, dict) or not isinstance(args.get('content'), str)
+                or not isinstance(args.get('path'), str) or len(args['path']) > 4096):
             continue
         path = Path(args['path'])
         path = path if path.is_absolute() else workspace / path
-        if path.resolve() != (workspace / 'candidate.py').resolve() or args['content'].encode() != raw:
+        try:
+            target = (workspace / 'candidate.py').resolve()
+            resolved = path.resolve()
+        except (ValueError, OSError, RuntimeError):
+            continue
+        if resolved != target or args['content'].encode() != raw:
             continue
         args_hash = digest(args)
-        path_hash = digest(str((workspace / 'candidate.py').resolve()).encode())
+        path_hash = digest(str(target).encode())
         if not any(isinstance(write, dict) and write.get('tool_call_id') == stream.get('tool_call_id')
             and write.get('verified') is True and type(write.get('bytes_written')) is int
             and write['bytes_written'] == len(raw) and write.get('content_sha256') == digest(raw)
@@ -415,23 +421,42 @@ def run_proposal_worker(db_path, owned_root, *, kind='json_executor', timeout=12
             elif result.get('completed') is not True or result.get('timed_out') or result.get('exit_code') != 0:
                 report['error'] = _host_error(result)
         except Exception as error:
+            if isinstance(error, SessionObservationError):
+                result = error.diagnostics
+                report.update(session_id=result.get('session_id'), usage=_usage(result.get('usage')),
+                              model_identity=_identity(result.get('model_identity')),
+                              process_cleanup=_cleanup(result.get('process_cleanup')))
+                report['observations'] = _observations(result.get('events', []))
+                report['file_write_observations'] = _observations(result.get('file_write_observations', []))
+                report['termination_stage'] = 'postlaunch_finalization'
             report['error'] = {'code': 'launcher_failed', 'type': type(error).__name__,
                                'message_sha256': digest(str(error).encode())}
+            if isinstance(error, SessionObservationError):
+                report['error'].update(stage='postlaunch_finalization', reason=error.code,
+                                      observation_error_type=error.error_type)
         finally:
             try:
-                raw = read_regular_file(workspace / 'candidate.py', max_bytes=65536)
-                content = _retain_code(root, report, raw)
-                report['generation_link'] = _generation_link(result, workspace, raw)
-                if content is None and report['error'] is None:
-                    report['error'] = {'code': 'invalid_candidate'}
-            except (ValueError, OSError, UnicodeError) as error:
-                if report['error'] is None:
-                    report['error'] = {'code': 'invalid_candidate', 'type': type(error).__name__}
-            try:
-                shutil.rmtree(worker_root)
-                report['workspace_cleaned'] = not worker_root.exists()
-            except OSError as error:
-                report['error'] = {'code': 'workspace_cleanup_failed', 'type': type(error).__name__}
+                try:
+                    raw = read_regular_file(workspace / 'candidate.py', max_bytes=65536)
+                    content = _retain_code(root, report, raw)
+                    if content is None and report['error'] is None:
+                        report['error'] = {'code': 'invalid_candidate'}
+                except Exception as error:
+                    if report['error'] is None:
+                        report['error'] = {'code': 'invalid_candidate', 'type': type(error).__name__}
+                else:
+                    try:
+                        report['generation_link'] = _generation_link(result, workspace, raw)
+                    except Exception as error:
+                        report['generation_link'] = {'proven': False, 'reason': 'provenance_diagnostics_failed'}
+                        if report['error'] is None:
+                            report['error'] = {'code': 'provenance_diagnostics_failed', 'type': type(error).__name__}
+            finally:
+                try:
+                    shutil.rmtree(worker_root)
+                    report['workspace_cleaned'] = not worker_root.exists()
+                except Exception as error:
+                    report['error'] = {'code': 'workspace_cleanup_failed', 'type': type(error).__name__}
         if training_packet is not None:
             try:
                 validate_training_packet(database, training_packet)
