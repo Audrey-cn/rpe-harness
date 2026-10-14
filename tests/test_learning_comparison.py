@@ -463,3 +463,161 @@ def test_installed_native_cannot_read_other_checkout_sources_but_can_load_observ
     # Strict RPE hosts still need their trusted package imports; they have no native read/terminal tools.
     assert development not in m._denied(experiment,'rpe_learned')
     assert installed/'rpe_harness' not in m._denied(experiment,'rpe_no_experience')
+
+
+def test_posthost_fifo_is_rejected_without_hanging_and_keeps_paid_usage(tmp_path):
+    import subprocess
+    import sys
+    program = r'''
+import json,os,sys
+from pathlib import Path
+from rpe_harness.experiments import learning_comparison as m
+from rpe_harness.integrations import hermes_session
+root=Path(sys.argv[1])
+plan=m.preregister_learning(root,timeout=1)
+case=plan['training'][0]
+def host(prompt,workspace,database,**options):
+    source=Path(workspace)/case['case_id']/'input.csv'
+    output=source.with_name('output.csv')
+    output.write_text('order,amount\n001,10\n002,20\n')
+    source.unlink()
+    os.mkfifo(source)
+    return {'completed':True,'exit_code':0,'session_id':'fifo-session','events':[],
+        'usage':{'api_requests':1,'known_total_tokens':11,'total_tokens':None,'coverage_complete':False},
+        'model_identity':{'provider':'test','requested_model':'test','response_models':['test']},
+        'original_prompt_sha256':m._sha(prompt.encode()),'process_cleanup':{'cleanup_complete':True}}
+hermes_session.run_hermes_session=host
+result=m._phase(root,'native','training','fifo-source',
+    lambda:m._host_session(root,plan,'native',case,case['case_id']),api_expected=True)
+cost=m.summarize_phases(m.PhaseLedger(root/'ledger').records())
+print(json.dumps({'status':result['status'],'artifact_correct':result['artifact_correct'],
+    'known_total_tokens':cost['known_total_tokens'],'total_tokens':cost['total_tokens']}))
+'''
+    child=subprocess.Popen([sys.executable,'-B','-c',program,str(tmp_path)],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    timed_out=False
+    try:
+        try:
+            stdout,stderr=child.communicate(timeout=3)
+        except subprocess.TimeoutExpired:
+            timed_out=True
+            child.kill()
+            stdout,stderr=child.communicate(timeout=3)
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait(timeout=3)
+    assert not timed_out,'post-host source FIFO blocked until exact child was killed'
+    assert child.returncode==0,stderr
+    assert json.loads(stdout)=={'status':'failed','artifact_correct':False,'known_total_tokens':11,'total_tokens':None}
+
+
+@pytest.mark.parametrize('source_changed',[False,True])
+def test_business_correctness_requires_source_preservation_but_not_invocation_proof(tmp_path,monkeypatch,source_changed):
+    m=module()
+    from rpe_harness.integrations import hermes_session
+    plan=m.preregister_learning(tmp_path)
+    case=plan['training'][0]
+    def host(prompt,workspace,database,**options):
+        source=Path(workspace)/case['case_id']/'input.csv'
+        source.with_name('output.csv').write_text('order,amount\n001,10\n002,20\n')
+        if source_changed:
+            source.write_text('order,amount\n777,5\n')
+        return {'completed':True,'exit_code':0,'session_id':'business-session','events':[],
+            'usage':{'api_requests':1,'known_total_tokens':11,'total_tokens':None,'coverage_complete':False},
+            'model_identity':{'provider':'test','requested_model':'test','response_models':['test']},
+            'original_prompt_sha256':m._sha(prompt.encode()),'process_cleanup':{'cleanup_complete':True}}
+    monkeypatch.setattr(hermes_session,'run_hermes_session',host)
+    result=m._phase(tmp_path,'native','training','business-contract',
+        lambda:m._host_session(tmp_path,plan,'native',case,case['case_id']),api_expected=True)
+    assert result['source_preserved'] is not source_changed
+    assert result['artifact_correct'] is not source_changed
+    assert result['artifact_rows_correct'] is True
+    assert result['workflow_verified'] is False and result['invocation_evidence'] is False
+    summary=m.summarize_learning([{**result,'attempt_id':'business-contract','arm':'native','case_id':case['case_id']}],
+                                m.PhaseLedger(tmp_path/'ledger').records())
+    assert summary['arms']['native']['artifact_successes']==(0 if source_changed else 1)
+    assert summary['cost']['known_total_tokens']==11
+
+
+def test_oversized_output_never_reaches_unbounded_hash_read_or_product_oracle(tmp_path,monkeypatch):
+    m=module()
+    from rpe_harness.integrations import hermes_session
+    from rpe_harness import tasks
+    plan=m.preregister_learning(tmp_path)
+    case=plan['training'][0]
+    unbounded=[]
+    original_read=Path.read_bytes
+    def guarded_read(path):
+        if path.name=='output.csv':
+            unbounded.append(str(path))
+            raise AssertionError('unbounded output read')
+        return original_read(path)
+    monkeypatch.setattr(Path,'read_bytes',guarded_read)
+    oracle_calls=[]
+    def forbidden_oracle(*args):
+        oracle_calls.append(1)
+        raise AssertionError('invalid output reached product oracle')
+    monkeypatch.setattr(tasks,'verify_plan',forbidden_oracle)
+    def host(prompt,workspace,database,**options):
+        output=Path(workspace)/case['case_id']/'output.csv'
+        with output.open('wb') as stream:
+            stream.truncate(16777217)
+        return {'completed':True,'exit_code':0,'session_id':'large-session','events':[],
+            'usage':{'api_requests':1,'known_total_tokens':11,'total_tokens':None,'coverage_complete':False},
+            'process_cleanup':{'cleanup_complete':True}}
+    monkeypatch.setattr(hermes_session,'run_hermes_session',host)
+    result=m._phase(tmp_path,'native','training','large-output',
+        lambda:m._host_session(tmp_path,plan,'native',case,case['case_id']),api_expected=True)
+    assert result['status']=='failed' and result['artifact_correct'] is False
+    assert unbounded==[] and oracle_calls==[]
+    assert m.summarize_phases(m.PhaseLedger(tmp_path/'ledger').records())['known_total_tokens']==11
+
+
+@pytest.mark.parametrize('proof',['verified','missing','unverified','error','wrong_target','wrong_content','wrong_args','wrong_id','failed_post','duplicate'])
+def test_native_write_file_requires_actual_verified_bound_result(tmp_path,monkeypatch,proof):
+    m=module()
+    from rpe_harness.integrations import hermes_session
+    from rpe_harness.integrations.hermes import HostEventStore
+    from rpe_harness.integrations.hermes_gate import digest_json
+    plan=m.preregister_learning(tmp_path)
+    case=plan['training'][0]
+    def host(prompt,workspace,database,**options):
+        content='order,amount\n001,10\n002,20\n'
+        output=Path(workspace)/case['case_id']/'output.csv'
+        output.write_text(content)
+        args={'path':case['case_id']+'/output.csv','content':content}
+        if proof=='wrong_target':
+            args['path']=case['case_id']+'/different.csv'
+        if proof=='wrong_content':
+            args['content']='different bytes'
+        ids={'session_id':'write-session','task_id':'task-one','turn_id':'turn-one',
+             'api_request_id':'api-one','tool_call_id':'call-one'}
+        store=HostEventStore(database)
+        store.record('pre_api_request',ids)
+        store.record('post_api_request',{**ids,'response':{'assistant_message':{'tool_calls':
+            [{'id':'call-one','name':'write_file','arguments':args}]}}})
+        store.record('pre_tool_call',{**ids,'tool_name':'write_file','arguments_sha256':digest_json(args)})
+        store.record('post_tool_call',{**ids,'tool_name':'write_file','arguments_sha256':digest_json(args),
+                                      'status':'failed' if proof=='failed_post' else 'ok'})
+        stream={'type':'tool_use','name':'write_file','tool_call_id':'call-one','input':args}
+        response={'type':'tool_result','name':'write_file','tool_call_id':'call-one','is_error':proof=='error',
+            'output':json.dumps({'verified':proof!='unverified','bytes_written':len(args['content'].encode()),
+                                 'error':'write failed' if proof=='error' else None})}
+        writes=hermes_session._file_write_observations([stream,response],workspace)
+        if proof=='missing':
+            writes=[]
+        elif proof=='wrong_args':
+            writes[0]['arguments_sha256']='wrong'
+        elif proof=='wrong_id':
+            writes[0]['tool_call_id']='other-call'
+        elif proof=='duplicate':
+            writes*=2
+        return {'completed':True,'exit_code':0,'session_id':'write-session','events':store.list('write-session'),
+            'original_prompt_sha256':m._sha(prompt.encode()),'process_cleanup':{'cleanup_complete':True},
+            'model_identity':{'provider':'test','requested_model':'test','response_models':['test']},
+            'stream_tool_calls':[stream],'file_write_observations':writes}
+    monkeypatch.setattr(hermes_session,'run_hermes_session',host)
+    result=m._host_session(tmp_path,plan,'native',case,case['case_id'])
+    assert result['artifact_correct'] is True
+    assert result['invocation_evidence'] is (proof=='verified')
+    assert result['workflow_verified'] is (proof=='verified')

@@ -9,6 +9,7 @@ import argparse
 import ast
 import csv
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -19,6 +20,7 @@ import time
 from .cost_ledger import PhaseLedger, summarize_phases
 
 ARMS = ('native', 'rpe_no_experience', 'rpe_learned')
+MAX_ARTIFACT_BYTES = 16 * 1024 * 1024
 
 
 def _sha(raw):
@@ -162,15 +164,20 @@ def preregister_learning(root, *, timeout=180):
     return plan
 
 
-def artifact_matches(path, case):
-    path = Path(path)
-    if not path.is_file() or path.is_symlink() or path.stat().st_size > 16777216:
-        return False
+def _rows_match(raw, case):
     try:
-        with path.open(encoding=case['parameters']['encoding'], newline='') as stream:
-            rows = list(csv.reader(stream, delimiter=case['parameters']['delimiter'], strict=True))
+        stream = io.StringIO(raw.decode(case['parameters']['encoding']), newline='')
+        rows = list(csv.reader(stream, delimiter=case['parameters']['delimiter'], strict=True))
         return rows == case['expected_rows']
-    except (OSError, UnicodeError, csv.Error):
+    except (UnicodeError, csv.Error):
+        return False
+
+
+def artifact_matches(path, case):
+    from ..path_binding import read_regular_file
+    try:
+        return _rows_match(read_regular_file(Path(path), max_bytes=MAX_ARTIFACT_BYTES), case)
+    except (OSError, ValueError):
         return False
 
 
@@ -303,7 +310,7 @@ def executor_score(actual, fallback, frozen):
         actual.get('code_sha256')==frozen['candidate_sha256'])
 
 
-def _native_links(result, database, label):
+def _native_links(result, database, label, *, workspace, output_bytes):
     """Separate observed API/tool linkage from independently checked business truth."""
     from collections import Counter
     from ..integrations.hermes_gate import _persisted_events, digest_json
@@ -332,15 +339,42 @@ def _native_links(result, database, label):
     streams = result.get('stream_tool_calls') or []
     if Counter((e.get('tool_name'),e.get('arguments_sha256')) for e in pre)!=Counter((c.get('name'),digest_json(c.get('input'))) for c in streams):
         return False
+    target = (workspace/label/'output.csv').resolve()
     # Only mark a native output invocation when its observed arguments name the output.
     for stream in streams:
         args = stream.get('input')
         if not isinstance(args,dict) or stream.get('name') not in ('terminal','write_file'):
             continue
-        if label+'/output.csv' not in _json(args):
+        matching = [e for e in post if e.get('tool_name')==stream['name']
+                    and e.get('arguments_sha256')==digest_json(args)]
+        if stream['name']=='terminal':
+            if label+'/output.csv' in _json(args) and any(e.get('status')=='succeeded'
+                and type(e.get('tool_exit_code')) is int and e['tool_exit_code']==0 for e in matching):
+                return True
             continue
-        if any(e.get('tool_name')==stream['name'] and e.get('arguments_sha256')==digest_json(args)
-               and e.get('status') in ('succeeded','success','completed') for e in post):
+        if (not isinstance(args.get('path'),str) or len(args['path'])>4096 or
+            not isinstance(args.get('content'),str) or len(args['content'])>MAX_ARTIFACT_BYTES):
+            continue
+        path = Path(args['path'])
+        path = path if path.is_absolute() else workspace/path
+        raw = args['content'].encode('utf-8')
+        if path.resolve()!=target or raw!=output_bytes:
+            continue
+        call_id = stream.get('tool_call_id')
+        matching = [e for e in matching if e.get('tool_call_id')==call_id and
+                    e.get('status') in {'ok','succeeded'} and
+                    all(isinstance(e.get(field),str) and e[field] for field in (*fields,'tool_call_id'))]
+        if not call_id or len(matching)!=1:
+            continue
+        writes = [write for write in result.get('file_write_observations',[])
+                  if isinstance(write,dict) and write.get('tool_call_id')==call_id]
+        if len(writes)!=1:
+            continue
+        write = writes[0]
+        if (write.get('verified') is True and type(write.get('bytes_written')) is int and
+            write['bytes_written']==len(raw) and write.get('content_sha256')==_sha(raw) and
+            write.get('arguments_sha256')==digest_json(args) and
+            write.get('target_path_sha256')==_sha(str(target).encode())):
             return True
     return False
 
@@ -361,6 +395,7 @@ def _host_session(root, plan, arm, case, label, frozen=None):
     from ..integrations.hermes_session import SessionObservationError, run_hermes_session
     from ..integrations.hermes_gate import evaluate_session, read_run
     from ..tasks import plan_from_request, verify_plan
+    from ..path_binding import read_regular_file
     workspace, request = _materialize(root,arm,case,label)
     database = root/'arms'/arm/'runs.sqlite'
     # Anchor the product plan before the model creates its output.
@@ -381,18 +416,26 @@ def _host_session(root, plan, arm, case, label, frozen=None):
         'usage':result.get('usage'),'model_identity':_identity(result.get('model_identity')),
         'original_prompt_sha256':result.get('original_prompt_sha256'),
         'actual_prompt_sha256':result.get('prompt_sha256'), 'input_sha256':case['input_sha256'],
-        'artifact_correct':False,'workflow_verified':False,'candidate_direct_success':False,'fallback':False,
+        'artifact_correct':False,'artifact_rows_correct':False,'source_preserved':False,
+        'workflow_verified':False,'candidate_direct_success':False,'fallback':False,
         'product_oracle_passed':False,'invocation_evidence':False,'run_id':None,
         'process_cleanup':result.get('process_cleanup'), 'session_root':result.get('session_root')}
     try:
         output = Path(request['execution']['output_path'])
         source = Path(request['execution']['input_path'])
-        record['artifact_correct'] = artifact_matches(output,case)
-        record['source_preserved'] = not source.is_symlink() and _sha(source.read_bytes())==case['input_sha256']
-        if output.is_file() and not output.is_symlink():
-            record['output_sha256'] = _sha(output.read_bytes())
+        # Native commands can replace either path. Reject FIFOs, symlinks and
+        # oversized files before hashing or entering the product verifier.
+        output_bytes = read_regular_file(output, max_bytes=MAX_ARTIFACT_BYTES)
+        record['artifact_rows_correct'] = _rows_match(output_bytes,case)
+        source_budget = min(MAX_ARTIFACT_BYTES,len(case['source_text'].encode(case['parameters']['encoding'])))
+        source_bytes = read_regular_file(source,max_bytes=source_budget)
+        record['source_preserved'] = _sha(source_bytes)==case['input_sha256']
+        record['output_sha256'] = _sha(output_bytes)
+        if record['artifact_rows_correct'] and record['source_preserved']:
             verified = verify_plan({**product_plan.verification_parameters(),'staging_path':str(output)},product_plan)
             record['product_oracle_passed'] = verified.get('passed') is True
+        record['artifact_correct'] = bool(record['artifact_rows_correct'] and record['source_preserved']
+                                          and record['product_oracle_passed'])
         host_ok = (result.get('completed') is True and result.get('exit_code')==0 and not result.get('timed_out')
                    and not result.get('observer_errors') and (result.get('process_cleanup') or {}).get('cleanup_complete') is True)
         identity = record['model_identity']
@@ -400,7 +443,8 @@ def _host_session(root, plan, arm, case, label, frozen=None):
                       and bool(identity.get('response_models')) and (frozen is None or identity==frozen['model_identity']))
         record['comparable'] = comparable
         if arm=='native':
-            record['invocation_evidence'] = _native_links(result,database,label)
+            record['invocation_evidence'] = _native_links(result,database,label,
+                                                        workspace=workspace,output_bytes=output_bytes)
             record['workflow_verified'] = record['invocation_evidence']
         else:
             gate = evaluate_session(result,database,workspace,required_request=request,require_policy=True)
@@ -435,6 +479,9 @@ def _host_session(root, plan, arm, case, label, frozen=None):
     record['api_calls'] = [{key:e.get(key) for key in ('kind','session_id','task_id','turn_id','api_request_id',
         'response_model','request_tools_sha256','request_tool_names','request_tool_choice','model_tool_calls')}
         for e in result.get('events',[]) if e.get('kind') in ('pre_api_request','post_api_request','api_request_error')]
+    record['file_write_observations'] = [{key:e.get(key) for key in ('tool_call_id','verified','bytes_written',
+        'arguments_sha256','content_sha256','target_path_sha256')}
+        for e in result.get('file_write_observations',[]) if isinstance(e,dict)]
     return record
 
 
