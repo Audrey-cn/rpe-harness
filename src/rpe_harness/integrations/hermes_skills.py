@@ -19,6 +19,11 @@ from .hermes_gate import digest_json, _same_call
 IDS = ('session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id')
 PHASE_TO_TOOL = {'discover': 'rpe_discover', 'view': 'skill_view',
                  'context': 'rpe_context', 'task': 'rpe_task', 'none': 'none'}
+CONSTRAINT_FLAGS = {
+    'xlsx.inspect': ['preserve_original'],
+    'tabular.deduplicate': ['preserve_original', 'preserve_order', 'preserve_formulas'],
+}
+CONSTRAINT_DESCRIPTION = 'Use only these fixed contract flags. Put higher-level business requirements in goal, not constraints.'
 
 
 def _read_owned_skill(path, root):
@@ -390,12 +395,16 @@ def register_skill_workflow(ctx, *, store, workspace, python, error_path):
         required = json.loads(path.read_text())
     input_sha = os.environ.get('RPE_HERMES_INPUT_SHA256')
 
-    def fail(state, code):
+    def fail(state, code, *, field=None):
+        error = {'code': code}
+        if field is not None:
+            error['field'] = field
+            state['last_error'] = error
         state['attempts'] = min(3, state['attempts'] + 1)
         if state['attempts'] >= 3:
             state['phase'] = 'none'
         workflows.put(state)
-        return json.dumps({'status': 'rejected', 'error': {'code': code}})
+        return json.dumps({'status': 'rejected', 'error': error})
 
     def policy(request, **context):
         try:
@@ -410,6 +419,11 @@ def register_skill_workflow(ctx, *, store, workspace, python, error_path):
                 if len(chosen) != 1:
                     raise ValueError('current phase tool schema unavailable or ambiguous')
                 chosen = json.loads(json.dumps(chosen, allow_nan=False))
+                if name in ('rpe_task', 'none'):
+                    chosen[0]['function']['parameters']['properties']['constraints'] = {
+                        'type': 'array', 'description': CONSTRAINT_DESCRIPTION,
+                        'items': {'type': 'string', 'enum': CONSTRAINT_FLAGS[
+                            state.get('capability', 'tabular.deduplicate')]}}
                 if name == 'rpe_context':
                     facts = {'input_path': {'type': 'string', 'description': 'Workspace-relative input file path.'},
                              'output_path': {'type': 'string', 'description': 'New workspace-relative output file path.'}}
@@ -509,6 +523,10 @@ def register_skill_workflow(ctx, *, store, workspace, python, error_path):
             capability = state['capability']
             if args.get('capability', capability) != capability:
                 raise ValueError('task capability differs from discovery')
+            constraints = args.get('constraints', [])
+            if (type(constraints) is not list or
+                    any(type(flag) is not str or flag not in CONSTRAINT_FLAGS[capability] for flag in constraints)):
+                return fail(state, 'invalid_task_arguments', field='constraints')
             necessary = ('input_path', 'output_path', 'mode' if capability == 'xlsx.inspect' else 'key_columns')
             fresh, receipt_id = rpc('revalidate', {'recovery_id': state['recovery_id'],
                 'load_receipt_id': state['load_receipt_id'], 'facts': {k: args[k] for k in necessary if k in args}}, identity)
@@ -601,7 +619,9 @@ def register_skill_workflow(ctx, *, store, workspace, python, error_path):
                             'items': {'type': 'object', 'properties': {'source': {'type': 'string'},
                                 'event_id': {'type': 'string'}, 'sha256': {'type': 'string', 'pattern': '^[0-9a-f]{64}$'}},
                                 'required': ['source', 'event_id', 'sha256'], 'additionalProperties': False}}},
-        'rpe_task': {'goal': {'type': 'string'}, 'constraints': {'type': 'array', 'items': {'type': 'string'}},
+        'rpe_task': {'goal': {'type': 'string'}, 'constraints': {'type': 'array',
+                        'description': CONSTRAINT_DESCRIPTION,
+                        'items': {'type': 'string', 'enum': CONSTRAINT_FLAGS['tabular.deduplicate']}},
                      'input_path': {'type': 'string'}, 'output_path': {'type': 'string'},
                      'key_columns': {'type': 'array', 'items': {'type': 'string'}},
                      'mode': {'type': 'string', 'enum': ['rows', 'sheets', 'formulas']},

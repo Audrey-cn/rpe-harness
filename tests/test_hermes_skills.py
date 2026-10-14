@@ -347,8 +347,11 @@ def test_native_xlsx_helper_through_real_parent_broker_and_independent_gate(conf
     context = dispatch(env, 'rpe_context', {'facts': {'input_path': 'book.xlsx',
                        'output_path': 'inspect.json', 'mode': 'rows'}})
     assert context['status'] == 'ready'
-    result = dispatch(env, 'rpe_task', {'goal': 'inspect workbook', 'sheet': 'Data'})
+    result = dispatch(env, 'rpe_task', {'goal': 'inspect workbook', 'sheet': 'Data',
+                                      'constraints': ['preserve_original']})
     assert result['status'] == 'succeeded', result
+    from rpe_harness.integrations.hermes_gate import read_run
+    assert read_run(env['db'], result['run_id'])['event']['constraints'] == ['preserve_original']
     assert json.loads((env['workspace'] / 'inspect.json').read_text()) == {
         'sheet': 'Data', 'rows': [['id', 'value'], [1, True]]}
     verdict = gate(env, final_result(env))
@@ -568,3 +571,83 @@ print(json.dumps({'verified':True,'denied_count':len(denied)}))
         env={**os.environ, 'PYTHONPATH': str(source_root)}, capture_output=True, text=True, timeout=20)
     assert child.returncode == 0, child.stderr
     assert json.loads(child.stdout) == {'verified': True, 'denied_count': 2}
+
+
+@pytest.mark.parametrize('capability,expected', [
+    ('xlsx.inspect', ['preserve_original']),
+    ('tabular.deduplicate', ['preserve_original', 'preserve_order', 'preserve_formulas']),
+])
+def test_task_policy_limits_constraints_to_selected_capability(configured, capability, expected):
+    env = configured
+    found = dispatch(env, 'rpe_discover', {'q': 'xlsx', 'capability': capability})
+    dispatch(env, 'skill_view', {'name': found['selected']['load_name']})
+    facts = {'input_path': 'orders.csv', 'output_path': 'out.csv'}
+    if capability == 'xlsx.inspect':
+        facts['mode'] = 'formulas'
+    assert dispatch(env, 'rpe_context', {'facts': facts})['status'] == 'ready'
+    body = env['sdk'].middleware['llm_request'](request={'tools': schemas(env)}, **identity(env))['request']
+    field = body['tools'][0]['function']['parameters']['properties']['constraints']
+    assert field['items']['enum'] == expected
+    assert 'fixed contract flags' in field['description']
+    assert 'goal' in field['description']
+
+
+@pytest.mark.parametrize('constraints', [
+    ['保留原文件，只读取业务要求的工作表并按原始类型输出，不许修改公式'],
+    ['preserve_order'], 'preserve_original', {'preserve_original': True}, None, [False],
+])
+def test_inspection_bad_constraints_are_correctable_and_durable(configured, constraints):
+    env = configured
+    found = dispatch(env, 'rpe_discover', {'q': 'xlsx', 'capability': 'xlsx.inspect'})
+    dispatch(env, 'skill_view', {'name': found['selected']['load_name']})
+    assert dispatch(env, 'rpe_context', {'facts': {
+        'input_path': 'orders.csv', 'output_path': 'out.json', 'mode': 'formulas'}})['status'] == 'ready'
+    result = dispatch(env, 'rpe_task', {'goal': 'inspect requested sheet', 'constraints': constraints})
+    assert result == {'status': 'rejected', 'error': {'code': 'invalid_task_arguments', 'field': 'constraints'}}
+    reopened = env['api'].WorkflowStore(env['db']).get({
+        'entry_key': 'skills-entry-test', 'session_id': 'skills-session',
+        'turn_id': 'skills-turn', 'task_id': 'skills-task'}, create=False)
+    assert reopened['phase'] == 'task' and reopened['attempts'] == 1
+    assert reopened['last_error'] == result['error']
+    assert not any(e['kind'] == 'rpe_task_received' for e in env['store'].list())
+    assert not (env['workspace'] / 'out.json').exists()
+
+
+def test_bad_contract_flags_stop_after_three_attempts_and_valid_retry_preserves_flags(configured):
+    env = configured
+    discover_and_load(env)
+    assert dispatch(env, 'rpe_context', {'facts': {'input_path': 'orders.csv', 'output_path': 'out.csv'}})['status'] == 'ready'
+    bad = dispatch(env, 'rpe_task', {'goal': 'deduplicate', 'constraints': ['business prose']})
+    assert bad['error']['code'] == 'invalid_task_arguments'
+    flags = ['preserve_original', 'preserve_order']
+    result = dispatch(env, 'rpe_task', {'goal': 'deduplicate', 'constraints': flags})
+    assert result['status'] == 'succeeded', result
+    from rpe_harness.integrations.hermes_gate import read_run
+    assert set(read_run(env['db'], result['run_id'])['event']['constraints']) == set(flags)
+    assert gate(env, final_result(env))['harness_verified'] is True
+
+
+def test_formula_flag_is_preserved_for_core_csv_contract_rejection(configured):
+    env = configured
+    discover_and_load(env)
+    dispatch(env, 'rpe_context', {'facts': {'input_path': 'orders.csv', 'output_path': 'out.csv'}})
+    flags = ['preserve_original', 'preserve_order', 'preserve_formulas']
+    result = dispatch(env, 'rpe_task', {'goal': 'deduplicate', 'constraints': flags})
+    assert result['status'] == 'rejected' and result.get('run_id')
+    from rpe_harness.integrations.hermes_gate import read_run
+    assert set(read_run(env['db'], result['run_id'])['event']['constraints']) == set(flags)
+    assert not (env['workspace'] / 'out.csv').exists()
+
+
+def test_three_bad_constraints_close_task_admission(configured):
+    env = configured
+    discover_and_load(env)
+    dispatch(env, 'rpe_context', {'facts': {'input_path': 'orders.csv', 'output_path': 'out.csv'}})
+    for _ in range(3):
+        assert dispatch(env, 'rpe_task', {'goal': 'deduplicate', 'constraints': ['business prose']})['error']['code'] == 'invalid_task_arguments'
+    reopened = env['api'].WorkflowStore(env['db']).get({
+        'entry_key': 'skills-entry-test', 'session_id': 'skills-session',
+        'turn_id': 'skills-turn', 'task_id': 'skills-task'}, create=False)
+    assert reopened['phase'] == 'none' and reopened['attempts'] == 3
+    assert final_result(env)['events'][-1]['model_tool_calls'] == []
+    assert not (env['workspace'] / 'out.csv').exists()
