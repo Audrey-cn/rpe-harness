@@ -1,6 +1,6 @@
 {
   "schema_version": "rpe.local-delivery-cleanup/v1",
-  "status": "local_integration_and_owned_root_removal_pending",
+  "status": "local_delivery_and_filesystem_cleanup_complete",
   "production_code_commit": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
   "wheel_sha256": "12725219b551812367caff210eeceeffdfd3dcbcafd3152f56d71b7895ca0d26",
   "preexisting_design_trace_hashes": {
@@ -8,5 +8,27 @@
     "原始设计溯源与方向审核.md": "e6b0b8d5652791737b69e00058a9a610b6f578bc561a2cbfb96915ae0cb4de66"
   },
   "public_byte_artifacts_verified": 208,
-  "owned_processes_absent_before_removal": true
+  "owned_processes_absent_before_removal": true,
+  "local_release_branch": "codex/rpe-v1.7-release",
+  "local_delivery_commit": "6bfd4aa094d83b13964b09de85af48c95d34219e",
+  "primary_version_verified": "1.7.0",
+  "all_64_primary_python_bytes_match_tested_wheel": true,
+  "preexisting_design_trace_unchanged": true,
+  "owned_test_root_removed": true,
+  "owned_test_root_removed_at": 1791993401.661537,
+  "owned_process_prefix_matches_before_removal": [],
+  "retained_private_test_histories": false,
+  "retained_private_test_cache": false,
+  "daily_state_restored_or_overwritten": false,
+  "local_wheel_path": "/Users/audrey/项目/rpe-harness/dist/rpe_harness-1.7.0-py3-none-any.whl",
+  "remote_push_performed": false,
+  "managed_source_worktree_removed": true,
+  "worktree_snapshot_branch": "codex/rpe-v1.7-worktree-snapshot",
+  "worktree_snapshot_commit": "6bfd4aa094d83b13964b09de85af48c95d34219e",
+  "worktree_cleanup_method": "clean Git worktree removal after all tracked work and needed ignored reviews were preserved",
+  "app_native_archive_requests": 2,
+  "app_native_archive_confirmed": false,
+  "app_native_archive_last_observed_state": "queued",
+  "codex_ui_inspection_available": false,
+  "completed_at": 1791993882.262872
 }
