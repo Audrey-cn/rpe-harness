@@ -114,7 +114,10 @@ def test_malformed_output_still_preserves_actual_usage(api, prepared):
     assert record['elapsed_seconds'] == 4.5
 
 
-@pytest.mark.parametrize('fault', [None, 'wrong_skill', 'forged_command', 'mismatched_post', 'wrong_content'])
+@pytest.mark.parametrize('fault', [None, 'wrong_skill', 'forged_command', 'mismatched_post', 'wrong_content',
+    'full_ids', 'partial_ids', 'wrong_stream_id', 'extra_stream', 'missing_stream', 'duplicate_pre',
+    'missing_api', 'cross_api', 'other_post_args', 'empty_stream_id', 'diagnostic_suffix',
+    'duplicate_model', 'duplicate_post', 'missing_identity', 'incomplete_api', 'same_args', 'same_args_full_ids'])
 def test_native_gate_requires_bound_skill_and_original_helper(api, prepared, fault):
     from rpe_harness.integrations.hermes import HostEventStore
     from rpe_harness.integrations.hermes_gate import digest_json
@@ -133,23 +136,82 @@ def test_native_gate_requires_bound_skill_and_original_helper(api, prepared, fau
     command = shlex.join(argv) + ' > output.json'
     if fault == 'forged_command':
         command = 'echo fabricated > output.json # ' + str(helper)
+    if fault == 'diagnostic_suffix':
+        command += '; echo "exit=$?"; ls -la output.json'
     terminal_args = {'command': command}
     common = {'session_id': 'native-proof', 'task_id': 'task', 'turn_id': 'turn', 'api_request_id': 'api'}
     load = {**common, 'tool_call_id': 'load', 'tool_name': 'skill_view',
             'arguments_sha256': digest_json(load_args)}
     terminal = {**common, 'tool_call_id': 'execute', 'tool_name': 'terminal',
                 'arguments_sha256': digest_json(terminal_args)}
+    if fault == 'cross_api':
+        terminal['api_request_id'] = 'wrong-api'
+    if fault == 'missing_identity':
+        terminal.pop('turn_id')
+    calls = [{'tool_name': 'skill_view', 'tool_call_id': 'load'},
+             {'tool_name': 'terminal', 'tool_call_id': 'execute'}]
+    other_args = {'path': 'output.json'}
+    other = {**common, 'tool_call_id': 'other', 'tool_name': 'read_file',
+             'arguments_sha256': digest_json(other_args)}
+    if fault in ('other_post_args', 'same_args', 'same_args_full_ids'):
+        calls.append({'tool_name': 'read_file', 'tool_call_id': 'other'})
+    if fault in ('same_args', 'same_args_full_ids'):
+        calls.append({'tool_name': 'read_file', 'tool_call_id': 'other-2'})
+    if fault == 'duplicate_model':
+        calls.append(dict(calls[0]))
+    store.record('pre_api_request', common)
+    if fault == 'incomplete_api':
+        store.record('pre_api_request', {**common, 'api_request_id': 'incomplete-api'})
+    if fault != 'missing_api':
+        store.record('post_api_request', {**common, 'response': {'assistant_message': {
+            'tool_calls': [{'id': call['tool_call_id'], 'name': call['tool_name']} for call in calls]}}})
     store.record('pre_tool_call', load)
     store.record('post_tool_call', {**load, 'status': 'loaded', 'skill_id':
         'other/skill' if fault == 'wrong_skill' else 'productivity/xlsx',
         'snapshot_id': prepared['snapshot_id'], 'skill_source_path': str(source),
         'content_sha256': '0' * 64 if fault == 'wrong_content' else prepared['skill_sha256']})
     store.record('pre_tool_call', terminal)
+    if fault == 'duplicate_pre':
+        store.record('pre_tool_call', terminal)
     store.record('post_tool_call', {**terminal, 'status': 'succeeded',
         'tool_call_id': 'another-call' if fault == 'mismatched_post' else 'execute'})
+    if fault == 'duplicate_post':
+        store.record('post_tool_call', {**terminal, 'status': 'succeeded'})
+    if fault == 'other_post_args':
+        store.record('pre_tool_call', other)
+        store.record('post_tool_call', {**other, 'arguments_sha256': '0' * 64})
+    if fault in ('same_args', 'same_args_full_ids'):
+        for call_id in ('other', 'other-2'):
+            store.record('pre_tool_call', {**other, 'tool_call_id': call_id})
+            store.record('post_tool_call', {**other, 'tool_call_id': call_id, 'status': 'ok'})
+    streams = [{'type': 'tool_use', 'name': 'skill_view', 'input': load_args},
+               {'type': 'tool_use', 'name': 'terminal', 'input': terminal_args}]
+    if fault == 'full_ids':
+        streams[0]['tool_call_id'], streams[1]['tool_call_id'] = 'load', 'execute'
+    elif fault == 'partial_ids':
+        streams[0]['tool_call_id'] = 'load'
+    elif fault == 'empty_stream_id':
+        streams[0]['tool_call_id'] = ''
+    elif fault == 'wrong_stream_id':
+        streams[0]['tool_call_id'], streams[1]['tool_call_id'] = 'wrong', 'execute'
+    elif fault == 'extra_stream':
+        streams.append(dict(streams[0]))
+    elif fault == 'missing_stream':
+        streams.pop()
+    elif fault == 'other_post_args':
+        streams.append({'type': 'tool_use', 'name': 'read_file', 'input': other_args})
+    elif fault in ('same_args', 'same_args_full_ids'):
+        streams.extend([{'type': 'tool_use', 'name': 'read_file', 'input': other_args},
+                        {'type': 'tool_use', 'name': 'read_file', 'input': other_args}])
+        if fault == 'same_args_full_ids':
+            for stream, call_id in zip(streams, ('load', 'execute', 'other', 'other-2')):
+                stream['tool_call_id'] = call_id
     result = {'session_id': 'native-proof', 'session_root': str(session_root),
         'events': store.list(session_id='native-proof'),
-        'stream_tool_calls': [{'type': 'tool_use', 'name': 'skill_view', 'tool_call_id': 'load', 'input': load_args},
-                             {'type': 'tool_use', 'name': 'terminal', 'tool_call_id': 'execute', 'input': terminal_args}]}
+        'stream_tool_calls': streams}
     gate = api._native_gate(result, prepared, trial, case)
-    assert gate['verified'] is (fault is None)
+    assert gate['verified'] is (fault in (None, 'full_ids', 'same_args', 'same_args_full_ids')), gate
+    if gate['verified']:
+        assert gate['stream_identity_policy'] == ('complete_actual_call_ids'
+            if fault in ('full_ids', 'same_args_full_ids') else
+            'counted_name_argument_equivalence_classes_without_stream_ids')

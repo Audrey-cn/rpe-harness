@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from datetime import date, datetime, time
 import hashlib
 import json
@@ -232,7 +233,63 @@ def _native_gate(result, plan, trial, case):
         events = _persisted_events(plan['db'], result.get('session_id'))
         if not events or events != result.get('events'):
             raise ValueError('native_durable_observations_mismatch')
+        identity_fields = ('session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id')
+        pres = [event for event in events if event['kind'] == 'pre_tool_call']
+        posts = [event for event in events if event['kind'] == 'post_tool_call']
+        def call_identity(event):
+            if any(not isinstance(event.get(key), str) or not event[key] for key in identity_fields):
+                raise ValueError('native_real_call_identity_missing')
+            return tuple(event[key] for key in identity_fields) + (event['tool_name'],)
+        expected_calls = Counter(call_identity(event) for event in pres)
+        if (expected_calls != Counter(call_identity(event) for event in posts) or
+                any(count != 1 for count in expected_calls.values())):
+            raise ValueError('native_real_pre_post_identity_mismatch')
+        def call_with_arguments(event):
+            arguments = event.get('arguments_sha256')
+            if (not isinstance(arguments, str) or len(arguments) != 64 or
+                    any(char not in '0123456789abcdef' for char in arguments)):
+                raise ValueError('native_arguments_digest_missing')
+            return call_identity(event) + (arguments,)
+        if Counter(map(call_with_arguments, pres)) != Counter(map(call_with_arguments, posts)):
+            raise ValueError('native_real_pre_post_arguments_mismatch')
+        api_pres = Counter(tuple(event.get(key) for key in identity_fields[:-1]) for event in events
+                           if event['kind'] == 'pre_api_request')
+        api_outcomes = Counter(tuple(event.get(key) for key in identity_fields[:-1]) for event in events
+                               if event['kind'] in {'post_api_request', 'api_request_error'})
+        if (not api_pres or api_pres != api_outcomes or
+                any(count != 1 or any(not key for key in identity) for identity, count in api_pres.items())):
+            raise ValueError('native_actual_api_observations_incomplete')
+        emitted = []
+        for outcome in (event for event in events if event['kind'] == 'post_api_request'):
+            api_key = tuple(outcome.get(key) for key in identity_fields[:-1])
+            requests = [event for event in events if event['kind'] == 'pre_api_request' and
+                        tuple(event.get(key) for key in identity_fields[:-1]) == api_key]
+            if len(requests) != 1 or any(not key for key in api_key):
+                raise ValueError('native_actual_api_request_link_missing')
+            emitted.extend(api_key + (call.get('tool_call_id'), call.get('tool_name'))
+                           for call in outcome.get('model_tool_calls', []))
+        if expected_calls != Counter(emitted):
+            raise ValueError('native_actual_model_call_identity_mismatch')
         streams = result.get('stream_tool_calls') or []
+        if any(type(call) is not dict or type(call.get('input')) is not dict or
+               not isinstance(call.get('name'), str) for call in streams):
+            raise ValueError('native_stream_call_shape_invalid')
+        classes = Counter((event['tool_name'], event['arguments_sha256']) for event in pres)
+        streamed = Counter((call['name'], digest_json(call['input'])) for call in streams)
+        if classes != streamed:
+            raise ValueError('native_stream_arguments_multiset_mismatch')
+        stream_id_fields = ['tool_call_id' in call for call in streams]
+        identified_stream = any(stream_id_fields)
+        if identified_stream:
+            if not all(stream_id_fields) or any(not isinstance(call['tool_call_id'], str) or
+                                               not call['tool_call_id'] for call in streams):
+                raise ValueError('native_stream_call_ids_partial_or_invalid')
+            actual_ids = Counter((call['name'], call['tool_call_id'], digest_json(call['input'])) for call in streams)
+            expected_ids = Counter((event['tool_name'], event['tool_call_id'], event['arguments_sha256']) for event in pres)
+            if actual_ids != expected_ids or any(count != 1 for count in expected_ids.values()):
+                raise ValueError('native_stream_call_identity_mismatch')
+        verdict['stream_identity_policy'] = ('complete_actual_call_ids' if identified_stream else
+            'counted_name_argument_equivalence_classes_without_stream_ids')
         root = Path(result['session_root']).resolve()
         if not root.is_relative_to(Path(plan['owned_root']).resolve()):
             raise ValueError('native_session_root_not_owned')
@@ -252,10 +309,11 @@ def _native_gate(result, plan, trial, case):
                      event.get('tool_name') == pre['tool_name'] and _same_call(event, pre)]
             if len(posts) != 1 or posts[0].get('arguments_sha256') != pre.get('arguments_sha256'):
                 raise ValueError('native_post_call_link_missing')
+            # ID-less SDK records are equivalent arguments, never invented call IDs.
             calls = [call for call in streams if call.get('name') == pre['tool_name'] and
-                     call.get('tool_call_id') == pre['tool_call_id']]
-            if (len(calls) != 1 or type(calls[0].get('input')) is not dict or
-                    digest_json(calls[0]['input']) != pre.get('arguments_sha256')):
+                     digest_json(call.get('input')) == pre.get('arguments_sha256') and
+                     (not identified_stream or call['tool_call_id'] == pre['tool_call_id'])]
+            if not calls:
                 raise ValueError('native_stream_arguments_link_missing')
             return posts[0], calls[0]['input']
 
