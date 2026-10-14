@@ -18,6 +18,8 @@ import sys
 import time
 import uuid
 
+from .. import __version__
+
 
 _SAFE_TEXT = ('kind', 'session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id',
     'tool_name', 'provider', 'model', 'response_model', 'status', 'error_type', 'error_code',
@@ -371,7 +373,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
-    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.7.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
+    (plugin / 'plugin.yaml').write_text(f'name: rpe-harness\nversion: {__version__}\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
     (plugin / '__init__.py').write_text(
         'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
         'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
