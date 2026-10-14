@@ -389,11 +389,57 @@ def _registered_processes(path, host_pid):
     return owned
 
 
+def _file_write_observations(records, workspace):
+    """Extract verified write facts, discarding tool result prose and arguments."""
+    starts = {}
+    for record in records:
+        if not isinstance(record, dict) or record.get('type') != 'tool_use' or record.get('name') != 'write_file':
+            continue
+        identifier = record.get('tool_call_id')
+        if isinstance(identifier, str) and identifier:
+            starts.setdefault(identifier, []).append(record)
+    result = []
+    for record in records:
+        if (not isinstance(record, dict) or record.get('type') != 'tool_result'
+                or record.get('name') != 'write_file' or record.get('is_error') is not False):
+            continue
+        identifier = record.get('tool_call_id')
+        matches = starts.get(identifier, []) if isinstance(identifier, str) else []
+        if len(matches) != 1:
+            continue
+        args = matches[0].get('input')
+        if not isinstance(args, dict) or not isinstance(args.get('path'), str) or not isinstance(args.get('content'), str):
+            continue
+        try:
+            output = json.loads(record.get('output', ''))
+            raw = args['content'].encode('utf-8')
+            if (not isinstance(output, dict) or output.get('verified') is not True or output.get('error')
+                    or type(output.get('bytes_written')) is not int or output['bytes_written'] != len(raw)):
+                continue
+            path = Path(args['path'])
+            path = path if path.is_absolute() else Path(workspace) / path
+            observed = {'tool_call_id': identifier[:256], 'verified': True, 'bytes_written': len(raw),
+                'content_sha256': hashlib.sha256(raw).hexdigest(),
+                'arguments_sha256': hashlib.sha256(json.dumps(args, sort_keys=True, ensure_ascii=False,
+                    allow_nan=False, separators=(',', ':')).encode()).hexdigest(),
+                'target_path_sha256': hashlib.sha256(str(path.resolve()).encode()).hexdigest()}
+        except (ValueError, TypeError, OSError):
+            continue
+        if type(record.get('duration_ms')) is int and record['duration_ms'] >= 0:
+            observed['duration_ms'] = record['duration_ms']
+        result.append(observed)
+        if len(result) == 256:
+            break
+    return result
+
+
 def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        timeout=180, hermes_root=None, entry_mode='optional',
                        required_request=None, max_task_attempts=3, catalog_root=None,
                        skill_snapshot_id=None, context_sources=None,
-                       read_isolation_root=None, deny_read_roots=()):
+                       read_isolation_root=None, deny_read_roots=(), max_turns=12):
+    if type(max_turns) is not int or not 1 <= max_turns <= 12:
+        raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
         raise ValueError('isolated host launcher requires macOS sandbox-exec')
     if not isinstance(prompt, str) or not prompt.strip() or len(prompt.encode()) > 1_048_576:
@@ -516,7 +562,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                str(Path(__file__).with_name('hermes_bootstrap.py')),
                'chat', '--cli', '--query-file', str(prompt_file), '--oneshot', '-Q',
                '--format', 'stream-json', '--source', 'rpe-harness', '--provider', 'xiaomi',
-               '--model', settings['model'], '--toolsets', tools, '--max-turns', '12',
+               '--model', settings['model'], '--toolsets', tools, '--max-turns', str(max_turns),
                '--run-budget', str(int(timeout)), '--ignore-rules']
     stdout_path, stderr_path = session_root / 'stdout.jsonl', session_root / 'stderr.log'
     started = time.monotonic()
@@ -634,7 +680,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
               'prompt_sha256': hashlib.sha256(prompt.encode()).hexdigest(),
               'original_prompt_sha256':original_prompt_sha,
               'contract_prompt_injected':fixed_request is not None,
-              'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,
+              'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,'max_turns':max_turns,
               'input_sha256':fixed_input_sha,
               'session_root': str(session_root),
               'catalog_snapshot_id': snapshot['snapshot_id'] if snapshot else None,
@@ -646,7 +692,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                   'external_executor_tracked_children': external_cleanup['tracked_children'],
                                   'external_executor_remaining_children': external_cleanup['remaining_children'],
                                   'errors': cleanup_errors},
-              'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use']}
+              'stream_tool_calls': [r for r in records if r.get('type') == 'tool_use'],
+              'file_write_observations': _file_write_observations(records, workspace)}
     # Defense in depth: a provider error might include its key. Owned raw logs
     # are needed only for debugging and are deleted by caller after acceptance.
     secret = settings['api_key']
