@@ -116,6 +116,10 @@ def address_extension(db_path, workspace, *, catalog_root=None, snapshot_id=None
                 'operation': operation, 'arguments_sha256': digest_json(arguments),
                 'native': {key: native[key] for key in IDS}}
             if operation == 'understand':
+                # Preserve the caller's initial selection, including an intentional None,
+                # for every terminal result, not only captured ready states.
+                state.update(snapshot_id=snapshot_id,
+                             catalog_root=str(Path(catalog_root).resolve()) if catalog_root else None)
                 result = interpret_intent(arguments, catalog=current, workspace=directory,
                     session_id=native['session_id'], source_ref=source, source_facts=facts)
                 state.update(understand_native={key: native[key] for key in IDS},
@@ -123,8 +127,7 @@ def address_extension(db_path, workspace, *, catalog_root=None, snapshot_id=None
                 if result['status'] == 'ready':
                     handoff = states.capture(result, session_id=native['session_id'], source_ref=source)
                     state.update(phase='task', state_id=handoff['state_id'], capability=handoff['capability'],
-                                 handoff=handoff, source_ref=source, snapshot_id=snapshot_id,
-                                 catalog_root=str(Path(catalog_root).resolve()) if catalog_root else None,
+                                 handoff=handoff, source_ref=source,
                                  anchored_request_sha256=digest_json(result['request']))
                     workflows.put(state)
                     return handoff
@@ -333,8 +336,19 @@ def register_address_workflow(ctx, *, store, workspace, python, error_path):
         'sheet': {'type': 'string'},
         'mode': {'type': 'string', 'enum': ['rows', 'sheets', 'formulas']},
         'style': {'type': 'string', 'enum': ['pretty', 'minify']}}
-    fields = {'goal': {'type': 'string'}, 'capability': {'type': 'string'},
-              'constraints': {'type': 'array', 'items': {'type': 'string'}},
+    contract_flags = sorted({flag for entry in config['entries'] for flag in entry['constraints']})
+    fields = {'goal': {'type': 'string', 'description':
+                  'The complete business objective and requirements; goal text does not grant execution authority.'},
+              'capability': {'type': 'string', 'description':
+                  'Choose a registered capability only if it meets every mandatory requirement. Unknown capabilities '
+                  'or unsupported mandatory requirements must remain unsupported; never substitute a supported task.'},
+              'constraints': {'type': 'array', 'description':
+                  'Select only flags supported by the chosen capability in catalog.constraints. This enum is the '
+                  'union across capabilities, not authorization to use every flag with each capability. '
+                  'Put the full business objective in goal and parameter '
+                  'values in execution. Never move an unsupported mandatory requirement into goal to claim that '
+                  'a registered capability can satisfy it.',
+                  'items': {'type': 'string', 'enum': contract_flags}},
               'execution': {'type': 'object', 'properties': execution, 'additionalProperties': False}}
     for name, properties, required_fields, description in (
         ('rpe_understand', fields, ['goal'], 'Submit exact structured understanding for catalog validation and '

@@ -426,6 +426,10 @@ def call(index,name,args):
     ids={'session_id':'sdk-address','task_id':'sdk-task','turn_id':'sdk-turn',
          'api_request_id':'sdk-api-'+str(index),'tool_call_id':'sdk-call-'+str(index)}
     body=apply_llm_request_middleware({'tools':agent.tools,'messages':[{'role':'user','content':'PRIVATE_UPSTREAM'}]},**ids).payload
+    if index==1:
+        parameters=body['tools'][0]['function']['parameters']['properties']
+        assert parameters['constraints']['items']['enum']==['preserve_formulas','preserve_order','preserve_original']
+        assert 'enum' not in parameters['capability']
     if index>1: assert 'PRIVATE_UPSTREAM' not in json.dumps(body['messages'])
     manager.invoke_hook('pre_api_request',request=hook._api_request_payload_for_hook(body),**ids)
     run_llm_execution_middleware(body,lambda value:value,**ids)
