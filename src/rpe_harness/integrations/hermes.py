@@ -28,12 +28,13 @@ _TEXT_FIELDS = frozenset({
     'snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256', 'load_receipt_id',
     'recovery_id', 'context_status', 'workflow_phase', 'arguments_sha256',
     'content_sha256', 'skill_source_path', 'target_path_sha256', 'request_thinking_type',
+    'state_id', 'catalog_sha256', 'request_messages_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
-    'tool_exit_code', 'bytes_written', 'request_max_completion_tokens',
+    'tool_exit_code', 'bytes_written', 'request_max_completion_tokens', 'request_messages_bytes',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
                           'request_parallel_tool_calls', 'verified'})
@@ -785,6 +786,10 @@ def register(ctx) -> None:
 
     from .hermes_gate import contract_for, read_run, request_input_sha, _same_call, _verify_run
     entry_mode = os.environ.get('RPE_HERMES_ENTRY_MODE','optional')
+    if entry_mode == 'address':
+        from .hermes_address import register_address_workflow
+        register_address_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)
+        return
     if entry_mode == 'skills':
         from .hermes_skills import register_skill_workflow
         register_skill_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)

@@ -55,6 +55,8 @@ def _validated_request(body, database, workspace):
         max_bytes=1048576 if payload.get('capability') == 'json.normalize' else None)
     if native.get('contract_sha256') != contract_sha or native.get('input_sha256') != input_sha:
         raise PermissionError('fresh execution contract differs from receipt')
+    from .hermes_address import validate_address_execution
+    validate_address_execution(database, workspace, payload, native)
     with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as db:
         receipt = db.execute('SELECT kind,metadata_json FROM hermes_host_events WHERE ingest_event_id=?',
                              (body['receipt_id'],)).fetchone()
@@ -92,7 +94,8 @@ def _validated_skill_request(body, database):
     """Read-only native policy plus an immutable argument-bound RPC receipt."""
     from .hermes_gate import digest_json
     operations = {'discover':'rpe_discover', 'context':'rpe_context',
-                  'lookup':'skill_view', 'revalidate':'rpe_task'}
+                  'lookup':'skill_view', 'revalidate':'rpe_task',
+                  'understand':'rpe_understand', 'resolve_address':'rpe_task'}
     if (not isinstance(body, dict) or set(body) != {'operation','arguments','receipt_id','native'}
             or body.get('operation') not in operations or not isinstance(body.get('arguments'),dict)
             or not isinstance(body.get('native'),dict) or not isinstance(body.get('receipt_id'),str)):

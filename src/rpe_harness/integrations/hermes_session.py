@@ -22,7 +22,8 @@ import uuid
 _SAFE_TEXT = ('kind', 'session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id',
     'tool_name', 'provider', 'model', 'response_model', 'status', 'error_type', 'error_code',
     'turn_exit_reason', 'finish_reason', 'arguments_sha256', 'content_sha256', 'request_tools_sha256',
-    'target_path_sha256', 'request_tool_choice', 'request_thinking_type')
+    'target_path_sha256', 'request_tool_choice', 'request_thinking_type',
+    'state_id', 'catalog_sha256', 'request_messages_sha256')
 
 
 def _safe_diagnostics(value, secret):
@@ -37,7 +38,7 @@ def _safe_diagnostics(value, secret):
             if not isinstance(row, dict):
                 continue
             saved = {key: safe_text(row[key]) for key in _SAFE_TEXT if safe_text(row.get(key)) is not None}
-            saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code','request_max_completion_tokens')
+            saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code','request_max_completion_tokens','request_messages_bytes')
                           if number(row.get(key))})
             saved.update({key: row[key] for key in ('completed','failed','interrupted','verified','request_parallel_tool_calls') if type(row.get(key)) is bool})
             if isinstance(row.get('request_tool_names'), list):
@@ -321,8 +322,9 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
         raise ValueError('invalid installed Hermes settings') from exc
 
 
-def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional'):
-    if entry_mode not in ('optional','strict','skills','producer') or (entry_mode in ('strict','skills') and not tool_enabled):
+def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional',
+                 preserve_native_tool_search=False):
+    if entry_mode not in ('optional','strict','skills','address','producer') or (entry_mode in ('strict','skills','address') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
     if entry_mode == 'producer' and tool_enabled:
         raise ValueError('producer entry requires the Harness tool disabled')
@@ -353,7 +355,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
         'platform_toolsets': {'cli': (['rpe_producer_only'] if entry_mode=='producer' else
                                      ['rpe_harness','skills'] if entry_mode=='skills' else
-                                     ['rpe_harness'] if entry_mode=='strict' else
+                                     ['rpe_harness'] if entry_mode in ('strict','address') else
                                      ['terminal','file']+(['rpe_harness'] if tool_enabled else []))},
         'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
         'skills': {'external_dirs': [], 'project_discovery': False, 'auto_load': []},
@@ -364,7 +366,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
-    if entry_mode in ('strict','skills','producer'):
+    if entry_mode in ('strict','skills','producer') and not preserve_native_tool_search:
         config['tools'] = {'tool_search':{'enabled':'off'}}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
@@ -528,7 +530,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        timeout=180, hermes_root=None, entry_mode='optional',
                        required_request=None, max_task_attempts=3, catalog_root=None,
                        skill_snapshot_id=None, context_sources=None,
-                       read_isolation_root=None, deny_read_roots=(), max_turns=12):
+                       read_isolation_root=None, deny_read_roots=(), max_turns=12,
+                       preserve_native_tool_search=False):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -537,7 +540,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('prompt must be nonempty and at most 1 MiB')
     if not 1 <= timeout <= 1800:
         raise ValueError('timeout must be between 1 and 1800 seconds')
-    if entry_mode not in ('optional','strict','skills','producer') or (entry_mode in ('strict','skills') and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills','address','producer') or (entry_mode in ('strict','skills','address') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
     if entry_mode == 'producer' and (tool_enabled or catalog_root is not None or skill_snapshot_id is not None
                                     or context_sources is not None or required_request is not None):
@@ -567,7 +570,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     settings = _read_host_settings(hermes_root, host_python)
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
-                        tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode)
+                        tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode,
+                        preserve_native_tool_search=preserve_native_tool_search or entry_mode=='address')
     skill_config_path = None
     snapshot = None
     if catalog_root is not None:
@@ -587,11 +591,19 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             raise ValueError('materialized skill configuration exceeds 8 MiB')
         skill_config_path.write_text(config_text,encoding='utf-8')
         os.chmod(skill_config_path,0o600)
-        if not tool_enabled:
+        if not tool_enabled and not preserve_native_tool_search:
             settings_path = home / 'config.yaml'
             native_config = json.loads(settings_path.read_text())
             native_config.setdefault('tools',{}).setdefault('tool_search',{})['enabled'] = 'off'
             settings_path.write_text(json.dumps(native_config,ensure_ascii=False))
+    address_config_path = None
+    if entry_mode == 'address':
+        from .hermes_address import _catalog
+        unified = _catalog(db_path, catalog_root, snapshot['snapshot_id'] if snapshot else None)
+        address_config_path = session_root / 'address-config.json'
+        address_config_path.write_text(json.dumps({'catalog_sha256':unified.snapshot_id,
+            'entries':unified.entries()},ensure_ascii=False,allow_nan=False),encoding='utf-8')
+        os.chmod(address_config_path,0o600)
     fixed_path = None
     if fixed_request is not None:
         fixed_path = session_root/'fixed-request.json'
@@ -643,6 +655,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         env['RPE_HERMES_INPUT_SHA256'] = fixed_input_sha
     if skill_config_path is not None:
         env['RPE_HERMES_SKILL_CONFIG'] = str(skill_config_path)
+    if address_config_path is not None:
+        env['RPE_HERMES_ADDRESS_CONFIG'] = str(address_config_path)
     session_token = uuid.uuid4().hex
     env['RPE_HERMES_SESSION_TOKEN'] = session_token
     if not tool_enabled:
@@ -650,7 +664,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
     tools = ('rpe_producer_only' if entry_mode=='producer' else
              'rpe_harness,skills' if entry_mode=='skills' else
-             'rpe_harness' if entry_mode=='strict' else
+             'rpe_harness' if entry_mode in ('strict','address') else
              'terminal,file'+(',skills' if snapshot else '')+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),
                str(host_python), '-B',
@@ -672,6 +686,11 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 from .hermes_skills import skill_extension
                 extension = skill_extension(db_path,workspace,catalog_root=catalog_root,
                     snapshot_id=snapshot['snapshot_id'],context_sources=context_sources or [])
+            if entry_mode == 'address':
+                from .hermes_address import address_extension
+                extension = address_extension(db_path,workspace,catalog_root=catalog_root,
+                    snapshot_id=snapshot['snapshot_id'] if snapshot else None,
+                    source_ref='user_prompt:'+original_prompt_sha)
             broker_environment = broker_stack.enter_context(execution_broker(
                 db_path=db_path, workspace=workspace, python=sys.executable,extension=extension))
             env.update(broker_environment)
