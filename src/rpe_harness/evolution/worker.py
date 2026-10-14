@@ -241,11 +241,15 @@ def _generation_link(result, workspace, raw):
     """Require an observed API emission and successful matching file tool call.
 
     Stream arguments are transient and used only to bind their hash and the
-    original code bytes. Shell execution or an unmatched write is not proof.
+    original code bytes. Producer middleware independently verifies the real
+    file and native call identity, even when the CLI omits that identity.
+    Shell execution or an unmatched write is not proof.
     """
     unknown = {'proven': False, 'reason': 'no_matching_api_filewrite_observation'}
     events = result.get('events', [])
     session_id = result.get('session_id')
+    producer = result.get('entry_mode') == 'producer'
+    matching_streams = []
     for stream in result.get('stream_tool_calls', [])[:256]:
         if not isinstance(stream, dict) or stream.get('name') != 'write_file':
             continue
@@ -262,18 +266,46 @@ def _generation_link(result, workspace, raw):
             continue
         if resolved != target or args['content'].encode() != raw:
             continue
+        matching_streams.append((stream, args, target))
+    # With no CLI identity, two equal argument records cannot be assigned to a
+    # single native call without inventing an association.
+    if producer and len(matching_streams) != 1:
+        return unknown
+    for stream, args, target in matching_streams:
         args_hash = digest(args)
         path_hash = digest(str(target).encode())
-        if not any(isinstance(write, dict) and write.get('tool_call_id') == stream.get('tool_call_id')
-            and write.get('verified') is True and type(write.get('bytes_written')) is int
-            and write['bytes_written'] == len(raw) and write.get('content_sha256') == digest(raw)
-            and write.get('arguments_sha256') == args_hash and write.get('target_path_sha256') == path_hash
-            for write in result.get('file_write_observations', [])):
-            continue
-        for post in events:
+        def physical_write(write):
+            return (isinstance(write, dict) and write.get('verified') is True
+                    and type(write.get('bytes_written')) is int and write['bytes_written'] == len(raw)
+                    and write.get('content_sha256') == digest(raw)
+                    and write.get('arguments_sha256') == args_hash
+                    and write.get('target_path_sha256') == path_hash)
+        stream_id = stream.get('tool_call_id')
+        if producer:
+            # These fields are emitted only after the producer guard checks the
+            # actual file bytes and the SDK hooks' complete call identity.
+            candidates = [post for post in events if physical_write(post)
+                and post.get('kind') == 'post_tool_call' and post.get('session_id') == session_id
+                and post.get('tool_name') == 'write_file']
+            if len(candidates) != 1:
+                continue
+            native_id = candidates[0].get('tool_call_id')
+            # Missing identity may be resolved; a supplied conflicting or empty
+            # identity must never be replaced by another ID.
+            if stream_id is not None and stream_id != native_id:
+                continue
+            stream_id = native_id
+            proof_source = 'producer_post_tool_guard'
+        else:
+            if not any(physical_write(write) and write.get('tool_call_id') == stream_id
+                       for write in result.get('file_write_observations', [])):
+                continue
+            candidates = events
+            proof_source = 'cli_file_write_observation'
+        for post in candidates:
             if (not isinstance(post, dict) or post.get('kind') != 'post_tool_call'
                     or post.get('session_id') != session_id or post.get('tool_name') != 'write_file'
-                    or post.get('tool_call_id') != stream.get('tool_call_id')
+                    or post.get('tool_call_id') != stream_id
                     or post.get('status') not in {'ok', 'succeeded'} or post.get('arguments_sha256') != args_hash
                     or not all(isinstance(post.get(key), str) and post[key] for key in _IDS)):
                 continue
@@ -288,11 +320,15 @@ def _generation_link(result, workspace, raw):
             api_post = [e for e in events if isinstance(e, dict) and e.get('kind') == 'post_api_request' and api_same(e)]
             if len(api_pre) != 1 or len(api_post) != 1:
                 continue
+            if producer and (api_pre[0].get('request_tool_names') != ['write_file']
+                    or api_pre[0].get('request_tool_choice') != 'write_file'
+                    or api_pre[0].get('request_parallel_tool_calls') is not False):
+                continue
             if any(isinstance(e, dict) and e.get('kind') == 'api_request_error' and api_same(e) for e in events):
                 continue
             if api_post[0].get('model_tool_calls', []).count({'tool_call_id': post['tool_call_id'], 'tool_name': 'write_file'}) != 1:
                 continue
-            return {'proven': True, 'reason': 'matched_api_filewrite_content',
+            return {'proven': True, 'reason': 'matched_api_filewrite_content', 'proof_source': proof_source,
                     **{key: post[key][:256] for key in _IDS}, 'content_sha256': digest(raw),
                     'arguments_sha256': args_hash, 'file_write_verified': True, 'bytes_written': len(raw)}
     return unknown
