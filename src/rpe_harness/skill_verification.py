@@ -6,12 +6,12 @@ import hashlib
 import io
 import json
 from pathlib import Path
-from zipfile import ZipFile
 
 from .path_binding import read_source
 from .skill_catalog import _read, validate_skill_binding
+from .xlsx_resource import preflight_xlsx, RESOURCE_REVISION
 
-VERIFIER_REVISION = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+VERIFIER_REVISION = hashlib.sha256(Path(__file__).read_bytes() + RESOURCE_REVISION.encode()).hexdigest()
 MAX_INPUT_BYTES = 16 * 1024 * 1024
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 MAX_SHEET_GRID = 100000
@@ -49,11 +49,9 @@ def _nonfinite(value):
 
 
 def _expected(source, mode, sheet, actual):
-    # Separate ZIP guard and separate oracle workbook, no producer-parser import.
-    with ZipFile(io.BytesIO(source)) as archive:
-        entries = archive.infolist()
-        if len(entries) > 2048 or sum(entry.file_size for entry in entries) > 64 * 1024 * 1024:
-            raise ValueError('oracle XLSX resource budget exceeded')
+    # Resource-only preflight is invoked independently on oracle bytes, before
+    # openpyxl can allocate merged cells, hyperlinks or normal cell objects.
+    preflight_xlsx(source)
     from openpyxl import load_workbook
     book = load_workbook(io.BytesIO(source), data_only=False, keep_links=False)
     cached = None

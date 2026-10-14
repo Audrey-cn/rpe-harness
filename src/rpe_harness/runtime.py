@@ -82,6 +82,11 @@ class HarnessRuntime:
                 task_types=[TaskType.DATA_PROCESSING, TaskType.FILE_OPERATION],
                 input_formats=['json'], tags=['json.normalize'], capabilities=['json.normalize'],
                 priority=10, preconditions=['file_exists', 'output_available']))
+            router.register_skill(SkillEntry('builtin/xlsx-inspect', 'Native XLSX skill inspection',
+                '调用已绑定原生XLSX辅助程序，独立校验结构化结果',
+                task_types=[TaskType.DATA_PROCESSING, TaskType.FILE_OPERATION],
+                input_formats=['xlsx'],tags=['xlsx.inspect'],capabilities=['xlsx.inspect'],
+                priority=10,preconditions=['file_exists','output_available']))
             for sid, item in self.store.skill_states().items():
                 if sid in router.skills:
                     router.skills[sid].enabled = item['enabled']
@@ -226,7 +231,12 @@ class HarnessRuntime:
             builtin = {'kind': 'builtin', 'executor_id': plan.executor_id,
                        'code_sha256': plan.executor_revision, 'plan_sha256': plan.sha256}
             actual = dict(builtin)
-            prepared = prepare_candidate(plan, self.store.path)
+            if plan.capability == 'xlsx.inspect':
+                binding = dict(plan.skill_binding)
+                actual.update(native_helper='xlsx_read.py',script_sha256=binding['script_sha256'],
+                              skill_sha256=binding['skill_sha256'],snapshot_id=binding['snapshot_id'])
+            prepared = (prepare_candidate(plan, self.store.path)
+                        if plan.capability in {'tabular.deduplicate', 'json.normalize'} else None)
             candidate_version = None
             if prepared is None:
                 prepared = prepare_plan(plan)

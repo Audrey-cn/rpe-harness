@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import pwd
 import shutil
 import tempfile
 import time
@@ -47,6 +48,15 @@ _ABI = {
 _USAGE_FIELDS = frozenset({'api_requests', 'missing_observations', 'requests_with_usage',
     'api_errors', 'coverage_complete', 'known_total_tokens', 'prompt_tokens', 'output_tokens',
     'input_tokens', 'total_tokens', 'cache_read_tokens', 'cache_write_tokens', 'reasoning_tokens'})
+
+
+def _deny_read_roots():
+    import_root = Path(__file__).resolve().parents[2]
+    current = import_root.parent if import_root.name == 'src' else import_root / 'rpe_harness'
+    # The OS account home remains stable when test/host HOME is isolated.
+    account_home = Path(pwd.getpwuid(os.getuid()).pw_dir)
+    primary = account_home / '项目' / 'rpe-harness'
+    return list(dict.fromkeys([current, primary, account_home / '.codex' / 'worktrees']))
 
 
 def _feedback(db_path, capability):
@@ -218,7 +228,8 @@ def run_proposal_worker(db_path, owned_root, *, kind='json_executor', timeout=12
                 'this task does not authorize approval or activation.')
             result = run_hermes_session(prompt, workspace, worker_root / 'host.sqlite',
                 tool_enabled=False, owner_root=worker_root, timeout=timeout,
-                hermes_root=hermes_root, entry_mode='optional')
+                hermes_root=hermes_root, entry_mode='optional',
+                read_isolation_root=root, deny_read_roots=_deny_read_roots())
             report.update(session_id=result.get('session_id'), usage=_usage(result.get('usage')),
                           model_identity=_identity(result.get('model_identity')),
                           process_cleanup=_cleanup(result.get('process_cleanup')))

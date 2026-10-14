@@ -6,6 +6,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
+from zipfile import ZIP_DEFLATED
 
 import pytest
 from openpyxl import Workbook
@@ -258,3 +259,194 @@ def test_child_rejects_helper_bytes_changed_after_binding_check(tmp_path):
     # Benign replacement proves that content authenticity is checked before exec.
     with pytest.raises(ValueError, match='helper'):
         _run_helper(b'', b'print("{}")\n', payload['execution']['skill_binding'], 'rows', None)
+
+
+def _inject_worksheet(path, insertion):
+    with ZipFile(path) as archive:
+        members = [(name, archive.read(name)) for name in archive.namelist()]
+    with ZipFile(path, 'w', compression=ZIP_DEFLATED) as archive:
+        for name, raw in members:
+            if name == 'xl/worksheets/sheet1.xml':
+                raw = raw.replace(b'</worksheet>', insertion + b'</worksheet>')
+            archive.writestr(name, raw)
+
+
+class MergeAllocationProbe(RuntimeError):
+    pass
+
+
+@pytest.mark.parametrize('path_kind', ['producer', 'oracle'])
+@pytest.mark.parametrize('package_variant', ['normal', 'wrong_root', 'custom_part_wrong_type', 'custom_part_namespace_alias'])
+def test_giant_merge_rejected_before_openpyxl_allocation(tmp_path, monkeypatch, path_kind, package_variant):
+    Plan, _, verify = modules()
+    payload = request(tmp_path, 'formulas')
+    source = Path(payload['execution']['input_path'])
+    _inject_worksheet(source, b'<mergeCells count="1"><mergeCell ref="A1:XFD1048576"/></mergeCells>')
+    if package_variant != 'normal':
+        with ZipFile(source) as archive:
+            members = [(name, archive.read(name)) for name in archive.namelist()]
+        with ZipFile(source, 'w', compression=ZIP_DEFLATED) as archive:
+            for name, raw in members:
+                if name == 'xl/worksheets/sheet1.xml':
+                    raw = raw.replace(b'<worksheet ', b'<pretend ').replace(b'</worksheet>', b'</pretend>')
+                    if package_variant.startswith('custom_part'):
+                        name = 'xl/custom.dat'
+                elif package_variant.startswith('custom_part'):
+                    if name == 'xl/_rels/workbook.xml.rels':
+                        raw = raw.replace(b'/xl/worksheets/sheet1.xml', b'/xl/custom.dat')
+                        raw = raw.replace(b'/relationships/worksheet', b'/relationships/styles')
+                    elif name == '[Content_Types].xml':
+                        raw = raw.replace(b'/xl/worksheets/sheet1.xml', b'/xl/custom.dat')
+                        raw = raw.replace(b'spreadsheetml.worksheet+xml', b'spreadsheetml.fake+xml')
+                    elif name == 'xl/workbook.xml' and package_variant == 'custom_part_namespace_alias':
+                        raw = raw.replace(b'r:id="rId1"', b'r:id="rId1" xmlns:alias="urn:alias" alias:id="rId2"')
+                archive.writestr(name, raw)
+    assert source.stat().st_size < 16384
+    from openpyxl.worksheet.worksheet import Worksheet
+
+    def stop_before_allocation(self, merged_range):
+        raise MergeAllocationProbe('ordinary loader reached merge expansion: ' + str(merged_range))
+
+    monkeypatch.setattr(Worksheet, '_clean_merge_range', stop_before_allocation)
+    if path_kind == 'producer':
+        with pytest.raises(ValueError, match='grid|worksheet'):
+            Plan.from_request(payload)
+    else:
+        artifact = tmp_path / 'probe.json'
+        artifact.write_text('{"formulas":[]}')
+        prepared = {'input_path': str(source), 'output_path': payload['execution']['output_path'],
+                    'input_sha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'format': 'xlsx',
+                    'mode': 'formulas', 'sheet': 'Data', 'skill_binding': payload['execution']['skill_binding'],
+                    'constraints': [], 'staging_path': str(artifact)}
+        report = verify(prepared)
+        assert not report['passed']
+        assert 'grid' in report['error'] or 'worksheet' in report['error']
+    assert not Path(payload['execution']['output_path']).exists()
+
+
+@pytest.mark.parametrize('insertion', [
+    b'<mergeCells count="3"><mergeCell ref="A1:J5000"/><mergeCell ref="A1:J5000"/><mergeCell ref="A1:J5000"/></mergeCells>',
+    b'<hyperlinks><hyperlink ref="A1:XFD1048576" location="Data!A1"/></hyperlinks>',
+    b'<c r="XFD1048576"><v>1</v></c>',
+])
+def test_xml_range_and_cumulative_expansion_budgets(tmp_path, insertion):
+    Plan, _, _ = modules()
+    payload = request(tmp_path)
+    source = Path(payload['execution']['input_path'])
+    _inject_worksheet(source, insertion)
+    with pytest.raises(ValueError, match='grid'):
+        Plan.from_request(payload)
+
+
+@pytest.mark.parametrize('budget,value', [('MAX_XML_NODES', 20), ('MAX_XML_BYTES', 1024)])
+def test_streamed_xml_budgets_precede_workbook_construction(tmp_path, monkeypatch, budget, value):
+    Plan, _, _ = modules()
+    payload = request(tmp_path)
+    from rpe_harness import xlsx_resource
+    import openpyxl
+    monkeypatch.setattr(xlsx_resource, budget, value)
+
+    def no_workbook_before_admission(*args, **kwargs):
+        raise MergeAllocationProbe('unbounded workbook parser reached before resource admission')
+
+    monkeypatch.setattr(openpyxl, 'load_workbook', no_workbook_before_admission)
+    with pytest.raises(ValueError, match='budget'):
+        Plan.from_request(payload)
+
+
+def test_xml_depth_and_dtd_entities_are_rejected_without_loading(tmp_path):
+    payload = request(tmp_path)
+    source = Path(payload['execution']['input_path'])
+    from rpe_harness.xlsx_resource import preflight_xlsx
+    _inject_worksheet(source, b'<guard>' * 65 + b'</guard>' * 65)
+    with pytest.raises(ValueError, match='depth'):
+        preflight_xlsx(source.read_bytes())
+    with ZipFile(source) as archive:
+        members = [(name, archive.read(name)) for name in archive.namelist()]
+    with ZipFile(source, 'w', compression=ZIP_DEFLATED) as archive:
+        for name, raw in members:
+            if name == 'xl/worksheets/sheet1.xml':
+                raw = b'<!DOCTYPE worksheet [<!ENTITY denied SYSTEM "file:///unavailable">]>' + raw
+            archive.writestr(name, raw)
+    with pytest.raises(ValueError, match='DTD/entities'):
+        preflight_xlsx(source.read_bytes())
+
+
+def test_xml_external_relationship_is_refused_without_fetching(tmp_path):
+    payload = request(tmp_path)
+    source = Path(payload['execution']['input_path'])
+    with ZipFile(source, 'a', compression=ZIP_DEFLATED) as archive:
+        archive.writestr('other/_rels/unused.xml.rels', b'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="external" Type="external" Target="https://example.invalid/no-fetch" TargetMode="External"/></Relationships>')
+    from rpe_harness.xlsx_resource import preflight_xlsx
+    with pytest.raises(ValueError, match='external'):
+        preflight_xlsx(source.read_bytes())
+
+
+def test_cumulative_workbook_grid_precedes_normal_loader(tmp_path):
+    Plan, _, _ = modules()
+    payload = request(tmp_path)
+    source = Path(payload['execution']['input_path'])
+    workbook = Workbook()
+    workbook.active.title = 'Data'
+    for index in range(3):
+        sheet = workbook.active if index == 0 else workbook.create_sheet('Sheet' + str(index))
+        sheet.cell(70000, 1, 'sparse')
+    workbook.save(source)
+    workbook.close()
+    with pytest.raises(ValueError, match='cumulative grid'):
+        Plan.from_request(payload)
+
+
+@NATIVE_ONLY
+def test_small_ordinary_merge_remains_supported(tmp_path):
+    Plan, prepare, verify = modules()
+    payload = request(tmp_path)
+    _inject_worksheet(Path(payload['execution']['input_path']),
+                      b'<mergeCells count="1"><mergeCell ref="A1:B2"/></mergeCells>')
+    plan = Plan.from_request(payload)
+    prepared = prepare(**plan.execution_kwargs())
+    assert json.loads(Path(prepared['staging_path']).read_text()) == {'sheet': 'Data', 'rows': [
+        ['key', None, 'date'], [None, None, '2026-10-14T12:00:00'], [2, '=A2+1', None]]}
+    assert verify(prepared, plan=plan)['passed']
+    from rpe_harness.execution import cleanup_staging
+    cleanup_staging(prepared)
+
+
+@pytest.mark.parametrize('path_kind',['producer','oracle'])
+def test_shared_worksheet_part_is_rejected_before_each_instance_expands(tmp_path,monkeypatch,path_kind):
+    from xml.etree import ElementTree as ET
+    from openpyxl.worksheet.worksheet import Worksheet
+    Plan, _, verify = modules()
+    payload = request(tmp_path)
+    source = Path(payload['execution']['input_path'])
+    book=Workbook();book.active.title='Data';book.active.append(['id']);book.active.append([1])
+    book.save(source);book.close()
+    _inject_worksheet(source,b'<mergeCells count="1"><mergeCell ref="A1:A100000"/></mergeCells>')
+    with ZipFile(source) as archive:
+        members=[(name,archive.read(name)) for name in archive.namelist()]
+    with ZipFile(source,'w',compression=ZIP_DEFLATED) as archive:
+        for name,raw in members:
+            if name=='xl/workbook.xml':
+                tree=ET.fromstring(raw)
+                sheets=tree.find('{http://schemas.openxmlformats.org/spreadsheetml/2006/main}sheets')
+                first=sheets[0]
+                for index in range(2):
+                    alias=ET.SubElement(sheets,first.tag,dict(first.attrib))
+                    alias.set('name','Alias'+str(index));alias.set('sheetId',str(index+2))
+                raw=ET.tostring(tree)
+            archive.writestr(name,raw)
+    def stop_before_allocation(*args,**kwargs):
+        raise MergeAllocationProbe('ordinary parser reached aliased worksheet expansion')
+    monkeypatch.setattr(Worksheet,'_clean_merge_range',stop_before_allocation)
+    if path_kind=='producer':
+        with pytest.raises(ValueError,match='duplicated|shared'):
+            Plan.from_request(payload)
+    else:
+        output=tmp_path/'probe.json';output.write_text('{"sheet":"Data","rows":[]}')
+        prepared={'input_path':str(source),'output_path':payload['execution']['output_path'],
+          'input_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'format':'xlsx',
+          'mode':'rows','sheet':'Data','skill_binding':payload['execution']['skill_binding'],
+          'constraints':[],'staging_path':str(output)}
+        report=verify(prepared)
+        assert not report['passed']
+        assert 'duplicated' in report['error'] or 'shared' in report['error']

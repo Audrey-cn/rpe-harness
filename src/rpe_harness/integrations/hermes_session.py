@@ -124,7 +124,8 @@ def aggregate_usage(events):
 
 
 def sandbox_profile(write_roots, real_home, install_root=None, database=None, read_roots=(),
-                    native_import_root=None, owner_read_scope=None):
+                    native_import_root=None, owner_read_scope=None, deny_read_roots=(),
+                    protected_write_roots=()):
     """macOS denies take precedence over allows; scope both writes and signals."""
     def quote(value):
         return json.dumps(str(value), ensure_ascii=False)
@@ -154,20 +155,48 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
         allowed = ' '.join('(literal '+quote(p)+')' for p in minimal)
         native_scope = ('(deny file-read-data (require-all (subpath '+quote(repository)+') '
                         '(require-not (require-any '+allowed+'))))\n')
+    denied_scope = ''
+    for denied_root in deny_read_roots:
+        exceptions = ''
+        if native_import_root:
+            exceptions = ' (require-not (require-any '+allowed+'))'
+        denied_scope += ('(deny file-read-data (require-all (subpath '+
+                         quote(Path(denied_root).resolve())+')'+exceptions+'))\n')
     owned_scope = ''
     if owner_read_scope:
         owner, allowed_paths = owner_read_scope
+        owner = Path(owner).resolve()
         allowed_paths = list(allowed_paths)
         if database:
             allowed_paths += [Path(str(database)+suffix) for suffix in ['-wal', '-shm', '-journal']]
             allowed_paths += [database.parent / ('.'+database.name+'.leases')]
         allowed = ' '.join('(subpath '+quote(Path(p).resolve())+')' for p in allowed_paths)
+        ancestors = set()
+        for item in allowed_paths:
+            path = Path(item).resolve()
+            cursor = path if path.is_dir() else path.parent
+            while cursor.is_relative_to(owner):
+                ancestors.add(cursor)
+                if cursor==owner:break
+                cursor=cursor.parent
+        allowed += ' '+' '.join('(literal '+quote(p)+')' for p in sorted(ancestors))
         owned_scope = ('(deny file-read-data (require-all (subpath '+quote(Path(owner).resolve())+') '
                        '(require-not (require-any '+allowed+'))))\n')
+    protected_scope = '\n'.join('(deny file-write* (subpath '+quote(Path(p).resolve())+'))'
+                               for p in protected_write_roots)
+    protected_ancestors = set()
+    write_paths = [Path(p).resolve() for p in write_roots]
+    for item in protected_write_roots:
+        cursor=Path(item).resolve().parent
+        while any(cursor.is_relative_to(root) for root in write_paths):
+            protected_ancestors.add(cursor)
+            cursor=cursor.parent
+    protected_scope += '\n'+'\n'.join('(deny file-write* (literal '+quote(p)+'))'
+                                      for p in sorted(protected_ancestors))
     return ('(version 1)\n(allow default)\n'
             '(deny file-write* (require-not (require-any '+roots+' (literal "/dev/null"))))\n'
             '(deny signal (require-not (target same-sandbox)))\n'+credentials+'\n'+private_state+'\n'
-            +native_scope+owned_scope)
+            +native_scope+owned_scope+denied_scope+protected_scope+'\n')
 
 
 def _installed_python(hermes_root):
@@ -206,7 +235,7 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
 
 
 def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional'):
-    if entry_mode not in ('optional','strict') or (entry_mode=='strict' and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills') or (entry_mode in ('strict','skills') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
     if settings.get('provider') != 'xiaomi':
         raise ValueError('isolated launcher currently requires xiaomi API-key provider')
@@ -233,7 +262,8 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'agent': {'max_turns': 12, 'run_budget_seconds': 180, 'api_max_retries': 1,
                   'auto_recovery_cycles': 0, 'environment_probe': False},
         'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
-        'platform_toolsets': {'cli': (['rpe_harness'] if entry_mode=='strict' else
+        'platform_toolsets': {'cli': (['rpe_harness','skills'] if entry_mode=='skills' else
+                                     ['rpe_harness'] if entry_mode=='strict' else
                                      ['terminal','file']+(['rpe_harness'] if tool_enabled else []))},
         'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
         'skills': {'external_dirs': [], 'project_discovery': False, 'auto_load': []},
@@ -244,12 +274,12 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
-    if entry_mode=='strict':
+    if entry_mode in ('strict','skills'):
         config['tools'] = {'tool_search':{'enabled':'off'}}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
-    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.2.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
+    (plugin / 'plugin.yaml').write_text('name: rpe-harness\nversion: 1.6.0\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
     (plugin / '__init__.py').write_text(
         'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
         'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
@@ -361,15 +391,19 @@ def _registered_processes(path, host_pid):
 
 def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        timeout=180, hermes_root=None, entry_mode='optional',
-                       required_request=None, max_task_attempts=3):
+                       required_request=None, max_task_attempts=3, catalog_root=None,
+                       skill_snapshot_id=None, context_sources=None,
+                       read_isolation_root=None, deny_read_roots=()):
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
         raise ValueError('isolated host launcher requires macOS sandbox-exec')
     if not isinstance(prompt, str) or not prompt.strip() or len(prompt.encode()) > 1_048_576:
         raise ValueError('prompt must be nonempty and at most 1 MiB')
     if not 1 <= timeout <= 1800:
         raise ValueError('timeout must be between 1 and 1800 seconds')
-    if entry_mode not in ('optional','strict') or (entry_mode=='strict' and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills') or (entry_mode in ('strict','skills') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
+    if entry_mode == 'skills' and catalog_root is None:
+        raise ValueError('skills entry requires an owned skill catalog')
     if type(max_task_attempts) is not int or not 1 <= max_task_attempts <= 20:
         raise ValueError('task attempt limit must be between 1 and 20')
     owner_root, workspace = Path(owner_root).resolve(), Path(workspace).resolve()
@@ -394,6 +428,30 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
                         tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode)
+    skill_config_path = None
+    snapshot = None
+    if catalog_root is not None:
+        from ..skill_catalog import SkillCatalog
+        catalog = SkillCatalog(db_path, catalog_root)
+        snapshot = catalog.materialize(home / 'skills', snapshot_id=skill_snapshot_id)
+        (home / '.no-bundled-skills').touch(mode=0o600)
+        config = {'catalog_root':str(Path(catalog_root).resolve()),
+                  'snapshot_id':snapshot['snapshot_id'],
+                  'materialized_root':snapshot['materialized_path'],
+                  'entries':[{key:entry[key] for key in ('skill_id','load_name','skill_path',
+                     'skill_sha256','script_path','script_sha256') if key in entry}
+                     for entry in snapshot['entries']]}
+        skill_config_path = session_root / 'skill-config.json'
+        config_text=json.dumps(config,ensure_ascii=False)
+        if len(config_text.encode())>8*1_048_576:
+            raise ValueError('materialized skill configuration exceeds 8 MiB')
+        skill_config_path.write_text(config_text,encoding='utf-8')
+        os.chmod(skill_config_path,0o600)
+        if not tool_enabled:
+            settings_path = home / 'config.yaml'
+            native_config = json.loads(settings_path.read_text())
+            native_config.setdefault('tools',{}).setdefault('tool_search',{})['enabled'] = 'off'
+            settings_path.write_text(json.dumps(native_config,ensure_ascii=False))
     fixed_path = None
     if fixed_request is not None:
         fixed_path = session_root/'fixed-request.json'
@@ -416,8 +474,10 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        Path.home() / '.hermes', hermes_root, db_path,
                                        [host_python.parent.parent, Path.home() / '.hermes/tools'],
                                        native_import_root=None if tool_enabled else import_root,
-                                       owner_read_scope=(owner_root, [session_root, workspace, db_path,
-                                           import_root, Path(sys.executable).absolute().parent.parent])))
+                                       owner_read_scope=(read_isolation_root or owner_root, [session_root, workspace, db_path,
+                                           import_root, Path(sys.executable).absolute().parent.parent]),
+                                       deny_read_roots=deny_read_roots,
+                                       protected_write_roots=[home/'skills',skill_config_path] if snapshot else []))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
@@ -441,13 +501,16 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     if fixed_path is not None:
         env['RPE_HERMES_REQUIRED_REQUEST_PATH'] = str(fixed_path)
         env['RPE_HERMES_INPUT_SHA256'] = fixed_input_sha
+    if skill_config_path is not None:
+        env['RPE_HERMES_SKILL_CONFIG'] = str(skill_config_path)
     session_token = uuid.uuid4().hex
     env['RPE_HERMES_SESSION_TOKEN'] = session_token
     if not tool_enabled:
         env.pop('PYTHONPATH', None)
     env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
-    tools = ('rpe_harness' if entry_mode=='strict' else
-             'terminal,file'+(',rpe_harness' if tool_enabled else ''))
+    tools = ('rpe_harness,skills' if entry_mode=='skills' else
+             'rpe_harness' if entry_mode=='strict' else
+             'terminal,file'+(',skills' if snapshot else '')+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),
                str(host_python), '-B',
                str(Path(__file__).with_name('hermes_bootstrap.py')),
@@ -463,8 +526,13 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     try:
         if tool_enabled:
             from .hermes_broker import execution_broker
+            extension = None
+            if entry_mode == 'skills':
+                from .hermes_skills import skill_extension
+                extension = skill_extension(db_path,workspace,catalog_root=catalog_root,
+                    snapshot_id=snapshot['snapshot_id'],context_sources=context_sources or [])
             broker_environment = broker_stack.enter_context(execution_broker(
-                db_path=db_path, workspace=workspace, python=sys.executable))
+                db_path=db_path, workspace=workspace, python=sys.executable,extension=extension))
             env.update(broker_environment)
         with stdout_path.open('w') as output, stderr_path.open('w') as errors:
             process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
@@ -569,6 +637,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
               'entry_mode':entry_mode,'max_task_attempts':max_task_attempts,
               'input_sha256':fixed_input_sha,
               'session_root': str(session_root),
+              'catalog_snapshot_id': snapshot['snapshot_id'] if snapshot else None,
               'process_cleanup': {'tracked_descendants': len(owned_descendants),
                                   'signaled_descendants': len(signaled_descendants),
                                   'remaining_descendants': remaining_descendants,

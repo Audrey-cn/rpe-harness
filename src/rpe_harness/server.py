@@ -171,7 +171,8 @@ class HarnessHandler(BaseHTTPRequestHandler):
                 'task_types': [t.value for t in skill.task_types], 'priority': skill.priority,
                 'enabled': skill.enabled, 'is_dormant': skill.is_dormant,
                 'input_formats': skill.input_formats, 'capabilities': skill.capabilities,
-                'executable': skill.skill_id in BUILTIN_IDS.values()}
+                'executable': skill.skill_id in {*BUILTIN_IDS.values(), 'builtin/json-normalize',
+                                                'builtin/xlsx-inspect'}}
 
     def _read_body(self):
         if self.headers.get('Transfer-Encoding'):

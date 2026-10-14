@@ -3,6 +3,9 @@ from .contracts import ExecutionPlan
 
 
 def plan_from_request(payload):
+    if isinstance(payload, dict) and payload.get('capability') == 'xlsx.inspect':
+        from .skill_inspection import SkillInspectionPlan
+        return SkillInspectionPlan.from_request(payload)
     if isinstance(payload, dict) and payload.get('capability') == 'json.normalize':
         from .json_contract import JsonNormalizePlan
         return JsonNormalizePlan.from_request(payload)
@@ -10,6 +13,9 @@ def plan_from_request(payload):
 
 
 def plan_from_dict(value):
+    if isinstance(value, dict) and value.get('capability') == 'xlsx.inspect':
+        from .skill_inspection import SkillInspectionPlan
+        return SkillInspectionPlan.from_dict(value)
     if isinstance(value, dict) and value.get('capability') == 'json.normalize':
         from .json_contract import JsonNormalizePlan
         return JsonNormalizePlan.from_dict(value)
@@ -17,6 +23,9 @@ def plan_from_dict(value):
 
 
 def prepare_plan(plan):
+    if plan.capability == 'xlsx.inspect':
+        from .skill_inspection import prepare_skill_inspection
+        return prepare_skill_inspection(**plan.execution_kwargs())
     if plan.capability == 'json.normalize':
         from .json_execution import prepare_json_normalization
         return prepare_json_normalization(**plan.execution_kwargs())
@@ -25,6 +34,9 @@ def prepare_plan(plan):
 
 
 def verify_plan(prepared, plan):
+    if plan.capability == 'xlsx.inspect':
+        from .skill_verification import verify_skill_inspection
+        return verify_skill_inspection(prepared, plan=plan)
     if plan.capability == 'json.normalize':
         from .json_verification import verify_json_normalization
         return verify_json_normalization(prepared, plan=plan)
@@ -39,6 +51,9 @@ def artifact_metrics(verification):
 
 
 def current_plan_revisions(plan):
+    if plan.capability == 'xlsx.inspect':
+        from .skill_inspection import current_revisions
+        return current_revisions()
     if plan.capability == 'json.normalize':
         from .json_contract import current_revisions
         return current_revisions()
@@ -47,6 +62,9 @@ def current_plan_revisions(plan):
 
 
 def contract_from_plan(plan):
+    if plan.capability == 'xlsx.inspect':
+        from .skill_inspection import contract_from_plan as inspection_contract
+        return inspection_contract(plan)
     if plan.capability == 'json.normalize':
         execution = {'input_path': plan.input_path, 'output_path': plan.output_path, 'style': plan.style}
     else:

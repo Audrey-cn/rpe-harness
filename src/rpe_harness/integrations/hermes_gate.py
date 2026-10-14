@@ -29,9 +29,10 @@ def request_input_sha(payload, workspace):
     source = Path(contract['execution']['input_path'])
     if not source.is_file() or source.is_symlink():
         raise ValueError('input must be a regular owned file')
-    if contract['capability'] == 'json.normalize':
+    if contract['capability'] in ('json.normalize','xlsx.inspect'):
         from ..path_binding import read_source
-        return hashlib.sha256(read_source(source, max_bytes=1_048_576)).hexdigest()
+        limit = 16*1_048_576 if contract['capability']=='xlsx.inspect' else 1_048_576
+        return hashlib.sha256(read_source(source, max_bytes=limit)).hexdigest()
     return hashlib.sha256(source.read_bytes()).hexdigest()
 
 
@@ -163,7 +164,7 @@ def _verify_run(run, receipt, workspace, required_request):
             or artifact.get('published') is not True or verification.get('passed') is not True
             or Path(artifact.get('path','')).resolve()!=output or not output.is_file()):
         raise ValueError('plan_or_artifact_proof_invalid')
-    if plan.capability == 'json.normalize':
+    if plan.capability in ('json.normalize','xlsx.inspect'):
         from ..path_binding import read_source
         output_data = read_source(output, max_bytes=16*1_048_576)
     else:

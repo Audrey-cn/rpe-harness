@@ -1,6 +1,8 @@
 """The proposal worker uses real feedback and persists code without approving it."""
 import importlib
 import json
+import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -198,3 +200,73 @@ def test_invalid_worker_scope_is_rejected_before_db_or_workspace_creation(tmp_pa
         module().run_proposal_worker(tmp_path / 'runs.sqlite', tmp_path, **options)
     assert not (tmp_path / 'runs.sqlite').exists()
     assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(), reason='macOS real sandbox boundary')
+def test_real_worker_sandbox_denies_feedback_and_heldout_while_public_workspace_is_usable(tmp_path, monkeypatch):
+    from rpe_harness.integrations import hermes, hermes_session as launcher
+    worker = module()
+    owned = tmp_path / 'worker-owned'
+    owned.mkdir()
+    database, _ = json_run(owned)
+    secret = owned / 'private-marker.txt'
+    secret.write_text('private feedback marker')
+    baseline = owned / 'baseline-copy'
+    baseline.mkdir()
+    heldout = baseline / 'heldout.py'
+    heldout.write_text('private oracle marker')
+    other_repo = tmp_path / 'separate-project'
+    other_repo.mkdir()
+    project_marker = other_repo / 'private-source.py'
+    project_marker.write_text('private project marker')
+    import_root = tmp_path / 'bootstrap-runtime' / 'lib' / 'python' / 'site-packages'
+    package = import_root / 'rpe_harness'
+    integrations = package / 'integrations'
+    integrations.mkdir(parents=True)
+    (package / '__init__.py').write_text('')
+    (integrations / '__init__.py').write_text('')
+    shutil.copyfile(hermes.__file__, integrations / 'hermes.py')
+    program = '''import json,os,sys
+from pathlib import Path
+sys.path.insert(0,IMPORT_ROOT)
+from rpe_harness.integrations.hermes import HostEventStore
+reads=[]
+for path in PRIVATE_PATHS:
+    try:
+        Path(path).read_bytes()
+        reads.append(False)
+    except PermissionError:
+        reads.append(True)
+workspace=Path(os.environ['RPE_HERMES_WORKSPACE'])
+packet=json.loads((workspace/'feedback.json').read_text())
+assert packet['verified_feedback'][0]['verified'] is True
+(workspace/'candidate.py').write_text('def prepare(plan, staging_path): raise ValueError("probe only")\\n')
+HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'worker-sandbox-probe','completed':True})
+print(json.dumps({'type':'result','session_id':'worker-sandbox-probe','text':json.dumps({'denied':reads,'public_read':True,'candidate_written':True})}))
+'''
+    private_paths = [str(secret), str(database), str(heldout), str(project_marker)]
+    bootstrap = integrations / 'hermes_bootstrap.py'
+    bootstrap.write_text('IMPORT_ROOT=' + repr(str(import_root)) + '\nPRIVATE_PATHS=' + repr(private_paths) + '\n' + program)
+    monkeypatch.setattr(launcher, '__file__', str(integrations / 'hermes_session.py'))
+    monkeypatch.setattr(launcher, '_installed_python', lambda root: Path(sys.executable).resolve())
+    monkeypatch.setattr(launcher, '_read_host_settings', lambda *args: {
+        'provider': 'xiaomi', 'model': 'no-model-probe', 'base_url': 'https://example.invalid',
+        'api_key': 'isolated-no-model-test-key'})
+    source_roots = getattr(worker, '_deny_read_roots', lambda: [])()
+    monkeypatch.setattr(worker, '_deny_read_roots', lambda: [*source_roots, other_repo], raising=False)
+    sessions = []
+    def real_launch(*args, **kwargs):
+        result = launcher.run_hermes_session(*args, **kwargs)
+        sessions.append(result)
+        return result
+    monkeypatch.setattr(worker, 'run_hermes_session', real_launch)
+    report = worker.run_proposal_worker(database, owned, hermes_root=tmp_path / 'fake-hermes', timeout=5)
+    assert report['completed'] is True, report
+    result = sessions[0]
+    probe = json.loads(result['final_response'])
+    assert probe['denied'] == [True, True, True, True]
+    assert probe['public_read'] is True and probe['candidate_written'] is True
+    assert result['usage']['api_requests'] == 0
+    assert result['process_cleanup']['cleanup_complete'] is True
+    assert not Path(result['session_root']).exists()
+    assert report['workspace_cleaned'] is True

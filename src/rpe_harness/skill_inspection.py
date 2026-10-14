@@ -12,17 +12,18 @@ import subprocess
 import sys
 import tempfile
 import time
-from zipfile import BadZipFile, ZipFile
+from zipfile import BadZipFile
 
 from .execution import _new_staging, cleanup_staging
 from .path_binding import current_binding, read_source
 from .skill_catalog import (_absolute, _canonical, _read, validate_skill_binding,
                             BINDING_FIELDS, XLSX_SKILL_ID, XLSX_SKILL_SHA256, XLSX_SCRIPT_SHA256)
+from .xlsx_resource import preflight_xlsx, RESOURCE_REVISION
 
 CAPABILITY = 'xlsx.inspect'
 CONTRACT_VERSION = 1
 EXECUTOR_ID = 'builtin/xlsx-inspect'
-EXECUTOR_REVISION = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+EXECUTOR_REVISION = hashlib.sha256(Path(__file__).read_bytes() + RESOURCE_REVISION.encode()).hexdigest()
 CONTRACT_REVISION = EXECUTOR_REVISION
 MAX_INPUT_BYTES = 16 * 1024 * 1024
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
@@ -42,15 +43,7 @@ def inspect_xlsx_bytes(raw):
     if len(raw) > MAX_INPUT_BYTES:
         raise ValueError('workbook exceeds 16 MiB')
     try:
-        with ZipFile(io.BytesIO(raw)) as archive:
-            members = archive.infolist()
-            if len(members) > MAX_MEMBERS or sum(m.file_size for m in members) > MAX_UNPACKED_BYTES:
-                raise ValueError('workbook ZIP exceeds its member or expanded-byte budget')
-            names = [member.filename for member in members]
-            if len(set(names)) != len(names) or any(m.flag_bits & 1 for m in members):
-                raise ValueError('workbook ZIP has duplicate or encrypted members')
-            if any('..' in Path(name).parts or name.startswith('/') for name in names):
-                raise ValueError('workbook ZIP member has traversal')
+        preflight_xlsx(raw)
         from openpyxl import load_workbook
         book = load_workbook(io.BytesIO(raw), data_only=False, keep_links=False)
         try:

@@ -88,8 +88,41 @@ def _validated_request(body, database, workspace):
     return payload, native
 
 
+def _validated_skill_request(body, database):
+    """Read-only native policy plus an immutable argument-bound RPC receipt."""
+    from .hermes_gate import digest_json
+    operations = {'discover':'rpe_discover', 'context':'rpe_context',
+                  'lookup':'skill_view', 'revalidate':'rpe_task'}
+    if (not isinstance(body, dict) or set(body) != {'operation','arguments','receipt_id','native'}
+            or body.get('operation') not in operations or not isinstance(body.get('arguments'),dict)
+            or not isinstance(body.get('native'),dict) or not isinstance(body.get('receipt_id'),str)):
+        raise ValueError('invalid skill RPC envelope')
+    native = body['native']
+    if (set(native) - {*_IDS, 'tool_name','entry_key','arguments_sha256'}
+            or any(not isinstance(native.get(k),str) or not native[k] for k in (*_IDS,'entry_key'))
+            or native.get('tool_name') != operations[body['operation']]
+            or native.get('arguments_sha256') != digest_json(body['arguments'])):
+        raise PermissionError('native argument binding required')
+    with sqlite3.connect(database.as_uri()+'?mode=ro',uri=True) as db:
+        receipt = db.execute('SELECT kind,metadata_json FROM hermes_host_events WHERE ingest_event_id=?',
+                             (body['receipt_id'],)).fetchone()
+        if (receipt is None or receipt[0] != 'rpe_skill_rpc_received'
+                or json.loads(receipt[1]) != native):
+            raise PermissionError('skill RPC receipt differs')
+        policies = [json.loads(row[0]) for row in db.execute(
+            "SELECT metadata_json FROM hermes_host_events WHERE kind='pre_api_request' AND session_id=?",
+            (native['session_id'],))]
+    policies = [p for p in policies if all(p.get(k)==native[k] for k in _IDS[:-1])]
+    if (len(policies)!=1 or policies[0].get('request_tool_choice')!=native['tool_name']
+            or policies[0].get('request_tool_names')!=[native['tool_name']]
+            or policies[0].get('request_parallel_tool_calls') is not False
+            or not policies[0].get('request_tools_sha256')):
+        raise PermissionError('actual native API policy does not admit skill RPC')
+    return native
+
+
 @contextmanager
-def execution_broker(*, db_path, workspace, python, request_timeout=120):
+def execution_broker(*, db_path, workspace, python, request_timeout=120, extension=None):
     """Yield URL/token env entries; after exit ``env.cleanup`` verifies children."""
     database, directory, interpreter = Path(db_path), Path(workspace), Path(python)
     if (not database.is_absolute() or database != database.resolve()
@@ -190,6 +223,38 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
         finally:
             stop(job)
 
+    def skill_response(body):
+        if not callable(extension):
+            return 404, {'error':{'code':'broker_route_invalid'}}
+        try:
+            native = _validated_skill_request(body, database)
+            signature = json.dumps(body,sort_keys=True,allow_nan=False,ensure_ascii=False)
+            receipt_id = body['receipt_id']
+            with execution_lock:
+                with lock:
+                    previous = claims.get(receipt_id)
+                    if previous is not None:
+                        if previous['signature'] != signature:
+                            raise PermissionError('skill RPC receipt changed')
+                        if previous['response'] is not None:
+                            return previous['response']
+                    if closing.is_set():
+                        return 503, {'error':{'code':'broker_closed'}}
+                    claims[receipt_id] = {'signature':signature,'response':None}
+                value = extension(body['operation'],body['arguments'],native)
+                if not isinstance(value,dict) or len(json.dumps(value,ensure_ascii=False,allow_nan=False).encode()) > MAX_BODY:
+                    raise ValueError('skill RPC response exceeds its budget')
+                response = (200, {'result':value})
+                with lock:
+                    claims[receipt_id]['response'] = response
+                return response
+        except PermissionError:
+            return 403, {'error':{'code':'broker_receipt_invalid'}}
+        except (ValueError,TypeError,KeyError):
+            return 400, {'error':{'code':'broker_envelope_invalid'}}
+        except (OSError,sqlite3.Error):
+            return 403, {'error':{'code':'broker_receipt_invalid'}}
+
     class Handler(BaseHTTPRequestHandler):
         def setup(self):
             self.request.settimeout(3)
@@ -215,7 +280,7 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
             self.reply(code, {'error': {'code': 'broker_http_invalid'}})
 
         def do_POST(self):
-            if self.path != '/task':
+            if self.path not in ('/task','/skill') or (self.path=='/skill' and not callable(extension)):
                 return self.reply(404, {'error': {'code': 'broker_route_invalid'}})
             authorization = self.headers.get('Authorization', '')
             if not hmac.compare_digest(authorization.encode('utf-8'), ('Bearer ' + token).encode('ascii')):
@@ -234,6 +299,8 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120):
                 if len(data) != length:
                     raise ValueError('incomplete JSON envelope')
                 body = json.loads(data, parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
+                if self.path == '/skill':
+                    return self.reply(*skill_response(body))
                 payload, native = _validated_request(body, database, directory)
             except PermissionError:
                 return self.reply(403, {'error': {'code': 'broker_receipt_invalid'}})

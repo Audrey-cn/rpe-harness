@@ -36,6 +36,8 @@ def main(argv=None):
     commands = parser.add_subparsers(dest='command', required=True)
     from .assets.cli import register_assets
     register_assets(commands)
+    from .skill_cli import register_skills_and_context
+    register_skills_and_context(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -68,7 +70,10 @@ def main(argv=None):
     hermes_run.add_argument('--prompt-file', type=Path, required=True)
     hermes_run.add_argument('--timeout', type=float, default=180)
     hermes_run.add_argument('--hermes-root', type=Path)
-    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional'), default='strict')
+    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional', 'skills'), default='strict')
+    hermes_run.add_argument('--catalog-root', type=Path)
+    hermes_run.add_argument('--skill-snapshot-id')
+    hermes_run.add_argument('--context-sources', help='trusted JSON file with a sources array')
     hermes_run.add_argument('--request', help='optional fixed JSON task contract')
     hermes_run.add_argument('--max-task-attempts', type=int, default=3)
     _configuration(hermes_run)
@@ -82,6 +87,12 @@ def main(argv=None):
     cycle.add_argument('--owned-root', type=Path, required=True)
     cycle.add_argument('--no-auto-apply', action='store_true')
     _configuration(cycle)
+    worker = evolution_commands.add_parser('worker', help='generate one candidate, without approving it')
+    worker.add_argument('--owned-root', type=Path, required=True)
+    worker.add_argument('--kind', choices=('csv_executor', 'json_executor'), default='json_executor')
+    worker.add_argument('--timeout', type=int, default=120)
+    worker.add_argument('--hermes-root', type=Path)
+    _configuration(worker)
     for name in ('list', 'experiences'):
         _configuration(evolution_commands.add_parser(name))
     proposal = evolution_commands.add_parser('propose')
@@ -103,7 +114,10 @@ def main(argv=None):
     _configuration(rollback)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'assets':
+        if args.command in ('skills','context'):
+            from .skill_cli import dispatch_skills_and_context
+            result = dispatch_skills_and_context(args)
+        elif args.command == 'assets':
             from .assets.cli import handle_assets
             result = handle_assets(args)
         elif args.command == 'hermes':
@@ -113,14 +127,26 @@ def main(argv=None):
             from .integrations.hermes_gate import evaluate_session
             db_path = Path(args.db) if args.db else default_db_path()
             required_request = read_json(args.request) if args.request else None
+            context_sources = read_json(args.context_sources) if args.context_sources else []
+            if isinstance(context_sources,dict):
+                context_sources = context_sources.get('sources')
+            if not isinstance(context_sources,list) or len(context_sources)>8:
+                raise ValueError('context sources must be a list of at most eight source records')
             with tempfile.TemporaryDirectory(prefix='rpe-hermes-') as owned:
                 result = run_hermes_session(args.prompt_file.read_text(encoding='utf-8'),
                     args.workspace, db_path,
                     tool_enabled=True, owner_root=Path(owned), timeout=args.timeout,
                     hermes_root=args.hermes_root, entry_mode=args.entry_mode,
-                    required_request=required_request, max_task_attempts=args.max_task_attempts)
-                verdict = evaluate_session(result, db_path, args.workspace,
-                    required_request=required_request, require_policy=args.entry_mode == 'strict')
+                    required_request=required_request, max_task_attempts=args.max_task_attempts,
+                    catalog_root=args.catalog_root,skill_snapshot_id=args.skill_snapshot_id,
+                    context_sources=context_sources)
+                if args.entry_mode == 'skills':
+                    from .integrations.skill_gate import evaluate_skill_session
+                    verdict = evaluate_skill_session(result,db_path,args.workspace,
+                        catalog_root=args.catalog_root,required_request=required_request)
+                else:
+                    verdict = evaluate_session(result, db_path, args.workspace,
+                        required_request=required_request, require_policy=args.entry_mode == 'strict')
             result.pop('session_root', None)
             result.pop('stream_tool_calls', None)
             result['temporary_history_cleaned'] = True
@@ -133,6 +159,11 @@ def main(argv=None):
             if args.evolution_command == 'cycle':
                 from .evolution.cycle import cycle
                 result = cycle(db_path, args.owned_root, auto_apply=not args.no_auto_apply)
+            elif args.evolution_command == 'worker':
+                from .evolution.worker import run_proposal_worker
+                result = run_proposal_worker(db_path,args.owned_root,kind=args.kind,
+                                              timeout=args.timeout,hermes_root=args.hermes_root)
+                result['status'] = 'proposed' if result.get('proposal_id') else 'failed'
             elif args.evolution_command == 'propose':
                 from .evolution.candidates import propose_candidate
                 result = propose_candidate(db_path, args.owned_root,
@@ -189,6 +220,8 @@ def main(argv=None):
                                      args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
+        if args.command == 'context':
+            return 2 if status in ('rejected','conflict') else 3 if status=='needs_context' else 0
         if status in ['received', 'running']:
             return 3
         return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted', 'unverified'] or result.get('passed') is False else 0

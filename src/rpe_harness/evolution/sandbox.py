@@ -61,7 +61,7 @@ except (ValueError, UnicodeError) as error:
 
 
 def _literal(path):
-    return json.dumps(str(Path(path).resolve()))
+    return json.dumps(str(Path(path).resolve()), ensure_ascii=False)
 
 
 def _profile(job, staging, log):

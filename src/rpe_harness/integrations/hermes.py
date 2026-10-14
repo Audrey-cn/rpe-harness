@@ -24,11 +24,15 @@ _TEXT_FIELDS = frozenset({
     'finish_reason', 'parent_session_id',
     'receipt_id', 'entry_key', 'contract_sha256', 'input_sha256',
     'request_tool_choice', 'request_tools_sha256',
+    'snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256', 'load_receipt_id',
+    'recovery_id', 'context_status', 'workflow_phase', 'arguments_sha256',
+    'content_sha256', 'skill_source_path',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
+    'tool_exit_code',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
                           'request_parallel_tool_calls'})
@@ -302,6 +306,13 @@ def _execution_identity(payload):
 
 def _normalize_contract(payload, workspace=None):
     """Keep admitted and recorded execution identities identical, without file reads."""
+    if isinstance(payload, dict) and payload.get('capability') == 'xlsx.inspect':
+        from ..skill_inspection import normalized_contract
+        copied = json.loads(json.dumps(payload, allow_nan=False))
+        if workspace is not None and isinstance(copied.get('execution'), dict):
+            for key in ('input_path', 'output_path'):
+                copied['execution'][key] = _workspace_path(copied['execution'].get(key), Path(workspace).resolve())
+        return normalized_contract(copied)
     if not isinstance(payload, dict) or type(payload.get('schema_version')) is not int:
         raise TaskArgumentsError('versioned request required', ['schema_version'])
     version = payload['schema_version']
@@ -534,9 +545,39 @@ def register(ctx) -> None:
                                     str(store.path) + '.observer-errors')).expanduser()
     if not error_path.is_absolute():
         raise ValueError('RPE_HERMES_ERROR_PATH must be an absolute path')
+    native_config = None
+    native_config_path = os.environ.get('RPE_HERMES_SKILL_CONFIG')
+    if native_config_path:
+        config_path = Path(native_config_path)
+        if config_path.is_symlink() or config_path.stat().st_size>8*1_048_576:
+            raise ValueError('invalid native skill observation config')
+        native_config = json.loads(config_path.read_text())
 
     def observer(kind):
         def observe(**payload):
+            if kind in ('pre_tool_call','post_tool_call') and isinstance(payload.get('args'),dict):
+                payload['arguments_sha256'] = _digest_json(payload['args'])
+            if kind == 'post_tool_call' and os.environ.get('RPE_HERMES_TOOL_ENABLED') == '0':
+                try:
+                    native_result = json.loads(payload.get('result',''))
+                except (ValueError,TypeError):
+                    native_result = None
+                if isinstance(native_result,dict) and payload.get('status') == 'ok':
+                    if payload.get('tool_name') == 'terminal' and type(native_result.get('exit_code')) is int:
+                        payload['tool_exit_code'] = native_result['exit_code']
+                        payload['status'] = 'succeeded' if native_result['exit_code']==0 else 'failed'
+                    elif payload.get('tool_name') == 'skill_view' and native_config:
+                        content = native_result.get('content')
+                        path = native_result.get('_source_path')
+                        args = payload.get('args',{})
+                        matching = [row for row in native_config['entries'] if row.get('load_name') == args.get('name')]
+                        if (len(matching)==1 and isinstance(content,str) and path==matching[0]['skill_path']
+                                and native_result.get('setup_needed') is not True
+                                and hashlib.sha256(content.encode()).hexdigest()==matching[0]['skill_sha256']):
+                            row=matching[0]
+                            payload.update(status='loaded',skill_id=row['skill_id'],
+                                snapshot_id=native_config['snapshot_id'],skill_sha256=row['skill_sha256'],
+                                content_sha256=row['skill_sha256'],skill_source_path=path)
             if kind == 'post_tool_call' and payload.get('tool_name') == 'rpe_task':
                 try:
                     result = json.loads(payload.get('result', ''))
@@ -571,6 +612,10 @@ def register(ctx) -> None:
 
     from .hermes_gate import contract_for, read_run, request_input_sha, _same_call, _verify_run
     entry_mode = os.environ.get('RPE_HERMES_ENTRY_MODE','optional')
+    if entry_mode == 'skills':
+        from .hermes_skills import register_skill_workflow
+        register_skill_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)
+        return
     if entry_mode not in ('optional','strict'):
         raise ValueError('entry mode must be optional or strict')
     strict = entry_mode == 'strict'
