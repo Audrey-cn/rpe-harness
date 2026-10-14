@@ -58,3 +58,17 @@ def test_hermes_inspection_contract_is_stable_after_publication(tmp_path):
     assert after['capability'] == 'xlsx.inspect'
     assert after['execution']['skill_binding'] == request['execution']['skill_binding']
 
+
+def test_unknown_inspection_constraint_is_correctable_argument_error(tmp_path):
+    from rpe_harness.integrations.hermes import _execute,HostEventStore
+    import sys
+    request=inspection_request(tmp_path)
+    request['constraints']=['Do not read project files']
+    store=HostEventStore(tmp_path/'constraints.sqlite')
+    result=json.loads(_execute({'request':request},store=store,workspace=tmp_path,
+                              python=sys.executable,session_id='s',task_id='t'))
+    assert result['status']=='rejected'
+    assert result['error']['code']=='invalid_task_arguments'
+    assert result['error']['fields']==['constraints']
+    assert not Path(request['execution']['output_path']).exists()
+

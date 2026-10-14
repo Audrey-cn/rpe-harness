@@ -255,6 +255,9 @@ def _prepare_request(args: dict[str, Any], workspace: Path, session_id: str | No
     constraints = state.get('constraints',[])
     if not isinstance(constraints,list) or any(not isinstance(item,str) for item in constraints):
         raise TaskArgumentsError('constraints must be an array of strings', ['constraints'])
+    if state.get('capability') == 'xlsx.inspect' and set(constraints)-{'preserve_original'}:
+        raise TaskArgumentsError('xlsx.inspect constraints must be preserve_original; put task descriptions in goal',
+                                 ['constraints'])
     execution = request.get('execution')
     if not isinstance(execution, dict):
         raise TaskArgumentsError('execution must be a JSON object', ['execution'])
