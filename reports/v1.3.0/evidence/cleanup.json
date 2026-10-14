@@ -1,0 +1,24 @@
+{
+  "owned_root": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q",
+  "deleted_regular_files": 7850,
+  "deleted_bytes": 123031988,
+  "deleted_symlinks": 624,
+  "owned_process_ids_before": [],
+  "owned_process_ids_after": [],
+  "temporary_root_removed": true,
+  "active_marker_removed": true,
+  "removed_scopes": [
+    "owned temporary virtual environments",
+    "owned pip cache",
+    "owned SQLite/test data",
+    "owned test identities and private keys",
+    "owned test histories/logs/session caches"
+  ],
+  "preserved_scopes": [
+    "project source and v1.3 review evidence",
+    "old repositories and history",
+    "daily Hermes config/auth/runtime",
+    "shared CLI and global caches/services"
+  ],
+  "no_machinewide_process_snapshot": true
+}

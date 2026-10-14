@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scope": "installed signed recipe normalization, validation, activation, actual use, export/reimport, rollback",
+  "actual_executor": {
+    "code_sha256": "d7ae2edd9010881304f0a4e2bf6a88d096073db16ac7859aa4ae04f7c79e5d19",
+    "executor_id": "builtin/csv-deduplicate",
+    "kind": "builtin",
+    "plan_sha256": "97a5ade2fe5e68c90d25577a8f4978d37830b10f019903f987593ce6546887c3",
+    "recipe_content_sha256": "53214999cf1213ccfe704b68497b796c96d39683b6f248126f590487379d8388",
+    "recipe_version_id": "a34160e0a337218b7830a7006668f91926347c1edc90f36f42fb362c388d36db"
+  },
+  "fixtures": 13
+}

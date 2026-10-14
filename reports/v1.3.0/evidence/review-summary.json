@@ -1,0 +1,34 @@
+{
+  "scoped_reviews": {
+    "assets_and_lifecycle": "approved after P1 fix",
+    "trust": "approved after P2 fix",
+    "broker_binding": "approved, limits retained"
+  },
+  "final_review": {
+    "passed": true,
+    "new_P1_P2": 0,
+    "reviewed_patch_sha256": "6532b9240c7d1dfe27902f1d4ad7afea9e6d5c76d344ed20ea7dd3745b699f1b",
+    "expected_patch_sha256": "6532b9240c7d1dfe27902f1d4ad7afea9e6d5c76d344ed20ea7dd3745b699f1b"
+  },
+  "fixed_findings": [
+    {
+      "id": "source-provenance-downgrade",
+      "regressions": 6,
+      "fixed_by": "immutable proposal fingerprint and symmetric source certificate presence"
+    },
+    {
+      "id": "json-full-allocation",
+      "trust_tests": 56,
+      "fixed_by": "bounded incremental canonical JSON encoding"
+    },
+    {
+      "id": "broker-launch-replay-stuck",
+      "broker_tests": 32,
+      "fixed_by": "durable session response cache for terminal launch failure"
+    }
+  ],
+  "independent_extra_checks": [
+    "200 capture success/hash-rejection cases with FD set unchanged",
+    "installed signed recipe normalization/13fixtures/actual-use/export/reimport/rollback"
+  ]
+}

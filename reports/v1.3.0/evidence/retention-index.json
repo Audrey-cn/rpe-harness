@@ -1,0 +1,145 @@
+{
+  "entries": [
+    {
+      "path": "artifacts/rpe_harness-1.3.0-py3-none-any.whl",
+      "bytes": 144419,
+      "sha256": "e0eb4fe7c31cba163ad8b650ea6bb6c78794eef71d380136ec5a9f2fbf85c3d0"
+    },
+    {
+      "path": "evidence/accepted-test-package/candidate.py",
+      "bytes": 633,
+      "sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9"
+    },
+    {
+      "path": "evidence/accepted-test-package/manifest.json",
+      "bytes": 588,
+      "sha256": "85eb4d498b59566f68f36594b10cad46fb6b3c1fbce58759931f733f11c78a94"
+    },
+    {
+      "path": "evidence/accepted-test-package/signature.json",
+      "bytes": 1136,
+      "sha256": "25d403e0250ceb28fb7f3a5674f7fe775181bfa684463ddf99be6d93cd289c55"
+    },
+    {
+      "path": "evidence/cleanup.json",
+      "bytes": 787,
+      "sha256": "faac0900b53d2287f91c14c1a363ae16b3c40c81c6d15c3b34878bd3145463c9"
+    },
+    {
+      "path": "evidence/closing-checks.json",
+      "bytes": 371,
+      "sha256": "b752113d192d8191856cb9e47f4d9f05cc0c184c21972193e9b9b6a13e155b17"
+    },
+    {
+      "path": "evidence/daily-state-check.json",
+      "bytes": 1619,
+      "sha256": "3ba03f5a06a721498ea992f790bab2c365273c872e67cbd71beda4546b743acb"
+    },
+    {
+      "path": "evidence/full-suite.log",
+      "bytes": 677,
+      "sha256": "f9f48e0156e540a5232d4f008bbec5634f445ad75188b8191588ec9ac5bfe9b1"
+    },
+    {
+      "path": "evidence/full-suite.xml",
+      "bytes": 74759,
+      "sha256": "66c1444fabd1755ea87a8b3c433c48390b7c71a5ff1a3c21a18908335cef26db"
+    },
+    {
+      "path": "evidence/installed-fusion.json",
+      "bytes": 9252,
+      "sha256": "2e34b76ec01433db34146fb8d412ca9f9b44263028d97d21a37bd59668088870"
+    },
+    {
+      "path": "evidence/installed-recipe.json",
+      "bytes": 613,
+      "sha256": "649d17275653148c5182a097959cf0b0e59853ed5270bd99d822fcb35b3fb7b4"
+    },
+    {
+      "path": "evidence/lifecycle-cli.xml",
+      "bytes": 1196,
+      "sha256": "14c387988dd600561feae8762bf9301217c8e4fed12267c5935b74a1a9bcdf3d"
+    },
+    {
+      "path": "evidence/live-files/csv-去重结果.csv",
+      "bytes": 107,
+      "sha256": "99b19ec5d45214114a10c33af8dfe0af786e21b35ad2e80cf0c75c2c7f59761b"
+    },
+    {
+      "path": "evidence/live-files/csv-订单.csv",
+      "bytes": 163,
+      "sha256": "ed5225c43cb6d696514a2d63005c265c00af46200df7960021ab6b4a298377d7"
+    },
+    {
+      "path": "evidence/live-files/xlsx-去重结果.xlsx",
+      "bytes": 5669,
+      "sha256": "a4f8355db61bf5fe6b4bb3cd6e71d84bba313b749a8d5fbabcaf25064aada585"
+    },
+    {
+      "path": "evidence/live-files/xlsx-订单.xlsx",
+      "bytes": 5707,
+      "sha256": "c8a325596e2655a87c3f1fc7960c502d28f82dafa20bbe208112603137fa7131"
+    },
+    {
+      "path": "evidence/live-files.json",
+      "bytes": 750,
+      "sha256": "ab8327be1356a013f67bc5fd1d59d90ab9f6895fc85be82eadb7fa5d74004cab"
+    },
+    {
+      "path": "evidence/live-fusion-initial.json",
+      "bytes": 48538,
+      "sha256": "f18f78e5ee794f784a7c9d5169f2e4df97eb132b8f5ca0b3561f3c059f56bb53"
+    },
+    {
+      "path": "evidence/live-fusion-oracle-revision.py",
+      "bytes": 4953,
+      "sha256": "08fb57d5674c40cfcf1fb44de5a756a39d9febe2c5759d4199d573506d0b777a"
+    },
+    {
+      "path": "evidence/live-fusion-runner.py",
+      "bytes": 11955,
+      "sha256": "3f8c39c5857e00ec47073270c6d1785c0dcb67f281b8e9d13db637da5986bef8"
+    },
+    {
+      "path": "evidence/live-fusion.json",
+      "bytes": 53625,
+      "sha256": "ad33b7a8893c202138050b2aa040d8c46248fb53c98be6d3c282b366b0d7efde"
+    },
+    {
+      "path": "evidence/review-summary.json",
+      "bytes": 1123,
+      "sha256": "e66c37fa0aa007dcc980f84d72bd5c01f7713598541b92b5d37dab2b8c593cdf"
+    },
+    {
+      "path": "evidence/source-downgrade-green.xml",
+      "bytes": 7936,
+      "sha256": "60aed875ebeeaae04ebddc8fcc32caacb32eb173970e6057ccc45699645802af"
+    },
+    {
+      "path": "evidence/source-manifest.json",
+      "bytes": 7801,
+      "sha256": "7833c822bb127d5bb5013b762ea76cb73b601cdbfebb6d89aa996fa1d28af18d"
+    },
+    {
+      "path": "evidence/test-public-trust.json",
+      "bytes": 652,
+      "sha256": "d690cb9ca577a18cc96ae12a6c4af55fa179e681cebf27ef62082c79897cc340"
+    },
+    {
+      "path": "evidence/tests-summary.json",
+      "bytes": 938,
+      "sha256": "7fc72aa39a38ac68a90dd2b69fb2df8b1104879fcbf02bb2388a04aad0569cca"
+    },
+    {
+      "path": "evidence/wheel-integrity.json",
+      "bytes": 8679,
+      "sha256": "2444e438c965425ca76b157439d83fb99afb9377d857bd66ea3072fe1b6b965c"
+    },
+    {
+      "path": "融合开发与验收报告.md",
+      "bytes": 9014,
+      "sha256": "be2fc6b4ebd7184de6ea340f3040445ba9980b0c0dab877715d6de6d60f19ce1"
+    }
+  ],
+  "self_not_hashed": true
+}

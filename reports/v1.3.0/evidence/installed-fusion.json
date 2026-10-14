@@ -1,0 +1,251 @@
+{
+  "passed": true,
+  "version": "1.3.0",
+  "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-venv/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "checks": [
+    {
+      "check": "legacy_registry",
+      "names": 6,
+      "contents": 5,
+      "executable": false
+    },
+    {
+      "check": "signed_package_lifecycle",
+      "asset_id": "785fbb32e950a60353d97759326ab5d8e1691bfb2c4a402abeae2434bd436c98",
+      "proposal_id": "055ef70f460961324f747669909aebbc53f2e704b80be00d9979873671152760",
+      "version_id": "d556c8f700f35050c6d4dbfe2e4cf416e4c8a4937666c326fcbadfcf93f46766",
+      "content_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+      "fixtures": 13,
+      "actual_candidate_call": true,
+      "export_reimport": true,
+      "rollback_to_builtin": true,
+      "seed_run_id": "4a27bee4762c4ed2b9bc98cd3ce038f5"
+    }
+  ],
+  "commands": [
+    {
+      "arguments": [
+        "assets",
+        "registry-list",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "code-reviewer",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "hello-world",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "hello-world-test",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "json-toolkit",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "log-parser",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "registry-import",
+        "--registry",
+        "/Users/audrey/项目/progenitor-registry",
+        "--name",
+        "test-gene",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "inspect",
+        "--package",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/signed-package",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/test-trust.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "import",
+        "--package",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/signed-package",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "run",
+        "--request",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/workspace/seed.csv.json",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "propose",
+        "785fbb32e950a60353d97759326ab5d8e1691bfb2c4a402abeae2434bd436c98",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/test-trust.json",
+        "--evidence-run-id",
+        "4a27bee4762c4ed2b9bc98cd3ce038f5",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "evolution",
+        "validate",
+        "055ef70f460961324f747669909aebbc53f2e704b80be00d9979873671152760",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "evolution",
+        "apply",
+        "055ef70f460961324f747669909aebbc53f2e704b80be00d9979873671152760",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "run",
+        "--request",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/workspace/candidate.csv.json",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "export",
+        "d556c8f700f35050c6d4dbfe2e4cf416e4c8a4937666c326fcbadfcf93f46766",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite",
+        "--destination",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/exported",
+        "--identity",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/test-identity.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "assets",
+        "import",
+        "--package",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/exported",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "evolution",
+        "rollback",
+        "d556c8f700f35050c6d4dbfe2e4cf416e4c8a4937666c326fcbadfcf93f46766",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    },
+    {
+      "arguments": [
+        "run",
+        "--request",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/workspace/fallback.csv.json",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-fusion-20261014-8f7wzb0q/installed-acceptance-2/state/runs.sqlite"
+      ],
+      "returncode": 0
+    }
+  ]
+}

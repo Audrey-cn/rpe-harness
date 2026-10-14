@@ -1,0 +1,44 @@
+{
+  "full_regression": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "563",
+    "time": "48.398",
+    "timestamp": "2026-10-14T10:47:55.674311+08:00",
+    "hostname": "AudreydeMacBook-Pro.local"
+  },
+  "source_downgrade_red": {
+    "failed": 6,
+    "deselected": 5,
+    "stage": "before_fingerprint_fix"
+  },
+  "source_downgrade_green": {
+    "passed": 49,
+    "seconds": 17.95
+  },
+  "asset_scoped": {
+    "passed": 56
+  },
+  "trust_scoped": {
+    "passed": 56
+  },
+  "broker_scoped": {
+    "passed": 32
+  },
+  "binding_scoped": {
+    "passed": 7
+  },
+  "initial_baseline": {
+    "passed": 418,
+    "skipped": 3,
+    "subtests": 3,
+    "reason": "RPE_HERMES_SOURCE not yet set; final suite covers all"
+  },
+  "installed_initial_attempt": {
+    "passed": false,
+    "reason": "acceptance helper omitted identity.key_type; helper-only corrected",
+    "product_wheel_unchanged": true
+  }
+}

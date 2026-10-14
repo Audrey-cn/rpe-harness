@@ -1,0 +1,26 @@
+[
+  {
+    "format": "csv",
+    "role": "input_path",
+    "retained": "live-files/csv-订单.csv",
+    "sha256": "ed5225c43cb6d696514a2d63005c265c00af46200df7960021ab6b4a298377d7"
+  },
+  {
+    "format": "csv",
+    "role": "output_path",
+    "retained": "live-files/csv-去重结果.csv",
+    "sha256": "99b19ec5d45214114a10c33af8dfe0af786e21b35ad2e80cf0c75c2c7f59761b"
+  },
+  {
+    "format": "xlsx",
+    "role": "input_path",
+    "retained": "live-files/xlsx-订单.xlsx",
+    "sha256": "c8a325596e2655a87c3f1fc7960c502d28f82dafa20bbe208112603137fa7131"
+  },
+  {
+    "format": "xlsx",
+    "role": "output_path",
+    "retained": "live-files/xlsx-去重结果.xlsx",
+    "sha256": "a4f8355db61bf5fe6b4bb3cd6e71d84bba313b749a8d5fbabcaf25064aada585"
+  }
+]

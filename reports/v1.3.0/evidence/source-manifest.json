@@ -1,0 +1,232 @@
+{
+  "base": "785963a6c4d29b6913ef9e60827cd6963f089ae6",
+  "branch": "codex/rpe-akasha-fusion",
+  "sources": [
+    {
+      "path": "src/rpe_harness/mcsi.py",
+      "sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+      "bytes": 6333
+    },
+    {
+      "path": "src/rpe_harness/server.py",
+      "sha256": "207dd8acc8c22e666dbaec6bed4c8d564f976617b7b8f59fa32197c7bc469899",
+      "bytes": 10395
+    },
+    {
+      "path": "src/rpe_harness/verification.py",
+      "sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+      "bytes": 9243
+    },
+    {
+      "path": "src/rpe_harness/execution.py",
+      "sha256": "d7ae2edd9010881304f0a4e2bf6a88d096073db16ac7859aa4ae04f7c79e5d19",
+      "bytes": 18119
+    },
+    {
+      "path": "src/rpe_harness/recovery.py",
+      "sha256": "80571778eb447c361b6f32ef3276728ec196a35c02cf61f405b8db11a5887304",
+      "bytes": 7055
+    },
+    {
+      "path": "src/rpe_harness/causal_graph.py",
+      "sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+      "bytes": 9847
+    },
+    {
+      "path": "src/rpe_harness/bridge.py",
+      "sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+      "bytes": 9239
+    },
+    {
+      "path": "src/rpe_harness/__init__.py",
+      "sha256": "ab3f68ccd2e04fdfc02f40ea431c90811aec3019f1fa216a3fa8d3b2ea4fcf4b",
+      "bytes": 109
+    },
+    {
+      "path": "src/rpe_harness/runtime.py",
+      "sha256": "3ed35e66fa7dab16c361f1096f963b365fb0ff3481e4941fad09d2b204ca492d",
+      "bytes": 17291
+    },
+    {
+      "path": "src/rpe_harness/path_binding.py",
+      "sha256": "58cceb7683fe94c3a41e9ed94599bd9d6611c798e212fb4750d14ebbd1b8667a",
+      "bytes": 8411
+    },
+    {
+      "path": "src/rpe_harness/capability.py",
+      "sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+      "bytes": 11776
+    },
+    {
+      "path": "src/rpe_harness/cli.py",
+      "sha256": "b91fa254ea578ea9345ec4e28d7c46925f68e3f314ce455d408c7b8f9e87c540",
+      "bytes": 10461
+    },
+    {
+      "path": "src/rpe_harness/storage.py",
+      "sha256": "4a4e0ce3e19ae75861f8e6862470efcf49fbbd2982f4bb53ecc6056b6376948c",
+      "bytes": 11336
+    },
+    {
+      "path": "src/rpe_harness/contracts.py",
+      "sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+      "bytes": 15640
+    },
+    {
+      "path": "src/rpe_harness/__main__.py",
+      "sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+      "bytes": 122
+    },
+    {
+      "path": "src/rpe_harness/experiments/hermes_native.py",
+      "sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+      "bytes": 31125
+    },
+    {
+      "path": "src/rpe_harness/experiments/cold_skill_test.py",
+      "sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+      "bytes": 15449
+    },
+    {
+      "path": "src/rpe_harness/experiments/baseline.py",
+      "sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+      "bytes": 5586
+    },
+    {
+      "path": "src/rpe_harness/experiments/basic_validation.py",
+      "sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+      "bytes": 14425
+    },
+    {
+      "path": "src/rpe_harness/experiments/__init__.py",
+      "sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+      "bytes": 55
+    },
+    {
+      "path": "src/rpe_harness/experiments/stress_test.py",
+      "sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+      "bytes": 11427
+    },
+    {
+      "path": "src/rpe_harness/experiments/hermes_repeated.py",
+      "sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+      "bytes": 5838
+    },
+    {
+      "path": "src/rpe_harness/integrations/hermes_session.py",
+      "sha256": "68fc3f96ce4213b94b21625fd2ef3899846464592defb3d3f70c91d28f6a0267",
+      "bytes": 32764
+    },
+    {
+      "path": "src/rpe_harness/integrations/hermes_gate.py",
+      "sha256": "d420958881877f603070943840b3efb26e857a6a3c05ebde179a9c14a074b08a",
+      "bytes": 14896
+    },
+    {
+      "path": "src/rpe_harness/integrations/hermes_bootstrap.py",
+      "sha256": "62a10704aaff01116731339d24138a1b1ac5363bdfb541cbc54174737bdff9f0",
+      "bytes": 10719
+    },
+    {
+      "path": "src/rpe_harness/integrations/__init__.py",
+      "sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+      "bytes": 70
+    },
+    {
+      "path": "src/rpe_harness/integrations/hermes.py",
+      "sha256": "60f8fbc4335e55d96ca8a74c23ed6977081d0870e8e26cb898e922d2c8a16af2",
+      "bytes": 38085
+    },
+    {
+      "path": "src/rpe_harness/integrations/hermes_broker.py",
+      "sha256": "0d5287d7c218c48ee8e343d6c8ff35220e5b0d1ad2799879336d099bb4dae58a",
+      "bytes": 19522
+    },
+    {
+      "path": "src/rpe_harness/evolution/store.py",
+      "sha256": "3037dcaec64107ac96b2afe582da327b907e8a2ab95e6d98b3f0630790c7c516",
+      "bytes": 11817
+    },
+    {
+      "path": "src/rpe_harness/evolution/cycle.py",
+      "sha256": "d6830ddc1f4a352969a0456833bd0fb65036e01d357b985fecf9fb1bdfca284f",
+      "bytes": 11871
+    },
+    {
+      "path": "src/rpe_harness/evolution/__init__.py",
+      "sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+      "bytes": 532
+    },
+    {
+      "path": "src/rpe_harness/evolution/sandbox.py",
+      "sha256": "fde29b23b4cad03ffbac7d8d7297a0d96a54ff61b2cd9b164214fdea55f40abb",
+      "bytes": 8441
+    },
+    {
+      "path": "src/rpe_harness/evolution/candidates.py",
+      "sha256": "61a965c24d9fcc6d3f11c34208c51f654bebdaf8f9654f5d932f63c500e71291",
+      "bytes": 28296
+    },
+    {
+      "path": "src/rpe_harness/assets/store.py",
+      "sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+      "bytes": 8177
+    },
+    {
+      "path": "src/rpe_harness/assets/manifest.py",
+      "sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+      "bytes": 8564
+    },
+    {
+      "path": "src/rpe_harness/assets/registry.py",
+      "sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+      "bytes": 3127
+    },
+    {
+      "path": "src/rpe_harness/assets/__init__.py",
+      "sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+      "bytes": 300
+    },
+    {
+      "path": "src/rpe_harness/assets/cli.py",
+      "sha256": "8b13d162c2e06f36be34badb98447ad9c6c5a838d76929b49ffa8871cf4483ea",
+      "bytes": 3605
+    },
+    {
+      "path": "src/rpe_harness/assets/lifecycle.py",
+      "sha256": "8df12e8cc36c5fce6939609a742a6dc5a1a415472aaf5a9a0e9ef71b733791bb",
+      "bytes": 9296
+    },
+    {
+      "path": "src/rpe_harness/assets/trust.py",
+      "sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+      "bytes": 4731
+    },
+    {
+      "path": "src/rpe_harness/assets/identity.py",
+      "sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+      "bytes": 10260
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "8b118d4d59524ce8dcc5690ffc3675c00f1955c3f73b75932abbf284a222cf60",
+      "bytes": 638
+    },
+    {
+      "path": "scripts/validate_fusion.py",
+      "sha256": "ccc7e85985b771268bab5266939cfe01e71cf5daa492115011a73b6c45bdf471",
+      "bytes": 7928
+    },
+    {
+      "path": "examples/capability-package/manifest.json",
+      "sha256": "85eb4d498b59566f68f36594b10cad46fb6b3c1fbce58759931f733f11c78a94",
+      "bytes": 588
+    },
+    {
+      "path": "examples/capability-package/candidate.py",
+      "sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+      "bytes": 633
+    }
+  ],
+  "implementation_commit": "51bee044932fbb7f2bfebc671a9b49a72eee510c"
+}

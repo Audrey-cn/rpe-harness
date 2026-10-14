@@ -1,0 +1,11 @@
+{
+  "source_manifest_matches": true,
+  "wheel_matches_source": true,
+  "wheel_sha256": "e0eb4fe7c31cba163ad8b650ea6bb6c78794eef71d380136ec5a9f2fbf85c3d0",
+  "production_sources": 41,
+  "local_links_checked": 31,
+  "broken_links": [],
+  "implementation_commit": "51bee044932fbb7f2bfebc671a9b49a72eee510c",
+  "owned_temp_root_absent": true,
+  "active_marker_absent": true
+}
