@@ -1,0 +1,80 @@
+{
+  "schema_version": "rpe.public-evidence-export/v1",
+  "private_histories_excluded": true,
+  "known_inputs_retested": true,
+  "original_48_rescored": false,
+  "files": {
+    "preregistration.json": {
+      "source_file_sha256": "b2d67dc70dbad3cf759fdd1c5c96afda85c31b9b0b811a3684ea492ac3eae1cf",
+      "source_seal_sha256": "e87fd7dc5358c736b2365259292c08fd1060c627f4e3f9d23d3655b93e23c9b0"
+    },
+    "report.json": {
+      "source_file_sha256": "e25d5303a2f16cf4b36874b3fc2d70dce36cbedf1533c2fff321ceb74eba5bd5",
+      "source_seal_sha256": "4547571c1cebaf95e06e90761c4175c9a03254d6326e8615c5ad8c4035264d3a"
+    },
+    "records/bound-eval-tab-case-native.json": {
+      "source_file_sha256": "87316fde21041b607cad911323b92be97938731301b7d86313d0d3f06ca6ba47",
+      "source_seal_sha256": "bd70c224bc4d99e80933018b27016d8c12dd9811a468dcad2edaf6958032761c"
+    },
+    "records/bound-eval-tab-case-rpe_learned.json": {
+      "source_file_sha256": "7dd2fc60139a87f9e72c0cb931e4e764c9e84d946340e25e6c8379970311ef64",
+      "source_seal_sha256": "f5748a17a1ad3a05f19b979a3db41702a07d66589d19235c27ab9b8368b9b696"
+    },
+    "records/bound-eval-tab-case-rpe_no_experience.json": {
+      "source_file_sha256": "79c76d1e4bbcff549f120c67910b8148ffbb2aa1a1f26b0fee3d37914c6dbc1a",
+      "source_seal_sha256": "4f052878b8329cd7f9a43194a01d48bd6b18c3dcbdd9cdb27fe07ca435f6506f"
+    },
+    "records/bound-eval-unicode-native.json": {
+      "source_file_sha256": "0d3cc014db942449270c67487117c1ea2be004694c33f9e5e714d95d27bb06c5",
+      "source_seal_sha256": "e80c6e0bc4c7af38d364016f19fc6dd2538b42461ac6fd80c45980aac77ee072"
+    },
+    "records/bound-eval-unicode-rpe_learned.json": {
+      "source_file_sha256": "764c8752578e5b431d4b4ef19978b626627ad6f770983bc80256833b65ed0ba4",
+      "source_seal_sha256": "63476bb12ab490b73740b317fbbb97e63e615992d83a8abc2ed6e3b9b1ed08f7"
+    },
+    "records/bound-eval-unicode-rpe_no_experience.json": {
+      "source_file_sha256": "2810a08086599b1357fde7cc8bef58aaf94a44974b856667dfea554f03436fed",
+      "source_seal_sha256": "b4a0eaa5dad88d9c124ab2ca49b3d1a5ba2815ac744a9596085798896c0a38f2"
+    },
+    "public-artifacts/native/bound-eval-unicode/input.csv": {
+      "actual_file_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+      "bytes": 47
+    },
+    "public-artifacts/native/bound-eval-unicode/output.csv": {
+      "actual_file_sha256": "24919c76f81cfae9a12582d5d12b5c7123f3366d7ae7d7e47ea7cfa794c7e7f3",
+      "bytes": 39
+    },
+    "public-artifacts/rpe_no_experience/bound-eval-unicode/input.csv": {
+      "actual_file_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+      "bytes": 47
+    },
+    "public-artifacts/rpe_no_experience/bound-eval-unicode/output.csv": {
+      "actual_file_sha256": "8f87d67bc545d6046689bc5d8643370ae0c696794b9a3c4247c85674ebfc38ad",
+      "bytes": 42
+    },
+    "public-artifacts/rpe_learned/bound-eval-unicode/input.csv": {
+      "actual_file_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+      "bytes": 47
+    },
+    "public-artifacts/rpe_learned/bound-eval-unicode/output.csv": {
+      "actual_file_sha256": "24919c76f81cfae9a12582d5d12b5c7123f3366d7ae7d7e47ea7cfa794c7e7f3",
+      "bytes": 39
+    },
+    "public-artifacts/native/bound-eval-tab-case/input.csv": {
+      "actual_file_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "bytes": 64
+    },
+    "public-artifacts/native/bound-eval-tab-case/output.csv": {
+      "actual_file_sha256": "edbb98d22e943b4539d0630695f37c223cb1b82dbbd60e2c9adfda2812f7bcce",
+      "bytes": 53
+    },
+    "public-artifacts/rpe_no_experience/bound-eval-tab-case/input.csv": {
+      "actual_file_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "bytes": 64
+    },
+    "public-artifacts/rpe_learned/bound-eval-tab-case/input.csv": {
+      "actual_file_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "bytes": 64
+    }
+  }
+}

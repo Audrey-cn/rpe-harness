@@ -1,0 +1,164 @@
+"""Separately registered real validation of the existing fixed-request API."""
+from pathlib import Path
+import hashlib, json, os, signal, time
+
+from rpe_harness.experiments.learning_comparison import (
+    ARMS, _check_freeze, _denied, _environment, _identity, _materialize,
+    _native_links, _phase, _prompt, _read_sealed, _rows_match, _save, _sealed,
+    executor_score,
+)
+from rpe_harness.experiments.cost_ledger import PhaseLedger, summarize_phases
+from rpe_harness.integrations.hermes_session import (
+    SessionObservationError, _process_table, run_hermes_session,
+)
+from rpe_harness.integrations.hermes_gate import evaluate_session, read_run
+from rpe_harness.path_binding import read_regular_file
+from rpe_harness.tasks import plan_from_request, verify_plan
+
+OWN = Path(__file__).resolve().parent
+EXP = OWN/'live-provenance-final'
+SUP = OWN/'binding-supplement'
+STATE = OWN/'evidence/binding-supplement-job.json'
+
+
+def statewrite(value):
+    pending = STATE.with_suffix('.json.pending')
+    pending.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False)+'\n')
+    with pending.open('rb') as stream:
+        os.fsync(stream.fileno())
+    pending.replace(STATE)
+
+
+def stop(signum, frame):
+    raise KeyboardInterrupt('owned binding validation interrupted')
+
+
+def action(plan, frozen, arm, case, label):
+    _check_freeze(EXP, plan, frozen)
+    workspace, request = _materialize(EXP, arm, case, label)
+    product_plan = plan_from_request(request)
+    database = EXP/'arms'/arm/'runs.sqlite'
+    prompt = _prompt(case, label)
+    failed_observation = False
+    try:
+        observed = run_hermes_session(prompt, workspace, database, tool_enabled=arm!='native',
+            owner_root=EXP/'arms'/arm/'sessions', timeout=180,
+            entry_mode='optional' if arm=='native' else 'strict', required_request=request,
+            max_task_attempts=3, context_sources=[], read_isolation_root=OWN,
+            deny_read_roots=_denied(EXP, arm)+[SUP])
+    except SessionObservationError as error:
+        observed = error.diagnostics
+        failed_observation = True
+    result = {'status':'failed', 'arm':arm, 'case_id':case['case_id'],
+        'session_id':observed.get('session_id'), 'usage':observed.get('usage'),
+        'model_identity':_identity(observed.get('model_identity')),
+        'process_cleanup':observed.get('process_cleanup'),
+        'contract_prompt_injected':observed.get('contract_prompt_injected'),
+        'original_prompt_sha256':observed.get('original_prompt_sha256'),
+        'actual_prompt_sha256':observed.get('prompt_sha256'),
+        'binding_input_sha256':observed.get('input_sha256'),
+        'artifact_correct':False, 'source_preserved':False, 'product_oracle_passed':False,
+        'workflow_verified':False, 'candidate_direct_success':False, 'fallback':False,
+        'run_id':None, 'actual_executor':None, 'observation_failed':failed_observation,
+        'input_sha256':case['input_sha256']}
+    try:
+        source = read_regular_file(Path(request['execution']['input_path']), max_bytes=16384)
+        result['source_preserved'] = hashlib.sha256(source).hexdigest()==case['input_sha256']
+        output = read_regular_file(Path(request['execution']['output_path']), max_bytes=16777216)
+        result['output_sha256'] = hashlib.sha256(output).hexdigest()
+        if _rows_match(output, case) and result['source_preserved']:
+            checked = verify_plan({**product_plan.verification_parameters(),
+                                   'staging_path':request['execution']['output_path']}, product_plan)
+            result['product_oracle_passed'] = checked.get('passed') is True
+            result['artifact_correct'] = result['product_oracle_passed']
+        if arm=='native':
+            result['workflow_verified'] = _native_links(observed,database,label,workspace=workspace,output_bytes=output)
+        else:
+            gate = evaluate_session(observed,database,workspace,required_request=request,require_policy=True)
+            result['gate'] = gate
+            result['workflow_verified'] = gate.get('verified') is True
+            result['run_id'] = gate.get('run_id')
+            if result['run_id']:
+                run = read_run(database,result['run_id'])
+                actual = (run.get('artifact') or {}).get('actual_executor') or {}
+                result['actual_executor'] = actual
+                result['fallback'] = any(step['stage']=='candidate_fallback' for step in run.get('steps',[]))
+                result['candidate_direct_success'] = bool(result['workflow_verified'] and result['artifact_correct'] and
+                    executor_score(actual,result['fallback'],frozen))
+        prior = [_read_sealed(p)['result'] for directory in (EXP/'records',SUP/'records')
+                 for p in directory.glob('*.json')]
+        result['fresh_session'] = bool(result['session_id'] and all(row.get('session_id')!=result['session_id'] for row in prior))
+        result['fresh_run'] = None if arm=='native' else bool(result['run_id'] and all(row.get('run_id')!=result['run_id'] for row in prior))
+        host_ok = observed.get('completed') is True and observed.get('exit_code')==0 and not observed.get('timed_out') and not observed.get('observer_errors') and (observed.get('process_cleanup') or {}).get('cleanup_complete') is True
+        comparable = result['original_prompt_sha256']==hashlib.sha256(prompt.encode()).hexdigest() and result['model_identity']==frozen['model_identity']
+        result['comparable'] = comparable
+        accepted = (not failed_observation and host_ok and comparable and result['contract_prompt_injected'] is True and
+                    result['binding_input_sha256']==case['input_sha256'] and
+                    result['artifact_correct'] and result['fresh_session'] and
+                    (arm=='native' or (result['workflow_verified'] and result['fresh_run'])) and
+                    (arm!='rpe_learned' or result['candidate_direct_success']))
+        result['status'] = 'succeeded' if accepted else 'failed'
+        result['candidate_direct_success'] &= accepted
+        _check_freeze(EXP,plan,frozen)
+    except Exception as error:
+        result.update(status='failed',candidate_direct_success=False,error_code=type(error).__name__)
+    result['native_event_sha256'] = hashlib.sha256(json.dumps(observed.get('events') or [],sort_keys=True,ensure_ascii=False).encode()).hexdigest()
+    result['observations'] = [{key:event.get(key) for key in ('kind','session_id','task_id','turn_id',
+        'api_request_id','tool_call_id','tool_name','arguments_sha256','status','run_id','receipt_id',
+        'request_tool_names','request_tool_choice','model_tool_calls','response_model')}
+        for event in observed.get('events',[]) if event.get('kind') in ('pre_api_request','post_api_request',
+            'api_request_error','pre_tool_call','post_tool_call','rpe_task_received','rpe_task_returned')]
+    return result
+
+
+def main():
+    final_job = json.loads((OWN/'evidence/final-owned-job.json').read_text())
+    if final_job['status']!='completed':
+        raise ValueError('original acceptance must finish first')
+    SUP.mkdir(mode=0o700)
+    (SUP/'records').mkdir(); (SUP/'ledger').mkdir()
+    plan = _read_sealed(EXP/'preregistration.json'); frozen = _read_sealed(EXP/'freeze.json')
+    cases = [case for case in plan['holdout'] if case['case_id'] in ('eval-unicode','eval-tab-case')]
+    if len(cases)!=2 or {case['case_id'] for case in cases}!={'eval-unicode','eval-tab-case'}:
+        raise ValueError('supplement requires exactly the two registered problem cases')
+    trials = [{'attempt_id':'bound-'+case['case_id']+'-'+arm,'label':'bound-'+case['case_id'],
+               'arm':arm,'case_id':case['case_id']} for case in cases for arm in ARMS]
+    if len(trials)!=6 or len({trial['attempt_id'] for trial in trials})!=6:
+        raise ValueError('supplement requires exactly six unique trials')
+    _save(SUP/'preregistration.json',_sealed({'schema_version':'rpe.fixed-request-supplement/v1',
+        'source_registration_sha256':plan['sha256'],'source_freeze_sha256':frozen['sha256'],
+        'environment':_environment(),'helper_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'cases':cases,'trials':trials,'required_request_passed_to_all_arms':True,
+        'original_48_results_rescored':False,'known_inputs_retested':True,'new_unseen_input_claim':False,
+        'model_candidate_changed':False,'max_task_attempts':3,'timeout':180,
+        'native_success_policy':'fresh completed model session and source/literal/product truth; tool invocation linkage is separately reported, matching the original comparison',
+        'rpe_success_policy':'business truth plus exact fixed-contract workflow and fresh run; learned arm additionally requires the frozen candidate directly and no fallback',
+        'cost_policy':'all six supplement phases enter whole-round measured cost; original comparison stays separate'}))
+    state = {'owner':'rpe-v1.7','pid':os.getpid(),'start_identity':_process_table()[os.getpid()][1],
+             'status':'running','started_at':time.time(),'budget_seconds':1800}
+    statewrite(state)
+    for sig in (signal.SIGTERM,signal.SIGINT,signal.SIGALRM):
+        signal.signal(sig,stop)
+    signal.alarm(1800)
+    try:
+        results = []
+        for trial in trials:
+            case = next(case for case in cases if case['case_id']==trial['case_id'])
+            result = _phase(SUP,trial['arm'],'contract_binding_validation',trial['attempt_id'],
+                lambda trial=trial,case=case:action(plan,frozen,trial['arm'],case,trial['label']),api_expected=True)
+            results.append({**trial,**result})
+        report = {'schema_version':'rpe.fixed-request-supplement-result/v1','records':results,
+                  'passed':len(results)==6 and {result['attempt_id'] for result in results}=={trial['attempt_id'] for trial in trials} and all(result['status']=='succeeded' for result in results),
+                  'original_48_results_rescored':False,'known_inputs_retested':True,
+                  'cost':summarize_phases(PhaseLedger(SUP/'ledger').records())}
+        _save(SUP/'report.json',_sealed(report))
+        state.update(status='completed' if report['passed'] else 'failed',completed_sessions=len(results))
+    except BaseException as error:
+        state.update(status='interrupted' if isinstance(error,KeyboardInterrupt) else 'failed',error_type=type(error).__name__)
+    finally:
+        signal.alarm(0); state['finished_at']=time.time(); statewrite(state)
+    return 0 if state['status']=='completed' else 1
+
+
+if __name__=='__main__':
+    raise SystemExit(main())

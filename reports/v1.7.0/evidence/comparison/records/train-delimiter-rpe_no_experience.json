@@ -1,0 +1,17 @@
+{
+  "source_file_sha256": "8569fefc8a2ababfa1278d7e8539445b1559ce1a3f28ef7a79010c26ea181633",
+  "source_seal_sha256": "c1390f7d8343b8697322249c09cb8796be07b74d9b19ab6f02185d47469b0fbe",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "train-delimiter-rpe_no_experience",
+    "result": {
+      "artifact_correct": true,
+      "input_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "output_sha256": "d07b4cebdbfde1a24cb2dea59dc2c0121191daf1f55146cbb7edfe260a9cb5cb",
+      "run_id": "26a2ebc87ef54d03915366236fb155c4",
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    "sha256": "c1390f7d8343b8697322249c09cb8796be07b74d9b19ab6f02185d47469b0fbe"
+  }
+}

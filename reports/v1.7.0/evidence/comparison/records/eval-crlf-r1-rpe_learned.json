@@ -1,0 +1,237 @@
+{
+  "source_file_sha256": "506e89942c7f538828d2236915ab6af98b1532c728d8f3ea9de1a9e83a2f976b",
+  "source_seal_sha256": "cced976dee7c39c4ef2b98fa07fe21d2c777a3cd316cb38be40d864d59a3f25a",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "eval-crlf-r1-rpe_learned",
+    "result": {
+      "actual_executor": {
+        "candidate_version_id": "adc6c2804d9d6356cef4ed40a28b2b552201f634e6a699eefcf09ca60b4f182c",
+        "code_sha256": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "candidate",
+        "plan_sha256": "a8b07e671eae910abb219a1e495c4228a9fc0aa56a25af0f85f197ec9ae28183"
+      },
+      "actual_prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+      "api_calls": [
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "kind": "pre_api_request",
+          "model_tool_calls": null,
+          "request_tool_choice": "rpe_task",
+          "request_tool_names": [
+            "rpe_task"
+          ],
+          "request_tools_sha256": "8821b4bd070bb7a53ac0fb6b3817e5d957ee41e84b57e39287c91cc084912ee5",
+          "response_model": null,
+          "session_id": "20261014_231040_55dcb8",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "kind": "post_api_request",
+          "model_tool_calls": [
+            {
+              "tool_call_id": "call_957d2d0264b5424b901193df",
+              "tool_name": "rpe_task"
+            }
+          ],
+          "request_tool_choice": null,
+          "request_tool_names": null,
+          "request_tools_sha256": null,
+          "response_model": "mimo-v2.6-pro",
+          "session_id": "20261014_231040_55dcb8",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:2",
+          "kind": "pre_api_request",
+          "model_tool_calls": null,
+          "request_tool_choice": "none",
+          "request_tool_names": [
+            "rpe_task"
+          ],
+          "request_tools_sha256": "8821b4bd070bb7a53ac0fb6b3817e5d957ee41e84b57e39287c91cc084912ee5",
+          "response_model": null,
+          "session_id": "20261014_231040_55dcb8",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:2",
+          "kind": "post_api_request",
+          "model_tool_calls": [],
+          "request_tool_choice": null,
+          "request_tool_names": null,
+          "request_tools_sha256": null,
+          "response_model": "mimo-v2.6-pro",
+          "session_id": "20261014_231040_55dcb8",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        }
+      ],
+      "arm": "rpe_learned",
+      "artifact_correct": true,
+      "artifact_rows_correct": true,
+      "attempt_id": "eval-crlf-r1-rpe_learned",
+      "candidate_direct_success": true,
+      "candidate_sha256": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+      "candidate_version_id": "adc6c2804d9d6356cef4ed40a28b2b552201f634e6a699eefcf09ca60b4f182c",
+      "case_id": "eval-crlf",
+      "comparable": true,
+      "event_digest": "5134051ff3110a5dce428cba50c19e836f179bd60bca51db79f64db042bcaf0d",
+      "fallback": false,
+      "file_write_observations": [],
+      "fresh_run": true,
+      "fresh_session": true,
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "candidate_version_id": "adc6c2804d9d6356cef4ed40a28b2b552201f634e6a699eefcf09ca60b4f182c",
+            "code_sha256": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+            "executor_id": "builtin/csv-deduplicate",
+            "kind": "candidate",
+            "plan_sha256": "a8b07e671eae910abb219a1e495c4228a9fc0aa56a25af0f85f197ec9ae28183"
+          },
+          "format": "csv",
+          "input_rows": 3,
+          "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+          "output_rows": 2,
+          "path": "<experiment-root>/arms/rpe_learned/workspace/eval-crlf-r1/output.csv",
+          "plan_sha256": "a8b07e671eae910abb219a1e495c4228a9fc0aa56a25af0f85f197ec9ae28183",
+          "published": true,
+          "removed_rows": 1,
+          "sha256": "b32e02a538b335650fdd210e0b2de538ea961c9fcd17adcad4e0a06ff7244942"
+        },
+        "contract_sha256": "c2f297a4bcc21a25f1ec02fe7c031d0e604790e408cfab31c8d0b711e427dca4",
+        "errors": [],
+        "harness_verified": true,
+        "plan_sha256": "a8b07e671eae910abb219a1e495c4228a9fc0aa56a25af0f85f197ec9ae28183",
+        "receipt_id": "5d13047a2e03481bb71f2762ef1fb729",
+        "run_id": "eb541cb0467c4f9789d2487a06029836",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 3,
+          "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+          "output_rows": 2,
+          "output_sha256": "b32e02a538b335650fdd210e0b2de538ea961c9fcd17adcad4e0a06ff7244942",
+          "passed": true,
+          "plan_sha256": "a8b07e671eae910abb219a1e495c4228a9fc0aa56a25af0f85f197ec9ae28183",
+          "removed_rows": 1
+        },
+        "verified": true
+      },
+      "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+      "invocation_evidence": true,
+      "label": "eval-crlf-r1",
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "original_prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+      "output_sha256": "b32e02a538b335650fdd210e0b2de538ea961c9fcd17adcad4e0a06ff7244942",
+      "process_cleanup": {
+        "cleanup_complete": true,
+        "errors": [],
+        "external_executor_cleanup_complete": true,
+        "external_executor_remaining_children": [],
+        "external_executor_tracked_children": 1,
+        "remaining_descendants": [],
+        "signaled_descendants": 0,
+        "tracked_descendants": 23
+      },
+      "product_oracle_passed": true,
+      "prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+      "repeat": 1,
+      "run_id": "eb541cb0467c4f9789d2487a06029836",
+      "session_id": "20261014_231040_55dcb8",
+      "session_root": "<experiment-root>/arms/rpe_learned/sessions/session-26e4ff54687f45d88c8464ac9ef87355",
+      "source_preserved": true,
+      "status": "succeeded",
+      "tool_calls": [
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "arguments_sha256": "638da8e6749206ce3a732b582123865a3d067b0dce332b94e987e2a372ea3304",
+          "kind": "pre_tool_call",
+          "receipt_id": null,
+          "run_id": null,
+          "session_id": "20261014_231040_55dcb8",
+          "status": null,
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "tool_call_id": "call_957d2d0264b5424b901193df",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "arguments_sha256": null,
+          "kind": "rpe_task_received",
+          "receipt_id": null,
+          "run_id": null,
+          "session_id": "20261014_231040_55dcb8",
+          "status": null,
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "tool_call_id": "call_957d2d0264b5424b901193df",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "arguments_sha256": null,
+          "kind": "rpe_task_returned",
+          "receipt_id": "5d13047a2e03481bb71f2762ef1fb729",
+          "run_id": "eb541cb0467c4f9789d2487a06029836",
+          "session_id": "20261014_231040_55dcb8",
+          "status": "succeeded",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "tool_call_id": "call_957d2d0264b5424b901193df",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        },
+        {
+          "api_request_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31:api:1",
+          "arguments_sha256": "638da8e6749206ce3a732b582123865a3d067b0dce332b94e987e2a372ea3304",
+          "kind": "post_tool_call",
+          "receipt_id": "5d13047a2e03481bb71f2762ef1fb729",
+          "run_id": "eb541cb0467c4f9789d2487a06029836",
+          "session_id": "20261014_231040_55dcb8",
+          "status": "ok",
+          "task_id": "06a08e25-e48d-4fea-a7b1-c45f4e93a96f",
+          "tool_call_id": "call_957d2d0264b5424b901193df",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231040_55dcb8:06a08e25-e48d-4fea-a7b1-c45f4e93a96f:24880a31"
+        }
+      ],
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 4480,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1829,
+        "known_total_tokens": 6595,
+        "missing_observations": 0,
+        "output_tokens": 286,
+        "prompt_tokens": 6309,
+        "reasoning_tokens": 26,
+        "requests_with_usage": 2,
+        "total_tokens": 6595
+      },
+      "workflow_verified": true
+    },
+    "sha256": "cced976dee7c39c4ef2b98fa07fe21d2c777a3cd316cb38be40d864d59a3f25a"
+  }
+}

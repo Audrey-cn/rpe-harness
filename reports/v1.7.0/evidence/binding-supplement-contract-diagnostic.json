@@ -1,0 +1,385 @@
+{
+  "admission_and_repair_verdict": {
+    "attempt_budget_enforced": true,
+    "binding_injection_observed": true,
+    "candidate_failure_established_by_tab_case": false,
+    "fixed_request_solved_tab_argument_parsing": false,
+    "fixed_request_solved_unicode_workflow_in_this_supplement": true,
+    "late_learned_repair_rejected_after_budget": true,
+    "none_policy_expected_without_terminal_run": false,
+    "wrong_contracts_rejected_before_executor": true
+  },
+  "arms": [
+    {
+      "actual_prompt_sha256": "fa038922d08bb55cebb4147d9f87ba8d00d75bbf611c7791ce41ab7d49a77e42",
+      "api_request_count": 5,
+      "arm": "rpe_no_experience",
+      "binding_input_matches_fixture": true,
+      "binding_input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "candidate_execution_reached": false,
+      "contract_prompt_injected": true,
+      "declared_max_task_attempts": 3,
+      "executor_run_ids": [],
+      "model_tool_emission_count": 4,
+      "original_prompt_sha256": "ceea9b7fcf38b3147531bf05fc7d31b81523dbc3858a914479275e2e93c80b41",
+      "overescaped_contract_sha256": "6f3c9ac95d22cdf63f8faf8844aebcbcfa2e55f61ab75b45148d72a818ddbc02",
+      "repair_behavior": "The three parameter attempts were consumed by contract mismatches. Later calls were denied by task_attempt_limit; learned corrected the delimiter only after the budget was exhausted. No durable terminal executor run existed, so request policy stayed rpe_task rather than switching to none.",
+      "requested_output_exists": false,
+      "required_contract_sha256": "1e892adebaf8ac493fbf13e3b49b711dc3c34a197118d0b3b4ee4fdffd938e4c",
+      "session_id": "20261014_233017_f15399",
+      "source_matches_fixture": true,
+      "source_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "source_stable_regular_file": true,
+      "task_attempts": [
+        {
+          "api_request_id": "20261014_233017_f15399:25f720aa-2f7a-4f32-adbb-8a06eb4fdb2d:45fd04ee:api:1",
+          "attempt": 1,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "6f3c9ac95d22cdf63f8faf8844aebcbcfa2e55f61ab75b45148d72a818ddbc02",
+          "receipt_id": "d14f911336b545e99ab3d36e80a13d72",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_80555f35a7fc4a059e5616c2"
+        },
+        {
+          "api_request_id": "20261014_233017_f15399:25f720aa-2f7a-4f32-adbb-8a06eb4fdb2d:45fd04ee:api:2",
+          "attempt": 2,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "6f3c9ac95d22cdf63f8faf8844aebcbcfa2e55f61ab75b45148d72a818ddbc02",
+          "receipt_id": "1ba16d77aca045718aee56bd9e13084b",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_0297888643cd4fc0926b7e92"
+        },
+        {
+          "api_request_id": "20261014_233017_f15399:25f720aa-2f7a-4f32-adbb-8a06eb4fdb2d:45fd04ee:api:3",
+          "attempt": 3,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "6f3c9ac95d22cdf63f8faf8844aebcbcfa2e55f61ab75b45148d72a818ddbc02",
+          "receipt_id": "678170f10ba64ffb907afe4a0af92027",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_def7f15d8e404e3eba67cc19"
+        },
+        {
+          "api_request_id": "20261014_233017_f15399:25f720aa-2f7a-4f32-adbb-8a06eb4fdb2d:45fd04ee:api:4",
+          "attempt": 4,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "task_attempt_limit",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "6f3c9ac95d22cdf63f8faf8844aebcbcfa2e55f61ab75b45148d72a818ddbc02",
+          "receipt_id": "b3155523ebf044e2a1f60de0916555c3",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_01a17fea39714eceb1731304"
+        }
+      ]
+    },
+    {
+      "actual_prompt_sha256": "31dddf4b244e93b0a77cb2290cb392df33b6baf9d97486667aa5deb5fefadd0d",
+      "api_request_count": 6,
+      "arm": "rpe_learned",
+      "binding_input_matches_fixture": true,
+      "binding_input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "candidate_execution_reached": false,
+      "contract_prompt_injected": true,
+      "declared_max_task_attempts": 3,
+      "executor_run_ids": [],
+      "model_tool_emission_count": 5,
+      "original_prompt_sha256": "ceea9b7fcf38b3147531bf05fc7d31b81523dbc3858a914479275e2e93c80b41",
+      "overescaped_contract_sha256": "fb57e5b9ef61f11c6dc95e80d117c9fa6e9524e7277d1a9405a9b2b3f5ab73f0",
+      "repair_behavior": "The three parameter attempts were consumed by contract mismatches. Later calls were denied by task_attempt_limit; learned corrected the delimiter only after the budget was exhausted. No durable terminal executor run existed, so request policy stayed rpe_task rather than switching to none.",
+      "requested_output_exists": false,
+      "required_contract_sha256": "f7776625ae2674640759aca4af54dae0a4c26d82caafbb405f349622777032ab",
+      "session_id": "20261014_233130_a69665",
+      "source_matches_fixture": true,
+      "source_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "source_stable_regular_file": true,
+      "task_attempts": [
+        {
+          "api_request_id": "20261014_233130_a69665:71218b89-9a04-44b5-a7e2-4a9acb161a94:62f11b11:api:1",
+          "attempt": 1,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "fb57e5b9ef61f11c6dc95e80d117c9fa6e9524e7277d1a9405a9b2b3f5ab73f0",
+          "receipt_id": "4f44b3f76c8e4cc69322b6af416262dd",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_d5c7fad86eaa434dbb3e69f1"
+        },
+        {
+          "api_request_id": "20261014_233130_a69665:71218b89-9a04-44b5-a7e2-4a9acb161a94:62f11b11:api:2",
+          "attempt": 2,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "fb57e5b9ef61f11c6dc95e80d117c9fa6e9524e7277d1a9405a9b2b3f5ab73f0",
+          "receipt_id": "38c63b0421464b5a9b62f4d2faf20c68",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_e47ee9f5af0a42c3b3f5459a"
+        },
+        {
+          "api_request_id": "20261014_233130_a69665:71218b89-9a04-44b5-a7e2-4a9acb161a94:62f11b11:api:3",
+          "attempt": 3,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            92,
+            116
+          ],
+          "decoded_delimiter_length": 2,
+          "error_code": "request_contract_mismatch",
+          "matches_required_except_literal_backslash_t": true,
+          "receipt_contract_sha256": "fb57e5b9ef61f11c6dc95e80d117c9fa6e9524e7277d1a9405a9b2b3f5ab73f0",
+          "receipt_id": "89d47a4754794fd9bae9f5ce6e88052e",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": false,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_26dfebd5cbe84abfbc9b331b"
+        },
+        {
+          "api_request_id": "20261014_233130_a69665:71218b89-9a04-44b5-a7e2-4a9acb161a94:62f11b11:api:4",
+          "attempt": 4,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            9
+          ],
+          "decoded_delimiter_length": 1,
+          "error_code": "task_attempt_limit",
+          "matches_required_except_literal_backslash_t": false,
+          "receipt_contract_sha256": "f7776625ae2674640759aca4af54dae0a4c26d82caafbb405f349622777032ab",
+          "receipt_id": "431b9605a0b4425d8200ddfd5ffcb77e",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": true,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_aff98eb20d0d44a88858a719"
+        },
+        {
+          "api_request_id": "20261014_233130_a69665:71218b89-9a04-44b5-a7e2-4a9acb161a94:62f11b11:api:5",
+          "attempt": 5,
+          "both_preservation_constraints_present": true,
+          "decoded_delimiter_codepoints": [
+            9
+          ],
+          "decoded_delimiter_length": 1,
+          "error_code": "task_attempt_limit",
+          "matches_required_except_literal_backslash_t": false,
+          "receipt_contract_sha256": "f7776625ae2674640759aca4af54dae0a4c26d82caafbb405f349622777032ab",
+          "receipt_id": "de6048385c464b4fba6fc88290e34d93",
+          "request_tool_choice": "rpe_task",
+          "required_contract_matches": true,
+          "return_status": "rejected",
+          "run_id": null,
+          "tool_call_id": "call_32b5061a903d4cb9a551667a"
+        }
+      ]
+    }
+  ],
+  "final_delivery_scope": "Experimental v1.7 demonstrates a closed loop and 14 verified actual novel-input reuses. Complete reuse reliability, quality benefit, and cost benefit are not established. Keep the original 48-session results and failed known-input supplement separate. Existing fixed-request APIs fail closed on malformed arguments but did not solve TAB parsing or within-budget repair.",
+  "immutable_result_sources": [
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-tab-case-native.json",
+      "sha256": "87316fde21041b607cad911323b92be97938731301b7d86313d0d3f06ca6ba47"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-tab-case-rpe_learned.json",
+      "sha256": "7dd2fc60139a87f9e72c0cb931e4e764c9e84d946340e25e6c8379970311ef64"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-tab-case-rpe_no_experience.json",
+      "sha256": "79c76d1e4bbcff549f120c67910b8148ffbb2aa1a1f26b0fee3d37914c6dbc1a"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-unicode-native.json",
+      "sha256": "0d3cc014db942449270c67487117c1ea2be004694c33f9e5e714d95d27bb06c5"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-unicode-rpe_learned.json",
+      "sha256": "764c8752578e5b431d4b4ef19978b626627ad6f770983bc80256833b65ed0ba4"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/records/bound-eval-unicode-rpe_no_experience.json",
+      "sha256": "2810a08086599b1357fde7cc8bef58aaf94a44974b856667dfea554f03436fed"
+    },
+    {
+      "path": "<owned-test-root>/binding-supplement/report.json",
+      "sha256": "e25d5303a2f16cf4b36874b3fc2d70dce36cbedf1533c2fff321ceb74eba5bd5"
+    }
+  ],
+  "no_new_fix_or_rerun_requested": true,
+  "observed_at_utc": "2026-10-14T15:40:52.556830+00:00",
+  "original_formal_scope": {
+    "all_evaluation_reuses_verified": false,
+    "comparison_complete": true,
+    "completed_sessions": 48,
+    "learning_benefit_established": false,
+    "learning_loop_verified": true,
+    "maintenance_verified": true,
+    "verified_new_input_reuse_sessions": 14
+  },
+  "outcome_counts": {
+    "business_successes": 4,
+    "planned_sessions": 6,
+    "session_successes": 4,
+    "tab_successes": 1,
+    "unicode_successes": 3
+  },
+  "proof_method": "For every tab receipt, SHA-256 exactly matches either the public required normalized contract or that same contract with only the delimiter changed from U+0009 TAB to literal backslash+t. Both preservation constraints and every other normalized execution field match. No raw chats or private tool bodies were needed.",
+  "schema_version": "rpe.bound-tab-diagnostic/v1",
+  "scope": {
+    "experiment_root": "<owned-test-root>/live-provenance-final",
+    "mode": "read-only SQLite snapshots; public normalized-contract hash reconstruction",
+    "model_calls_made": false,
+    "original_or_supplement_scores_changed": false,
+    "raw_chat_accessed": false,
+    "source_or_database_changed": false,
+    "supplement_root": "<owned-test-root>/binding-supplement"
+  },
+  "source_references": {
+    "admission_contract_check": "src/rpe_harness/integrations/hermes.py:457-493",
+    "attempt_limit_priority": "src/rpe_harness/integrations/hermes.py:942-950",
+    "terminal_requires_durable_run": "src/rpe_harness/integrations/hermes.py:817-854"
+  },
+  "supplement_cost_metadata": {
+    "api_requests": 27,
+    "known_total_tokens": 187870,
+    "total_tokens": 187870
+  },
+  "supplement_passed": false,
+  "trial_outcomes": [
+    {
+      "arm": "native",
+      "artifact_correct": true,
+      "candidate_direct_success": false,
+      "case_id": "eval-tab-case",
+      "contract_prompt_injected": true,
+      "run_id": null,
+      "session_id": "20261014_232932_ce41f2",
+      "source_preserved": true,
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    {
+      "arm": "rpe_learned",
+      "artifact_correct": true,
+      "candidate_direct_success": true,
+      "case_id": "eval-unicode",
+      "contract_prompt_injected": true,
+      "run_id": "953ed2ddd5924e8c98b96a0fc9067bf7",
+      "session_id": "20261014_232917_a4f8dc",
+      "source_preserved": true,
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    {
+      "arm": "rpe_learned",
+      "artifact_correct": false,
+      "candidate_direct_success": false,
+      "case_id": "eval-tab-case",
+      "contract_prompt_injected": true,
+      "run_id": null,
+      "session_id": "20261014_233130_a69665",
+      "source_preserved": true,
+      "status": "failed",
+      "workflow_verified": false
+    },
+    {
+      "arm": "native",
+      "artifact_correct": true,
+      "candidate_direct_success": false,
+      "case_id": "eval-unicode",
+      "contract_prompt_injected": true,
+      "run_id": null,
+      "session_id": "20261014_232816_b3cdd6",
+      "source_preserved": true,
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    {
+      "arm": "rpe_no_experience",
+      "artifact_correct": true,
+      "candidate_direct_success": false,
+      "case_id": "eval-unicode",
+      "contract_prompt_injected": true,
+      "run_id": "f4b95dd0b91d46a3bd396620bb6f5a04",
+      "session_id": "20261014_232902_ece6ac",
+      "source_preserved": true,
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    {
+      "arm": "rpe_no_experience",
+      "artifact_correct": false,
+      "candidate_direct_success": false,
+      "case_id": "eval-tab-case",
+      "contract_prompt_injected": true,
+      "run_id": null,
+      "session_id": "20261014_233017_f15399",
+      "source_preserved": true,
+      "status": "failed",
+      "workflow_verified": false
+    }
+  ],
+  "whole_round_cost_metadata": {
+    "audit_scope": "Read aggregate summary and checked arithmetic; did not perform a second whole-ledger audit.",
+    "billing_verified_cost": null,
+    "developer_orchestrator_agent_tokens": null,
+    "known_total_tokens_lower_bound": 2437543,
+    "missing_costs": "earlier pending APIs/incomplete phase; billing; developer/orchestrator calls; peak RSS not observed",
+    "source_file": "<owned-test-root>/evidence/whole-round-cost.json",
+    "source_sha256": "48a38808f4f462f7aed6f3ab8ee6597e08b9956f4592742d34487cf8ddfd6998",
+    "sum_of_recorded_lower_bounds_matches": true,
+    "total_tokens": null
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "source_file_sha256": "417c01ae8708c758c9cb3c084972905f8aa32c3037df1361bd4b68ab991ec973",
+  "source_seal_sha256": "fe835ac7748feeb5cd2425faf5b5238416b8ebf5a9293f66d856c268109d6b29",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "deadline_seconds": 14400,
+    "earlier_failures_excluded_from_cumulative_cost": false,
+    "failed_earlier_experiments": [
+      "live-final",
+      "live-producer",
+      "live-producer-3",
+      "wire-calibration"
+    ],
+    "maintenance": {
+      "arms": [
+        "rpe_no_experience",
+        "rpe_learned"
+      ],
+      "auto_apply": false,
+      "cycles_per_arm": 1,
+      "phase": "after all production",
+      "reason": "measure existing maintenance without changing the frozen experimental executor"
+    },
+    "registration_sha256": "432e01a5038fb4eb131954289c2a534a62f6313ebfd38accf059d4e111161700",
+    "schema_version": "rpe.local-acceptance-controller/v1",
+    "sha256": "fe835ac7748feeb5cd2425faf5b5238416b8ebf5a9293f66d856c268109d6b29"
+  }
+}

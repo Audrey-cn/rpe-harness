@@ -1,0 +1,76 @@
+{
+  "source_file_sha256": "6e2c1a32c7fe0dcfbc27bc8ac3ac744b8bf441f5577db77d10569c7b22e0f488",
+  "source_seal_sha256": "a292838efd7dbb5970c87258e74f1c911bfaeaa3dff4fa4352df4b54c2b319c7",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "probe-G0",
+    "result": {
+      "candidate_sha256": "bba5267b2efdb5df7b14b347ed3304c6493b3e54e05d6c29ea7ad3c97ca8d339",
+      "outcomes": [
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "1982b8f23a5345cfbabd6740323c052c",
+          "source_preserved": true,
+          "timed_out": false
+        },
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "78d5ac2b17874cb2a7b48297d4a7ceb3",
+          "source_preserved": true,
+          "timed_out": false
+        },
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "fee9012ecfde45c18a381dd50b724ffd",
+          "source_preserved": true,
+          "timed_out": false
+        },
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "98d5ffab9c734e7db43e1a79f604eca0",
+          "source_preserved": true,
+          "timed_out": false
+        },
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "7625242f3cc14cd3aa6c4a76b3955b7e",
+          "source_preserved": true,
+          "timed_out": false
+        },
+        {
+          "candidate_invoked": true,
+          "correct": true,
+          "error_type": null,
+          "rejection_observed": false,
+          "rule_failures": [],
+          "run_id": "725da83aecf141b1b2bc47729cd5d4b9",
+          "source_preserved": true,
+          "timed_out": false
+        }
+      ],
+      "packet_sha256": "225de45ec03b990583ec7ebf1146ba4530819124b5ff0943ac51c955dbea4102",
+      "status": "succeeded"
+    },
+    "sha256": "a292838efd7dbb5970c87258e74f1c911bfaeaa3dff4fa4352df4b54c2b319c7"
+  }
+}

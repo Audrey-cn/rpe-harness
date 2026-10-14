@@ -1,0 +1,87 @@
+{
+  "schema_version": "rpe.public-evidence-export/v1",
+  "private_histories_excluded": true,
+  "files": {
+    "preregistration.json": {
+      "source_file_sha256": "db6b93111c817ea5b04d72e12b154461897f3c9dc0b2b54c1932116b1cae2c6a",
+      "source_seal_sha256": "76a08b7ab7ea00f0b716f6074a999b9d9177cb7a7694f7bd200384b97949024c"
+    },
+    "records/generation-G0.json": {
+      "source_file_sha256": "e41c14a6b4c08fb7e782f360f961d681242fa8d74ba58e8b87fa8fd09962226e",
+      "source_seal_sha256": "2b547c68bc27d9e91927c8d441e1877d9344519a0d3135f3e852d0d3d4ce2750"
+    },
+    "records/train-chinese-native.json": {
+      "source_file_sha256": "3db8fa2f0fac14794768fe315b9a483211d4fad663176f1dfa68928f55d028a1",
+      "source_seal_sha256": "d7641d899269ef39e852cdb1ec7512114a690f73cffa14e0195fbe88dd3e7224"
+    },
+    "records/train-chinese-rpe_learned.json": {
+      "source_file_sha256": "c96baa9b2e8fef2cc924bbc4ba9bdcb6bae115ed559f44360d4c6b3b1d378193",
+      "source_seal_sha256": "013ba5d5eae8ce63956e061e02bac46b83f346bfb642acf27912b9756263e791"
+    },
+    "records/train-chinese-rpe_no_experience.json": {
+      "source_file_sha256": "aa74252d2dfaab69b10c86fe7316b616173d894b97066b6e9e5de3d79c1ff37d",
+      "source_seal_sha256": "b4c5b95784ac9d5b7a1f131eaddf672ccb2917184b83245d1a58707be58dcda8"
+    },
+    "records/train-compound-native.json": {
+      "source_file_sha256": "bfb24317dd693af80fcb09df8d54c60f34054d84a57239e4655a38ca695c3f88",
+      "source_seal_sha256": "a497795d3248558865dacb281444c765a1b5f9d851f5dbe7d88366e472e9297b"
+    },
+    "records/train-compound-rpe_learned.json": {
+      "source_file_sha256": "a37c2245a430d86fa538c544f9ca87d8b3c7917ae5348adaa3adbaef588cf566",
+      "source_seal_sha256": "ea35901fa8faadbada941b40c8173b98f690f62a2d40682f9aadcff223853192"
+    },
+    "records/train-compound-rpe_no_experience.json": {
+      "source_file_sha256": "a8436a59ade831071f092da488f44c6a52e878f276c9e153f152cb11161df761",
+      "source_seal_sha256": "1f90e40ea32b0b2cfdc969f92f6459180b9a20b3010b2605d99f840c0f6404fd"
+    },
+    "records/train-delimiter-native.json": {
+      "source_file_sha256": "9959625a8fcdb8d8436dbb8e968a8d7967ca51cddce52d8e1f32646bf573424d",
+      "source_seal_sha256": "669d62839b7973ef2c43f5aa78c0beed965e5cfb48a0e920d1ab9a2895e4c8cd"
+    },
+    "records/train-delimiter-rpe_learned.json": {
+      "source_file_sha256": "ec650c0692ad3ed67ef215f5d90951502135481db2d4e5d23da67a5028efc06e",
+      "source_seal_sha256": "f3c1f9efef76de256aff411a93111107825e59c58c6549561db22ade95fcbfb8"
+    },
+    "records/train-delimiter-rpe_no_experience.json": {
+      "source_file_sha256": "f7e92e829033b064b53c7a2a95af02c78ba27710d446b0a1b763135a930916ed",
+      "source_seal_sha256": "75ad2e3f63079451126de2c6c92955d0b848989e2c42e3a61f99c3d494f57010"
+    },
+    "records/train-exact-native.json": {
+      "source_file_sha256": "a8d4efc8269c7474e94b2a9bb223248c8245e623c5ccaeb2b6c358f1c47e9f3c",
+      "source_seal_sha256": "055a6826773d6912b1fd5bc71b6236d763a47b964b38f6c7eb265bfdaf449004"
+    },
+    "records/train-exact-rpe_learned.json": {
+      "source_file_sha256": "0699dd5758b81c1baca4222b61d2fc29498060bf970ab73388d8eab976bfb345",
+      "source_seal_sha256": "5bee3095b0c0bf66bedd0b8fad0af06d11e0b9b1a7b1d827c51f4293fc331f18"
+    },
+    "records/train-exact-rpe_no_experience.json": {
+      "source_file_sha256": "7692e98987593e52dadb6851444a046e1d078d3c32d3463cb02ae9edce685c38",
+      "source_seal_sha256": "f13a0ae74122199359b525d2b90e2ed2bad91b1962ec75a8f1b40ab7a7531433"
+    },
+    "records/train-order-native.json": {
+      "source_file_sha256": "5d0fd9661701773d44082b24ef504d32bc913c8ada96d709c92c6e78990d34c4",
+      "source_seal_sha256": "5405d53de588017c5b56464e201d48e1d772e077fb4a4e8cffcb6931c8ea94d3"
+    },
+    "records/train-order-rpe_learned.json": {
+      "source_file_sha256": "818872f9c9b9ca73d0007b6d12aa6c1738910189474caf016e507b722c5d9bb4",
+      "source_seal_sha256": "0e3bd01b3fefa91412903ed907df5fb005fc8fd81dcebb9255e742b252d2482d"
+    },
+    "records/train-order-rpe_no_experience.json": {
+      "source_file_sha256": "abc3477d8b44fa6933b47e26aacf27055f3bf42eb11e38756021e4da390adc24",
+      "source_seal_sha256": "2b7496d940646183efe1756ebc0b8533c9f330566f1733a7850936189f1e1465"
+    },
+    "records/train-quoted-native.json": {
+      "source_file_sha256": "ef997a5e8de0ea768f1775eff402c04d1b55eea402aef51021b2f6b0cb507f63",
+      "source_seal_sha256": "6edec8767186274162eb22f9ddbff08f37b5147d12f2bcf6f45b0e6ffc4cf600"
+    },
+    "records/train-quoted-rpe_learned.json": {
+      "source_file_sha256": "4effad81726015f2ead71ca50b137be64e08089e24b2417ac82f5ba43391774f",
+      "source_seal_sha256": "1d9aa888e8f732ade41456fac24951dc13eb75de9a0861023a35b39209e2b606"
+    },
+    "records/train-quoted-rpe_no_experience.json": {
+      "source_file_sha256": "a35558a2bb4ef145066d0f045c20495f6ec9efaa8671ec23f4d4c32f2ed4f506",
+      "source_seal_sha256": "bb2d3c2d9a8d84918e3f0f5fdc7af93795f12bd434a11ea0b20a7144890ed4a8"
+    }
+  },
+  "phase_count": 19
+}

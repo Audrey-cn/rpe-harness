@@ -1,0 +1,17 @@
+{
+  "source_file_sha256": "ba826eccd3cd8277f593d9606c276c7b1e9b92b58828d4f6db787db008d25277",
+  "source_seal_sha256": "227adfb75970905da1f7393d8d2f130ef177c97c30091d3b7c5091d9696ff0e5",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "train-compound-rpe_no_experience",
+    "result": {
+      "artifact_correct": true,
+      "input_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "output_sha256": "57ce9d2e22728bc5e132c1e4798349a5caa3427d53bfeded685330fe6b4a80f2",
+      "run_id": "1818d53f15e247cca54cabff1b7e9b77",
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    "sha256": "227adfb75970905da1f7393d8d2f130ef177c97c30091d3b7c5091d9696ff0e5"
+  }
+}

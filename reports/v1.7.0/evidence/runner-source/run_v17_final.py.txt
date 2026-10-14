@@ -1,0 +1,105 @@
+"""Owned, bounded local acceptance; imports never launch model calls."""
+from pathlib import Path
+import json
+import os
+import signal
+import time
+
+from rpe_harness.experiments.learning_comparison import (
+    _phase, _save, _sealed, preregister_learning, run_learning_comparison,
+)
+from rpe_harness.integrations.hermes_session import _process_table
+from rpe_harness.evolution import EvolutionStore
+from rpe_harness.evolution.cycle import cycle
+
+OWN = Path(__file__).resolve().parent
+EXP = OWN / "live-provenance-final"
+STATE = OWN / "evidence/final-owned-job.json"
+
+
+def statewrite(value):
+    pending = STATE.with_suffix(".json.pending")
+    pending.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n")
+    with pending.open("rb") as handle:
+        os.fsync(handle.fileno())
+    pending.replace(STATE)
+
+
+def stop(signum, frame):
+    raise KeyboardInterrupt("owned acceptance interrupted")
+
+
+def maintenance(arm):
+    owned = EXP / "arms" / arm
+    database = owned / "runs.sqlite"
+    store = EvolutionStore(database, owned)
+    before = store.pointer("executor", "csv_executor")
+    report = cycle(database, owned, auto_apply=False)
+    after = store.pointer("executor", "csv_executor")
+    return {"status": "succeeded" if before == after and not report["maintenance"].get("busy") else "failed",
+            "auto_apply": False, "frozen_executor_pointer_preserved": before == after,
+            "before": before, "after": after, "maintenance_result": report}
+
+
+def main():
+    identity = _process_table().get(os.getpid(), (None, None))[1]
+    if not identity:
+        raise RuntimeError("supervisor identity unavailable")
+    state = {"owner": "rpe-v1.7", "pid": os.getpid(), "start_identity": identity,
+             "root": str(EXP), "status": "running", "stage": "preregister",
+             "started_at": time.time(), "budget_seconds": 14400}
+    statewrite(state)
+    for sig in (signal.SIGTERM, signal.SIGINT, signal.SIGALRM):
+        signal.signal(sig, stop)
+    signal.alarm(14400)
+    try:
+        plan = preregister_learning(EXP, timeout=180)
+        _save(EXP / "controller-policy.json", _sealed({
+            "schema_version": "rpe.local-acceptance-controller/v1",
+            "registration_sha256": plan["sha256"], "deadline_seconds": 14400,
+            "maintenance": {"phase": "after all production", "arms": ["rpe_no_experience", "rpe_learned"],
+                            "auto_apply": False, "cycles_per_arm": 1,
+                            "reason": "measure existing maintenance without changing the frozen experimental executor"},
+            "failed_earlier_experiments": ["live-final", "live-producer", "live-producer-3", "wire-calibration"],
+            "earlier_failures_excluded_from_cumulative_cost": False,
+        }))
+        state.update(stage="pilot", registration_sha256=plan["sha256"])
+        statewrite(state)
+        pilot = run_learning_comparison(EXP, timeout=180)
+        _save(OWN / "evidence/final-pilot-final.json", pilot)
+        if pilot.get("stage") != "frozen" or pilot.get("pilot_provenance_verified") is not True:
+            state.update(status="failed", stage="pilot", reason=pilot.get("reason") or "pilot_provenance_unverified")
+            return 1
+        state.update(stage="formal", freeze_sha256=pilot["freeze"]["sha256"])
+        statewrite(state)
+        production = run_learning_comparison(EXP, timeout=180, formal=True, max_sessions=48)
+        _save(OWN / "evidence/final-production-before-maintenance.json", production)
+        state.update(stage="maintenance", completed_sessions=production.get("completed_sessions"))
+        statewrite(state)
+        maintained = []
+        for arm in ("rpe_no_experience", "rpe_learned"):
+            maintained.append(_phase(EXP, arm, "maintenance", "maintenance-post-production-" + arm,
+                                     lambda arm=arm: maintenance(arm), api_expected=False))
+        maintenance_verified = all(item.get("status") == "succeeded" and
+                                   item.get("frozen_executor_pointer_preserved") is True
+                                   for item in maintained)
+        final = run_learning_comparison(EXP, timeout=180, formal=True, max_sessions=0)
+        final["maintenance_verified"] = maintenance_verified
+        _save(OWN / "evidence/final-formal-final.json", final)
+        state.update(status="completed" if final.get("comparison_complete") and final.get("learning_loop_verified") and maintenance_verified else "failed",
+                     stage="validated", completed_sessions=final.get("completed_sessions"),
+                     learning_loop_verified=final.get("learning_loop_verified"),
+                     maintenance_verified=maintenance_verified,
+                     all_evaluation_reuses_verified=final.get("all_evaluation_reuses_verified"))
+    except BaseException as error:
+        state.update(status="interrupted" if isinstance(error, KeyboardInterrupt) else "failed",
+                     error_type=type(error).__name__)
+    finally:
+        signal.alarm(0)
+        state["finished_at"] = time.time()
+        statewrite(state)
+    return 0 if state["status"] == "completed" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

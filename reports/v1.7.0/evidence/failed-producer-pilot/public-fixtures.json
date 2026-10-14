@@ -1,0 +1,443 @@
+{
+  "training": [
+    {
+      "case_id": "train-order",
+      "expected_rows": [
+        [
+          "order",
+          "amount"
+        ],
+        [
+          "001",
+          "10"
+        ],
+        [
+          "002",
+          "20"
+        ]
+      ],
+      "input_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "order"
+        ]
+      },
+      "source_text": "order,amount\n001,10\n002,20\n001,99\n"
+    },
+    {
+      "case_id": "train-compound",
+      "expected_rows": [
+        [
+          "region",
+          "sku",
+          "qty"
+        ],
+        [
+          "N",
+          "A",
+          "1"
+        ],
+        [
+          "S",
+          "A",
+          "2"
+        ],
+        [
+          "N",
+          "B",
+          "3"
+        ]
+      ],
+      "input_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "region",
+          "sku"
+        ]
+      },
+      "source_text": "region,sku,qty\nN,A,1\nS,A,2\nN,A,8\nN,B,3\n"
+    },
+    {
+      "case_id": "train-chinese",
+      "expected_rows": [
+        [
+          "编号",
+          "名称"
+        ],
+        [
+          "甲",
+          "茶"
+        ],
+        [
+          "乙",
+          "米"
+        ]
+      ],
+      "input_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8-sig",
+        "keep": "first",
+        "key_columns": [
+          "编号"
+        ]
+      },
+      "source_text": "编号,名称\n甲,茶\n乙,米\n甲,糖\n"
+    },
+    {
+      "case_id": "train-delimiter",
+      "expected_rows": [
+        [
+          "code",
+          "note"
+        ],
+        [
+          "A",
+          "x;y"
+        ],
+        [
+          "B",
+          "end"
+        ]
+      ],
+      "input_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "parameters": {
+        "delimiter": ";",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "code"
+        ]
+      },
+      "source_text": "code;note\nA;\"x;y\"\nA;later\nB;end\n"
+    },
+    {
+      "case_id": "train-quoted",
+      "expected_rows": [
+        [
+          "id",
+          "note"
+        ],
+        [
+          "a",
+          "two\nlines"
+        ],
+        [
+          "b",
+          "x,y"
+        ]
+      ],
+      "input_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "id"
+        ]
+      },
+      "source_text": "id,note\na,\"two\nlines\"\nb,\"x,y\"\na,later\n"
+    },
+    {
+      "case_id": "train-exact",
+      "expected_rows": [
+        [
+          "token",
+          "val"
+        ],
+        [
+          "01",
+          "first"
+        ],
+        [
+          "1",
+          "number"
+        ],
+        [
+          " 01",
+          "space"
+        ],
+        [
+          "A",
+          "upper"
+        ],
+        [
+          "a",
+          "lower"
+        ]
+      ],
+      "input_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "token"
+        ]
+      },
+      "source_text": "token,val\n01,first\n1,number\n 01,space\nA,upper\na,lower\n01,later\n"
+    }
+  ],
+  "evaluation": [
+    {
+      "case_id": "eval-exact",
+      "expected_rows": [
+        [
+          "value",
+          "ref"
+        ],
+        [
+          "first",
+          "001"
+        ],
+        [
+          "numeric",
+          "1"
+        ],
+        [
+          "space",
+          " 001"
+        ]
+      ],
+      "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "ref"
+        ]
+      },
+      "source_text": "value,ref\nfirst,001\nnumeric,1\nspace, 001\nlater,001\n"
+    },
+    {
+      "case_id": "eval-composite",
+      "expected_rows": [
+        [
+          "memo",
+          "zone",
+          "product"
+        ],
+        [
+          "first",
+          "east",
+          "007"
+        ],
+        [
+          "next",
+          "west",
+          "007"
+        ],
+        [
+          "third",
+          "east",
+          "7"
+        ]
+      ],
+      "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "product",
+          "zone"
+        ]
+      },
+      "source_text": "memo,zone,product\nfirst,east,007\nnext,west,007\ndup,east,007\nthird,east,7\n"
+    },
+    {
+      "case_id": "eval-unicode",
+      "expected_rows": [
+        [
+          "描述",
+          "索引"
+        ],
+        [
+          "蓝|绿",
+          "丙"
+        ],
+        [
+          "白",
+          "丁"
+        ]
+      ],
+      "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+      "parameters": {
+        "delimiter": "|",
+        "encoding": "utf-8-sig",
+        "keep": "first",
+        "key_columns": [
+          "索引"
+        ]
+      },
+      "source_text": "描述|索引\n\"蓝|绿\"|丙\n白|丁\n红|丙\n"
+    },
+    {
+      "case_id": "eval-multiline-key",
+      "expected_rows": [
+        [
+          "payload",
+          "identity"
+        ],
+        [
+          "first",
+          "line\nbreak"
+        ],
+        [
+          "second",
+          "line break"
+        ]
+      ],
+      "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "identity"
+        ]
+      },
+      "source_text": "payload,identity\nfirst,\"line\nbreak\"\nsecond,\"line break\"\nlater,\"line\nbreak\"\n"
+    },
+    {
+      "case_id": "eval-quote-key",
+      "expected_rows": [
+        [
+          "body",
+          "reference",
+          "batch"
+        ],
+        [
+          "first",
+          "q\"r",
+          "K"
+        ],
+        [
+          "second",
+          "q\"r",
+          "L"
+        ]
+      ],
+      "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+      "parameters": {
+        "delimiter": ";",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "reference",
+          "batch"
+        ]
+      },
+      "source_text": "body;reference;batch\nfirst;\"q\"\"r\";K\nsecond;\"q\"\"r\";L\nlater;\"q\"\"r\";K\n"
+    },
+    {
+      "case_id": "eval-tab-case",
+      "expected_rows": [
+        [
+          "item",
+          "label",
+          "payload"
+        ],
+        [
+          "UP",
+          "X",
+          "first"
+        ],
+        [
+          "up",
+          "X",
+          "second"
+        ],
+        [
+          "UP",
+          "x",
+          "third"
+        ]
+      ],
+      "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+      "parameters": {
+        "delimiter": "\t",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "label",
+          "item"
+        ]
+      },
+      "source_text": "item\tlabel\tpayload\nUP\tX\tfirst\nup\tX\tsecond\nUP\tX\tlater\nUP\tx\tthird\n"
+    },
+    {
+      "case_id": "eval-empty-values",
+      "expected_rows": [
+        [
+          "detail",
+          "record"
+        ],
+        [
+          "",
+          "z9"
+        ],
+        [
+          "",
+          "z8"
+        ],
+        [
+          "comma,here",
+          "z7"
+        ]
+      ],
+      "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "record"
+        ]
+      },
+      "source_text": "detail,record\n,z9\n\"\",z8\nlater,z9\n\"comma,here\",z7\n"
+    },
+    {
+      "case_id": "eval-crlf",
+      "expected_rows": [
+        [
+          "message",
+          "group",
+          "sequence"
+        ],
+        [
+          "one\r\ntwo",
+          "G",
+          "09"
+        ],
+        [
+          "next",
+          "G",
+          "9"
+        ]
+      ],
+      "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "sequence",
+          "group"
+        ]
+      },
+      "source_text": "message,group,sequence\r\n\"one\r\ntwo\",G,09\r\nnext,G,9\r\nlater,G,09\r\n"
+    }
+  ],
+  "qualification": {
+    "source": "evolution/candidates.py existing independent13",
+    "contents_not_exported_to_generator": true
+  }
+}

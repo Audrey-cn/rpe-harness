@@ -1,0 +1,153 @@
+{
+  "source_file_sha256": "f0648d8aa98f3174a8606f9d05740ba849abf9982046aab3c3642d6899e3521b",
+  "source_seal_sha256": "a95a08ff0b3c415a8a3e861ced8c196c5a6ea86e9c0b1363f06de19ff86f5269",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "qualify-G1",
+    "result": {
+      "checks": [
+        {
+          "error": null,
+          "fixture": "chinese",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "train"
+        },
+        {
+          "error": null,
+          "fixture": "composite",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "train"
+        },
+        {
+          "error": null,
+          "fixture": "semicolon",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "train"
+        },
+        {
+          "error": null,
+          "fixture": "untrimmed_types",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": null,
+          "fixture": "quoted_multiline",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": null,
+          "fixture": "case_composite",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": null,
+          "fixture": "zero_records",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "key columns not found in input",
+          "fixture": "missing_column",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "candidate rejected input in <experiment-root>/arms/rpe_learned/evolution-validation/evolution-sandboxes/csv-ofmpa9xh: ValueError: Empty key value in column 'id' at row 1",
+          "fixture": "empty_key",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "header must contain unique nonempty column names",
+          "fixture": "duplicate_header",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "only keep=first is supported",
+          "fixture": "unsupported_keep",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "execution must have only registered parameters",
+          "fixture": "unknown_option",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        },
+        {
+          "error": "output must be a new path in an existing directory",
+          "fixture": "no_overwrite",
+          "output_preserved": true,
+          "passed": true,
+          "source_preserved": true,
+          "split": "heldout"
+        }
+      ],
+      "content_hash": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+      "evidence_hashes": {
+        "1982b8f23a5345cfbabd6740323c052c": "8eb2dd7533b945de7dc588257ce401a4f1bd120fb46c7a98115e839ebd4bcadb",
+        "725da83aecf141b1b2bc47729cd5d4b9": "f34f55db498dcce60e1550dfdbf82511b2ba27c8fa87e23d62bff9928c70f285",
+        "7625242f3cc14cd3aa6c4a76b3955b7e": "4df42d93cb0e1fd40e75b9a4296c1529577d46f92c2400a52d5eb6efcbf22d22",
+        "78d5ac2b17874cb2a7b48297d4a7ceb3": "d8cc9b05a2bcedb08f98c3dbde71e906c537ad4a81f1f4a2d20dbe35aa87a1ed",
+        "98d5ffab9c734e7db43e1a79f604eca0": "03aa8c791c1253cdc2c7bede0e3678676c2e57188ed9e4a10be59eb6e945ead3",
+        "fee9012ecfde45c18a381dd50b724ffd": "d67f240c736e6cc1d624108292fc2f24d7fbb6e87fcf57452436e3344f644518"
+      },
+      "heldout_count": 10,
+      "passed": true,
+      "proposal_id": "4b869fae375046f629be164d7477e8b45704728bd60184f9753455d0d3439be5",
+      "resource_limits": {
+        "code_bytes": 65536,
+        "fork": "denied",
+        "input_bytes": 16777216,
+        "memory_enforcement": "rss_monitor_soft",
+        "memory_limitation": "macOS rlimits do not cap memory; instantaneous allocation peaks are not guaranteed",
+        "network": "denied",
+        "open_files": 64,
+        "output_bytes": 16777216,
+        "resident_bytes": 134217728,
+        "rss_poll_seconds": 0.02
+      },
+      "revisions": {
+        "acceptance_revision": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+        "contract_revision": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+        "contract_version": 1,
+        "executor_revision": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+        "fixture_suite_sha256": "24f132156abaeb4c53ccfd4240523ea973d1626b11c661debeaa80347009aebd",
+        "sandbox_revision": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+        "verifier_file_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+        "verifier_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38"
+      },
+      "status": "succeeded",
+      "train_count": 3
+    },
+    "sha256": "a95a08ff0b3c415a8a3e861ced8c196c5a6ea86e9c0b1363f06de19ff86f5269"
+  }
+}

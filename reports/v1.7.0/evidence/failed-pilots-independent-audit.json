@@ -1,0 +1,471 @@
+{
+  "all_round_observed_lower_bounds": {
+    "api_count_limitation": "Ledger counts error observations. Replacement compound api:5 appears twice with the same ID; 40 pre observations versus 39 unique native IDs. Physical retry or billing count cannot be certified from that ID; each observed successful usage request counted once.",
+    "billing_verified_cost": null,
+    "distinct_observed_api_request_ids": 114,
+    "known_total_tokens": 771888,
+    "ledger_api_observation_count": 115,
+    "total_tokens": null
+  },
+  "audit_actions": {
+    "models_called": 0,
+    "process_signals": false,
+    "product_or_phase_mutations": false,
+    "raw_conversation_or_tool_arguments_exported": false,
+    "tasks_replayed": 0
+  },
+  "audited_at_utc": "2026-10-14T14:07:31.388870+00:00",
+  "conclusion": "failed: G0_original_code_missing after actual timeout; no generation-loop or formal comparison acceptance",
+  "environment": {
+    "host_config_contents_not_read_by_audit": true,
+    "python_file_count": 64,
+    "source_installed_wheel_bytes_match": true,
+    "wheel_sha256": "795680f023aefeef15c109466090c18cf4be3e1fda66a11e840a7e56741f24ec"
+  },
+  "formal_final": {
+    "known_api_requests": 0,
+    "known_total_tokens": 0,
+    "launch_cost_status": "No formal phase was launched; these are observed phase counts, not the estimated cost of a completed comparison.",
+    "phase_count": 0,
+    "quality_comparison_available": false,
+    "sessions_completed": 0,
+    "sessions_planned": 48
+  },
+  "g0": {
+    "candidate_sha256": null,
+    "cleanup_receipt": {
+      "cleanup_complete": true,
+      "errors": [],
+      "external_executor_cleanup_complete": true,
+      "external_executor_remaining_children": [],
+      "external_executor_tracked_children": 0,
+      "remaining_descendants": [],
+      "signaled_descendants": 0,
+      "tracked_descendants": 23
+    },
+    "code_artifact_path": null,
+    "elapsed_seconds_phase": 202.43283950000114,
+    "elapsed_seconds_worker": 202.372,
+    "error": {
+      "api_errors": [],
+      "code": "generation_timed_out",
+      "exit_code": 130,
+      "observer_errors": 0
+    },
+    "file_write_count": 0,
+    "generation_link": {
+      "proven": false,
+      "reason": "generation_not_observed"
+    },
+    "observed_api_pre": [
+      {
+        "api_request_id": "20261014_215443_e7cc70:dd0c7be2-6c93-4bb9-b4cb-6ebd67bdc26f:eecbd99d:api:1",
+        "kind": "pre_api_request",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "request_parallel_tool_calls": false,
+        "request_tool_choice": "write_file",
+        "request_tool_names": [
+          "write_file"
+        ],
+        "request_tools_sha256": "db15794eab53ec1aa46ce129ff0a2039fe6046900314b41a4032b9823487f21c",
+        "session_id": "20261014_215443_e7cc70",
+        "task_id": "dd0c7be2-6c93-4bb9-b4cb-6ebd67bdc26f",
+        "turn_id": "20261014_215443_e7cc70:dd0c7be2-6c93-4bb9-b4cb-6ebd67bdc26f:eecbd99d"
+      }
+    ],
+    "observed_post_count": 0,
+    "phase_durations": {
+      "generation_seconds": 202.316501,
+      "training_probe_seconds": 0.0
+    },
+    "private_worker_root_deleted": true,
+    "requested_model": {
+      "provider": "xiaomi",
+      "requested_model": "mimo-v2.6-pro",
+      "response_models": []
+    },
+    "response_model_unobserved": true,
+    "retained_worker_report_matches": true,
+    "session_id": "20261014_215443_e7cc70",
+    "six_real_training_anchors_verified": true,
+    "status": "failed",
+    "usage": {
+      "api_errors": 0,
+      "api_requests": 1,
+      "cache_read_tokens": null,
+      "cache_write_tokens": null,
+      "coverage_complete": false,
+      "input_tokens": null,
+      "known_total_tokens": 0,
+      "missing_observations": 1,
+      "output_tokens": null,
+      "prompt_tokens": null,
+      "reasoning_tokens": null,
+      "requests_with_usage": 0,
+      "total_tokens": null
+    }
+  },
+  "native_usage_recomputed": {
+    "duplicate_api_ids": {
+      "20261014_214907_495145:bda7722f-987e-4169-b52f-cdf6ad3f0c84:4ccde14b:api:5": 2
+    },
+    "known_total_tokens": 268390,
+    "pre_api_observation_count": 40,
+    "sessions": [
+      {
+        "attempt_id": "train-chinese-native",
+        "duplicate_api_ids": {},
+        "error_count": 0,
+        "known_total_tokens": 67220,
+        "post_count": 8,
+        "pre_count": 8,
+        "session_id": "20261014_214954_90aede",
+        "unique_api_ids": 8,
+        "usage_complete": true
+      },
+      {
+        "attempt_id": "train-compound-native",
+        "duplicate_api_ids": {
+          "20261014_214907_495145:bda7722f-987e-4169-b52f-cdf6ad3f0c84:4ccde14b:api:5": 2
+        },
+        "error_count": 2,
+        "known_total_tokens": 23853,
+        "post_count": 4,
+        "pre_count": 6,
+        "session_id": "20261014_214907_495145",
+        "unique_api_ids": 5,
+        "usage_complete": false
+      },
+      {
+        "attempt_id": "train-delimiter-native",
+        "duplicate_api_ids": {},
+        "error_count": 0,
+        "known_total_tokens": 31241,
+        "post_count": 5,
+        "pre_count": 5,
+        "session_id": "20261014_215132_24663b",
+        "unique_api_ids": 5,
+        "usage_complete": true
+      },
+      {
+        "attempt_id": "train-exact-native",
+        "duplicate_api_ids": {},
+        "error_count": 0,
+        "known_total_tokens": 64441,
+        "post_count": 8,
+        "pre_count": 8,
+        "session_id": "20261014_215333_c4b2fe",
+        "unique_api_ids": 8,
+        "usage_complete": true
+      },
+      {
+        "attempt_id": "train-order-native",
+        "duplicate_api_ids": {},
+        "error_count": 0,
+        "known_total_tokens": 29980,
+        "post_count": 5,
+        "pre_count": 5,
+        "session_id": "20261014_214821_4ea4ef",
+        "unique_api_ids": 5,
+        "usage_complete": true
+      },
+      {
+        "attempt_id": "train-quoted-native",
+        "duplicate_api_ids": {},
+        "error_count": 0,
+        "known_total_tokens": 51655,
+        "post_count": 8,
+        "pre_count": 8,
+        "session_id": "20261014_215225_0e3248",
+        "unique_api_ids": 8,
+        "usage_complete": true
+      }
+    ],
+    "unique_api_request_ids": 39
+  },
+  "previous_failed_pilot_cost": {
+    "billing_verified_cost": null,
+    "elapsed_seconds_sum": 544.5974693730022,
+    "failed_phase_count": 1,
+    "finished_phase_count": 19,
+    "incomplete_phase_count": 0,
+    "known_api_requests": 49,
+    "known_elapsed_seconds_sum": 544.5974693730022,
+    "known_total_tokens": 342143,
+    "observed_makespan_seconds": 544.7278778553009,
+    "phase_count": 19,
+    "total_tokens": null
+  },
+  "previous_interrupted_pilot_cost": {
+    "billing_verified_cost": null,
+    "elapsed_seconds_sum": null,
+    "failed_phase_count": 0,
+    "finished_phase_count": 15,
+    "incomplete_phase_count": 1,
+    "known_api_requests": 25,
+    "known_elapsed_seconds_sum": 143.56624791600188,
+    "known_total_tokens": 161355,
+    "observed_makespan_seconds": 143.6783127784729,
+    "phase_count": 16,
+    "total_tokens": null
+  },
+  "process_audit": {
+    "full_round_cleanup_not_certified": true,
+    "job_reason": "G0_original_code_missing",
+    "job_status": "failed",
+    "present_pids": [],
+    "queried_child_parent_supervisor_pid_count": 225,
+    "recorded_lstart": "Wed Oct 14 21:48:18 2026",
+    "supervisor_pid": 58893,
+    "unique_registered_child_start_identities": 218
+  },
+  "registration": {
+    "actual_native_original_prompt_hashes_recomputed": 6,
+    "arm_session_counts": {
+      "native": 16,
+      "rpe_learned": 16,
+      "rpe_no_experience": 16
+    },
+    "dependent_repeats": 2,
+    "distinct_analysis_units": 8,
+    "holdout_inputs": 8,
+    "matched_original_prompt_groups": 16,
+    "planned_original_prompt_hashes_recomputed": 48,
+    "planned_sessions": 48,
+    "training_inputs": 6,
+    "unique_training_and_holdout_hashes": 14
+  },
+  "registration_sha256": "cd7e3a3f2abafeff6806a51151f1e5fc961bbcea93bc7d30bd9d5b9755622cca",
+  "replacement_arm_costs": {
+    "native": {
+      "billing_verified_cost": null,
+      "elapsed_seconds_sum": 381.1142831670113,
+      "failed_phase_count": 1,
+      "finished_phase_count": 6,
+      "incomplete_phase_count": 0,
+      "known_api_requests": 40,
+      "known_elapsed_seconds_sum": 381.1142831670113,
+      "known_total_tokens": 268390,
+      "observed_makespan_seconds": 381.16376876831055,
+      "phase_count": 6,
+      "total_tokens": null
+    },
+    "rpe_learned": {
+      "billing_verified_cost": null,
+      "elapsed_seconds_sum": 203.03782662600133,
+      "failed_phase_count": 1,
+      "finished_phase_count": 7,
+      "incomplete_phase_count": 0,
+      "known_api_requests": 1,
+      "known_elapsed_seconds_sum": 203.03782662600133,
+      "known_total_tokens": 0,
+      "observed_makespan_seconds": 584.2615730762482,
+      "phase_count": 7,
+      "total_tokens": null
+    },
+    "rpe_no_experience": {
+      "billing_verified_cost": null,
+      "elapsed_seconds_sum": 0.5891918750021432,
+      "failed_phase_count": 0,
+      "finished_phase_count": 6,
+      "incomplete_phase_count": 0,
+      "known_api_requests": 0,
+      "known_elapsed_seconds_sum": 0.5891918750021432,
+      "known_total_tokens": 0,
+      "observed_makespan_seconds": 0.6030409336090088,
+      "phase_count": 6,
+      "total_tokens": 0
+    }
+  },
+  "replacement_pilot_cost": {
+    "billing_verified_cost": null,
+    "elapsed_seconds_sum": 584.7413016680148,
+    "failed_phase_count": 2,
+    "finished_phase_count": 19,
+    "incomplete_phase_count": 0,
+    "known_api_requests": 41,
+    "known_elapsed_seconds_sum": 584.7413016680148,
+    "known_total_tokens": 268390,
+    "observed_makespan_seconds": 584.8926310539246,
+    "phase_count": 19,
+    "total_tokens": null
+  },
+  "schema_version": "rpe.final-live-independent-audit/v1",
+  "scope": "live-producer-3 bounded replacement pilot plus separate previous failed/interrupted lower bounds",
+  "seals_verified": {
+    "compact_records": 19,
+    "outcomes": 19,
+    "reservations": 19
+  },
+  "training": [
+    {
+      "attempt_id": "train-order-native",
+      "literal_truth": true,
+      "product_oracle_record": true,
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-compound-native",
+      "literal_truth": false,
+      "product_oracle_record": false,
+      "source_preserved_independent": true,
+      "status": "failed",
+      "workflow_verified_record": false
+    },
+    {
+      "attempt_id": "train-chinese-native",
+      "literal_truth": true,
+      "product_oracle_record": true,
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": false
+    },
+    {
+      "attempt_id": "train-delimiter-native",
+      "literal_truth": true,
+      "product_oracle_record": true,
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-quoted-native",
+      "literal_truth": true,
+      "product_oracle_record": true,
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": false
+    },
+    {
+      "attempt_id": "train-exact-native",
+      "literal_truth": true,
+      "product_oracle_record": true,
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": false
+    },
+    {
+      "attempt_id": "train-order-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "b75ff324eedc4d5d8adf580217b7227c",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-compound-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "1818d53f15e247cca54cabff1b7e9b77",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-chinese-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "45f0a3674e904d47b9b82fe85c7076d3",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-delimiter-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "00c41c451b584c32b6e95e191292031b",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-quoted-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "12212583249146a182f95c8ef10bbbac",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-exact-rpe_no_experience",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "475e2b055a0d450c91d655087c1ac129",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-order-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "00941733bad0499cbb82443c92e79289",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-compound-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "4fe856a57cf8439584fd42dcbe3caeab",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-chinese-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "4909fb21654e463f8c5580fe4d7fa4b3",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-delimiter-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "9b34f38b3ee24107b87e30e445891b6b",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-quoted-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "e97baed1e8124b8f948bbfadd2b25442",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    },
+    {
+      "attempt_id": "train-exact-rpe_learned",
+      "literal_truth": true,
+      "product_oracle_record": null,
+      "run_id": "7481efb244ce4d8b8e613c2e40ab9e53",
+      "source_preserved_independent": true,
+      "status": "succeeded",
+      "workflow_verified_record": true
+    }
+  ],
+  "unperformed": [
+    "G1/G2/G3",
+    "trusted semantic training packet export to later generator",
+    "previous candidate preprobe",
+    "training behavior delta",
+    "13-case independent qualification",
+    "activation replay",
+    "candidate version/hash freeze",
+    "new holdout production sessions",
+    "direct-candidate-versus-fallback proof",
+    "48-session quality and cost comparison"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "production_commit": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
+  "passed": 1324,
+  "subtests_passed": 3,
+  "skipped": 0,
+  "failures": 0,
+  "errors": 0,
+  "elapsed_seconds": 297.21,
+  "log_sha256": "b1ece4f7c6bcb7a118c0dd22bfe72dd89b6b2ce7440a3d8d60886dcaab90a725",
+  "xml_sha256": "cf7f06b00e0588b29553f02a93db0ba26ed3dba668d13b1182cc484bfbf93f1e",
+  "final_log_line": "1324 passed, 3 subtests passed in 297.21s (0:04:57)",
+  "no_production_python_changes_after_test": true
+}

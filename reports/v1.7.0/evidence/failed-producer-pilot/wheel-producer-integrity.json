@@ -1,0 +1,266 @@
+{
+  "version": "1.7.0",
+  "python": "<owned-test-root>/installed/bin/python",
+  "import_path": "<owned-test-root>/installed/lib/python3.12/site-packages/rpe_harness",
+  "wheel_sha256": "795680f023aefeef15c109466090c18cf4be3e1fda66a11e840a7e56741f24ec",
+  "source_commit": "e84729a",
+  "files": {
+    "__init__.py": {
+      "sha256": "0bcdb3314c8fc75ab63fe7f3dabe38d29ff2618a0f4bec31fd5d17a387c783f1",
+      "all_bytes_equal": true
+    },
+    "__main__.py": {
+      "sha256": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+      "all_bytes_equal": true
+    },
+    "assets/__init__.py": {
+      "sha256": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+      "all_bytes_equal": true
+    },
+    "assets/catalog.py": {
+      "sha256": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+      "all_bytes_equal": true
+    },
+    "assets/cli.py": {
+      "sha256": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+      "all_bytes_equal": true
+    },
+    "assets/identity.py": {
+      "sha256": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+      "all_bytes_equal": true
+    },
+    "assets/lifecycle.py": {
+      "sha256": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+      "all_bytes_equal": true
+    },
+    "assets/manifest.py": {
+      "sha256": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+      "all_bytes_equal": true
+    },
+    "assets/prepublish.py": {
+      "sha256": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+      "all_bytes_equal": true
+    },
+    "assets/registry.py": {
+      "sha256": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+      "all_bytes_equal": true
+    },
+    "assets/store.py": {
+      "sha256": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+      "all_bytes_equal": true
+    },
+    "assets/trust.py": {
+      "sha256": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+      "all_bytes_equal": true
+    },
+    "bridge.py": {
+      "sha256": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+      "all_bytes_equal": true
+    },
+    "capability.py": {
+      "sha256": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+      "all_bytes_equal": true
+    },
+    "causal_graph.py": {
+      "sha256": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+      "all_bytes_equal": true
+    },
+    "cli.py": {
+      "sha256": "24dda8b75b6ad9618f9a773da4faf2d1eaa5f7de01b6cac5091937cce0a823af",
+      "all_bytes_equal": true
+    },
+    "context.py": {
+      "sha256": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+      "all_bytes_equal": true
+    },
+    "contracts.py": {
+      "sha256": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+      "all_bytes_equal": true
+    },
+    "evolution/__init__.py": {
+      "sha256": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+      "all_bytes_equal": true
+    },
+    "evolution/candidates.py": {
+      "sha256": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+      "all_bytes_equal": true
+    },
+    "evolution/cycle.py": {
+      "sha256": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+      "all_bytes_equal": true
+    },
+    "evolution/json_acceptance.py": {
+      "sha256": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+      "all_bytes_equal": true
+    },
+    "evolution/maintenance.py": {
+      "sha256": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+      "all_bytes_equal": true
+    },
+    "evolution/sandbox.py": {
+      "sha256": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+      "all_bytes_equal": true
+    },
+    "evolution/store.py": {
+      "sha256": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+      "all_bytes_equal": true
+    },
+    "evolution/training_feedback.py": {
+      "sha256": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+      "all_bytes_equal": true
+    },
+    "evolution/worker.py": {
+      "sha256": "bf87f197cd08b8f044e8d2c9f23f28dc52a9f8c869db0467a201b027e82d5562",
+      "all_bytes_equal": true
+    },
+    "execution.py": {
+      "sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+      "all_bytes_equal": true
+    },
+    "experiments/__init__.py": {
+      "sha256": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+      "all_bytes_equal": true
+    },
+    "experiments/baseline.py": {
+      "sha256": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+      "all_bytes_equal": true
+    },
+    "experiments/basic_validation.py": {
+      "sha256": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+      "all_bytes_equal": true
+    },
+    "experiments/cold_skill_test.py": {
+      "sha256": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+      "all_bytes_equal": true
+    },
+    "experiments/cost_ledger.py": {
+      "sha256": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+      "all_bytes_equal": true
+    },
+    "experiments/hermes_native.py": {
+      "sha256": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+      "all_bytes_equal": true
+    },
+    "experiments/hermes_repeated.py": {
+      "sha256": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+      "all_bytes_equal": true
+    },
+    "experiments/learning_comparison.py": {
+      "sha256": "4671712d49f213b835453490bac7e2c9098b4e6053a8df101e2f54513ffb47f6",
+      "all_bytes_equal": true
+    },
+    "experiments/reuse_sequence.py": {
+      "sha256": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+      "all_bytes_equal": true
+    },
+    "experiments/skill_comparison.py": {
+      "sha256": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+      "all_bytes_equal": true
+    },
+    "experiments/stress_test.py": {
+      "sha256": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+      "all_bytes_equal": true
+    },
+    "experiments/unattended_sequence.py": {
+      "sha256": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+      "all_bytes_equal": true
+    },
+    "integrations/__init__.py": {
+      "sha256": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes.py": {
+      "sha256": "acc1d6750846b5b110fa8ee3a6b40ab0c55a85f4c305dfa568cbb740f9bdc1c2",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes_bootstrap.py": {
+      "sha256": "7ace62a2f23b2a3b55903952969119e2288f2767abe64db0f834d7e5fc266117",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes_broker.py": {
+      "sha256": "f6fd4a5eb0dc03dc675c573ecc946bc293e355252d678c38230ca3c42d27124c",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes_gate.py": {
+      "sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes_session.py": {
+      "sha256": "7e4d7c4f597ca802a76e70602fe604c38729fd1413130fd182907c19aa45c35d",
+      "all_bytes_equal": true
+    },
+    "integrations/hermes_skills.py": {
+      "sha256": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+      "all_bytes_equal": true
+    },
+    "integrations/skill_gate.py": {
+      "sha256": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+      "all_bytes_equal": true
+    },
+    "json_contract.py": {
+      "sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+      "all_bytes_equal": true
+    },
+    "json_execution.py": {
+      "sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+      "all_bytes_equal": true
+    },
+    "json_verification.py": {
+      "sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+      "all_bytes_equal": true
+    },
+    "mcsi.py": {
+      "sha256": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+      "all_bytes_equal": true
+    },
+    "path_binding.py": {
+      "sha256": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+      "all_bytes_equal": true
+    },
+    "recovery.py": {
+      "sha256": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+      "all_bytes_equal": true
+    },
+    "runtime.py": {
+      "sha256": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+      "all_bytes_equal": true
+    },
+    "server.py": {
+      "sha256": "78d184ea5787c8e1cadc039d931773618a243b665deb177dd6f41f212075320b",
+      "all_bytes_equal": true
+    },
+    "skill_catalog.py": {
+      "sha256": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+      "all_bytes_equal": true
+    },
+    "skill_cli.py": {
+      "sha256": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+      "all_bytes_equal": true
+    },
+    "skill_inspection.py": {
+      "sha256": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+      "all_bytes_equal": true
+    },
+    "skill_verification.py": {
+      "sha256": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+      "all_bytes_equal": true
+    },
+    "storage.py": {
+      "sha256": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+      "all_bytes_equal": true
+    },
+    "tasks.py": {
+      "sha256": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+      "all_bytes_equal": true
+    },
+    "verification.py": {
+      "sha256": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+      "all_bytes_equal": true
+    },
+    "xlsx_resource.py": {
+      "sha256": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b",
+      "all_bytes_equal": true
+    }
+  },
+  "all_bytes_equal": true
+}

@@ -1,0 +1,174 @@
+{
+  "schema_version": "rpe.cleanup-interim-audit/v1",
+  "audited_at_utc": "2026-10-14T13:05:37.184099+00:00",
+  "scope": "live-final actual 6 native sessions plus G0 only; no pytest fixtures or later pilot",
+  "actual_sessions": [
+    {
+      "attempt_id": "generation-G0",
+      "session_id": "20261014_205251_8c53d4"
+    },
+    {
+      "attempt_id": "train-chinese-native",
+      "session_id": "20261014_204833_ad3f4c"
+    },
+    {
+      "attempt_id": "train-compound-native",
+      "session_id": "20261014_204753_7aedf5"
+    },
+    {
+      "attempt_id": "train-delimiter-native",
+      "session_id": "20261014_204905_037717"
+    },
+    {
+      "attempt_id": "train-exact-native",
+      "session_id": "20261014_205131_ff7344"
+    },
+    {
+      "attempt_id": "train-order-native",
+      "session_id": "20261014_204711_a0cb3a"
+    },
+    {
+      "attempt_id": "train-quoted-native",
+      "session_id": "20261014_205018_9d8795"
+    }
+  ],
+  "daily_db_audit": {
+    "path": "<daily-hermes>/state.db",
+    "sqlite_open_mode": "ro",
+    "query_only": true,
+    "read_columns": "schema and session identity columns; count-only queries",
+    "matching_counts": {
+      "sessions.id": 0,
+      "sessions.parent_session_id": 0,
+      "messages.session_id": 0,
+      "session_model_usage.session_id": 0,
+      "compression_locks.session_id": 0,
+      "async_delegations.origin_session": 0,
+      "async_delegations.origin_ui_session_id": 0,
+      "async_delegations.parent_session_id": 0,
+      "async_delegations.origin_session_id": 0
+    },
+    "all_seven_session_ids_absent": true,
+    "private_chat_or_credential_values_selected": false
+  },
+  "owned_process_audit": {
+    "registry_files": [
+      {
+        "relative_path": "arms/native/sessions/session-81ed4520ea2c48e999d0251f1fb60119/child-processes.jsonl",
+        "record_count": 32
+      },
+      {
+        "relative_path": "arms/native/sessions/session-9098a15e38894cd49c9ed84a93367ba4/child-processes.jsonl",
+        "record_count": 36
+      },
+      {
+        "relative_path": "arms/native/sessions/session-9908556671ea47f58cbc1e073f29fbc7/child-processes.jsonl",
+        "record_count": 44
+      },
+      {
+        "relative_path": "arms/native/sessions/session-d2ed4e80b1fa43788c856a672745370f/child-processes.jsonl",
+        "record_count": 39
+      },
+      {
+        "relative_path": "arms/native/sessions/session-ec875587b925468bb3dc34951c921ea8/child-processes.jsonl",
+        "record_count": 43
+      },
+      {
+        "relative_path": "arms/native/sessions/session-eebefd725d3b4a419a8c37de5ed3c6d3/child-processes.jsonl",
+        "record_count": 35
+      }
+    ],
+    "registered_record_count": 229,
+    "unique_pid_start_sec_usec_identities": 229,
+    "registered_pids_present_now": [],
+    "matching_pid_lstart_identities": [],
+    "parent_pids_present_now": [],
+    "g0_private_root_count": 0,
+    "g0_registry_limitation": "Already deleted by worker; individual G0 identities cannot be independently rechecked from retained registry. Its retained receipt reports complete cleanup.",
+    "retained_cleanup_receipts": [
+      {
+        "attempt_id": "generation-G0",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-chinese-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-compound-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-delimiter-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-exact-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-order-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      },
+      {
+        "attempt_id": "train-quoted-native",
+        "cleanup_complete": true,
+        "remaining_descendants": [],
+        "external_executor_remaining_children": []
+      }
+    ]
+  },
+  "daily_db_open_processes": {
+    "independently_observed_by": "lsof -Fpc and ps pid/lstart only",
+    "processes": [
+      {
+        "pid": 10640,
+        "lstart": "Wed Oct 14 18:30:18 2026",
+        "preexisted_first_pilot_reservation": true
+      },
+      {
+        "pid": 15818,
+        "lstart": "Wed Oct 14 19:09:27 2026",
+        "preexisted_first_pilot_reservation": true
+      },
+      {
+        "pid": 37872,
+        "lstart": "Wed Oct 14 20:33:11 2026",
+        "preexisted_first_pilot_reservation": true
+      }
+    ],
+    "all_preexisted_pilot": true
+  },
+  "daily_drift": {
+    "before_snapshot": "<owned-test-root>/daily-before.json",
+    "controller_reported_hash_comparison": {
+      ".env": "unchanged",
+      "config.yaml": "unchanged",
+      "state.db": "changed",
+      "auth.json": "changed"
+    },
+    "current_credential_files_re_read_by_this_audit": false,
+    "attribution": "Unresolved. Absent experiment session IDs and preexisting database users do not prove every daily byte was untouched or identify the writer.",
+    "disposition": "Preserve observed drift; do not restore auth/state from before snapshot."
+  },
+  "actions": {
+    "killed_processes": [],
+    "deleted_paths": [],
+    "restored_paths": [],
+    "mutated_experiment_or_daily_state": false,
+    "written_artifact_only": "<owned-test-root>/evidence/cleanup-interim-audit.json"
+  },
+  "conclusion": "No registered native pilot process remains and no actual pilot session ID is present in the checked daily tables. Whole-round cleanup is not certified; daily state/auth drift is reported and preserved."
+}

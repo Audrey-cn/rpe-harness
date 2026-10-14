@@ -1,0 +1,20 @@
+{
+  "source_file_sha256": "25e6e8046aad2c4f81ee8b1c69f89f43e7135f4d85aa0394124152b0ba6a6c3e",
+  "source_seal_sha256": "500af01245d7ae23d39c3930e2e4a05207cc4cee898f1b167c068ceb748e927b",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "activate-G1",
+    "result": {
+      "activation_id": "cf8b2d777f584702acc1342372dfc4fe",
+      "applied": true,
+      "artifact_path": "<experiment-root>/arms/rpe_learned/evolution-artifacts/3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43.py",
+      "component": "executor",
+      "content_hash": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+      "kind": "csv_executor",
+      "previous_version_id": null,
+      "status": "succeeded",
+      "version_id": "adc6c2804d9d6356cef4ed40a28b2b552201f634e6a699eefcf09ca60b4f182c"
+    },
+    "sha256": "500af01245d7ae23d39c3930e2e4a05207cc4cee898f1b167c068ceb748e927b"
+  }
+}

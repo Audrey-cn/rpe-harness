@@ -1,0 +1,101 @@
+"""Read-only metadata audit of this acceptance's ownership and daily isolation."""
+from pathlib import Path
+import hashlib, json, os, sqlite3, subprocess, time
+
+from rpe_harness.experiments.learning_comparison import _read_sealed
+from rpe_harness.integrations.hermes_session import _process_table
+
+OWN = Path(__file__).resolve().parent
+names = ('live-final', 'live-producer', 'live-producer-3', 'wire-calibration', 'live-provenance-final', 'binding-supplement')
+before = json.loads((OWN/'daily-before.json').read_text())
+table = _process_table()
+sessions, receipts, identity_pairs, registry_errors = set(), [], set(), []
+registries = []
+for name in names:
+    root = OWN/name
+    for record in sorted((root/'records').glob('*.json')):
+        result = _read_sealed(record)['result']
+        if result.get('session_id'):
+            sessions.add(result['session_id'])
+        if result.get('process_cleanup'):
+            cleanup = result['process_cleanup']
+            receipts.append({'experiment': name, 'attempt_id': record.stem,
+                             'cleanup_complete': cleanup.get('cleanup_complete'),
+                             'external_executor_cleanup_complete': cleanup.get('external_executor_cleanup_complete'),
+                             'remaining_descendants': cleanup.get('remaining_descendants'),
+                             'external_executor_remaining_children': cleanup.get('external_executor_remaining_children')})
+    for registry in root.rglob('child-processes.jsonl'):
+        count = 0
+        try:
+            for line in registry.read_text().splitlines():
+                row = json.loads(line)
+                if type(row.get('pid')) is not int or not isinstance(row.get('lstart'), str):
+                    raise ValueError('invalid actual child identity')
+                identity_pairs.add((row['pid'], row['lstart']))
+                count += 1
+        except Exception as error:
+            registry_errors.append({'path': str(registry.relative_to(OWN)), 'type': type(error).__name__})
+        registries.append({'path': str(registry.relative_to(OWN)), 'count': count})
+for filename in ('owned-job.json', 'calibration-job.json', 'final-owned-job.json', 'binding-supplement-job.json'):
+    path = OWN/'evidence'/filename
+    if path.exists():
+        state = json.loads(path.read_text())
+        identity_pairs.add((state['pid'], state['start_identity']))
+interrupted = json.loads((OWN/'evidence/interrupted-pilot-audit.json').read_text())
+sessions.add(interrupted['unmatched_session_id'])
+alive = [{'pid': pid, 'lstart': start} for pid,start in sorted(identity_pairs)
+         if table.get(pid, (None,None))[1] == start]
+# Inspect only PID/lstart after a private command-prefix filter; never publish argv.
+excluded = set()
+cursor = os.getpid()
+while cursor and cursor not in excluded:
+    excluded.add(cursor)
+    cursor = table.get(cursor, (0,None))[0]
+prefixed = []
+for line in subprocess.check_output(['ps','-axo','pid=,command='], text=True).splitlines():
+    fields = line.strip().split(None,1)
+    if len(fields)==2 and str(OWN) in fields[1] and int(fields[0]) not in excluded:
+        pid = int(fields[0])
+        prefixed.append({'pid':pid,'lstart':table.get(pid,(None,None))[1]})
+daily = {}
+for name, old in before['hermes'].items():
+    path = Path('/Users/audrey/.hermes')/name
+    current = {'exists':path.exists(), 'sha256':hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None}
+    daily[name] = {'before':old,'after':current,'unchanged':current==old}
+database = Path('/Users/audrey/.hermes/state.db')
+matches = {}
+with sqlite3.connect(database.as_uri()+'?mode=ro',uri=True) as db:
+    db.execute('PRAGMA query_only=ON')
+    for (name,) in db.execute("SELECT name FROM sqlite_master WHERE type='table'"):
+        quoted = '"'+name.replace('"','""')+'"'
+        columns = [row[1] for row in db.execute('PRAGMA table_info('+quoted+')')]
+        for column in columns:
+            if column not in {'session_id','parent_session_id','origin_session','origin_ui_session_id','origin_session_id'} and not (name=='sessions' and column=='id'):
+                continue
+            field = '"'+column.replace('"','""')+'"'
+            placeholders = ','.join('?' for _ in sessions)
+            matches[name+'.'+column] = db.execute('SELECT COUNT(*) FROM '+quoted+' WHERE '+field+' IN ('+placeholders+')',tuple(sessions)).fetchone()[0]
+repos = {}
+for name, old in before['old_repositories'].items():
+    cwd = Path('/Users/audrey/项目')/name
+    current = {'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=cwd,text=True).strip(),
+               'status':subprocess.check_output(['git','status','--porcelain'],cwd=cwd,text=True).strip()}
+    repos[name] = {**current,'unchanged':current==old}
+report = {'schema_version':'rpe.round-cleanup-audit/v1','audited_at':time.time(),
+          'scope':'actual experiments only; no malformed pytest fixture registries',
+          'registered_identity_count':len(identity_pairs),'registry_count':len(registries),
+          'registry_errors':registry_errors,'remaining_registered_identities':alive,
+          'owned_prefix_processes_excluding_audit_ancestors':prefixed,
+          'retained_host_cleanup_receipts':receipts,
+          'deleted_worker_registry_limit':'individual private worker identities already removed; retained cleanup receipts are separate evidence',
+          'actual_session_count':len(sessions),'daily_matching_session_counts':matches,
+          'actual_sessions_absent_daily_db':bool(matches) and all(value==0 for value in matches.values()),
+          'private_daily_chat_or_credential_values_selected':False,
+          'daily_hashes':daily,'old_repositories':repos,
+          'daily_auth_state_drift_disposition':'report and preserve; never restore an active user database or credentials',
+          'owned_test_root_exists':OWN.exists(),'root_deleted_by_this_audit':False}
+(OWN/'evidence/final-cleanup-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
+print(json.dumps({'registered':len(identity_pairs),'remaining_registered':alive,'owned_prefix_processes':prefixed,
+                  'daily_session_matches':sum(matches.values()),'registry_errors':len(registry_errors),
+                  'daily_hash_unchanged':{key:value['unchanged']for key,value in daily.items()},
+                  'old_repositories_unchanged':all(value['unchanged']for value in repos.values())},ensure_ascii=False))

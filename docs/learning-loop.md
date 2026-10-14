@@ -22,6 +22,8 @@ rpe-harness evolution worker --owned-root STATE --db DB \
 
 生成器会实际探测前一份原始代码，使用可信训练反馈修订，只提出候选。收据包含原始代码路径/hash、来源绑定、实际API/工具写入关联、已观测成本及清理状态。缺失关联保持未证明；AST变化只作诊断。超时、无效代码和观测错误不会自动变成合格升级。
 
+Hermes CLI 可能省略工具调用 ID。producer 模式只在唯一终端参数与唯一原生写入证明的内容、路径、参数 hash 完全一致时，关联原生事件中的真实 ID；已有冲突 ID、重复记录或缺失 API 链均拒绝。`proof_source=producer_post_tool_guard` 表示原生中间件已检查实际文件，不能替代后续资格验收。
+
 候选仍需 `evolution validate PROPOSAL_ID` 及 `evolution apply PROPOSAL_ID`，通过原有独立资格验收和激活重播。生产每次仍验收结果；坏版本隔离、回退与版本回滚保留。候选不能审批自己、改核心或放宽验证器。
 
 ## 学习实验
@@ -37,3 +39,5 @@ rpe-harness evolution worker --owned-root STATE --db DB \
 本流程没有安装长期服务或定时任务，也未验证任意技能自动学习。工作根、历史、缓存和进程的精确清理由调用者的本轮ownership管理，长期能力资产及用户既有文件不属于测试清理范围。
 
 当前Xiaomi生成profile显式发送thinking.type=disabled和8192输出token上限，仅作用于producer-only；正式原生/RPE生产参数不变。MiMo可能忽略非auto的tool_choice，故“写入→总结”是客户端准入约束，不能声称模型服务端必然服从。官方字段见[MiMo API](https://mimo.mi.com/docs/en-US/api/chat/openai-api)。
+
+本机1.7真实对照已完成48次：原生16/16、内置14/16、学习15/16正确产物；学习程序完整证明的直接复用为14/16。任务约束遗漏和Tab转义错误仍会使准入拒绝；已有`required_request`绑定补验为4/6，未在三次任务尝试预算内消除Tab错误。自动化调用应显式管理结构化参数与有限纠错预算，不能把本轮结果当作稳定无人值守或学习收益证明。详见[1.7报告](../reports/v1.7.0/1.7开发与验收报告.md)。

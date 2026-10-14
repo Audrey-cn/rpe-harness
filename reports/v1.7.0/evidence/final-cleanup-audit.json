@@ -1,0 +1,728 @@
+{
+  "schema_version": "rpe.round-cleanup-audit/v1",
+  "audited_at": 1791993131.89873,
+  "scope": "actual experiments only; no malformed pytest fixture registries",
+  "registered_identity_count": 2212,
+  "registry_count": 76,
+  "registry_errors": [],
+  "remaining_registered_identities": [],
+  "owned_prefix_processes_excluding_audit_ancestors": [],
+  "retained_host_cleanup_receipts": [
+    {
+      "experiment": "live-final",
+      "attempt_id": "generation-G0",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-chinese-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-compound-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-delimiter-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-exact-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-order-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-final",
+      "attempt_id": "train-quoted-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer",
+      "attempt_id": "train-chinese-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer",
+      "attempt_id": "train-compound-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer",
+      "attempt_id": "train-order-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "generation-G0",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-chinese-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-compound-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-delimiter-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-exact-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-order-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-producer-3",
+      "attempt_id": "train-quoted-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "wire-calibration",
+      "attempt_id": "wire-calibration-G0",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-composite-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-crlf-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-empty-values-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-exact-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-multiline-key-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-quote-key-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-tab-case-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r1-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r1-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r1-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r2-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r2-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "eval-unicode-r2-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "generation-G0",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "generation-G1",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-chinese-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-compound-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-delimiter-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-exact-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-order-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "live-provenance-final",
+      "attempt_id": "train-quoted-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-tab-case-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-tab-case-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-tab-case-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-unicode-native",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-unicode-rpe_learned",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    },
+    {
+      "experiment": "binding-supplement",
+      "attempt_id": "bound-eval-unicode-rpe_no_experience",
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "remaining_descendants": [],
+      "external_executor_remaining_children": []
+    }
+  ],
+  "deleted_worker_registry_limit": "individual private worker identities already removed; retained cleanup receipts are separate evidence",
+  "actual_session_count": 81,
+  "daily_matching_session_counts": {
+    "sessions.id": 0,
+    "sessions.parent_session_id": 0,
+    "messages.session_id": 0,
+    "session_model_usage.session_id": 0,
+    "compression_locks.session_id": 0,
+    "async_delegations.origin_session": 0,
+    "async_delegations.origin_ui_session_id": 0,
+    "async_delegations.parent_session_id": 0,
+    "async_delegations.origin_session_id": 0
+  },
+  "actual_sessions_absent_daily_db": true,
+  "private_daily_chat_or_credential_values_selected": false,
+  "daily_hashes": {
+    ".env": {
+      "before": {
+        "exists": true,
+        "sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1"
+      },
+      "unchanged": true
+    },
+    "config.yaml": {
+      "before": {
+        "exists": true,
+        "sha256": "763671d25a311906c1c071001298d75aac37b4cfed07070281b9b84778f5070f"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97"
+      },
+      "unchanged": false
+    },
+    "state.db": {
+      "before": {
+        "exists": true,
+        "sha256": "0aed47286f2bcab7a06c7039bacaf43359bf035ab7a52beefaca9f2c7e0275ea"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "ef09e854911d46b69e4109e91d2600cf3b29a8c3a1bea9db85032d04766a8018"
+      },
+      "unchanged": false
+    },
+    "auth.json": {
+      "before": {
+        "exists": true,
+        "sha256": "12be9a2464048d53b8f8a759ed021af9377f6a6d29a52369ea28f4f6e84cd562"
+      },
+      "after": {
+        "exists": true,
+        "sha256": "99f99ced502306c54b97a95406f6e6c8d8b9219ddc043995da997e92aa8c683c"
+      },
+      "unchanged": false
+    }
+  },
+  "old_repositories": {
+    "progenitor-protocol": {
+      "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+      "status": "",
+      "unchanged": true
+    },
+    "progenitor-registry": {
+      "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+      "status": "",
+      "unchanged": true
+    }
+  },
+  "daily_auth_state_drift_disposition": "report and preserve; never restore an active user database or credentials",
+  "owned_test_root_exists": true,
+  "root_deleted_by_this_audit": false
+}

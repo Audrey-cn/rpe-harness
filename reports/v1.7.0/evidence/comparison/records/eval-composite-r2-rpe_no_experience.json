@@ -1,0 +1,235 @@
+{
+  "source_file_sha256": "621b2b5fca6121ae1f4f34b10254cb5891e02c0dd4350822eee1063029d568a4",
+  "source_seal_sha256": "72e1703c5208b5897aa72ba6dec6f196c8e690856d462e8f60d52dcaba5c8e79",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "eval-composite-r2-rpe_no_experience",
+    "result": {
+      "actual_executor": {
+        "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "builtin",
+        "plan_sha256": "c942aa62d20ea5de374d73dbbe7804c9560820791d7439fe0a075f96ea6f5a07"
+      },
+      "actual_prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+      "api_calls": [
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "kind": "pre_api_request",
+          "model_tool_calls": null,
+          "request_tool_choice": "rpe_task",
+          "request_tool_names": [
+            "rpe_task"
+          ],
+          "request_tools_sha256": "8821b4bd070bb7a53ac0fb6b3817e5d957ee41e84b57e39287c91cc084912ee5",
+          "response_model": null,
+          "session_id": "20261014_231447_0952ef",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "kind": "post_api_request",
+          "model_tool_calls": [
+            {
+              "tool_call_id": "call_b0ee2eae0429472982e4bc1e",
+              "tool_name": "rpe_task"
+            }
+          ],
+          "request_tool_choice": null,
+          "request_tool_names": null,
+          "request_tools_sha256": null,
+          "response_model": "mimo-v2.6-pro",
+          "session_id": "20261014_231447_0952ef",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:2",
+          "kind": "pre_api_request",
+          "model_tool_calls": null,
+          "request_tool_choice": "none",
+          "request_tool_names": [
+            "rpe_task"
+          ],
+          "request_tools_sha256": "8821b4bd070bb7a53ac0fb6b3817e5d957ee41e84b57e39287c91cc084912ee5",
+          "response_model": null,
+          "session_id": "20261014_231447_0952ef",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:2",
+          "kind": "post_api_request",
+          "model_tool_calls": [],
+          "request_tool_choice": null,
+          "request_tool_names": null,
+          "request_tools_sha256": null,
+          "response_model": "mimo-v2.6-pro",
+          "session_id": "20261014_231447_0952ef",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        }
+      ],
+      "arm": "rpe_no_experience",
+      "artifact_correct": true,
+      "artifact_rows_correct": true,
+      "attempt_id": "eval-composite-r2-rpe_no_experience",
+      "candidate_direct_success": false,
+      "candidate_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+      "candidate_version_id": null,
+      "case_id": "eval-composite",
+      "comparable": true,
+      "event_digest": "00dc6789c8e6ab475133c93564ae2857ff9bbaa0a837caa9062aee13e702fe39",
+      "fallback": false,
+      "file_write_observations": [],
+      "fresh_run": true,
+      "fresh_session": true,
+      "gate": {
+        "artifact": {
+          "actual_executor": {
+            "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+            "executor_id": "builtin/csv-deduplicate",
+            "kind": "builtin",
+            "plan_sha256": "c942aa62d20ea5de374d73dbbe7804c9560820791d7439fe0a075f96ea6f5a07"
+          },
+          "format": "csv",
+          "input_rows": 4,
+          "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+          "output_rows": 3,
+          "path": "<experiment-root>/arms/rpe_no_experience/workspace/eval-composite-r2/output.csv",
+          "plan_sha256": "c942aa62d20ea5de374d73dbbe7804c9560820791d7439fe0a075f96ea6f5a07",
+          "published": true,
+          "removed_rows": 1,
+          "sha256": "7b08b479ed681a968feadc80c13f5f9bcff65b59543405509e9a619b0b22fc5f"
+        },
+        "contract_sha256": "5875118e4b5e7e6434e9ca4fe1907fb9d81dc3dca2555faff79266eda55e58c9",
+        "errors": [],
+        "harness_verified": true,
+        "plan_sha256": "c942aa62d20ea5de374d73dbbe7804c9560820791d7439fe0a075f96ea6f5a07",
+        "receipt_id": "3c439268359843c68d2c938fe7cbd08a",
+        "run_id": "f2f241f3219f49889be845fa6eb73ae1",
+        "status": "succeeded",
+        "verification": {
+          "checks": {
+            "duplicates_removed": true,
+            "first_records_preserved": true,
+            "headers_preserved": true,
+            "record_order_preserved": true,
+            "request_bound": true,
+            "source_unchanged": true
+          },
+          "input_rows": 4,
+          "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+          "output_rows": 3,
+          "output_sha256": "7b08b479ed681a968feadc80c13f5f9bcff65b59543405509e9a619b0b22fc5f",
+          "passed": true,
+          "plan_sha256": "c942aa62d20ea5de374d73dbbe7804c9560820791d7439fe0a075f96ea6f5a07",
+          "removed_rows": 1
+        },
+        "verified": true
+      },
+      "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+      "invocation_evidence": true,
+      "label": "eval-composite-r2",
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "original_prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+      "output_sha256": "7b08b479ed681a968feadc80c13f5f9bcff65b59543405509e9a619b0b22fc5f",
+      "process_cleanup": {
+        "cleanup_complete": true,
+        "errors": [],
+        "external_executor_cleanup_complete": true,
+        "external_executor_remaining_children": [],
+        "external_executor_tracked_children": 1,
+        "remaining_descendants": [],
+        "signaled_descendants": 0,
+        "tracked_descendants": 23
+      },
+      "product_oracle_passed": true,
+      "prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+      "repeat": 2,
+      "run_id": "f2f241f3219f49889be845fa6eb73ae1",
+      "session_id": "20261014_231447_0952ef",
+      "session_root": "<experiment-root>/arms/rpe_no_experience/sessions/session-12f78fad1bb741a3b454741cd854861a",
+      "source_preserved": true,
+      "status": "succeeded",
+      "tool_calls": [
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "arguments_sha256": "c991b4fc98f2e2e33838bb90d6919a8774d6f23a79ce88696a3fc710dd07fc47",
+          "kind": "pre_tool_call",
+          "receipt_id": null,
+          "run_id": null,
+          "session_id": "20261014_231447_0952ef",
+          "status": null,
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "tool_call_id": "call_b0ee2eae0429472982e4bc1e",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "arguments_sha256": null,
+          "kind": "rpe_task_received",
+          "receipt_id": null,
+          "run_id": null,
+          "session_id": "20261014_231447_0952ef",
+          "status": null,
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "tool_call_id": "call_b0ee2eae0429472982e4bc1e",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "arguments_sha256": null,
+          "kind": "rpe_task_returned",
+          "receipt_id": "3c439268359843c68d2c938fe7cbd08a",
+          "run_id": "f2f241f3219f49889be845fa6eb73ae1",
+          "session_id": "20261014_231447_0952ef",
+          "status": "succeeded",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "tool_call_id": "call_b0ee2eae0429472982e4bc1e",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        },
+        {
+          "api_request_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac:api:1",
+          "arguments_sha256": "c991b4fc98f2e2e33838bb90d6919a8774d6f23a79ce88696a3fc710dd07fc47",
+          "kind": "post_tool_call",
+          "receipt_id": "3c439268359843c68d2c938fe7cbd08a",
+          "run_id": "f2f241f3219f49889be845fa6eb73ae1",
+          "session_id": "20261014_231447_0952ef",
+          "status": "ok",
+          "task_id": "350f0ac0-56e7-444d-970e-1a7880225a8b",
+          "tool_call_id": "call_b0ee2eae0429472982e4bc1e",
+          "tool_name": "rpe_task",
+          "turn_id": "20261014_231447_0952ef:350f0ac0-56e7-444d-970e-1a7880225a8b:86b708ac"
+        }
+      ],
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 3840,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 2469,
+        "known_total_tokens": 6653,
+        "missing_observations": 0,
+        "output_tokens": 344,
+        "prompt_tokens": 6309,
+        "reasoning_tokens": 115,
+        "requests_with_usage": 2,
+        "total_tokens": 6653
+      },
+      "workflow_verified": true
+    },
+    "sha256": "72e1703c5208b5897aa72ba6dec6f196c8e690856d462e8f60d52dcaba5c8e79"
+  }
+}

@@ -1,0 +1,362 @@
+{
+  "arms": [
+    {
+      "arm": "rpe_learned",
+      "attempt_id": "eval-tab-case-r1-rpe_learned",
+      "durable_runs": [
+        {
+          "actual_contract_sha256": "55760f585ee958c5dbf3be093273d9cc344ff74fd53bd2985e3171baf5156c7c",
+          "actual_normalized_contract": {
+            "capability": "tabular.deduplicate",
+            "constraints": [],
+            "contract_version": 1,
+            "execution": {
+              "delimiter": "\\t",
+              "encoding": "utf-8",
+              "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/input.csv",
+              "keep": "first",
+              "key_columns": [
+                "label",
+                "item"
+              ],
+              "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/output.csv",
+              "sheet": null
+            }
+          },
+          "artifact_present": false,
+          "candidate_invocation_observed": false,
+          "contract_differences": [
+            {
+              "actual": [],
+              "path": "constraints",
+              "required": [
+                "preserve_order",
+                "preserve_original"
+              ]
+            },
+            {
+              "actual": "\\t",
+              "path": "execution.delimiter",
+              "required": "\t"
+            }
+          ],
+          "delimiter": {
+            "actual_codepoints": [
+              92,
+              116
+            ],
+            "actual_length": 2,
+            "actual_text": "\\t",
+            "required_codepoints": [
+              9
+            ],
+            "required_length": 1
+          },
+          "error": {
+            "code": "invalid_request",
+            "message": "delimiter must be a single non-newline character",
+            "type": "ValueError"
+          },
+          "receipt_contract_sha256": "55760f585ee958c5dbf3be093273d9cc344ff74fd53bd2985e3171baf5156c7c",
+          "receipt_matches_actual_contract": true,
+          "run_id": "218c2a7149964524be143d0ad77a5700",
+          "stage": "validate",
+          "stages": [
+            "validate"
+          ],
+          "status": "rejected"
+        }
+      ],
+      "original_evaluation": {
+        "artifact_correct": false,
+        "artifact_rows_correct": false,
+        "candidate_direct_success": false,
+        "error_code": "fresh_session_or_execution_missing",
+        "fresh_run": false,
+        "fresh_session": true,
+        "gate": null,
+        "product_oracle_passed": false,
+        "run_id": null,
+        "source_preserved": false,
+        "status": "failed",
+        "workflow_verified": false
+      },
+      "original_record_sha256": "b60fc080ff534d0976164db3e2ded1ca7ef0ec45731f048b79898c2eadc4d692",
+      "requested_files": {
+        "requested_output_lexists": false,
+        "requested_output_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/output.csv",
+        "source_bytes": 64,
+        "source_data_rows": 4,
+        "source_header_literals": [
+          "item",
+          "label",
+          "payload"
+        ],
+        "source_is_stable_regular_file": true,
+        "source_matches_registered_fixture": true,
+        "source_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/input.csv",
+        "source_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d"
+      },
+      "required_contract_sha256": "8a0667c7ec0bfa4d2df962f649e43a8e35ca5772e211ab19437a2a906a2302d3",
+      "required_normalized_contract": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_order",
+          "preserve_original"
+        ],
+        "contract_version": 1,
+        "execution": {
+          "delimiter": "\t",
+          "encoding": "utf-8",
+          "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/input.csv",
+          "keep": "first",
+          "key_columns": [
+            "label",
+            "item"
+          ],
+          "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-tab-case-r1/output.csv",
+          "sheet": null
+        }
+      },
+      "session_id": "20261014_230522_f8922c",
+      "source_preserved_flag_interpretation": "Original source_preserved=false was initialized before requested output read; the missing output prevented that measurement. Independent current source hash equals the registered fixture. It is not evidence of source mutation.",
+      "tool_outcomes": [
+        {
+          "api_request_id": "20261014_230522_f8922c:f2080e6d-3554-4a2c-b48d-9f4f62adf680:148e1260:api:1",
+          "contract_sha256": "55760f585ee958c5dbf3be093273d9cc344ff74fd53bd2985e3171baf5156c7c",
+          "error_code": "invalid_request",
+          "receipt_id": "868dd70e78f746d5b4e3df49963c4f00",
+          "run_id": "218c2a7149964524be143d0ad77a5700",
+          "status": "rejected",
+          "tool_call_id": "call_c42c25de945d4e9e8b34deec"
+        },
+        {
+          "api_request_id": "20261014_230522_f8922c:f2080e6d-3554-4a2c-b48d-9f4f62adf680:148e1260:api:2",
+          "contract_sha256": "307da0d3a9e0db22639115c246a14f53b6c5a10dd724829d3a61f6c041060ff5",
+          "error_code": "entry_policy_none",
+          "receipt_id": "45be9b7db840405cb02a736921a7b345",
+          "run_id": null,
+          "status": "rejected",
+          "tool_call_id": "call_61d02c86ead342d897b6a56e"
+        },
+        {
+          "api_request_id": "20261014_230522_f8922c:f2080e6d-3554-4a2c-b48d-9f4f62adf680:148e1260:api:3",
+          "contract_sha256": "8a0667c7ec0bfa4d2df962f649e43a8e35ca5772e211ab19437a2a906a2302d3",
+          "error_code": "entry_policy_none",
+          "receipt_id": "e5581853d6634402acc8716fd68e327b",
+          "run_id": null,
+          "status": "rejected",
+          "tool_call_id": "call_3fdcc8b5e1c34b1b8e713cf9"
+        },
+        {
+          "api_request_id": "20261014_230522_f8922c:f2080e6d-3554-4a2c-b48d-9f4f62adf680:148e1260:api:4",
+          "contract_sha256": "307da0d3a9e0db22639115c246a14f53b6c5a10dd724829d3a61f6c041060ff5",
+          "error_code": "task_attempt_limit",
+          "receipt_id": "1c06c19f47064501a613c9d7d966f7e4",
+          "run_id": null,
+          "status": "rejected",
+          "tool_call_id": "call_16297bedee9a495997a66177"
+        }
+      ]
+    },
+    {
+      "arm": "rpe_no_experience",
+      "attempt_id": "eval-tab-case-r1-rpe_no_experience",
+      "durable_runs": [
+        {
+          "actual_contract_sha256": "63a97d12b030a089dfd98d7feef8b1018b7c64cb80fcab28df9491ac7f0592f1",
+          "actual_normalized_contract": {
+            "capability": "tabular.deduplicate",
+            "constraints": [
+              "preserve_order",
+              "preserve_original"
+            ],
+            "contract_version": 1,
+            "execution": {
+              "delimiter": "\\t",
+              "encoding": "utf-8",
+              "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/input.csv",
+              "keep": "first",
+              "key_columns": [
+                "label",
+                "item"
+              ],
+              "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/output.csv",
+              "sheet": null
+            }
+          },
+          "artifact_present": false,
+          "candidate_invocation_observed": false,
+          "contract_differences": [
+            {
+              "actual": "\\t",
+              "path": "execution.delimiter",
+              "required": "\t"
+            }
+          ],
+          "delimiter": {
+            "actual_codepoints": [
+              92,
+              116
+            ],
+            "actual_length": 2,
+            "actual_text": "\\t",
+            "required_codepoints": [
+              9
+            ],
+            "required_length": 1
+          },
+          "error": {
+            "code": "invalid_request",
+            "message": "delimiter must be a single non-newline character",
+            "type": "ValueError"
+          },
+          "receipt_contract_sha256": "63a97d12b030a089dfd98d7feef8b1018b7c64cb80fcab28df9491ac7f0592f1",
+          "receipt_matches_actual_contract": true,
+          "run_id": "73cd9e7926024c49a3a23341c663aea2",
+          "stage": "validate",
+          "stages": [
+            "validate"
+          ],
+          "status": "rejected"
+        }
+      ],
+      "original_evaluation": {
+        "artifact_correct": false,
+        "artifact_rows_correct": false,
+        "candidate_direct_success": false,
+        "error_code": "fresh_session_or_execution_missing",
+        "fresh_run": false,
+        "fresh_session": true,
+        "gate": null,
+        "product_oracle_passed": false,
+        "run_id": null,
+        "source_preserved": false,
+        "status": "failed",
+        "workflow_verified": false
+      },
+      "original_record_sha256": "e7f46cc85737d851cfb80619dba57f9fa85f5eba9646075c12b80f77db55aeed",
+      "requested_files": {
+        "requested_output_lexists": false,
+        "requested_output_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/output.csv",
+        "source_bytes": 64,
+        "source_data_rows": 4,
+        "source_header_literals": [
+          "item",
+          "label",
+          "payload"
+        ],
+        "source_is_stable_regular_file": true,
+        "source_matches_registered_fixture": true,
+        "source_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/input.csv",
+        "source_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d"
+      },
+      "required_contract_sha256": "00895564889dc775f62825d938ee55097da130f8421ad6c3e71981a9978710ad",
+      "required_normalized_contract": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_order",
+          "preserve_original"
+        ],
+        "contract_version": 1,
+        "execution": {
+          "delimiter": "\t",
+          "encoding": "utf-8",
+          "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/input.csv",
+          "keep": "first",
+          "key_columns": [
+            "label",
+            "item"
+          ],
+          "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_no_experience/workspace/eval-tab-case-r1/output.csv",
+          "sheet": null
+        }
+      },
+      "session_id": "20261014_230812_262b2c",
+      "source_preserved_flag_interpretation": "Original source_preserved=false was initialized before requested output read; the missing output prevented that measurement. Independent current source hash equals the registered fixture. It is not evidence of source mutation.",
+      "tool_outcomes": [
+        {
+          "api_request_id": "20261014_230812_262b2c:eecdfc26-1093-4dbf-9adf-e2befb48f90b:10fb2964:api:1",
+          "contract_sha256": "63a97d12b030a089dfd98d7feef8b1018b7c64cb80fcab28df9491ac7f0592f1",
+          "error_code": "invalid_request",
+          "receipt_id": "d23ebe0241c246fc9c9fa572377830a2",
+          "run_id": "73cd9e7926024c49a3a23341c663aea2",
+          "status": "rejected",
+          "tool_call_id": "call_b2d4a92c8223439d9fb548ab"
+        },
+        {
+          "api_request_id": "20261014_230812_262b2c:eecdfc26-1093-4dbf-9adf-e2befb48f90b:10fb2964:api:2",
+          "contract_sha256": "00895564889dc775f62825d938ee55097da130f8421ad6c3e71981a9978710ad",
+          "error_code": "entry_policy_none",
+          "receipt_id": "6552b5a1f15e48eaaebd03e27fff9e6d",
+          "run_id": null,
+          "status": "rejected",
+          "tool_call_id": "call_8e2843ec72d548b78c3aa14f"
+        },
+        {
+          "api_request_id": "20261014_230812_262b2c:eecdfc26-1093-4dbf-9adf-e2befb48f90b:10fb2964:api:3",
+          "contract_sha256": "720dbe9cd1de7d5c3b73b50253762f951731a1d2478e14cc5c696dcb6d206b69",
+          "error_code": "entry_policy_none",
+          "receipt_id": "2028ffc2080d44d6b06193f070721ce9",
+          "run_id": null,
+          "status": "rejected",
+          "tool_call_id": "call_4aeee7d5a0fb4fa6bf169c81"
+        }
+      ]
+    }
+  ],
+  "conclusion": "Both arms passed a literal backslash+t string (two characters) as delimiter instead of one U+0009 TAB. Validation correctly rejected before candidate/builtin execution or artifact publication. Both source hashes independently match the public fixture; missing requested outputs are real, source mutation is not established. Learned also omitted the required constraints; fixed supplied both. Later model retries were denied after the terminal durable rejection, with learned eventually reaching its task-attempt limit.",
+  "future_supplement": {
+    "fixed_request_supplied_to_all_arms": true,
+    "note": "Explicit fixed-contract injection tests a different task-presentation/admission condition. Record source/actual prompt hashes, U+0009 delimiter semantics, constraints forwarding, source measurement independently of output presence, invocation evidence, fresh identities, and incremental/cumulative costs. Do not treat supplemental success as a rescore or learning-benefit proof.",
+    "original_natural_prompt_results_and_scores_preserved": true,
+    "planned_arms": [
+      "native",
+      "rpe_no_experience",
+      "rpe_learned"
+    ],
+    "planned_cases": [
+      "eval-unicode",
+      "eval-tab-case"
+    ],
+    "planned_sessions": 6,
+    "same_frozen_source_and_candidate": true,
+    "separate_registration": true
+  },
+  "observed_at_utc": "2026-10-14T15:16:40.589431+00:00",
+  "public_requirement": {
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "delimiter_codepoints": [
+      9
+    ],
+    "delimiter_length": 1,
+    "encoding": "utf-8",
+    "keep": "first",
+    "key_columns": [
+      "label",
+      "item"
+    ],
+    "registered_input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d"
+  },
+  "schema_version": "rpe.tab-contract-diagnostic/v1",
+  "scope": {
+    "case_id": "eval-tab-case",
+    "experiment_root": "<owned-test-root>/live-provenance-final",
+    "live_calls_made": false,
+    "metadata_only": true,
+    "original_records_changed": false,
+    "production_head": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
+    "read_mode": "SQLite URI mode=ro with read transaction",
+    "repeat": 1,
+    "source_or_database_changed": false
+  },
+  "source_references": {
+    "case_literal": "src/rpe_harness/experiments/learning_comparison.py:88-89",
+    "delimiter_validation": "src/rpe_harness/contracts.py:142-143",
+    "output_before_source_measurement": "src/rpe_harness/experiments/learning_comparison.py:420-433",
+    "strict_terminal_entry": "src/rpe_harness/integrations/hermes.py:816-855"
+  }
+}

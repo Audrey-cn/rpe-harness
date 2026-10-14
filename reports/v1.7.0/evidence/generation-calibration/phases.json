@@ -1,0 +1,39 @@
+[
+  {
+    "api_expected": true,
+    "arm": "rpe_learned",
+    "attempt_id": "wire-calibration-G0",
+    "phase": "generation",
+    "reserved_at": 1791988017.9998348,
+    "schema_version": "rpe.phase-ledger/v1",
+    "scope": "operational",
+    "status": "completed",
+    "record_sha256": "00de0b9c06faa4ece8b667fb890ae087dd767c49b775fe84d9182b93672164d0",
+    "candidate_sha256": "52477be18715633f3739aea76d50f7d23447f62110de94a46cc300bb12022009",
+    "elapsed_seconds": 55.62244954199923,
+    "finished_at": 1791988073.623728,
+    "model_identity": {
+      "provider": "xiaomi",
+      "requested_model": "mimo-v2.6-pro",
+      "response_models": [
+        "mimo-v2.6-pro"
+      ]
+    },
+    "reservation_sha256": "6822e9fab32859161d04567f5bd3bfea3ef5a3f77397f5d912eb040485da23fc",
+    "usage": {
+      "api_errors": 0,
+      "api_requests": 2,
+      "cache_read_tokens": 6144,
+      "cache_write_tokens": null,
+      "coverage_complete": true,
+      "input_tokens": 4259,
+      "known_total_tokens": 12345,
+      "missing_observations": 0,
+      "output_tokens": 1942,
+      "prompt_tokens": 10403,
+      "reasoning_tokens": 0,
+      "requests_with_usage": 2,
+      "total_tokens": 12345
+    }
+  }
+]

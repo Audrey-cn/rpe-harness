@@ -1,0 +1,963 @@
+{
+  "source_file_sha256": "38325e12a3f834c6c65f9d70324a2262e0705047ea00404fad0f4ca896885eea",
+  "source_seal_sha256": "cd7e3a3f2abafeff6806a51151f1e5fc961bbcea93bc7d30bd9d5b9755622cca",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "analysis_units": 8,
+    "diagnostic_policy": "G0/G1 is diagnostic pre/post, not an isolated feedback causal ablation",
+    "generation_limit": 3,
+    "generation_max_turns": 6,
+    "generation_tool_profile": "producer-only/native-write-file",
+    "holdout": [
+      {
+        "case_id": "eval-exact",
+        "expected_rows": [
+          [
+            "value",
+            "ref"
+          ],
+          [
+            "first",
+            "001"
+          ],
+          [
+            "numeric",
+            "1"
+          ],
+          [
+            "space",
+            " 001"
+          ]
+        ],
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "ref"
+          ]
+        },
+        "source_text": "value,ref\nfirst,001\nnumeric,1\nspace, 001\nlater,001\n"
+      },
+      {
+        "case_id": "eval-composite",
+        "expected_rows": [
+          [
+            "memo",
+            "zone",
+            "product"
+          ],
+          [
+            "first",
+            "east",
+            "007"
+          ],
+          [
+            "next",
+            "west",
+            "007"
+          ],
+          [
+            "third",
+            "east",
+            "7"
+          ]
+        ],
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "product",
+            "zone"
+          ]
+        },
+        "source_text": "memo,zone,product\nfirst,east,007\nnext,west,007\ndup,east,007\nthird,east,7\n"
+      },
+      {
+        "case_id": "eval-unicode",
+        "expected_rows": [
+          [
+            "描述",
+            "索引"
+          ],
+          [
+            "蓝|绿",
+            "丙"
+          ],
+          [
+            "白",
+            "丁"
+          ]
+        ],
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "parameters": {
+          "delimiter": "|",
+          "encoding": "utf-8-sig",
+          "keep": "first",
+          "key_columns": [
+            "索引"
+          ]
+        },
+        "source_text": "描述|索引\n\"蓝|绿\"|丙\n白|丁\n红|丙\n"
+      },
+      {
+        "case_id": "eval-multiline-key",
+        "expected_rows": [
+          [
+            "payload",
+            "identity"
+          ],
+          [
+            "first",
+            "line\nbreak"
+          ],
+          [
+            "second",
+            "line break"
+          ]
+        ],
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "identity"
+          ]
+        },
+        "source_text": "payload,identity\nfirst,\"line\nbreak\"\nsecond,\"line break\"\nlater,\"line\nbreak\"\n"
+      },
+      {
+        "case_id": "eval-quote-key",
+        "expected_rows": [
+          [
+            "body",
+            "reference",
+            "batch"
+          ],
+          [
+            "first",
+            "q\"r",
+            "K"
+          ],
+          [
+            "second",
+            "q\"r",
+            "L"
+          ]
+        ],
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "parameters": {
+          "delimiter": ";",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "reference",
+            "batch"
+          ]
+        },
+        "source_text": "body;reference;batch\nfirst;\"q\"\"r\";K\nsecond;\"q\"\"r\";L\nlater;\"q\"\"r\";K\n"
+      },
+      {
+        "case_id": "eval-tab-case",
+        "expected_rows": [
+          [
+            "item",
+            "label",
+            "payload"
+          ],
+          [
+            "UP",
+            "X",
+            "first"
+          ],
+          [
+            "up",
+            "X",
+            "second"
+          ],
+          [
+            "UP",
+            "x",
+            "third"
+          ]
+        ],
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "parameters": {
+          "delimiter": "\t",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "label",
+            "item"
+          ]
+        },
+        "source_text": "item\tlabel\tpayload\nUP\tX\tfirst\nup\tX\tsecond\nUP\tX\tlater\nUP\tx\tthird\n"
+      },
+      {
+        "case_id": "eval-empty-values",
+        "expected_rows": [
+          [
+            "detail",
+            "record"
+          ],
+          [
+            "",
+            "z9"
+          ],
+          [
+            "",
+            "z8"
+          ],
+          [
+            "comma,here",
+            "z7"
+          ]
+        ],
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "record"
+          ]
+        },
+        "source_text": "detail,record\n,z9\n\"\",z8\nlater,z9\n\"comma,here\",z7\n"
+      },
+      {
+        "case_id": "eval-crlf",
+        "expected_rows": [
+          [
+            "message",
+            "group",
+            "sequence"
+          ],
+          [
+            "one\r\ntwo",
+            "G",
+            "09"
+          ],
+          [
+            "next",
+            "G",
+            "9"
+          ]
+        ],
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "sequence",
+            "group"
+          ]
+        },
+        "source_text": "message,group,sequence\r\n\"one\r\ntwo\",G,09\r\nnext,G,9\r\nlater,G,09\r\n"
+      }
+    ],
+    "policy": "native terminal/file; both RPE arms identical strict task tools and budget; only active executor differs",
+    "production_max_task_attempts": 3,
+    "registered_environment": {
+      "host_config_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+      "python": "<owned-test-root>/installed/bin/python",
+      "python_version": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+      "source_sha256": {
+        "__init__.py": "0bcdb3314c8fc75ab63fe7f3dabe38d29ff2618a0f4bec31fd5d17a387c783f1",
+        "__main__.py": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+        "assets/__init__.py": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+        "assets/catalog.py": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+        "assets/cli.py": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+        "assets/identity.py": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+        "assets/lifecycle.py": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+        "assets/manifest.py": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+        "assets/prepublish.py": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+        "assets/registry.py": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+        "assets/store.py": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+        "assets/trust.py": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+        "bridge.py": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+        "capability.py": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+        "causal_graph.py": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+        "cli.py": "24dda8b75b6ad9618f9a773da4faf2d1eaa5f7de01b6cac5091937cce0a823af",
+        "context.py": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+        "contracts.py": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+        "evolution/__init__.py": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+        "evolution/candidates.py": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+        "evolution/cycle.py": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+        "evolution/json_acceptance.py": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+        "evolution/maintenance.py": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+        "evolution/sandbox.py": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+        "evolution/store.py": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+        "evolution/training_feedback.py": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+        "evolution/worker.py": "bf87f197cd08b8f044e8d2c9f23f28dc52a9f8c869db0467a201b027e82d5562",
+        "execution.py": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+        "experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+        "experiments/baseline.py": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+        "experiments/basic_validation.py": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+        "experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+        "experiments/cost_ledger.py": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+        "experiments/hermes_native.py": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+        "experiments/hermes_repeated.py": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+        "experiments/learning_comparison.py": "4671712d49f213b835453490bac7e2c9098b4e6053a8df101e2f54513ffb47f6",
+        "experiments/reuse_sequence.py": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+        "experiments/skill_comparison.py": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+        "experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+        "experiments/unattended_sequence.py": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+        "integrations/__init__.py": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+        "integrations/hermes.py": "acc1d6750846b5b110fa8ee3a6b40ab0c55a85f4c305dfa568cbb740f9bdc1c2",
+        "integrations/hermes_bootstrap.py": "7ace62a2f23b2a3b55903952969119e2288f2767abe64db0f834d7e5fc266117",
+        "integrations/hermes_broker.py": "f6fd4a5eb0dc03dc675c573ecc946bc293e355252d678c38230ca3c42d27124c",
+        "integrations/hermes_gate.py": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+        "integrations/hermes_session.py": "7e4d7c4f597ca802a76e70602fe604c38729fd1413130fd182907c19aa45c35d",
+        "integrations/hermes_skills.py": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+        "integrations/skill_gate.py": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+        "json_contract.py": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+        "json_execution.py": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+        "json_verification.py": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+        "mcsi.py": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+        "path_binding.py": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+        "recovery.py": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+        "runtime.py": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+        "server.py": "78d184ea5787c8e1cadc039d931773618a243b665deb177dd6f41f212075320b",
+        "skill_catalog.py": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+        "skill_cli.py": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+        "skill_inspection.py": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+        "skill_verification.py": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+        "storage.py": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+        "tasks.py": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+        "verification.py": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+        "xlsx_resource.py": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b"
+      }
+    },
+    "repeats_independent": false,
+    "resume_policy": "reserved attempts remain incomplete on interruption; no automatic replacement",
+    "root": "<experiment-root>",
+    "schema_version": "rpe.learning-comparison/v1",
+    "sessions": [
+      {
+        "arm": "native",
+        "attempt_id": "eval-exact-r1-native",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r1",
+        "prompt_sha256": "9efbae5142fc1f6a32d313594d6ff7e078c7ffcef983c098586742489b003294",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-exact-r1-rpe_no_experience",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r1",
+        "prompt_sha256": "9efbae5142fc1f6a32d313594d6ff7e078c7ffcef983c098586742489b003294",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-exact-r1-rpe_learned",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r1",
+        "prompt_sha256": "9efbae5142fc1f6a32d313594d6ff7e078c7ffcef983c098586742489b003294",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-composite-r1-rpe_no_experience",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r1",
+        "prompt_sha256": "93742ceed6c17438b3e2ddcd32721204b0649de3c03c75547b2e414a4072f914",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-composite-r1-rpe_learned",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r1",
+        "prompt_sha256": "93742ceed6c17438b3e2ddcd32721204b0649de3c03c75547b2e414a4072f914",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-composite-r1-native",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r1",
+        "prompt_sha256": "93742ceed6c17438b3e2ddcd32721204b0649de3c03c75547b2e414a4072f914",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-unicode-r1-rpe_learned",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r1",
+        "prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-unicode-r1-native",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r1",
+        "prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-unicode-r1-rpe_no_experience",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r1",
+        "prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-multiline-key-r1-native",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r1",
+        "prompt_sha256": "52717cbcbe57513ec1d8a0e1d03a0d717a67084a31cc4355af4e7b6bd1bc2d62",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-multiline-key-r1-rpe_no_experience",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r1",
+        "prompt_sha256": "52717cbcbe57513ec1d8a0e1d03a0d717a67084a31cc4355af4e7b6bd1bc2d62",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-multiline-key-r1-rpe_learned",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r1",
+        "prompt_sha256": "52717cbcbe57513ec1d8a0e1d03a0d717a67084a31cc4355af4e7b6bd1bc2d62",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-quote-key-r1-rpe_no_experience",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r1",
+        "prompt_sha256": "27289f5fa0f3bb6cdda3e7562c23b46c52f3e802cbf5e350a30ac9275204f6b0",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-quote-key-r1-rpe_learned",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r1",
+        "prompt_sha256": "27289f5fa0f3bb6cdda3e7562c23b46c52f3e802cbf5e350a30ac9275204f6b0",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-quote-key-r1-native",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r1",
+        "prompt_sha256": "27289f5fa0f3bb6cdda3e7562c23b46c52f3e802cbf5e350a30ac9275204f6b0",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-tab-case-r1-rpe_learned",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r1",
+        "prompt_sha256": "ed0df21e6becea8c073c5fb701971c0876ea20753f493f915a1e083c24784219",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-tab-case-r1-native",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r1",
+        "prompt_sha256": "ed0df21e6becea8c073c5fb701971c0876ea20753f493f915a1e083c24784219",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-tab-case-r1-rpe_no_experience",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r1",
+        "prompt_sha256": "ed0df21e6becea8c073c5fb701971c0876ea20753f493f915a1e083c24784219",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-empty-values-r1-native",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r1",
+        "prompt_sha256": "c4b98187cffdedc35d75e26511b42df3cbf4be2ba51a08a5fc6e6df0e5d1d0d1",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-empty-values-r1-rpe_no_experience",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r1",
+        "prompt_sha256": "c4b98187cffdedc35d75e26511b42df3cbf4be2ba51a08a5fc6e6df0e5d1d0d1",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-empty-values-r1-rpe_learned",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r1",
+        "prompt_sha256": "c4b98187cffdedc35d75e26511b42df3cbf4be2ba51a08a5fc6e6df0e5d1d0d1",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-crlf-r1-rpe_no_experience",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r1",
+        "prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-crlf-r1-rpe_learned",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r1",
+        "prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+        "repeat": 1
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-crlf-r1-native",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r1",
+        "prompt_sha256": "fd0ed6ff11e424e95d98a24b3a185fb58ec82f212c8f4f04f772882a282eec83",
+        "repeat": 1
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-exact-r2-rpe_no_experience",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r2",
+        "prompt_sha256": "43936e55a21b367327de21d955bf190c0dbd8aa6cc58e3eafc59df78bee05de3",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-exact-r2-rpe_learned",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r2",
+        "prompt_sha256": "43936e55a21b367327de21d955bf190c0dbd8aa6cc58e3eafc59df78bee05de3",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-exact-r2-native",
+        "case_id": "eval-exact",
+        "input_sha256": "139b2f2ac287a01a4099c47781f82ebaaa99d38ede7b69147e7fcc4d7662d2a6",
+        "label": "eval-exact-r2",
+        "prompt_sha256": "43936e55a21b367327de21d955bf190c0dbd8aa6cc58e3eafc59df78bee05de3",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-composite-r2-rpe_learned",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r2",
+        "prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-composite-r2-native",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r2",
+        "prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-composite-r2-rpe_no_experience",
+        "case_id": "eval-composite",
+        "input_sha256": "670a577b3c46fd186396ce71f429265feaaa8218aba81ee93b850cf466685bc3",
+        "label": "eval-composite-r2",
+        "prompt_sha256": "88da347004186120616e5cc314ec36bce9b11e5e7b0f69a6aaa64313c6c3f34f",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-unicode-r2-native",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r2",
+        "prompt_sha256": "774ff10747bf40c64cf6147e28f505ddaac5faf6734f6deb69a71c2b08378c64",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-unicode-r2-rpe_no_experience",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r2",
+        "prompt_sha256": "774ff10747bf40c64cf6147e28f505ddaac5faf6734f6deb69a71c2b08378c64",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-unicode-r2-rpe_learned",
+        "case_id": "eval-unicode",
+        "input_sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+        "label": "eval-unicode-r2",
+        "prompt_sha256": "774ff10747bf40c64cf6147e28f505ddaac5faf6734f6deb69a71c2b08378c64",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-multiline-key-r2-rpe_no_experience",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r2",
+        "prompt_sha256": "abca8881e80dd44571e7645d2bf116abdf4060156e1e3a7c6576a5ca30a1b88a",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-multiline-key-r2-rpe_learned",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r2",
+        "prompt_sha256": "abca8881e80dd44571e7645d2bf116abdf4060156e1e3a7c6576a5ca30a1b88a",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-multiline-key-r2-native",
+        "case_id": "eval-multiline-key",
+        "input_sha256": "4943bc293d6671f11248067921df73036a7ab6f77cf036efcb19a4e755e5b300",
+        "label": "eval-multiline-key-r2",
+        "prompt_sha256": "abca8881e80dd44571e7645d2bf116abdf4060156e1e3a7c6576a5ca30a1b88a",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-quote-key-r2-rpe_learned",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r2",
+        "prompt_sha256": "fdc03c51c98c30f71987a5224b45403bed8cca790406b7a7d0e51f69d3558b94",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-quote-key-r2-native",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r2",
+        "prompt_sha256": "fdc03c51c98c30f71987a5224b45403bed8cca790406b7a7d0e51f69d3558b94",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-quote-key-r2-rpe_no_experience",
+        "case_id": "eval-quote-key",
+        "input_sha256": "42e227e070eb3c458193f50bbfdfe9703ead0a06e4b4b6ad9f888801a8f039e7",
+        "label": "eval-quote-key-r2",
+        "prompt_sha256": "fdc03c51c98c30f71987a5224b45403bed8cca790406b7a7d0e51f69d3558b94",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-tab-case-r2-native",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r2",
+        "prompt_sha256": "87c8e425e043107e416234db2bc535d4f41be35e2640475158717617d2a1316c",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-tab-case-r2-rpe_no_experience",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r2",
+        "prompt_sha256": "87c8e425e043107e416234db2bc535d4f41be35e2640475158717617d2a1316c",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-tab-case-r2-rpe_learned",
+        "case_id": "eval-tab-case",
+        "input_sha256": "e5de589799df43d63f9c0faedc0eab76f395fe10441c9843252b669428e5f93d",
+        "label": "eval-tab-case-r2",
+        "prompt_sha256": "87c8e425e043107e416234db2bc535d4f41be35e2640475158717617d2a1316c",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-empty-values-r2-rpe_no_experience",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r2",
+        "prompt_sha256": "2de4d7ffb223449bab6b2df31ab651f2a834d365ae45845d98776bded2c84579",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-empty-values-r2-rpe_learned",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r2",
+        "prompt_sha256": "2de4d7ffb223449bab6b2df31ab651f2a834d365ae45845d98776bded2c84579",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-empty-values-r2-native",
+        "case_id": "eval-empty-values",
+        "input_sha256": "c257b4c68390f0b8a39fd7cba3abb711d597b1e7ba5dae190f1c8326d9c4ce92",
+        "label": "eval-empty-values-r2",
+        "prompt_sha256": "2de4d7ffb223449bab6b2df31ab651f2a834d365ae45845d98776bded2c84579",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_learned",
+        "attempt_id": "eval-crlf-r2-rpe_learned",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r2",
+        "prompt_sha256": "d4692d8b8acdff4f3a8c6b25a8af0cec859e26c9beb1b3bf0fdb9effe63a4c2b",
+        "repeat": 2
+      },
+      {
+        "arm": "native",
+        "attempt_id": "eval-crlf-r2-native",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r2",
+        "prompt_sha256": "d4692d8b8acdff4f3a8c6b25a8af0cec859e26c9beb1b3bf0fdb9effe63a4c2b",
+        "repeat": 2
+      },
+      {
+        "arm": "rpe_no_experience",
+        "attempt_id": "eval-crlf-r2-rpe_no_experience",
+        "case_id": "eval-crlf",
+        "input_sha256": "114850c6422ec1b1bb7aa19d4e90c362b33f13843f917c74b16cdba5a9817f7a",
+        "label": "eval-crlf-r2",
+        "prompt_sha256": "d4692d8b8acdff4f3a8c6b25a8af0cec859e26c9beb1b3bf0fdb9effe63a4c2b",
+        "repeat": 2
+      }
+    ],
+    "timeout": 180,
+    "training": [
+      {
+        "case_id": "train-order",
+        "expected_rows": [
+          [
+            "order",
+            "amount"
+          ],
+          [
+            "001",
+            "10"
+          ],
+          [
+            "002",
+            "20"
+          ]
+        ],
+        "input_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "order"
+          ]
+        },
+        "source_text": "order,amount\n001,10\n002,20\n001,99\n"
+      },
+      {
+        "case_id": "train-compound",
+        "expected_rows": [
+          [
+            "region",
+            "sku",
+            "qty"
+          ],
+          [
+            "N",
+            "A",
+            "1"
+          ],
+          [
+            "S",
+            "A",
+            "2"
+          ],
+          [
+            "N",
+            "B",
+            "3"
+          ]
+        ],
+        "input_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "region",
+            "sku"
+          ]
+        },
+        "source_text": "region,sku,qty\nN,A,1\nS,A,2\nN,A,8\nN,B,3\n"
+      },
+      {
+        "case_id": "train-chinese",
+        "expected_rows": [
+          [
+            "编号",
+            "名称"
+          ],
+          [
+            "甲",
+            "茶"
+          ],
+          [
+            "乙",
+            "米"
+          ]
+        ],
+        "input_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8-sig",
+          "keep": "first",
+          "key_columns": [
+            "编号"
+          ]
+        },
+        "source_text": "编号,名称\n甲,茶\n乙,米\n甲,糖\n"
+      },
+      {
+        "case_id": "train-delimiter",
+        "expected_rows": [
+          [
+            "code",
+            "note"
+          ],
+          [
+            "A",
+            "x;y"
+          ],
+          [
+            "B",
+            "end"
+          ]
+        ],
+        "input_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+        "parameters": {
+          "delimiter": ";",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "code"
+          ]
+        },
+        "source_text": "code;note\nA;\"x;y\"\nA;later\nB;end\n"
+      },
+      {
+        "case_id": "train-quoted",
+        "expected_rows": [
+          [
+            "id",
+            "note"
+          ],
+          [
+            "a",
+            "two\nlines"
+          ],
+          [
+            "b",
+            "x,y"
+          ]
+        ],
+        "input_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "id"
+          ]
+        },
+        "source_text": "id,note\na,\"two\nlines\"\nb,\"x,y\"\na,later\n"
+      },
+      {
+        "case_id": "train-exact",
+        "expected_rows": [
+          [
+            "token",
+            "val"
+          ],
+          [
+            "01",
+            "first"
+          ],
+          [
+            "1",
+            "number"
+          ],
+          [
+            " 01",
+            "space"
+          ],
+          [
+            "A",
+            "upper"
+          ],
+          [
+            "a",
+            "lower"
+          ]
+        ],
+        "input_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+        "parameters": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "keep": "first",
+          "key_columns": [
+            "token"
+          ]
+        },
+        "source_text": "token,val\n01,first\n1,number\n 01,space\nA,upper\na,lower\n01,later\n"
+      }
+    ],
+    "training_cost_policy": "6 actual native sessions and 6 local CLI runs per RPE arm; all measured once; no shared allocation",
+    "sha256": "cd7e3a3f2abafeff6806a51151f1e5fc961bbcea93bc7d30bd9d5b9755622cca"
+  }
+}

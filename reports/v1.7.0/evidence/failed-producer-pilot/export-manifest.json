@@ -1,0 +1,227 @@
+{
+  "schema_version": "rpe.public-evidence-export/v1",
+  "private_histories_excluded": true,
+  "files": {
+    "preregistration.json": {
+      "source_file_sha256": "38325e12a3f834c6c65f9d70324a2262e0705047ea00404fad0f4ca896885eea",
+      "source_seal_sha256": "cd7e3a3f2abafeff6806a51151f1e5fc961bbcea93bc7d30bd9d5b9755622cca"
+    },
+    "records/generation-G0.json": {
+      "source_file_sha256": "8e997555c071562352db6275b4ae6f7ca49cc4c90e8ff34d4bada0eb5144aa31",
+      "source_seal_sha256": "fce805e97e8ba8469ea61bd76f108357bbe0dda0bab551250b1f0ee63cfc8e8c"
+    },
+    "records/train-chinese-native.json": {
+      "source_file_sha256": "1449823f976203161ff4f4012046401722813483bdfbd98e4329a51a1c871231",
+      "source_seal_sha256": "b9392b5d378a2d57f3ebba156ff74cef7c5aed6481a4e59922eb0b4f86f3f9f0"
+    },
+    "records/train-chinese-rpe_learned.json": {
+      "source_file_sha256": "26619f5301386d48848d965956b8737a8278ad70ca9fa08d1d4db1fa3e107d1b",
+      "source_seal_sha256": "49de930b892363db561630214139fbc6154fe52b52b86bc4a5eaf4fb17d5d72c"
+    },
+    "records/train-chinese-rpe_no_experience.json": {
+      "source_file_sha256": "21bde9797f208522e89b57c42063c8221f0481c8c9ba8e13bde3b5f4ae5330e4",
+      "source_seal_sha256": "9754a7efff6b4adb9c83151984f76c71290777c6c0d6123e4e9048ba67c427e0"
+    },
+    "records/train-compound-native.json": {
+      "source_file_sha256": "392db02105514977a4e2bf832590cb247f6579bd5065df8a9a0264731dd64caa",
+      "source_seal_sha256": "23af52e19af0420a75fb2aeeefb97dac47cbbeb344c49fcb5bfe2beefaa2bd49"
+    },
+    "records/train-compound-rpe_learned.json": {
+      "source_file_sha256": "c10c642f710541a948b4b87a419039e9f82180938adc392c135f8949c1194b7c",
+      "source_seal_sha256": "d6a7590857fc28c722e0d18e337c6455640b7c80cc599154c59dbeedf547b6c8"
+    },
+    "records/train-compound-rpe_no_experience.json": {
+      "source_file_sha256": "ba826eccd3cd8277f593d9606c276c7b1e9b92b58828d4f6db787db008d25277",
+      "source_seal_sha256": "227adfb75970905da1f7393d8d2f130ef177c97c30091d3b7c5091d9696ff0e5"
+    },
+    "records/train-delimiter-native.json": {
+      "source_file_sha256": "20797fc4d62affefeec5deb5777b59b606503bb63a90b99d15002de9355c99eb",
+      "source_seal_sha256": "ff04da94ca262755014661fa2573404551a9975405046c8b9601a0b530ec8d8e"
+    },
+    "records/train-delimiter-rpe_learned.json": {
+      "source_file_sha256": "a7d3589262ef1ebe6f912df207e153d6c2122dd32bb0b6d9c8d582169108694a",
+      "source_seal_sha256": "f58f2f30dc4939b53ef4fcf8685023ada76d7eb3ef00b952b166fec9be740b1f"
+    },
+    "records/train-delimiter-rpe_no_experience.json": {
+      "source_file_sha256": "812e3461b433003a76420b722bc6b78398659bb9cda6a418a6982c632c1f1c40",
+      "source_seal_sha256": "17c1e70be3f50afd2181e321513b0828d3dbb61c4057fce4519952b79265d77b"
+    },
+    "records/train-exact-native.json": {
+      "source_file_sha256": "a40c68d5c1135b153c4d6f02f8286f51a7c259ee193a8d355d5513a86294340b",
+      "source_seal_sha256": "899cfc87a52bd49827ed6b5d1455b1fd4605a194e827bfe2b7e8d0e0b043b21c"
+    },
+    "records/train-exact-rpe_learned.json": {
+      "source_file_sha256": "a70280e724ee960642296aebbe660b277d59ebc430224244f2a88273feb34b96",
+      "source_seal_sha256": "189ff9fff746b19e56e22d13b4065f069235ef7ce8b74629312e59d945e04e2d"
+    },
+    "records/train-exact-rpe_no_experience.json": {
+      "source_file_sha256": "af2b49d346dd1ea4935c41a78a7d5187bb4c4d1324563a1ccc4e87477f6152c9",
+      "source_seal_sha256": "6d2ebc17c2b892d46fe539df549f7f9ef6955c9cbfbec22edd6334bf86b3e13e"
+    },
+    "records/train-order-native.json": {
+      "source_file_sha256": "ae0e083a4bef118c32e91ee8573b816ab7369beeead9a37c28d7a07acfb8aaa0",
+      "source_seal_sha256": "04a95c7682f39de261a6d177eef913ecbf3a40a680834dd1cc33d025b2a8abb9"
+    },
+    "records/train-order-rpe_learned.json": {
+      "source_file_sha256": "67a77fa522e2aa1495a231da6db679c1a77c4293007a41296d606d761eaf14c1",
+      "source_seal_sha256": "ad69c096fd4c9793e21758dc12b7cf356e97a0658cb94fd8ca51e02736b457ee"
+    },
+    "records/train-order-rpe_no_experience.json": {
+      "source_file_sha256": "12d8a89f0758bba822892791365add19a6a7d7214c4132c836515e984c683cce",
+      "source_seal_sha256": "d2a8dab3a904a21f5f17e5539680dff2facba1196080f44b7899aa1f2701618d"
+    },
+    "records/train-quoted-native.json": {
+      "source_file_sha256": "4f701522c8370ecc497d8655796c5b03674e5e28f10ca4c36ee4deeebd44c190",
+      "source_seal_sha256": "be2d3ae6b6678fc11f27fca4f499acc5508d99aefd57fc937a4e04f0e2c4d5d8"
+    },
+    "records/train-quoted-rpe_learned.json": {
+      "source_file_sha256": "ae521c0094eac7b04df5edb9e20165522689f90e91bcf49a55f3735d5b764b68",
+      "source_seal_sha256": "537723ea91692d61f77c1555044075c06a76ac0e042b65462f9fb91fd561adfb"
+    },
+    "records/train-quoted-rpe_no_experience.json": {
+      "source_file_sha256": "1803dc285bb9b71d3c044bc626f838bff4c4b064d1ee581c5cf7de6edc3aecbd",
+      "source_seal_sha256": "c320c982267c681ba53f267728ba5ad23344c0f0237c5a23ad7795c7cacb80b5"
+    },
+    "public-artifacts/native/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/native/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "a06f0be978e2d9ad5fde3f07721eac6aa872081031cb6bda866b333e7380ee40",
+      "bytes": 30
+    },
+    "public-artifacts/native/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/native/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/native/workspace/train-delimiter/output.csv": {
+      "actual_file_sha256": "cd619e52563028d5e7b169c50809ea36c116105637feb9397fc6cd750686c7a9",
+      "bytes": 24
+    },
+    "public-artifacts/native/workspace/train-exact/input.csv": {
+      "actual_file_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "bytes": 63
+    },
+    "public-artifacts/native/workspace/train-exact/output.csv": {
+      "actual_file_sha256": "6d2c9aba635ea8c55689d49e110b0116a0783b9772236d86c62ff51bb8c99cb3",
+      "bytes": 54
+    },
+    "public-artifacts/native/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/native/workspace/train-order/output.csv": {
+      "actual_file_sha256": "46b53d7c49560925454bb6a853f20b7f6dced3b3162b57c137304fe0eb74837e",
+      "bytes": 27
+    },
+    "public-artifacts/native/workspace/train-quoted/input.csv": {
+      "actual_file_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "bytes": 38
+    },
+    "public-artifacts/native/workspace/train-quoted/output.csv": {
+      "actual_file_sha256": "194b540ffd0e1309243cd1ec2ce5332232baadd3f12fb8b2a4e3b46d30ac448f",
+      "bytes": 30
+    },
+    "public-artifacts/rpe_learned/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/rpe_learned/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "a6bca4ee48832f61f3a2a2b83e770a7c02b1086e7605184252b1e79092b79f8a",
+      "bytes": 36
+    },
+    "public-artifacts/rpe_learned/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/rpe_learned/workspace/train-compound/output.csv": {
+      "actual_file_sha256": "57ce9d2e22728bc5e132c1e4798349a5caa3427d53bfeded685330fe6b4a80f2",
+      "bytes": 37
+    },
+    "public-artifacts/rpe_learned/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/rpe_learned/workspace/train-delimiter/output.csv": {
+      "actual_file_sha256": "d07b4cebdbfde1a24cb2dea59dc2c0121191daf1f55146cbb7edfe260a9cb5cb",
+      "bytes": 27
+    },
+    "public-artifacts/rpe_learned/workspace/train-exact/input.csv": {
+      "actual_file_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "bytes": 63
+    },
+    "public-artifacts/rpe_learned/workspace/train-exact/output.csv": {
+      "actual_file_sha256": "3935422d1db68eebd512a3454b4548e499b8a64fd1c1aebae54ed4df8a0152bf",
+      "bytes": 60
+    },
+    "public-artifacts/rpe_learned/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/rpe_learned/workspace/train-order/output.csv": {
+      "actual_file_sha256": "ff7e69a61c4ce5cd770703cf5188f981d96533d8627f31dc2b8a7971b1ab36ff",
+      "bytes": 30
+    },
+    "public-artifacts/rpe_learned/workspace/train-quoted/input.csv": {
+      "actual_file_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "bytes": 38
+    },
+    "public-artifacts/rpe_learned/workspace/train-quoted/output.csv": {
+      "actual_file_sha256": "ba3baa817c26894cb76e9164837506d1ba0cc08b524fa0410c10ed28755a2828",
+      "bytes": 33
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "a6bca4ee48832f61f3a2a2b83e770a7c02b1086e7605184252b1e79092b79f8a",
+      "bytes": 36
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-compound/output.csv": {
+      "actual_file_sha256": "57ce9d2e22728bc5e132c1e4798349a5caa3427d53bfeded685330fe6b4a80f2",
+      "bytes": 37
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-delimiter/output.csv": {
+      "actual_file_sha256": "d07b4cebdbfde1a24cb2dea59dc2c0121191daf1f55146cbb7edfe260a9cb5cb",
+      "bytes": 27
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-exact/input.csv": {
+      "actual_file_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "bytes": 63
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-exact/output.csv": {
+      "actual_file_sha256": "3935422d1db68eebd512a3454b4548e499b8a64fd1c1aebae54ed4df8a0152bf",
+      "bytes": 60
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-order/output.csv": {
+      "actual_file_sha256": "ff7e69a61c4ce5cd770703cf5188f981d96533d8627f31dc2b8a7971b1ab36ff",
+      "bytes": 30
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-quoted/input.csv": {
+      "actual_file_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "bytes": 38
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-quoted/output.csv": {
+      "actual_file_sha256": "ba3baa817c26894cb76e9164837506d1ba0cc08b524fa0410c10ed28755a2828",
+      "bytes": 33
+    }
+  },
+  "phase_count": 19
+}

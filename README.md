@@ -14,6 +14,8 @@
 
 1.7 增加授权的真实训练材料导出、前候选实际探测与语义反馈生成，以及预登记的三组学习对照。新代码仍须独立资格验收和激活重播，冻结后才在未见输入复用。生成、失败、探测、验收和生产开销均计入账本；闭环成立与质量、总成本改善分别判断。当前扩展已有 CSV 去重 ABI 的实现，尚不代表任意新能力可自动学习。见 [真实反馈与生成](docs/learning-loop.md)与[1.7 todo](docs/superpowers/plans/2026-10-14-rpe-v17.md)。
 
+1.7 本地实验版已证明真实闭环和14次完整的新输入直接复用；原生对照与绑定补验仍暴露参数解释、预算内纠错的问题，质量或整轮成本收益未成立。数据、缺测及使用边界见[1.7验收报告](reports/v1.7.0/1.7开发与验收报告.md)。
+
 ## 本机快速使用
 
 仓库提供 `scripts/rpe`，自动寻找具备 openpyxl 的 Python >=3.10，包括本机 Codex bundled runtime。它不安装软件、不修改全局配置，也不生成 Python 缓存。
@@ -99,7 +101,7 @@ Hermes 或其他 Agent 可以发送同一 JSON 协议：
 
 ## 真实 Hermes 会话
 
-当前隔离启动器支持 macOS、本机 Hermes 0.21.7 的插件 API，以及现有 Xiaomi API key 配置。它读取当前选用的模型和计划端点，为每次调用创建独立 home，关闭记忆、外部插件、MCP、辅助模型请求和自动安装。只复制必要 API key，不复制 OAuth 状态，也不改日常配置或重启网关。
+当前隔离启动器在 macOS、本机 Hermes 0.21.7/0.22.0 的插件 API 和现有 Xiaomi API key 配置上做过验证。它读取当前选用的模型和计划端点，为每次调用创建独立 home，关闭记忆、外部插件、MCP、辅助模型请求和自动安装。只复制必要 API key，不复制 OAuth 状态，也不改日常配置或重启网关。
 
 ~~~sh
 ./scripts/rpe hermes run --workspace /absolute/path/workspace \

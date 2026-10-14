@@ -1,0 +1,546 @@
+{
+  "schema_version": "rpe.interrupted-pilot-audit/v1",
+  "audited_at_utc": "2026-10-14T13:50:39.324900+00:00",
+  "experiment": "live-producer",
+  "disposition": "Interrupted controller; old train-delimiter-native phase remains incomplete and unreplayed. Session telemetry is recovered separately for cost lower-bound only.",
+  "unmatched_attempt_id": "train-delimiter-native",
+  "unmatched_session_id": "20261014_212255_c314c6",
+  "sqlite_read": {
+    "mode": "ro, immutable=1, query_only=1",
+    "no_wal_shm_or_journal_present": true,
+    "metadata_only": true,
+    "db_sha256": "772cfa896d46c0bbaa03d72a968b4aca3eb09af0e4a64ee0b25788a9d82d8174"
+  },
+  "reservation_sha256": "9e3392aa42d42556d0a9a7e430339d70d6429e426b22a84742f82a88af604731",
+  "outcome_still_absent": true,
+  "record_still_absent": true,
+  "session_telemetry": {
+    "event_count": 29,
+    "pre_api_count": 6,
+    "post_api_count": 6,
+    "unique_api_ids": 6,
+    "duplicate_pre_or_post": false,
+    "unmatched_pre_api_ids": [],
+    "model_identity": {
+      "provider": "xiaomi",
+      "requested_model": "mimo-v2.6-pro",
+      "response_models": [
+        "mimo-v2.6-pro"
+      ]
+    },
+    "recovered_usage": {
+      "input_tokens": 4723,
+      "output_tokens": 1448,
+      "cache_read_tokens": 33408,
+      "reasoning_tokens": 396,
+      "prompt_tokens": 38131,
+      "total_tokens": 39579,
+      "cache_write_tokens": null,
+      "api_requests": 6,
+      "requests_with_usage": 6,
+      "missing_observations": 0,
+      "known_total_tokens": 39579,
+      "coverage_complete": true,
+      "api_errors": 0
+    },
+    "requests": [
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:1",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 6.903138160705566,
+        "usage": {
+          "input_tokens": 593,
+          "output_tokens": 133,
+          "cache_read_tokens": 4352,
+          "reasoning_tokens": 11,
+          "prompt_tokens": 4945,
+          "total_tokens": 5078
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 4945,
+          "completion_tokens": 133,
+          "total_tokens": 5078,
+          "prompt_tokens_details": {
+            "cached_tokens": 4352
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 11
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      },
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:2",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 1.9766690731048584,
+        "usage": {
+          "input_tokens": 1508,
+          "output_tokens": 35,
+          "cache_read_tokens": 4352,
+          "reasoning_tokens": 13,
+          "prompt_tokens": 5860,
+          "total_tokens": 5895
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 5860,
+          "completion_tokens": 35,
+          "total_tokens": 5895,
+          "prompt_tokens_details": {
+            "cached_tokens": 4352
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 13
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      },
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:3",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 12.762672901153564,
+        "usage": {
+          "input_tokens": 212,
+          "output_tokens": 530,
+          "cache_read_tokens": 5760,
+          "reasoning_tokens": 277,
+          "prompt_tokens": 5972,
+          "total_tokens": 6502
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 5972,
+          "completion_tokens": 530,
+          "total_tokens": 6502,
+          "prompt_tokens_details": {
+            "cached_tokens": 5760
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 277
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      },
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:4",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 6.390510082244873,
+        "usage": {
+          "input_tokens": 702,
+          "output_tokens": 357,
+          "cache_read_tokens": 5888,
+          "reasoning_tokens": 17,
+          "prompt_tokens": 6590,
+          "total_tokens": 6947
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 6590,
+          "completion_tokens": 357,
+          "total_tokens": 6947,
+          "prompt_tokens_details": {
+            "cached_tokens": 5888
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 17
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      },
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:5",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 6.2756781578063965,
+        "usage": {
+          "input_tokens": 1291,
+          "output_tokens": 218,
+          "cache_read_tokens": 5888,
+          "reasoning_tokens": 17,
+          "prompt_tokens": 7179,
+          "total_tokens": 7397
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 7179,
+          "completion_tokens": 218,
+          "total_tokens": 7397,
+          "prompt_tokens_details": {
+            "cached_tokens": 5888
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 17
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      },
+      {
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:6",
+        "provider": "xiaomi",
+        "model": "mimo-v2.6-pro",
+        "response_model": "mimo-v2.6-pro",
+        "api_duration": 5.475239992141724,
+        "usage": {
+          "input_tokens": 417,
+          "output_tokens": 175,
+          "cache_read_tokens": 7168,
+          "reasoning_tokens": 61,
+          "prompt_tokens": 7585,
+          "total_tokens": 7760
+        },
+        "raw_provider_usage": {
+          "prompt_tokens": 7585,
+          "completion_tokens": 175,
+          "total_tokens": 7760,
+          "prompt_tokens_details": {
+            "cached_tokens": 7168
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 61
+          }
+        },
+        "present_fields": [
+          "completion_tokens",
+          "completion_tokens_details.reasoning_tokens",
+          "prompt_tokens",
+          "prompt_tokens_details.cached_tokens",
+          "total_tokens"
+        ],
+        "raw_usage_alignment": {
+          "prompt_matches": true,
+          "completion_matches": true,
+          "total_matches": true,
+          "cache_read_matches": true,
+          "input_uncached_matches": true,
+          "reasoning_matches": true
+        }
+      }
+    ],
+    "terminal_identities": [
+      {
+        "session_id": "20261014_212255_c314c6",
+        "task_id": "92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91",
+        "turn_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988",
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:1",
+        "tool_call_id": "call_029eec8a8e6642e0a88f653d",
+        "tool_name": "terminal",
+        "duration_ms": 56,
+        "tool_exit_code": 0,
+        "status": "succeeded",
+        "matching_pre_count": 1,
+        "matching_model_emission_count": 1
+      },
+      {
+        "session_id": "20261014_212255_c314c6",
+        "task_id": "92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91",
+        "turn_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988",
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:3",
+        "tool_call_id": "call_b31b919093dd4a0c84c86d33",
+        "tool_name": "terminal",
+        "duration_ms": 27,
+        "status": "error",
+        "matching_pre_count": 1,
+        "matching_model_emission_count": 1
+      },
+      {
+        "session_id": "20261014_212255_c314c6",
+        "task_id": "92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91",
+        "turn_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988",
+        "api_request_id": "20261014_212255_c314c6:92cb0d0c-7f86-4d03-b1ab-b2d7f207ab91:daa21988:api:5",
+        "tool_call_id": "call_bace5a98f596468e83b8c7be",
+        "tool_name": "terminal",
+        "duration_ms": 106,
+        "tool_exit_code": 0,
+        "status": "succeeded",
+        "matching_pre_count": 1,
+        "matching_model_emission_count": 1
+      }
+    ]
+  },
+  "stdout_result": {
+    "type": "result",
+    "session_id": "20261014_212255_c314c6",
+    "exit_code": 0,
+    "tokens": {
+      "input": 4723,
+      "output": 1448,
+      "total": 39579,
+      "cache_read": 33408,
+      "cache_write": 0
+    },
+    "duration_ms": 56996,
+    "timestamp": 1791984232173
+  },
+  "cost_accounting": {
+    "policy": "Add only recovered unmatched paid session once; existing 3 native outcomes already included and never recharged. Whole experiment still incomplete.",
+    "existing_completed_phase_count": 15,
+    "existing_ledger_known_api_requests": 19,
+    "existing_ledger_known_total_tokens": 121776,
+    "additional_known_api_requests": 6,
+    "additional_known_total_tokens": 39579,
+    "all_interrupted_experiment_known_api_requests": 25,
+    "all_interrupted_experiment_known_total_tokens": 161355,
+    "all_interrupted_experiment_total_tokens": null,
+    "all_interrupted_experiment_api_requests": null,
+    "billing_verified_cost": null,
+    "completion_certified": false
+  },
+  "process_audit": {
+    "registry_files": [
+      {
+        "relative_path": "arms/native/sessions/session-4522863ebf2747e680ab558f67d1d20e/child-processes.jsonl",
+        "record_count": 33
+      },
+      {
+        "relative_path": "arms/native/sessions/session-646ff3539a4c45ddac14fee94dfb3ea6/child-processes.jsonl",
+        "record_count": 40
+      },
+      {
+        "relative_path": "arms/native/sessions/session-7a6c78fda4614a74aa13150a93b25c73/child-processes.jsonl",
+        "record_count": 36
+      },
+      {
+        "relative_path": "arms/native/sessions/session-9fa358f8c9f945cf86ebb3ace17161c0/child-processes.jsonl",
+        "record_count": 35
+      }
+    ],
+    "unique_pid_start_sec_usec_identities": 144,
+    "queried_pids": [
+      52882,
+      52895,
+      52898,
+      52899,
+      52900,
+      52901,
+      52902,
+      52903,
+      52904,
+      52905,
+      52906,
+      52907,
+      52908,
+      52909,
+      52910,
+      52911,
+      52912,
+      52930,
+      52936,
+      52937,
+      52953,
+      52965,
+      52971,
+      52972,
+      52978,
+      52986,
+      52993,
+      53000,
+      53012,
+      53040,
+      53083,
+      53209,
+      53210,
+      53230,
+      53236,
+      53248,
+      53327,
+      53449,
+      53458,
+      53461,
+      53462,
+      53464,
+      53467,
+      53469,
+      53472,
+      53473,
+      53475,
+      53476,
+      53477,
+      53478,
+      53479,
+      53480,
+      53481,
+      53485,
+      53554,
+      53558,
+      53559,
+      53614,
+      53616,
+      53726,
+      53738,
+      53745,
+      53746,
+      53753,
+      53762,
+      53770,
+      53822,
+      53974,
+      53981,
+      53994,
+      54099,
+      54222,
+      54230,
+      54233,
+      54235,
+      54242,
+      54244,
+      54245,
+      54246,
+      54247,
+      54249,
+      54250,
+      54251,
+      54253,
+      54254,
+      54255,
+      54256,
+      54259,
+      54351,
+      54360,
+      54361,
+      54489,
+      54502,
+      54508,
+      54509,
+      54515,
+      54523,
+      54530,
+      54537,
+      54552,
+      54582,
+      54619,
+      54625,
+      54637,
+      54658,
+      54668,
+      54669,
+      54674,
+      54682,
+      54698,
+      54720,
+      54740,
+      54772,
+      54778,
+      54779,
+      54780,
+      54781,
+      54782,
+      54783,
+      54784,
+      54785,
+      54786,
+      54787,
+      54788,
+      54789,
+      54790,
+      54791,
+      54792,
+      54795,
+      54821,
+      54835,
+      54836,
+      54857,
+      54858,
+      54898,
+      54910,
+      54916,
+      54917,
+      54923,
+      54932,
+      54939,
+      54946,
+      54965,
+      55004,
+      55112,
+      55118,
+      55130,
+      55145
+    ],
+    "observed_pids": [],
+    "matching_pid_lstart_identities": [],
+    "registered_child_or_parent_pids_present": false,
+    "kernel_start_sec_usec_recheck_needed_if_pid_present": true,
+    "controller_identity_limitation": "Original unified-exec launch PID/lstart was not recorded; session handle 2751 is missing. Registered native parent/child identities were independently checked absent. No exact controller identity is invented or certified."
+  },
+  "actions": {
+    "phase_mutations": false,
+    "process_signals": false,
+    "source_writes": false,
+    "raw_conversation_or_tool_arguments_exported": false,
+    "written_artifact_only": "<owned-test-root>/evidence/interrupted-pilot-audit.json"
+  }
+}

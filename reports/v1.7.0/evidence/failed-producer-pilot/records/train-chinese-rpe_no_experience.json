@@ -1,0 +1,17 @@
+{
+  "source_file_sha256": "21bde9797f208522e89b57c42063c8221f0481c8c9ba8e13bde3b5f4ae5330e4",
+  "source_seal_sha256": "9754a7efff6b4adb9c83151984f76c71290777c6c0d6123e4e9048ba67c427e0",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "train-chinese-rpe_no_experience",
+    "result": {
+      "artifact_correct": true,
+      "input_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "output_sha256": "a6bca4ee48832f61f3a2a2b83e770a7c02b1086e7605184252b1e79092b79f8a",
+      "run_id": "45f0a3674e904d47b9b82fe85c7076d3",
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    "sha256": "9754a7efff6b4adb9c83151984f76c71290777c6c0d6123e4e9048ba67c427e0"
+  }
+}

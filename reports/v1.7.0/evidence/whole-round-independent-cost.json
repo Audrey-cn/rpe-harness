@@ -1,0 +1,16 @@
+{
+  "billing_verified_cost": null,
+  "binding_supplement_complete_measured_tokens": 187870,
+  "calibration_known_tokens": 12345,
+  "development_agent_tokens": null,
+  "final_main_complete_measured_tokens": 1465440,
+  "interrupted_pending_call_39579_already_in_771888_not_added_again": true,
+  "known_total_tokens": 2437543,
+  "limits": "Earlier unfinished/error provider observations leave the true whole-round token total unknown. Token counts are not provider-billed money. Development and agent costs were not measured.",
+  "original_main_quality_preserved": true,
+  "original_main_verified_new_input_reuses": 14,
+  "previous_three_attempts_known_tokens": 771888,
+  "schema_version": "rpe.whole-round-independent-cost/v1",
+  "supplement_new_unseen_input_reuses": 0,
+  "total_tokens": null
+}

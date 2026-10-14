@@ -1,0 +1,11 @@
+{
+  "schema_version": "rpe.public-evidence-export/v1",
+  "files": {
+    "preregistration.json": "c70fdb19a795bd367315a786e54179c2ce66937599deebe120d24745c57e5091",
+    "report.json": "89f015b446213e82b547e550271cb41983479d70767628bbf78cdb118d8bb73b",
+    "records/wire-calibration-G0.json": "f2892b385024fa35af69e0ec84a746ac00114861d5662894e3335d08f3e7545b"
+  },
+  "original_unedited_sha256": "52477be18715633f3739aea76d50f7d23447f62110de94a46cc300bb12022009",
+  "private_histories_excluded": true,
+  "qualification_performed": false
+}

@@ -1,0 +1,207 @@
+{
+  "actual_execution": {
+    "actual_executor": {
+      "candidate_version_id": "adc6c2804d9d6356cef4ed40a28b2b552201f634e6a699eefcf09ca60b4f182c",
+      "code_sha256": "3afd6be78a69caf7b055ae5afb8a69ef0deb7b542593dfd47f7838153cab9c43",
+      "executor_id": "builtin/csv-deduplicate",
+      "kind": "candidate",
+      "plan_sha256": "fa401c36f52058d6dc9b38872b1de20722ce2f696420b5c2bf1c0a115a738ed3"
+    },
+    "durable_status": "succeeded",
+    "matches_frozen_candidate": true,
+    "post_tool_run_id": "ab082cae48c2488689895abb8e244c2d",
+    "product_verification_passed": true,
+    "published": true,
+    "receipt_id": "bd82e155f9da4d35ae98d94985659e4f",
+    "returned_run_id": "ab082cae48c2488689895abb8e244c2d",
+    "returned_status": "succeeded",
+    "verification_checks": {
+      "duplicates_removed": true,
+      "first_records_preserved": true,
+      "headers_preserved": true,
+      "record_order_preserved": true,
+      "request_bound": true,
+      "source_unchanged": true
+    }
+  },
+  "actual_normalized_contract": {
+    "capability": "tabular.deduplicate",
+    "constraints": [],
+    "contract_version": 1,
+    "execution": {
+      "delimiter": "|",
+      "encoding": "utf-8-sig",
+      "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/input.csv",
+      "keep": "first",
+      "key_columns": [
+        "索引"
+      ],
+      "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/output.csv",
+      "sheet": null
+    }
+  },
+  "classification": {
+    "business_result_correct": true,
+    "exact_contract_gate_behaved_as_implemented": true,
+    "experiment_contract_exposure_gap_observed": true,
+    "frozen_candidate_invocation_observed": true,
+    "intentional_model_deviation_proven": false,
+    "original_score_changed": false,
+    "required_structured_constraints_missing": true
+  },
+  "conclusion": "The sole normalized mismatch is constraints=[] versus preserve_order/preserve_original. The gate correctly rejects the preregistered contract despite correct CSV output and actual frozen-candidate execution. The shared prompt requested these behaviors naturally but omitted the structured constraint names, and the launcher did not bind a fixed request; this is an experiment contract-exposure gap and observed structured contract noncompliance, not an output or candidate-invocation failure. Intent cannot be inferred from this metadata.",
+  "contract_differences": [
+    {
+      "actual": [],
+      "path": "constraints",
+      "required": [
+        "preserve_order",
+        "preserve_original"
+      ]
+    }
+  ],
+  "contract_hashes": {
+    "actual": "e79d265e8fb7efd2f33b1e90a7eb97411b0a9953890c58ad5bb6588865e07f8f",
+    "receipt": "e79d265e8fb7efd2f33b1e90a7eb97411b0a9953890c58ad5bb6588865e07f8f",
+    "receipt_matches_actual": true,
+    "required": "115d7106235f4795fd4ab535df88895fbd83a1deca4c0f2f4f5783109e50d8b6"
+  },
+  "files": {
+    "input": {
+      "bytes": 47,
+      "data_rows": 3,
+      "header_literals": [
+        "描述",
+        "索引"
+      ],
+      "matches_registered_sha256": true,
+      "path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/input.csv",
+      "sha256": "26aa47515eeae7b49991d4ef10ba499d4a6efe9e1bf5dd22319c7fd0afc5a17b",
+      "stable_regular_file": true,
+      "utf8_bom": true
+    },
+    "output": {
+      "bytes": 39,
+      "data_rows": 2,
+      "header_literals": [
+        "描述",
+        "索引"
+      ],
+      "path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/output.csv",
+      "rows_match_public_expected": true,
+      "sha256": "24919c76f81cfae9a12582d5d12b5c7123f3366d7ae7d7e47ea7cfa794c7e7f3",
+      "stable_regular_file": true,
+      "utf8_bom": true
+    }
+  },
+  "future_remedy": {
+    "preserve_original_records_and_scores": true,
+    "prohibited_retroactive_changes": [
+      "rewrite original model arguments or durable event",
+      "default empty constraints into required constraints after the fact",
+      "remove constraints from original gate comparison",
+      "mark the original workflow or candidate-direct metric successful"
+    ],
+    "recommended_supplement": "Expose the same explicit public constraint JSON to all arms in a new registered supplement; verify task contract forwarding and admission before paid runs. If using the launcher required_request path for Harness arms, preregister that intervention and retain both original/actual prompt hashes. Keep exact contract acceptance and report supplemental outcomes and cumulative costs separately.",
+    "separate_new_registration_required": true
+  },
+  "observed_at_utc": "2026-10-14T15:09:42.631452+00:00",
+  "original_evaluation": {
+    "artifact_correct": true,
+    "candidate_direct_success": false,
+    "error_code": "fresh_session_or_execution_missing",
+    "fresh_run": false,
+    "fresh_session": true,
+    "gate": {
+      "errors": [
+        "required_contract_mismatch"
+      ],
+      "harness_verified": false,
+      "status": "unverified",
+      "verified": false
+    },
+    "invocation_evidence": false,
+    "product_oracle_passed": true,
+    "run_id": null,
+    "status": "failed",
+    "workflow_verified": false
+  },
+  "original_record_sha256": "5e7080fe05f5b16b6671d3cd1f567887c8881628fc47e0a82f962ebd363fd444",
+  "prompt_contract_exposure": {
+    "actual_prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+    "all_prompt_hashes_match": true,
+    "constraints_json_key_present": false,
+    "expected_prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+    "formal_launcher_passes_required_request": false,
+    "natural_language_preservation_requested": true,
+    "original_prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f",
+    "preserve_order_literal_present": false,
+    "preserve_original_literal_present": false,
+    "reconstructed_prompt_sha256": "68cb848714058c633f9209a7a366d1bdf17d5f9a629adb4dd28084942fe4ed0f"
+  },
+  "registered_source_checks": [
+    {
+      "matches_registration": true,
+      "registered_sha256": "0d0efa9704c6912fbc83abe79579f63b778504d67dd1259454dd81e4c025435c",
+      "reviewed_sha256": "0d0efa9704c6912fbc83abe79579f63b778504d67dd1259454dd81e4c025435c",
+      "source": "integrations/hermes.py"
+    },
+    {
+      "matches_registration": true,
+      "registered_sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+      "reviewed_sha256": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+      "source": "integrations/hermes_gate.py"
+    },
+    {
+      "matches_registration": true,
+      "registered_sha256": "23cd613d1c4880bbdcf6dcb6bebb1bc2ae08fe730f09b3048a072006769a4a3d",
+      "reviewed_sha256": "23cd613d1c4880bbdcf6dcb6bebb1bc2ae08fe730f09b3048a072006769a4a3d",
+      "source": "integrations/hermes_session.py"
+    },
+    {
+      "matches_registration": true,
+      "registered_sha256": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+      "reviewed_sha256": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+      "source": "experiments/learning_comparison.py"
+    }
+  ],
+  "required_normalized_contract": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "contract_version": 1,
+    "execution": {
+      "delimiter": "|",
+      "encoding": "utf-8-sig",
+      "input_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/input.csv",
+      "keep": "first",
+      "key_columns": [
+        "索引"
+      ],
+      "output_path": "<owned-test-root>/live-provenance-final/arms/rpe_learned/workspace/eval-unicode-r1/output.csv",
+      "sheet": null
+    }
+  },
+  "schema_version": "rpe.contract-diagnostic/v1",
+  "scope": {
+    "actual_run_id": "ab082cae48c2488689895abb8e244c2d",
+    "attempt_id": "eval-unicode-r1-rpe_learned",
+    "case_id": "eval-unicode",
+    "database_read_mode": "SQLite URI mode=ro with read transaction",
+    "experiment_root": "<owned-test-root>/live-provenance-final",
+    "production_head": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
+    "session_id": "20261014_230010_aa0b62"
+  },
+  "source_references": {
+    "contract_normalization": "src/rpe_harness/integrations/hermes.py:319-381",
+    "fixed_contract_injection": "src/rpe_harness/integrations/hermes_session.py:552-563",
+    "freshness_relabel": "src/rpe_harness/experiments/learning_comparison.py:758-765",
+    "gate_run_id_assignment": "src/rpe_harness/experiments/learning_comparison.py:452-457",
+    "launcher_call_without_required_request": "src/rpe_harness/experiments/learning_comparison.py:406-411",
+    "required_contract_gate": "src/rpe_harness/integrations/hermes_gate.py:121-128",
+    "required_request": "src/rpe_harness/experiments/learning_comparison.py:221-231",
+    "shared_prompt": "src/rpe_harness/experiments/learning_comparison.py:98-106"
+  }
+}

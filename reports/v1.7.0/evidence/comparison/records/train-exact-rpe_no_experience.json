@@ -1,0 +1,17 @@
+{
+  "source_file_sha256": "accee3e005420db33225ed42fe3fad90286fc66306a3d98f9c3b66120837bb4a",
+  "source_seal_sha256": "8c91716f795d7c2ab28bf24c477de543e165ebaf01a20e91f2211c47847993ca",
+  "source_seal_verified_before_redaction": true,
+  "record": {
+    "attempt_id": "train-exact-rpe_no_experience",
+    "result": {
+      "artifact_correct": true,
+      "input_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "output_sha256": "3935422d1db68eebd512a3454b4548e499b8a64fd1c1aebae54ed4df8a0152bf",
+      "run_id": "824053f7270745bd98ec77e95302a498",
+      "status": "succeeded",
+      "workflow_verified": true
+    },
+    "sha256": "8c91716f795d7c2ab28bf24c477de543e165ebaf01a20e91f2211c47847993ca"
+  }
+}

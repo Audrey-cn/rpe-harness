@@ -1,0 +1,201 @@
+{
+  "audit_actions": {
+    "candidate_executed": false,
+    "models_called": 0,
+    "old_records_rewritten": false,
+    "qualification_or_activation_called": false,
+    "raw_conversation_or_tool_arguments_exported": false,
+    "source_or_global_state_mutated": false,
+    "written_supplement_only": true
+  },
+  "audited_at_utc": "2026-10-14T14:46:50.399093+00:00",
+  "cli_evidence_gap": {
+    "interpretation": "Retained guard/API linkage and code bytes corroborate physical model-generated write. Original CLI-dependent scoring chain stays false. CLI missing-ID diagnosis is consistent with source and retained gap, not independently re-observed from deleted CLI.",
+    "original_file_write_observations": [],
+    "original_score_proven": false,
+    "physical_guard_post_has_id": true,
+    "raw_cli_deleted_exact_missing_id_event_not_independently_recheckable": true,
+    "source_evidence": "b7 hermes_session._file_write_observations requires nonempty matching CLI tool_call_id; worker._generation_link additionally requires matching stream tool_call_id/file_write_observations"
+  },
+  "code": {
+    "ast_sha256": "1c98ccfe484e67c61a34e4cf3e0654808a5651f2288457464ae5eefe3e9ba07a",
+    "bytes": 6987,
+    "canonical_candidate_py_content_arguments_sha256": "d083e579dc18e2398cd8d32ee405b473e0af09411fcdde852bd81a7e7cb9f6e7",
+    "imports": [
+      "import csv",
+      "import os",
+      "import io"
+    ],
+    "path": "<owned-test-root>/live-producer-3/arms/rpe_learned/evidence/worker/ecff87575d8349718e68978575a9a783.py",
+    "sha256": "52477be18715633f3739aea76d50f7d23447f62110de94a46cc300bb12022009"
+  },
+  "full_regression": {
+    "auditor_reran_suite": false,
+    "committed_b7_wheel_python_bytes_equal_count": 64,
+    "current_filesystem_differs_from_b7_wheel": [
+      "evolution/worker.py"
+    ],
+    "current_head_at_audit": "ef92f6b1b9f6bb70e8cad3957f98d59245429125",
+    "current_installed_differs_from_b7_wheel": [
+      "evolution/worker.py"
+    ],
+    "errors": 0,
+    "failures": 0,
+    "junit_testcase_elements": 1290,
+    "junit_tests_attribute": 1293,
+    "log": "<owned-test-root>/evidence/full-wire-final.log",
+    "log_elapsed_seconds": 291.75,
+    "log_final_line": "1290 passed, 3 subtests passed in 291.75s (0:04:51)",
+    "log_sha256": "afdb6ef7399681af20234165cfd7e5a40b167c4142f2e43a159a6f1b0534bd8f",
+    "production_commit": "b7f3cafc4960fe1fb820e1d1ccc82f574f8c5eac",
+    "scope_limit": "Retained completed regression log/XML and exact b7 committed/wheel bytes verified; current installed comparison reported separately. Later source changes are not certified by this retained b7 regression.",
+    "skips": 0,
+    "subtests_passed": 3,
+    "test_functions_passed": 1290,
+    "wheel_sha256": "bac3c0769224cfbc82d9cd206ea1253128c98a9ff167bc6f8d89243aaafbce02",
+    "xml": "<owned-test-root>/evidence/full-wire-final.xml",
+    "xml_sha256": "6e3553dee894276fa6db9bcd306a81e16e50200a7cfb6d0b8a5e5b23de559852",
+    "xml_suite_elapsed_seconds": 291.658
+  },
+  "native_guard_chain": {
+    "actual_api_policies": [
+      {
+        "api_request_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f:api:1",
+        "max_completion_tokens": 8192,
+        "parallel_tool_calls": false,
+        "schema_sha256": "db15794eab53ec1aa46ce129ff0a2039fe6046900314b41a4032b9823487f21c",
+        "thinking_type": "disabled",
+        "tool_choice": "write_file",
+        "tool_names": [
+          "write_file"
+        ]
+      },
+      {
+        "api_request_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f:api:2",
+        "max_completion_tokens": 8192,
+        "parallel_tool_calls": false,
+        "schema_sha256": "db15794eab53ec1aa46ce129ff0a2039fe6046900314b41a4032b9823487f21c",
+        "thinking_type": "disabled",
+        "tool_choice": "none",
+        "tool_names": [
+          "write_file"
+        ]
+      }
+    ],
+    "canonical_args_match_exact_raw_code": true,
+    "evidence_source": "trusted sanitized retained native observations; private host DB and raw CLI stream deleted",
+    "matched_model_file_write_count": 1,
+    "model_emission_api_tool_ids_match": true,
+    "observed_model_identity": {
+      "provider": "xiaomi",
+      "requested_model": "mimo-v2.6-pro",
+      "response_models": [
+        "mimo-v2.6-pro"
+      ]
+    },
+    "post_api_count": 2,
+    "pre_api_count": 2,
+    "pre_post_tool_ids_match": true,
+    "session_id": "20261014_222659_d4b07c",
+    "tool_identity": {
+      "api_request_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f:api:1",
+      "session_id": "20261014_222659_d4b07c",
+      "task_id": "aabe964b-3f6d-4570-8fe1-0349ad63cab8",
+      "tool_call_id": "call_a2188d1555ee475294316a64",
+      "turn_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f"
+    },
+    "unique_api_id_count": 2,
+    "verified_guard_post": {
+      "api_request_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f:api:1",
+      "arguments_sha256": "d083e579dc18e2398cd8d32ee405b473e0af09411fcdde852bd81a7e7cb9f6e7",
+      "bytes_written": 6987,
+      "content_sha256": "52477be18715633f3739aea76d50f7d23447f62110de94a46cc300bb12022009",
+      "duration_ms": 139,
+      "kind": "post_tool_call",
+      "session_id": "20261014_222659_d4b07c",
+      "status": "ok",
+      "target_path_sha256": "d594fab2c5631a9ff990187a1119ce6073f38fb4e633a65b126c266d59ff9cb6",
+      "task_id": "aabe964b-3f6d-4570-8fe1-0349ad63cab8",
+      "tool_call_id": "call_a2188d1555ee475294316a64",
+      "tool_name": "write_file",
+      "turn_id": "20261014_222659_d4b07c:aabe964b-3f6d-4570-8fe1-0349ad63cab8:07d3bf9f",
+      "verified": true
+    }
+  },
+  "original_generation_link_preserved": {
+    "proven": false,
+    "reason": "no_matching_api_filewrite_observation"
+  },
+  "protected_artifact_hashes_before_and_after_identical": {
+    "live-producer-3/arms/rpe_learned/evidence/worker/ecff87575d8349718e68978575a9a783.json": "64529707fd58cfced8458b33e07f812c7f55ea904957a5f9ae999d429b5bfa20",
+    "live-producer-3/arms/rpe_learned/evidence/worker/ecff87575d8349718e68978575a9a783.py": "52477be18715633f3739aea76d50f7d23447f62110de94a46cc300bb12022009",
+    "live-producer-3/ledger/generation-G0.outcome.json": "30ca10c66c11db11094f06739444a2dd6473d1595dfd663d090cc0744cfc57d7",
+    "live-producer-3/records/generation-G0.json": "8e997555c071562352db6275b4ae6f7ca49cc4c90e8ff34d4bada0eb5144aa31",
+    "wire-calibration/ledger/wire-calibration-G0.outcome.json": "51fa189c68476e1f5aed4f899a2171a1c620097f7d2f469983a391bb21064c9f",
+    "wire-calibration/ledger/wire-calibration-G0.reservation.json": "80184c005bd8e5da7c13dc62bbf22768fc6d77c48c1565d7bad6116552b83036",
+    "wire-calibration/preregistration.json": "c70fdb19a795bd367315a786e54179c2ce66937599deebe120d24745c57e5091",
+    "wire-calibration/records/wire-calibration-G0.json": "f2892b385024fa35af69e0ec84a746ac00114861d5662894e3335d08f3e7545b",
+    "wire-calibration/report.json": "89f015b446213e82b547e550271cb41983479d70767628bbf78cdb118d8bb73b"
+  },
+  "qualification_and_activation": {
+    "activation_count": 0,
+    "active_versions": [],
+    "candidate_direct_reuse_or_quality_not_claimed": true,
+    "freeze_absent": true,
+    "matching_version_count": 0,
+    "proposal_id": "5dcb69735790175bf127e1e672c3d460e29769e5bd742aa3ffa11a2142b49844",
+    "proposal_state": "proposed",
+    "registered_qualification_performed": false,
+    "runtime_candidate_probe_performed_by_audit": false,
+    "validation_absent": true,
+    "version_id": null
+  },
+  "registration_sha256": "a1afa7e6aebbd18ae8eda8f0b61fc39ea44458b271e9caaf50e29d17c5c2be98",
+  "schema_version": "rpe.calibration-independent-audit/v1",
+  "scope": "separate wire calibration only; append supplement without rewriting old failure/provenance records",
+  "seals_verified": [
+    "preregistration",
+    "calibration report",
+    "compact record",
+    "reservation",
+    "outcome"
+  ],
+  "static_candidate_assessment": {
+    "assessment_scope": "static only; generated proposal remains unqualified",
+    "csv_run_call_line": 99,
+    "file": "<owned-test-root>/live-producer-3/arms/rpe_learned/evidence/worker/ecff87575d8349718e68978575a9a783.py",
+    "finding": "prepare opens staging_path using O_CREAT|O_EXCL before _run validates CSV header/body; error cleanup removes it afterward. This source order does not satisfy a literal no-staging-creation-before-invalid-input-rejection guarantee. No qualification or runtime failure is claimed.",
+    "python_ast_parses": true,
+    "staging_open_line": 91,
+    "stdlib_imports_only_observed": [
+      "import csv",
+      "import os",
+      "import io"
+    ]
+  },
+  "usage": {
+    "aggregate_arithmetic_verified": true,
+    "billing_verified_cost": null,
+    "combined_total_tokens": null,
+    "later_calls_excluded": true,
+    "lower_bound_three_previous_attempts_plus_this_calibration_only": 784233,
+    "per_request_usage_not_retained_in_sanitized_post_observations": true,
+    "raw_db_per_request_recomputed": false,
+    "retained_worker_report_compact_and_ledger_usage_identical": true,
+    "trusted_retained_aggregate": {
+      "api_errors": 0,
+      "api_requests": 2,
+      "cache_read_tokens": 6144,
+      "cache_write_tokens": null,
+      "coverage_complete": true,
+      "input_tokens": 4259,
+      "known_total_tokens": 12345,
+      "missing_observations": 0,
+      "output_tokens": 1942,
+      "prompt_tokens": 10403,
+      "reasoning_tokens": 0,
+      "requests_with_usage": 2,
+      "total_tokens": 12345
+    }
+  }
+}

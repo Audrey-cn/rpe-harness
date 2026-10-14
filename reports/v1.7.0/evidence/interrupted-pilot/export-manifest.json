@@ -1,0 +1,195 @@
+{
+  "schema_version": "rpe.public-evidence-export/v1",
+  "private_histories_excluded": true,
+  "files": {
+    "preregistration.json": {
+      "source_file_sha256": "dea4a541bed98691a71607dfd6a2370f55507910c2b8a82d1ecef9979bbc9eb3",
+      "source_seal_sha256": "cb7e57bd2a12919081d38b5eaba58c0cbb69576770b425d65816738dd2dbeddf"
+    },
+    "records/train-chinese-native.json": {
+      "source_file_sha256": "9d5eb4e55c80280f6bf14d4204996f25158a23732e99ae2256f2dc965bc1506c",
+      "source_seal_sha256": "b6ef2bdbdf93f7f7be522994806dfaa11a632f54cef60e87c39ee4ba3fd3fa21"
+    },
+    "records/train-chinese-rpe_learned.json": {
+      "source_file_sha256": "d4304264b540f34d4229cd685fb459180c122713f12803686073064531511b36",
+      "source_seal_sha256": "55c2fdee01fdf4da288732714ec563334918a847ae784a5cd54736c2b6dab4d4"
+    },
+    "records/train-chinese-rpe_no_experience.json": {
+      "source_file_sha256": "dc127b6da694774356fe245052b2fcb5eb56da52febecfd1994ff9d99641267e",
+      "source_seal_sha256": "2c9a85c6746a0908a0970d10d0d4e7c501f1c8ad9bdefd4b9eed42c6c18ff731"
+    },
+    "records/train-compound-native.json": {
+      "source_file_sha256": "521a295029b00b71b287808ecb81f350a0d09a29512577028770b828ab31620b",
+      "source_seal_sha256": "adffa25eca3a22d9bca9dca66bd18ccc188e82e550798e779e651afc632ab462"
+    },
+    "records/train-compound-rpe_learned.json": {
+      "source_file_sha256": "87a5b2f62eac87550f6b00b6195cf0460a3733f520db25c2c2acafba3a0779d4",
+      "source_seal_sha256": "a6558ee88fcd324114758ab65e13ee6a230dabca0a26f09cd8b54f1f9e02c670"
+    },
+    "records/train-compound-rpe_no_experience.json": {
+      "source_file_sha256": "c314b8a578d1c1aea48011968d8dcc9adced1694cfb915782639510eea310bf6",
+      "source_seal_sha256": "de2d6a7a15deff8e672cba26ecd949c38d6246cb1c4a12e04a403a3b80d87cb6"
+    },
+    "records/train-delimiter-rpe_learned.json": {
+      "source_file_sha256": "9e1a9b79a331a521d30f5391a2018beb88a28377b5eda77ad3aeafab03dd768e",
+      "source_seal_sha256": "f74ce90daaa05f66c26247799af5fb683093cd5a58f0e1da96a75a061bc557a0"
+    },
+    "records/train-delimiter-rpe_no_experience.json": {
+      "source_file_sha256": "53e28944776ad2f266114ce61f18e62e546b829c157ae3a45e8fb5d2d0d90d49",
+      "source_seal_sha256": "c25a7e43ba162c2cf9f550c2f0c96ace5be88494efa76c86ce95cc5f4d562b03"
+    },
+    "records/train-exact-rpe_learned.json": {
+      "source_file_sha256": "9b5b845491df0491043be574b2d1a6d096d7ac620c1b20852976aeed8f5ce1d1",
+      "source_seal_sha256": "2e6a3941373ab1c1384b5c30eadffe2a4767cad84db6c1194b80f83197bbd5e1"
+    },
+    "records/train-exact-rpe_no_experience.json": {
+      "source_file_sha256": "8aefb007ef4fff3474ab99d68f3190a0d8b77ae36a6561c2f18e809d9a1d6761",
+      "source_seal_sha256": "976df3994acdd62cfdf68b50860d0dc9334d93f461d1cb216ebaa86a97635f30"
+    },
+    "records/train-order-native.json": {
+      "source_file_sha256": "3a5125f7e9e7ea73e699b8e1d0b34291111a5d7b597145a7a266949b127fbe14",
+      "source_seal_sha256": "578d09feb3e8c7952b71ebd21dfea6c22e6eb7a0176275d45bd7e68a75845b23"
+    },
+    "records/train-order-rpe_learned.json": {
+      "source_file_sha256": "303cb3e622fe5f0a4ffd0912f3e3244e62f051bde24d6ba55b9c1432b1e8176e",
+      "source_seal_sha256": "fc95d2d354e1bc78278594691a1fdce5eb80d664ce1e6d6824b5f78bbbcdd307"
+    },
+    "records/train-order-rpe_no_experience.json": {
+      "source_file_sha256": "f6b7514081afe0adf52c9b35040007a8220aa92860a05e4b3a49ee2f12945a33",
+      "source_seal_sha256": "ef07f7bd923d9f8cddc7874f50d541c8748d6c470c1546b9e3644f82a2afd03e"
+    },
+    "records/train-quoted-rpe_learned.json": {
+      "source_file_sha256": "a09e723c22797c7229528a4aaa54ce2030c219dcfd4189f62359928566f70781",
+      "source_seal_sha256": "5920115042163cf81cd48c869fc51cd11aac52c33f169a08a70e52b5bcace4bf"
+    },
+    "records/train-quoted-rpe_no_experience.json": {
+      "source_file_sha256": "e70269eddef518809766473f06e081d28c5db585e8991f0bf77c12d317b1f8eb",
+      "source_seal_sha256": "35cda88ff8b6776b31b4df75504bf765dd5a4defa78bf326d02a5f2b84533664"
+    },
+    "public-artifacts/native/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/native/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "c9a4bdccae71785518d1da39d4d2d09b1d7d57385a066a549a755bf027054400",
+      "bytes": 33
+    },
+    "public-artifacts/native/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/native/workspace/train-compound/output.csv": {
+      "actual_file_sha256": "acdd7601f95428cfe08c641ff8dec8b6f6ecc597b1caf23a5a2870e261c1409c",
+      "bytes": 33
+    },
+    "public-artifacts/native/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/native/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/native/workspace/train-order/output.csv": {
+      "actual_file_sha256": "46b53d7c49560925454bb6a853f20b7f6dced3b3162b57c137304fe0eb74837e",
+      "bytes": 27
+    },
+    "public-artifacts/rpe_learned/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/rpe_learned/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "a6bca4ee48832f61f3a2a2b83e770a7c02b1086e7605184252b1e79092b79f8a",
+      "bytes": 36
+    },
+    "public-artifacts/rpe_learned/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/rpe_learned/workspace/train-compound/output.csv": {
+      "actual_file_sha256": "57ce9d2e22728bc5e132c1e4798349a5caa3427d53bfeded685330fe6b4a80f2",
+      "bytes": 37
+    },
+    "public-artifacts/rpe_learned/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/rpe_learned/workspace/train-delimiter/output.csv": {
+      "actual_file_sha256": "d07b4cebdbfde1a24cb2dea59dc2c0121191daf1f55146cbb7edfe260a9cb5cb",
+      "bytes": 27
+    },
+    "public-artifacts/rpe_learned/workspace/train-exact/input.csv": {
+      "actual_file_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "bytes": 63
+    },
+    "public-artifacts/rpe_learned/workspace/train-exact/output.csv": {
+      "actual_file_sha256": "3935422d1db68eebd512a3454b4548e499b8a64fd1c1aebae54ed4df8a0152bf",
+      "bytes": 60
+    },
+    "public-artifacts/rpe_learned/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/rpe_learned/workspace/train-order/output.csv": {
+      "actual_file_sha256": "ff7e69a61c4ce5cd770703cf5188f981d96533d8627f31dc2b8a7971b1ab36ff",
+      "bytes": 30
+    },
+    "public-artifacts/rpe_learned/workspace/train-quoted/input.csv": {
+      "actual_file_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "bytes": 38
+    },
+    "public-artifacts/rpe_learned/workspace/train-quoted/output.csv": {
+      "actual_file_sha256": "ba3baa817c26894cb76e9164837506d1ba0cc08b524fa0410c10ed28755a2828",
+      "bytes": 33
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-chinese/input.csv": {
+      "actual_file_sha256": "360bca06d7da83f369ec164464b23554f239253d2375b4dcdd41edcee6390beb",
+      "bytes": 41
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-chinese/output.csv": {
+      "actual_file_sha256": "a6bca4ee48832f61f3a2a2b83e770a7c02b1086e7605184252b1e79092b79f8a",
+      "bytes": 36
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-compound/input.csv": {
+      "actual_file_sha256": "9ab2a546d7f4ca84100663080860da025cf05b9b1e2bfea7d28ad99005128292",
+      "bytes": 39
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-compound/output.csv": {
+      "actual_file_sha256": "57ce9d2e22728bc5e132c1e4798349a5caa3427d53bfeded685330fe6b4a80f2",
+      "bytes": 37
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-delimiter/input.csv": {
+      "actual_file_sha256": "3b0e902514e2132199efe39977f85b5035a0f27229cefaf2b2bdddde832aa443",
+      "bytes": 32
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-delimiter/output.csv": {
+      "actual_file_sha256": "d07b4cebdbfde1a24cb2dea59dc2c0121191daf1f55146cbb7edfe260a9cb5cb",
+      "bytes": 27
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-exact/input.csv": {
+      "actual_file_sha256": "56d19a6a0ae552466c8908aca9f7f47b80743cc681a04bc71157c326c3cb38d0",
+      "bytes": 63
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-exact/output.csv": {
+      "actual_file_sha256": "3935422d1db68eebd512a3454b4548e499b8a64fd1c1aebae54ed4df8a0152bf",
+      "bytes": 60
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-order/input.csv": {
+      "actual_file_sha256": "79eae0ced68fe4151ac1091b5e257a913c0d0cda35c0e441ecb14287673fb927",
+      "bytes": 34
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-order/output.csv": {
+      "actual_file_sha256": "ff7e69a61c4ce5cd770703cf5188f981d96533d8627f31dc2b8a7971b1ab36ff",
+      "bytes": 30
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-quoted/input.csv": {
+      "actual_file_sha256": "02258965325de18753629caba78daf7fb45867f58af8fb578ffaff423f4de360",
+      "bytes": 38
+    },
+    "public-artifacts/rpe_no_experience/workspace/train-quoted/output.csv": {
+      "actual_file_sha256": "ba3baa817c26894cb76e9164837506d1ba0cc08b524fa0410c10ed28755a2828",
+      "bytes": 33
+    }
+  },
+  "phase_count": 16
+}
