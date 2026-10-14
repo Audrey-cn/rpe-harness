@@ -24,9 +24,11 @@ class APIError(ValueError):
 class HarnessHTTPServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, address, runtime, request_timeout):
+    def __init__(self, address, runtime, request_timeout, catalog_root=None, skill_snapshot_id=None):
         self.runtime = runtime
         self.request_timeout = request_timeout
+        self.catalog_root = catalog_root
+        self.skill_snapshot_id = skill_snapshot_id
         self.slots = threading.BoundedSemaphore(32)
         super().__init__(address, HarnessHandler)
 
@@ -100,6 +102,9 @@ class HarnessHandler(BaseHTTPRequestHandler):
         path = unquote(url.path)
         rt = self.runtime
         if body is None:
+            if path == '/capabilities':
+                catalog = self._capability_catalog()
+                return 200, {'catalog_sha256': catalog.snapshot_id, 'entries': catalog.entries()}
             if path == '/health':
                 ready = any(rt.router.skills[sid].enabled and not rt.router.skills[sid].is_dormant
                             for sid in BUILTIN_IDS.values()) and not rt.graph_issues
@@ -124,6 +129,27 @@ class HarnessHandler(BaseHTTPRequestHandler):
                 except KeyError:
                     raise APIError(404, 'run not found')
             raise APIError(404, 'not found')
+        if path == '/capabilities/resolve':
+            if set(body) - {'capability', 'input_format', 'constraints'}:
+                raise ValueError('unknown capability resolution fields')
+            return 200, self._capability_catalog().resolve(body.get('capability'),
+                body.get('input_format'), body.get('constraints', []))
+        if path == '/intent/prepare':
+            allowed = {'extracted', 'workspace', 'session_id', 'source_ref', 'source_facts'}
+            if set(body) - allowed or not allowed - {'source_facts'} <= set(body):
+                raise ValueError('intent prepare fields are incomplete or unknown')
+            from .address_cli import prepare_handoff
+            result = prepare_handoff(body['extracted'], db_path=rt.store.path,
+                workspace=body['workspace'], session_id=body['session_id'], source_ref=body['source_ref'],
+                source_facts=body.get('source_facts'), catalog_root=self.server.catalog_root,
+                skill_snapshot_id=self.server.skill_snapshot_id)
+            return {'ready': 200, 'needs_context': 422, 'unsupported': 422,
+                    'ambiguous': 422, 'conflict': 409, 'rejected': 400}[result['status']], result
+        if path == '/intent/show':
+            if set(body) != {'state_id', 'session_id'}:
+                raise ValueError('intent show requires only state_id and session_id')
+            from .intent import MinimalStateStore
+            return 200, MinimalStateStore(rt.store.path).show(body['state_id'], session_id=body['session_id'])
         if path == '/route':
             state, result = rt.route(body)
             return 200, {'level': result.level.name,
@@ -165,6 +191,11 @@ class HarnessHandler(BaseHTTPRequestHandler):
                                    and not rt.router.skills[c].is_dormant],
                          'kind': 'suggestion_only'}
         raise APIError(404, 'not found')
+
+    def _capability_catalog(self):
+        from .capability_catalog import build_catalog
+        return build_catalog(db_path=self.runtime.store.path if self.server.catalog_root is not None else None,
+            catalog_root=self.server.catalog_root, skill_snapshot_id=self.server.skill_snapshot_id)
 
     def _skill(self, skill):
         return {'id': skill.skill_id, 'name': skill.name, 'description': skill.description,
@@ -222,8 +253,9 @@ class HarnessHandler(BaseHTTPRequestHandler):
         pass
 
 
-def create_server(runtime, host='127.0.0.1', port=18400, request_timeout=2):
-    return HarnessHTTPServer((host, port), runtime, request_timeout)
+def create_server(runtime, host='127.0.0.1', port=18400, request_timeout=2,
+                  catalog_root=None, skill_snapshot_id=None):
+    return HarnessHTTPServer((host, port), runtime, request_timeout, catalog_root, skill_snapshot_id)
 
 
 def main(argv=None):
@@ -233,8 +265,11 @@ def main(argv=None):
     parser.add_argument('--port', type=int, default=18400)
     parser.add_argument('--db')
     parser.add_argument('--data-dir')
+    parser.add_argument('--catalog-root')
+    parser.add_argument('--skill-snapshot-id')
     args = parser.parse_args(argv)
-    server = create_server(HarnessRuntime(data_dir=args.data_dir, db_path=args.db), args.host, args.port)
+    server = create_server(HarnessRuntime(data_dir=args.data_dir, db_path=args.db), args.host, args.port,
+                           catalog_root=args.catalog_root, skill_snapshot_id=args.skill_snapshot_id)
     print(json.dumps({'listening': f'http://{args.host}:{server.server_port}', 'version': __version__}), flush=True)
     try:
         server.serve_forever()

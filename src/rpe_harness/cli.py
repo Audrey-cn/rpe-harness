@@ -38,6 +38,8 @@ def main(argv=None):
     register_assets(commands)
     from .skill_cli import register_skills_and_context
     register_skills_and_context(commands)
+    from .address_cli import register_address
+    register_address(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -57,6 +59,8 @@ def main(argv=None):
     serve = commands.add_parser('serve')
     serve.add_argument('--host', default='127.0.0.1')
     serve.add_argument('--port', type=int, default=18400)
+    serve.add_argument('--catalog-root', type=Path)
+    serve.add_argument('--skill-snapshot-id')
     _configuration(serve)
     route = commands.add_parser('route')
     route.add_argument('--request', required=True)
@@ -70,7 +74,7 @@ def main(argv=None):
     hermes_run.add_argument('--prompt-file', type=Path, required=True)
     hermes_run.add_argument('--timeout', type=float, default=180)
     hermes_run.add_argument('--hermes-root', type=Path)
-    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional', 'skills'), default='strict')
+    hermes_run.add_argument('--entry-mode', choices=('strict', 'optional', 'skills', 'address'), default='strict')
     hermes_run.add_argument('--catalog-root', type=Path)
     hermes_run.add_argument('--skill-snapshot-id')
     hermes_run.add_argument('--context-sources', help='trusted JSON file with a sources array')
@@ -118,7 +122,10 @@ def main(argv=None):
     _configuration(rollback)
     args = parser.parse_args(argv)
     try:
-        if args.command in ('skills','context'):
+        if args.command in ('capabilities', 'intent'):
+            from .address_cli import dispatch_address
+            result = dispatch_address(args)
+        elif args.command in ('skills','context'):
             from .skill_cli import dispatch_skills_and_context
             result = dispatch_skills_and_context(args)
         elif args.command == 'assets':
@@ -144,7 +151,11 @@ def main(argv=None):
                     required_request=required_request, max_task_attempts=args.max_task_attempts,
                     catalog_root=args.catalog_root,skill_snapshot_id=args.skill_snapshot_id,
                     context_sources=context_sources)
-                if args.entry_mode == 'skills':
+                if args.entry_mode == 'address':
+                    from .integrations.hermes_address import evaluate_address_session
+                    verdict = evaluate_address_session(result, db_path, args.workspace,
+                        catalog_root=args.catalog_root, required_request=required_request)
+                elif args.entry_mode == 'skills':
                     from .integrations.skill_gate import evaluate_skill_session
                     verdict = evaluate_skill_session(result,db_path,args.workspace,
                         catalog_root=args.catalog_root,required_request=required_request)
@@ -207,6 +218,10 @@ def main(argv=None):
                 serve_argv += ['--db', args.db]
             if args.data_dir:
                 serve_argv += ['--data-dir', args.data_dir]
+            if args.catalog_root:
+                serve_argv += ['--catalog-root', str(args.catalog_root)]
+            if args.skill_snapshot_id:
+                serve_argv += ['--skill-snapshot-id', args.skill_snapshot_id]
             serve_main(serve_argv)
             return 0
         else:
@@ -230,8 +245,12 @@ def main(argv=None):
                                      args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
-        if args.command == 'context':
-            return 2 if status in ('rejected','conflict') else 3 if status=='needs_context' else 0
+        if args.command in ('context', 'intent', 'capabilities'):
+            if status in ('unsupported', 'rejected', 'conflict'):
+                return 2
+            if status in ('needs_context', 'ambiguous'):
+                return 3
+            return 0
         if status in ['received', 'running']:
             return 3
         return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted', 'unverified'] or result.get('passed') is False else 0
