@@ -364,7 +364,9 @@ def test_export_preserves_public_prompt_and_hash_without_controller_paths(api, r
     assert public['prompt_redaction_policy']
 
 
-def test_xlsx_native_proof_runs_the_original_snapshotted_helper(api, registered):
+@pytest.mark.parametrize('python_flags,load_first',[(flags,True) for flags in
+    ([],['-B'],['-u'],['-B','-u'],['-u','-B'],['-Bu'])]+[(['-u'],False)])
+def test_xlsx_native_proof_runs_the_original_snapshotted_helper(api, registered, python_flags, load_first):
     import shlex
     from rpe_harness.integrations.hermes import HostEventStore
     from rpe_harness.integrations.hermes_gate import digest_json
@@ -376,7 +378,7 @@ def test_xlsx_native_proof_runs_the_original_snapshotted_helper(api, registered)
     source = Path(materialized['materialized_path'])/'productivity/xlsx/SKILL.md'
     helper = source.parent/'scripts/xlsx_read.py'
     workspace = Path(trial['workspace'])
-    argv = [registered['helper_python'],str(helper),'input.xlsx','--json','--sheet','明细']
+    argv = [registered['helper_python'],*python_flags,str(helper),'input.xlsx','--json','--sheet','明细']
     with (workspace/'output.json').open('w') as output:
         subprocess.run(argv,cwd=workspace,stdout=output,check=True)
     store = HostEventStore(trial['db'])
@@ -387,17 +389,18 @@ def test_xlsx_native_proof_runs_the_original_snapshotted_helper(api, registered)
     store.record('post_api_request',{**common,'response':{'assistant_message':{'tool_calls':[
         {'id':'load','name':'skill_view'},{'id':'execute','name':'terminal'}]}}})
     load = {**common,'tool_call_id':'load','tool_name':'skill_view','arguments_sha256':digest_json(load_args)}
-    store.record('pre_tool_call',load)
-    store.record('post_tool_call',{**load,'status':'loaded','skill_id':'productivity/xlsx',
+    load_post = {**load,'status':'loaded','skill_id':'productivity/xlsx',
         'snapshot_id':registered['skill_snapshot_id'],'skill_source_path':str(source),
-        'content_sha256':registered['skill_sha256']})
+        'content_sha256':registered['skill_sha256']}
     execute = {**common,'tool_call_id':'execute','tool_name':'terminal','arguments_sha256':digest_json(terminal_args)}
-    store.record('pre_tool_call',execute)
-    store.record('post_tool_call',{**execute,'status':'succeeded','tool_exit_code':0})
+    calls = [(load,load_post),(execute,{**execute,'status':'succeeded','tool_exit_code':0})]
+    for pre,post in calls if load_first else reversed(calls):
+        store.record('pre_tool_call',pre)
+        store.record('post_tool_call',post)
     result = {'session_id':'xlsx-proof','session_root':str(session),'events':store.list('xlsx-proof'),
         'stream_tool_calls':[{'name':'skill_view','tool_call_id':'load','input':load_args},
                              {'name':'terminal','tool_call_id':'execute','input':terminal_args}]}
-    assert api.evaluate_native_address_session(result,registered,trial)['verified'] is True
+    assert api.evaluate_native_address_session(result,registered,trial)['verified'] is load_first
     assert api.score_address_artifact(registered,trial)['business_correct'] is True
     assert api.score_address_artifact(registered,trial)['product_oracle_passed'] is True
     # The same correct bytes with an unobserved or substituted helper are insufficient.
@@ -432,3 +435,139 @@ def test_real_intent_missing_fields_reach_contract_score_without_false_failure(a
     assert api._address_contract(registered,trial,gate) is True
     gate['missing'] = ['execution.delimiter']
     assert api._address_contract(registered,trial,gate) is False
+
+
+@pytest.mark.parametrize('after_success',[False,True])
+def test_export_never_publishes_failed_or_changed_artifact_bytes(api, registered, tmp_path, after_success):
+    import hashlib
+    trial = registered['sessions'][0]
+    sentinel = b'PRIVATE_TOKEN_SENTINEL /Users/audrey/private\n'
+    def returned(*args,**kwargs):
+        if after_success:
+            return _native_write_result(registered,trial,'output.csv','地区,编号,金额\n华东,001,10\n华西,001,20\n华东,1,30\n')
+        (Path(trial['workspace'])/'output.csv').write_bytes(sentinel)
+        raise RuntimeError('failed attempt contains private-looking text')
+    summary = api.run_address_comparison(registered['root'],timeout=60,formal=True,max_sessions=1,runner=returned)
+    assert summary['records'][0]['accepted'] is after_success
+    (Path(trial['workspace'])/'output.csv').write_bytes(sentinel)
+    destination = tmp_path/'safe-export'
+    api.export_address_evidence(registered['root'],destination)
+    folder = destination/'artifacts'/trial['trial_id']
+    assert not (folder/'output.csv').exists()
+    manifest = json.loads((folder/'manifest.json').read_text())
+    rejected = next(a for a in manifest['artifacts'] if a['name']=='output.csv')
+    assert rejected['sha256']==hashlib.sha256(sentinel).hexdigest()
+    assert rejected['size_bytes']==len(sentinel)
+    assert rejected['raw_exported'] is False and rejected['reason']
+    for file in destination.rglob('*'):
+        if file.is_file():
+            assert b'PRIVATE_TOKEN_SENTINEL' not in file.read_bytes()
+            assert b'/Users/audrey/private' not in file.read_bytes()
+
+
+def test_duplicate_terminal_keys_cannot_hide_private_bytes_behind_valid_status(api, registered, tmp_path):
+    trial = next(t for t in registered['sessions'] if t['case_id']=='missing-keys' and t['arm']=='native')
+    terminal = '{"status":"PRIVATE_TOKEN_SENTINEL","status":"needs_context","missing":["key_columns"]}'
+    _native_write_result(registered,trial,'terminal.json',terminal)
+    assert api.score_address_artifact(registered,trial)['business_correct'] is False
+
+
+def test_export_rechecks_public_fixture_and_prompt_before_copying_bytes(api, registered, tmp_path):
+    trial = registered['sessions'][0]
+    (Path(trial['workspace'])/'prompt.txt').write_text('PRIVATE_TOKEN_SENTINEL')
+    Path(registered['cases'][0]['source_path']).write_text('PRIVATE_TOKEN_SENTINEL')
+    destination = tmp_path/'changed-public-input'
+    api.export_address_evidence(registered['root'],destination)
+    assert not (destination/'fixtures/csv-zh-composite.csv').exists()
+    assert not (destination/'prompts/csv-zh-composite.txt').exists()
+    for path in destination.rglob('*'):
+        if path.is_file():
+            assert b'PRIVATE_TOKEN_SENTINEL' not in path.read_bytes()
+
+
+@pytest.fixture
+def host_checkout(tmp_path):
+    """Own Git checkout + tiny stdlib-only venv, with no real Hermes state."""
+    import sys
+    host = tmp_path/'host-checkout'
+    host.mkdir()
+    (host/'pm').mkdir()
+    (host/'pm/__init__.py').write_text('')
+    (host/'pm/environments.py').write_text('def project_python(root):\n    return root / ".venv/bin/python"\n')
+    (host/'hermes_cli.py').write_text('VALUE = 1\n')
+    (host/'.gitignore').write_text('.venv/\n.env\nmemory/\n.hermes/\n')
+    for args in (['init','--quiet'],['add','.'],['-c','user.name=Test','-c','user.email=test@example.invalid','commit','--quiet','-m','fixture']):
+        subprocess.run(['git','-C',str(host),*args],check=True,capture_output=True)
+    subprocess.run([sys.executable,'-B','-m','venv','--without-pip',str(host/'.venv')],check=True,capture_output=True)
+    site = next((host/'.venv/lib').glob('python*/site-packages'))
+    dist = site/'host_fixture-1.0.dist-info'
+    dist.mkdir()
+    (dist/'METADATA').write_text('Metadata-Version: 2.1\nName: Host-Fixture\nVersion: 1.0\n')
+    return host
+
+
+@pytest.mark.parametrize('change',['tracked','untracked_runtime','head','distribution'])
+def test_frozen_host_code_and_dependencies_are_rechecked_before_session(api, registered, host_checkout, change):
+    plan = api.preregister_address_comparison(Path(registered['root']).parent/'host-comparison',
+        skill_root=registered['skill_root'],hermes_root=host_checkout,timeout=60,max_turns=6)
+    host = plan['environment']['host_runtime']
+    assert host['git_head'] and host['tracked_diff_sha256']
+    assert host['bootstrap_python']['installed_distributions_sha256']
+    assert host['selected_python']['installed_distributions_sha256']
+    if change=='tracked':
+        (host_checkout/'hermes_cli.py').write_text('VALUE = 2\n')
+    elif change=='untracked_runtime':
+        (host_checkout/'extra_adapter.py').write_text('VALUE = 3\n')
+    elif change=='head':
+        subprocess.run(['git','-C',str(host_checkout),'-c','user.name=Test','-c','user.email=test@example.invalid',
+            'commit','--quiet','--allow-empty','-m','new head'],check=True,capture_output=True)
+    else:
+        metadata = next((host_checkout/'.venv/lib').glob('python*/site-packages/host_fixture-1.0.dist-info/METADATA'))
+        metadata.write_text('Metadata-Version: 2.1\nName: Host-Fixture\nVersion: 2.0\n')
+    def forbidden(*args,**kwargs):
+        pytest.fail('host drift must stop before a paid model attempt')
+    with pytest.raises(ValueError,match='frozen'):
+        api.run_address_comparison(plan['root'],timeout=60,formal=True,max_sessions=1,runner=forbidden)
+    assert api.summarize_address_comparison(plan['root'])['formal_attempts']==0
+
+
+def test_host_fingerprint_ignores_daily_memory_and_credentials(api, host_checkout):
+    before = api._host_fingerprint(host_checkout)
+    (host_checkout/'.env').write_text('PRIVATE_TOKEN_SENTINEL')
+    (host_checkout/'memory').mkdir()
+    (host_checkout/'memory/private.py').write_text('PRIVATE_TOKEN_SENTINEL')
+    (host_checkout/'.hermes').mkdir()
+    (host_checkout/'.hermes/auth.json').write_text('PRIVATE_TOKEN_SENTINEL')
+    assert api._host_fingerprint(host_checkout)==before
+
+
+def test_summary_separates_real_business_truth_from_workflow_and_contract_probes(api, registered):
+    trials = {Path(t['workspace']).name:t for t in registered['sessions']}
+    def observed(prompt,workspace,db,**kwargs):
+        trial = trials[Path(workspace).name]
+        if trial['case_id']=='csv-zh-composite':
+            result = _native_write_result(registered,trial,'output.csv','地区,编号,金额\n华东,001,10\n华西,001,20\n华东,1,30\n')
+            if trial['arm']=='address':
+                # Real correct bytes are still business-correct when there is
+                # no address-tool chain. The real address gate must reject it.
+                result['events'] = []
+            return result
+        if trial['arm']=='native' and trial['category']=='contract_probe':
+            content = ('{"status":"needs_context","missing":["execution.key_columns"]}'
+                if trial['case_id']=='missing-keys' else '{"status":"unsupported"}')
+            return _native_write_result(registered,trial,'terminal.json',content)
+        raise RuntimeError('other fixed attempts remain failed')
+    summary = api.run_address_comparison(registered['root'],timeout=60,formal=True,runner=observed)
+    assert summary['production_business_correct']==2
+    assert summary['production_complete_chain']==1
+    assert summary['production_invocation_verified']==1
+    assert summary['contract_probe_correct']==2
+    assert summary['contract_probe_complete_chain']==2
+    assert summary['by_arm']['address']['production_business_correct']==1
+    assert summary['by_arm']['address']['production_complete_chain']==0
+    assert summary['by_arm']['native']['production_business_correct']==1
+    assert summary['by_arm']['native']['contract_probe_correct']==2
+    assert summary['production_artifact_successes']==summary['production_complete_chain']
+    assert summary['metric_definitions']['deprecated_aliases']['production_artifact_successes']=='production_complete_chain'
+    assert summary['by_arm']['native']['business_correct_observations']==3
+    assert 'business_correct_observations' in summary['metric_definitions']['deprecated_aliases']

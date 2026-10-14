@@ -16,6 +16,7 @@ import math
 import os
 from pathlib import Path
 import re
+import shlex
 import sqlite3
 import subprocess
 import sys
@@ -78,14 +79,78 @@ def _source_hashes():
             for p in sorted(package.rglob('*.py'))}
 
 
-def _environment(helper_python):
+def _python_metadata(python):
+    code = '''import hashlib,importlib.metadata,json,pathlib,re,sys
+rows=sorted((re.sub(r"[-_.]+","-",str(d.metadata.get("Name") or "")).lower(),str(d.version))
+            for d in importlib.metadata.distributions())
+encoded=json.dumps(rows,ensure_ascii=False,separators=(",",":"),allow_nan=False).encode()
+print(json.dumps({"version":sys.version,"implementation":sys.implementation.name,
+ "executable_sha256":hashlib.sha256(pathlib.Path(sys.executable).read_bytes()).hexdigest(),
+ "executable_path_sha256":hashlib.sha256(sys.executable.encode()).hexdigest(),
+ "prefix_sha256":hashlib.sha256(sys.prefix.encode()).hexdigest(),
+ "installed_distribution_count":len(rows),"installed_distributions_sha256":hashlib.sha256(encoded).hexdigest()}))'''
+    completed = subprocess.run([str(python),'-B','-c',code],capture_output=True,text=True,timeout=15,check=True)
+    return json.loads(completed.stdout)
+
+
+def _host_fingerprint(hermes_root):
+    """Read source/dependency metadata only; exclude daily state and credentials."""
+    root = _safe_path(hermes_root)
+    if not root.is_dir():
+        return {'available':False,'status':'host_checkout_absent'}
+    def git(*arguments):
+        process = subprocess.run(['git','-c','core.fsmonitor=false','--no-optional-locks','-C',str(root),
+            *arguments],capture_output=True,timeout=20,check=True)
+        return process.stdout
+    try:
+        head = git('rev-parse','--verify','HEAD').decode('ascii').strip()
+    except subprocess.CalledProcessError:
+        return {'available':False,'status':'host_git_head_unavailable'}
+    private_dirs = ('memory','memories','.hermes','credentials','secrets')
+    private_files = ('.env*','auth.json','credentials.json','tokens.json','*.pem','*.key','*.p12')
+    exclusions = [f':(exclude,glob){prefix}{name}/**' for name in private_dirs for prefix in ('','**/')]
+    exclusions += [f':(exclude,glob){prefix}{name}' for name in private_files for prefix in ('','**/')]
+    dirty = git('diff','--no-ext-diff','--no-textconv','--binary','HEAD','--','.',*exclusions)
+    names = git('ls-files','--others','--exclude-standard','-z','--',
+                '*.py','*.pyi','*.pth','*.so','*.dylib').split(b'\0')
+    modules = []
+    for encoded in names:
+        if not encoded:
+            continue
+        relative = Path(os.fsdecode(encoded))
+        if any(part in private_dirs or part.startswith('.env') for part in relative.parts):
+            continue
+        if len(modules)>=2048:
+            raise ValueError('host untracked runtime module budget exceeded')
+        path = _safe_path(root/relative)
+        if not path.is_relative_to(root):
+            raise ValueError('host runtime module escaped checkout')
+        modules.append((relative.as_posix(),_sha(read_regular_file(path,max_bytes=MAX_ARTIFACT_BYTES))))
+    result = {'available':False,'status':'host_interpreter_unavailable','git_head':head,
+        'tracked_diff_sha256':_sha(dirty),'tracked_diff_bytes':len(dirty),
+        'tracked_diff_scope':'all tracked repository files except memory, state and credential paths',
+        'untracked_runtime_sha256':_sha(_json(sorted(modules)).encode()),'untracked_runtime_count':len(modules)}
+    bootstrap = root/'.venv/bin/python'
+    if bootstrap.is_file():
+        from ..integrations.hermes_session import _installed_python
+        # Host PM selection is read-only; it reads dependency facts, not user
+        # memory, provider settings or credentials. Freeze the exact interpreter
+        # used by the launcher as well as its bootstrap environment.
+        selected = _installed_python(root)
+        result.update(available=True,status='ready',bootstrap_python=_python_metadata(bootstrap),
+                      selected_python=_python_metadata(selected))
+    return result
+
+
+def _environment(helper_python,hermes_root):
     completed = subprocess.run([helper_python, '-B', '-c',
         'import json,sys,openpyxl; print(json.dumps({"python":sys.version,"openpyxl":openpyxl.__version__}))'],
         capture_output=True, text=True, timeout=15, check=True)
     config = Path.home() / '.hermes/config.yaml'
     return {'source_sha256': _source_hashes(),
         'host_config_sha256': _sha(read_regular_file(config, max_bytes=1048576)) if config.exists() else None,
-        'dependency_versions': json.loads(completed.stdout)}
+        'dependency_versions': json.loads(completed.stdout),'helper_python_identity':_python_metadata(helper_python),
+        'host_runtime':_host_fingerprint(hermes_root)}
 
 
 def _fixtures(directory):
@@ -213,7 +278,7 @@ def preregister_address_comparison(root, *, skill_root, hermes_root=None,
     plan = {**arguments,'schema_version':'rpe.address-comparison/v1','db':str(database),
         'catalog_root':str(root/'catalog'),'skill_snapshot_id':snapshot,
         'skill_sha256':skill['skill_sha256'],'script_sha256':skill['script_sha256'],
-        'environment':_environment(helper_python),'cases':cases,'sessions':trials,'pilots':pilots,
+        'environment':_environment(helper_python,hermes_root),'cases':cases,'sessions':trials,'pilots':pilots,
         'formal_session_limit':12,'pilot_session_limit':2,'production_max_task_attempts':1,
         'model_policy':'same frozen host configuration and dependencies; record actual identities',
         'tool_policy':'native terminal/file/skills/tool_search preserved; address catalog plus two-stage tools',
@@ -264,7 +329,7 @@ def _load(root):
 
 
 def _check_freeze(plan):
-    if _environment(plan['helper_python']) != plan['environment']:
+    if _environment(plan['helper_python'],plan['hermes_root']) != plan['environment']:
         raise ValueError('frozen source, model configuration or dependencies changed')
     catalog = SkillCatalog(plan['db'],plan['catalog_root'])
     row = catalog.lookup(XLSX_SKILL_ID,plan['skill_snapshot_id'])
@@ -298,15 +363,10 @@ def score_address_artifact(plan, trial):
             outputs = [p for p in workspace.iterdir() if p.name.startswith('output')]
             if outputs or not verdict['source_preserved']:
                 return verdict
-            terminal = json.loads(read_regular_file(workspace/'terminal.json',max_bytes=8192))
-            valid = type(terminal) is dict and terminal.get('status')==case['expected_status']
-            valid &= set(terminal) <= {'status','missing'}
-            if case['expected_status']=='needs_context':
-                valid &= _missing_fields(terminal.get('missing'))==case['expected_missing']
-            elif 'missing' in terminal:
-                valid &= terminal['missing']==[]
-            if valid:
-                verdict.update(business_correct=True,structured_terminal=terminal)
+            raw = read_regular_file(workspace/'terminal.json',max_bytes=8192)
+            terminal = _terminal_value(raw,case)
+            if terminal is not None:
+                verdict.update(business_correct=True,structured_terminal=terminal,terminal_sha256=_sha(raw))
             return verdict
         artifact = read_regular_file(workspace/case['output_name'],max_bytes=MAX_ARTIFACT_BYTES)
         verdict['artifact_sha256'] = _sha(artifact)
@@ -317,15 +377,37 @@ def score_address_artifact(plan, trial):
         elif 'expected_text' in case:
             correct = artifact==case['expected_text'].encode('utf-8')
         else:
-            correct = exact_json(json.loads(artifact),case['expected'])
+            correct = exact_json(json.loads(artifact,object_pairs_hook=_unique_pairs),case['expected'])
         product = plan_from_dict(trial['oracle_plan'])
         verification = verify_plan({**product.verification_parameters(),
             'staging_path':str(workspace/case['output_name'])},product)
         verdict.update(business_correct=bool(correct and verdict['source_preserved']),
-            product_oracle_passed=verification.get('passed') is True)
+            product_oracle_passed=verification.get('passed') is True
+                and verification.get('output_sha256')==verdict['artifact_sha256'])
     except (OSError,ValueError,TypeError,KeyError,UnicodeError,csv.Error,RecursionError):
         pass
     return verdict
+
+
+def _unique_pairs(pairs):
+    value = {}
+    for key,item in pairs:
+        if key in value:
+            raise ValueError('duplicate JSON fields')
+        value[key] = item
+    return value
+
+
+def _terminal_value(raw,case):
+    terminal = json.loads(raw,object_pairs_hook=_unique_pairs)
+    valid = type(terminal) is dict and terminal.get('status')==case['expected_status']
+    if not valid or set(terminal)-{'status','missing'}:
+        return None
+    if case['expected_status']=='needs_context':
+        valid = _missing_fields(terminal.get('missing'))==case['expected_missing']
+    elif 'missing' in terminal:
+        valid = terminal['missing']==[]
+    return terminal if valid else None
 
 
 def _native_calls(result, database):
@@ -383,7 +465,10 @@ def evaluate_native_address_session(result, plan, trial):
             from .skill_comparison import _native_gate
             old_plan = {**plan,'db':trial['db'],'snapshot_id':plan['skill_snapshot_id'],'owned_root':plan['root']}
             old_case = {**case,**case['parameters']}
-            return _native_gate(result,old_plan,trial,old_case)
+            legacy = _native_gate(result,old_plan,trial,old_case)
+            if legacy.get('verified') or legacy.get('errors')!=['native_original_helper_execution_missing']:
+                return legacy
+            return _native_xlsx_flags(result,plan,trial,case,posts,streams,legacy)
         terminal = case['expected_status']!='ready'
         name = 'terminal.json' if terminal else case['output_name']
         workspace = Path(trial['workspace'])
@@ -427,6 +512,73 @@ def evaluate_native_address_session(result, plan, trial):
     return verdict
 
 
+def _native_xlsx_flags(result,plan,trial,case,posts,streams,legacy):
+    """Extend the already checked legacy chain only for Python -u/-B flags.
+
+    Reaching this function means the legacy verifier checked durable API/tool
+    identities, arguments, snapshot bytes and existence of an original load.
+    Order must still be checked for the particular terminal selected below.
+    No events or argument hashes are rewritten to simulate another invocation.
+    """
+    from ..integrations.hermes_gate import digest_json, _same_call
+    workspace = Path(trial['workspace'])
+    helper = Path(result['session_root'])/'home/skills/productivity/xlsx/scripts/xlsx_read.py'
+    events = result['events']
+    row = SkillCatalog(trial['db'],plan['catalog_root']).lookup(XLSX_SKILL_ID,plan['skill_snapshot_id'])
+    loaded = [post for post in posts if post.get('tool_name')=='skill_view'
+        and post.get('status')=='loaded' and post.get('skill_id')==XLSX_SKILL_ID
+        and post.get('snapshot_id')==plan['skill_snapshot_id']
+        and post.get('skill_source_path')==str(helper.parent.parent/'SKILL.md')
+        and post.get('content_sha256')==plan['skill_sha256']
+        and post.get('arguments_sha256')==digest_json({'name':row['load_name']})]
+    if _python_metadata(plan['helper_python'])!=plan['environment']['helper_python_identity']:
+        return {**legacy,'errors':['native_frozen_interpreter_changed']}
+    for stream in streams:
+        args = stream.get('input')
+        if stream.get('name')!='terminal' or not isinstance(args,dict):
+            continue
+        command = args.get('command')
+        if not isinstance(command,str) or any(c in command for c in ('$', '`', '\n', '\r')):
+            continue
+        lexer = shlex.shlex(command,posix=True,punctuation_chars=';&|><')
+        lexer.whitespace_split,lexer.commenters = True,''
+        tokens = list(lexer)
+        if tokens[:1]==['cd']:
+            if len(tokens)<4 or Path(tokens[1]).resolve()!=workspace or tokens[2]!='&&':
+                continue
+            tokens = tokens[3:]
+        if tokens[:1]!=[plan['helper_python']]:
+            continue
+        tokens = tokens[1:]
+        flags = []
+        while tokens and tokens[0] in {'-B','-u','-Bu','-uB'} and len(flags)<4:
+            flags.append(tokens.pop(0))
+        mode = {'rows':'--json','sheets':'--sheets','formulas':'--formulas'}[case['parameters']['mode']]
+        mode_args = [mode]+(['--sheet',case['parameters']['sheet']] if case['parameters'].get('sheet') is not None else [])
+        if (len(tokens)!=len(mode_args)+4 or tokens[0]!=str(helper)
+            or tokens[1] not in {'input.xlsx',str(workspace/'input.xlsx')}
+            or tokens[2:-2]!=mode_args or tokens[-2]!='>'
+            or tokens[-1] not in {'output.json',str(workspace/'output.json')}):
+            continue
+        matching = [post for post in posts if post.get('tool_name')=='terminal'
+            and post.get('arguments_sha256')==digest_json(args)
+            and ('tool_call_id' not in stream or post.get('tool_call_id')==stream['tool_call_id'])]
+        if len(matching)!=1 or matching[0].get('status')!='succeeded':
+            continue
+        pres = [event for event in events if event.get('kind')=='pre_tool_call'
+            and event.get('tool_name')=='terminal' and _same_call(event,matching[0])
+            and event.get('arguments_sha256')==digest_json(args)]
+        if len(pres)!=1 or not any(events.index(load)<events.index(pres[0]) for load in loaded):
+            continue
+        if matching[0].get('tool_exit_code') not in (None,0):
+            continue
+        return {'verified':True,'status':'accepted','errors':[],'skill_id':XLSX_SKILL_ID,
+            'snapshot_id':plan['skill_snapshot_id'],'script_sha256':plan['script_sha256'],
+            'helper_call_id':matching[0]['tool_call_id'],'python_startup_flags':flags,
+            'interpreter_sha256':plan['environment']['helper_python_identity']['executable_sha256']}
+    return {**legacy,'invocation_status':'unrecognized_python_invocation'}
+
+
 def _address_contract(plan,trial,gate):
     """Product run parameters, not model summaries, determine faithful execution."""
     from ..integrations.hermes_gate import read_run
@@ -458,13 +610,15 @@ def _public_gate(gate):
     result = {}
     for key in ('verified','harness_verified','rejection_verified','status','run_id','state_id','capability',
                 'catalog_sha256','state_sha256','handoff_sha256','handoff_bytes','rejection_reason',
-                'task_context_sha256','task_context_bytes','context_minimized'):
+                'task_context_sha256','task_context_bytes','context_minimized','invocation_status','interpreter_sha256'):
         value = gate.get(key)
         if type(value) in (str,int,bool) or value is None:
             result[key] = value
     result['error_count'] = len(gate.get('errors') or [])
     result['error_codes'] = [value if isinstance(value,str) and re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}',value)
                              else 'redacted_diagnostic' for value in (gate.get('errors') or [])[:16]]
+    if isinstance(gate.get('python_startup_flags'),list):
+        result['python_startup_flags'] = [flag for flag in gate['python_startup_flags'] if flag in {'-B','-u','-Bu','-uB'}]
     return result
 
 
@@ -604,7 +758,7 @@ def summarize_address_comparison(root):
     by_arm = {}
     for arm in ARMS:
         rows = [r for r in formal if r['arm']==arm]
-        by_arm[arm] = {'formal_attempts':len(rows),
+        by_arm[arm] = {**_score_counts(rows),'formal_attempts':len(rows),
             'production_artifact_successes':sum(r.get('accepted') is True and r['category']=='production' for r in rows),
             'contract_probe_successes':sum(r.get('accepted') is True and r['category']=='contract_probe' for r in rows),
             'business_correct_observations':sum(r.get('business_correct') is True for r in rows),
@@ -623,6 +777,15 @@ def summarize_address_comparison(root):
             'observed_arms':[arm for arm in ARMS if arm in rows],'comparable':comparable,
             **{arm+'_accepted':rows[arm].get('accepted') is True if arm in rows else None for arm in ARMS}})
     return {'schema_version':'rpe.address-comparison-summary/v1','fingerprint':plan['sha256'],
+        **_score_counts(formal),
+        'metric_definitions':{
+            'production_business_correct':'public business truth and preserved source, independent of host/tool evidence',
+            'production_complete_chain':'business truth plus independent product oracle, comparable host and verified invocation/contract',
+            'contract_probe_correct':'expected strict structured terminal and no business artifact; separate from production',
+            'contract_probe_complete_chain':'expected terminal plus verified native publication or durable address rejection and comparable host',
+            'deprecated_aliases':{'production_artifact_successes':'production_complete_chain',
+                'business_correct_observations':'production_business_correct + contract_probe_correct (legacy mixed count)',
+                'contract_probe_successes':'contract_probe_complete_chain'}},
         'planned_formal_sessions':12,'planned_production_sessions':8,'planned_contract_probes':4,
         'formal_attempts':len(formal),'pilot_attempts':len(records)-len(formal),
         'accepted_sessions':sum(r.get('accepted') is True for r in formal),
@@ -635,6 +798,21 @@ def summarize_address_comparison(root):
         'costs':summarize_phases(phases),'formal_costs':summarize_phases([p for p in phases if p['phase']=='formal']),
         'pilot_costs':summarize_phases([p for p in phases if p['phase']=='pilot']),
         'coverage_limits':plan['coverage_limits'],'tool_policy':plan['tool_policy'],'records':records}
+
+
+def _score_counts(records):
+    production = [row for row in records if row['category']=='production']
+    probes = [row for row in records if row['category']=='contract_probe']
+    return {'production_attempts':len(production),'contract_probe_attempts':len(probes),
+        'production_business_correct':sum(row.get('business_correct') is True for row in production),
+        'production_business_unknown':sum(type(row.get('business_correct')) is not bool for row in production),
+        'production_complete_chain':sum(row.get('accepted') is True for row in production),
+        'production_oracle_verified':sum(row.get('product_oracle_passed') is True for row in production),
+        'production_contract_faithful':sum(row.get('contract_faithful') is True for row in production),
+        'production_invocation_verified':sum(row.get('invocation_evidence') is True for row in production),
+        'contract_probe_correct':sum(row.get('business_correct') is True for row in probes),
+        'contract_probe_complete_chain':sum(row.get('accepted') is True for row in probes),
+        'contract_probe_terminal_verified':sum(row.get('invocation_evidence') is True for row in probes)}
 
 
 def run_address_comparison(root, *, timeout=None, formal=False, max_sessions=None, runner=None):
@@ -669,7 +847,8 @@ def run_address_comparison(root, *, timeout=None, formal=False, max_sessions=Non
         record = _observe(plan,trial,runner)
         _save(Path(plan['root'])/'records'/(trial['trial_id']+'.json'),record)
         outcome = {k:record[k] for k in ('status','elapsed_seconds','usage','model_identity')}
-        outcome.update(artifact_correct=record['business_correct'],workflow_verified=record['invocation_evidence'])
+        outcome.update(artifact_correct=record['category']=='production' and record['business_correct'],
+                       workflow_verified=record['invocation_evidence'])
         if record.get('error_code'):
             outcome['error_code'] = record['error_code']
         ledger.finish(trial['trial_id'],outcome)
@@ -700,28 +879,62 @@ def export_address_evidence(root, destination):
     _save(destination/'preregistration.json',public)
     _save(destination/'summary.json',summary)
     _save(destination/'cost-phases.json',{'records':PhaseLedger(Path(plan['root'])/'ledger').records()})
+    public_files = []
     (destination/'fixtures').mkdir()
     (destination/'prompts').mkdir()
     for case in plan['cases']:
         source = Path(case['source_path'])
-        (destination/'fixtures'/source.name).write_bytes(read_regular_file(source,max_bytes=MAX_ARTIFACT_BYTES))
+        raw,metadata = _export_bytes(source,source.name)
+        verified = raw is not None and metadata['sha256']==case['input_sha256']
+        metadata.update(raw_exported=verified,reason='frozen_public_input' if verified else 'frozen_input_changed_or_unreadable')
+        public_files.append({'kind':'fixture',**metadata})
+        if verified:
+            (destination/'fixtures'/source.name).write_bytes(raw)
         trial = next(t for t in plan['sessions'] if t['case_id']==case['case_id'])
-        prompt = read_regular_file(Path(trial['workspace'])/'prompt.txt',max_bytes=1048576).decode('utf-8')
-        (destination/'prompts'/(case['case_id']+'.txt')).write_text(
-            prompt.replace(plan['helper_python'],'<frozen-helper-python>'),encoding='utf-8')
+        raw,metadata = _export_bytes(Path(trial['workspace'])/'prompt.txt',case['case_id']+'.txt')
+        verified = raw is not None and metadata['sha256']==trial['prompt_sha256']
+        metadata.update(raw_exported=verified,reason='frozen_public_prompt' if verified else 'frozen_prompt_changed_or_unreadable')
+        public_files.append({'kind':'prompt',**metadata})
+        if verified:
+            (destination/'prompts'/(case['case_id']+'.txt')).write_text(
+                raw.decode('utf-8').replace(plan['helper_python'],'<frozen-helper-python>'),encoding='utf-8')
+    _save(destination/'public-files.json',{'files':public_files})
     for record in summary['records']:
         trial = next(t for t in plan['sessions']+plan['pilots'] if t['trial_id']==record['trial_id'])
         case = next(c for c in plan['cases'] if c['case_id']==trial['case_id'])
         folder = destination/'artifacts'/trial['trial_id']
         folder.mkdir(parents=True)
+        fresh = score_address_artifact(plan,trial)
+        artifacts = []
         for name in (case['output_name'],'terminal.json'):
             source = Path(trial['workspace'])/name
-            if source.exists() and not source.is_symlink():
-                try:
-                    (folder/name).write_bytes(read_regular_file(source,max_bytes=MAX_ARTIFACT_BYTES))
-                except (OSError,ValueError):
-                    pass
+            raw,metadata = _export_bytes(source,name)
+            public_truth = (trial['category']=='production' and name==case['output_name']
+                and fresh['business_correct'] and fresh['product_oracle_passed']
+                and metadata['sha256']==fresh['artifact_sha256'])
+            public_terminal = (trial['category']=='contract_probe' and name=='terminal.json'
+                and fresh['business_correct'] and fresh['structured_terminal'] is not None
+                and metadata['sha256']==fresh.get('terminal_sha256'))
+            verified = bool(raw is not None and (public_truth or public_terminal))
+            metadata.update(raw_exported=verified,reason=('reverified_public_business_truth' if public_truth
+                else 'reverified_strict_terminal' if public_terminal else 'unverified_or_changed_artifact'))
+            artifacts.append(metadata)
+            if verified:
+                (folder/name).write_bytes(raw)
+        _save(folder/'manifest.json',{'artifacts':artifacts})
     return summary
+
+
+def _export_bytes(path,name):
+    """Unverified bytes stay local; only their bounded metadata may be exported."""
+    metadata = {'name':name,'sha256':None,'size_bytes':None}
+    try:
+        metadata['size_bytes'] = path.lstat().st_size
+        raw = read_regular_file(path,max_bytes=MAX_ARTIFACT_BYTES)
+        metadata.update(sha256=_sha(raw),size_bytes=len(raw))
+        return raw,metadata
+    except (OSError,ValueError):
+        return None,metadata
 
 
 def main(argv=None):
