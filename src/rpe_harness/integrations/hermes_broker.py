@@ -258,6 +258,46 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120, extensi
         except (OSError,sqlite3.Error):
             return 403, {'error':{'code':'broker_receipt_invalid'}}
 
+    def controller_response(body):
+        """Controller admission shares the executor, never a model tool identity."""
+        from .hermes import HostEventStore
+        from .hermes_gate import digest_json
+        from .hermes_clean import (prepare_controller_execution, finish_controller_execution,
+                                   CleanWorkflowStore)
+        signature = digest_json(body)
+        claim_key = 'controller:' + signature
+        with execution_lock:
+            with lock:
+                previous = claims.get(claim_key)
+                if previous and previous['response'] is not None:
+                    return previous['response']
+                if closing.is_set():
+                    return 503, {'error': {'code': 'broker_closed'}}
+            try:
+                payload, controller, state = prepare_controller_execution(database, directory, body)
+                # The durable claim precedes all process/file effects. A crash
+                # closes this authority rather than risking a second publication.
+                CleanWorkflowStore(database).claim_controller(state)
+                receipt = HostEventStore(database).record('rpe_controller_task_received', controller)
+                from ..path_binding import BoundExecution
+                binding = BoundExecution.capture(payload, directory, temporary.name, controller['input_sha256'])
+                try:
+                    status, envelope = execute(payload, binding)
+                finally:
+                    binding.close()
+                result = envelope.get('result') if status == 200 else None
+                if type(result) is not dict:
+                    result = {'status': 'failed', 'error': envelope.get('error', {'code': 'harness_protocol_error'})}
+                task = finish_controller_execution(database, state, receipt, result)
+                response = (200, {'result': task})
+            except (PermissionError, OSError, sqlite3.Error):
+                response = (403, {'error': {'code': 'broker_controller_authority_invalid'}})
+            except (ValueError, TypeError, KeyError):
+                response = (403, {'error': {'code': 'broker_controller_state_invalid'}})
+            with lock:
+                claims[claim_key] = {'signature': signature, 'response': response}
+            return response
+
     class Handler(BaseHTTPRequestHandler):
         def setup(self):
             self.request.settimeout(3)
@@ -304,6 +344,8 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120, extensi
                 body = json.loads(data, parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
                 if self.path == '/skill':
                     return self.reply(*skill_response(body))
+                if isinstance(body, dict) and 'controller' in body:
+                    return self.reply(*controller_response(body))
                 payload, native = _validated_request(body, database, directory)
             except PermissionError:
                 return self.reply(403, {'error': {'code': 'broker_receipt_invalid'}})

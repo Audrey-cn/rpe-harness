@@ -258,6 +258,28 @@ def install_producer_toolset() -> None:
             'rpe_producer_only', 'Bounded RPE candidate generation', tools=['write_file'], includes=[])
 
 
+def install_clean_ingress_guard() -> None:
+    """Fail closed even when Hermes disables a plugin after registration failure."""
+    if os.environ.get('RPE_HERMES_ENTRY_MODE') != 'clean':
+        return
+    middleware = importlib.import_module('hermes_cli.middleware')
+    original = middleware.run_llm_execution_middleware
+    if getattr(original, '_rpe_clean_ingress_guard', False):
+        return
+
+    @wraps(original)
+    def guarded(request, next_call, **context):
+        manager = importlib.import_module('hermes_cli.plugins').get_plugin_manager()
+        plugin = manager._plugins.get('rpe-harness')
+        if plugin is None or not plugin.enabled:
+            raise SystemExit('clean plugin registration unavailable; provider call blocked')
+        clean = importlib.import_module('rpe_harness.integrations.hermes_clean')
+        clean.guard_clean_ingress(request, **context)
+        return original(request, next_call, **context)
+    guarded._rpe_clean_ingress_guard = True
+    middleware.run_llm_execution_middleware = guarded
+
+
 def main(argv: list[str] | None = None) -> Any:
     """Dispatch unchanged CLI arguments after activating and observing installed Hermes."""
     install_root = os.environ.get("RPE_HERMES_INSTALL_ROOT", "")
@@ -271,6 +293,7 @@ def main(argv: list[str] | None = None) -> Any:
     importlib.import_module("hermes_bootstrap")
     install_producer_toolset()
     install_usage_telemetry()
+    install_clean_ingress_guard()
     return importlib.import_module("hermes_cli.main").main()
 
 

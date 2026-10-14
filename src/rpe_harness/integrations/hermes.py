@@ -29,6 +29,7 @@ _TEXT_FIELDS = frozenset({
     'recovery_id', 'context_status', 'workflow_phase', 'arguments_sha256',
     'content_sha256', 'skill_source_path', 'target_path_sha256', 'request_thinking_type',
     'state_id', 'catalog_sha256', 'request_messages_sha256',
+    'controller_id', 'requirements_sha256', 'source_sha256', 'understand_receipt_id',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
@@ -786,6 +787,10 @@ def register(ctx) -> None:
 
     from .hermes_gate import contract_for, read_run, request_input_sha, _same_call, _verify_run
     entry_mode = os.environ.get('RPE_HERMES_ENTRY_MODE','optional')
+    if entry_mode == 'clean':
+        from .hermes_clean import register_clean_workflow
+        register_clean_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)
+        return
     if entry_mode == 'address':
         from .hermes_address import register_address_workflow
         register_address_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)
