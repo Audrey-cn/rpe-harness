@@ -95,6 +95,7 @@ def main(argv=None):
     worker.add_argument('--training-packet', type=Path, help='authorized bounded CSV training packet JSON')
     worker.add_argument('--previous-candidate', type=Path, help='original previous candidate Python file')
     worker.add_argument('--max-turns', type=int, default=6)
+    worker.add_argument('--producer-only', action='store_true', help='expose only one verified candidate write with the public ABI inline')
     _configuration(worker)
     for name in ('list', 'experiences'):
         _configuration(evolution_commands.add_parser(name))
@@ -171,7 +172,7 @@ def main(argv=None):
                                       if args.previous_candidate is not None else None)
                 result = run_proposal_worker(db_path,args.owned_root,kind=args.kind,
                     timeout=args.timeout,hermes_root=args.hermes_root,training_packet=training_packet,
-                    previous_candidate=previous_candidate,max_turns=args.max_turns)
+                    previous_candidate=previous_candidate,max_turns=args.max_turns,producer_only=args.producer_only)
                 result['status'] = 'proposed' if result.get('proposal_id') else 'failed'
             elif args.evolution_command == 'propose':
                 from .evolution.candidates import propose_candidate

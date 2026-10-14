@@ -16,6 +16,7 @@ def test_registration_aligns_48_sessions_and_keeps_holdout_unopened(tmp_path):
     m = module()
     plan = m.preregister_learning(tmp_path)
     assert len(plan['training']) == 6 and len(plan['holdout']) == 8
+    assert plan['generation_tool_profile'] == 'producer-only/native-write-file'
     assert len(plan['sessions']) == 48
     assert len({c['input_sha256'] for c in plan['training'] + plan['holdout']}) == 14
     assert len({s['attempt_id'] for s in plan['sessions']}) == 48
@@ -144,7 +145,7 @@ def test_real_pilot_freezes_qualified_original_and_refuses_source_change(tmp_pat
         directory = Path(workspace)/label
         plan = json.loads((tmp_path/'preregistration.json').read_text())
         case = next(c for c in plan['training']+plan['holdout'] if label==c['case_id'] or label.startswith(c['case_id']+'-r'))
-        assert Path(options['read_isolation_root'])==tmp_path
+        assert Path(options['read_isolation_root'])==tmp_path.parent
         assert tmp_path/'evaluator' in options['deny_read_roots']
         with (directory/'output.csv').open('w',encoding=case['parameters']['encoding'],newline='') as out:
             csv.writer(out,delimiter=case['parameters']['delimiter']).writerows(case['expected_rows'])
@@ -158,6 +159,7 @@ def test_real_pilot_freezes_qualified_original_and_refuses_source_change(tmp_pat
     result = m.run_learning_comparison(tmp_path)
     assert result['stage'] == 'frozen'
     assert len(generations) == 2
+    assert all(options['producer_only'] is True for options in generations)
     assert generations[0]['training_packet'] is None
     assert generations[1]['previous_candidate'] == GOOD_CODE
     assert generations[1]['training_packet']['schema_version'] == 'rpe.training-feedback/v1'
@@ -621,3 +623,27 @@ def test_native_write_file_requires_actual_verified_bound_result(tmp_path,monkey
     assert result['artifact_correct'] is True
     assert result['invocation_evidence'] is (proof=='verified')
     assert result['workflow_verified'] is (proof=='verified')
+
+
+def test_host_read_boundary_blocks_prior_sibling_experiment(tmp_path, monkeypatch):
+    import subprocess,sys
+    from rpe_harness.integrations.hermes_session import sandbox_profile
+    m=module(); root=tmp_path/'new'; plan=m.preregister_learning(root); workspace=root/'arms/native/workspace'
+    own=workspace/'current.txt';own.write_text('current')
+    prior=tmp_path/'old';prior.mkdir();truth=prior/'preregistration.json';truth.write_text('hidden prior evaluation')
+    # Same outer ownership boundary forwarded by _host_session, not only the new root.
+    from rpe_harness.integrations import hermes_session
+    captured={}
+    def boundary(prompt,work,database,**options):
+        captured.update(options)
+        return {'completed':False,'events':[],'process_cleanup':{'cleanup_complete':True}}
+    monkeypatch.setattr(hermes_session,'run_hermes_session',boundary)
+    m._host_session(root,plan,'native',plan['training'][0],'opened')
+    assert captured['read_isolation_root']==tmp_path
+    profile=tmp_path/'read-boundary.sb';profile.write_text(sandbox_profile([workspace],Path.home()/'.hermes',
+        owner_read_scope=(captured['read_isolation_root'],[workspace,Path(sys.executable).resolve().parent.parent])))
+    code='import json,sys;from pathlib import Path\nresult=[]\nfor p in sys.argv[1:]:\n try:Path(p).read_bytes();result.append(True)\n except PermissionError:result.append(False)\nprint(json.dumps(result))'
+    process=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-B','-c',code,str(own),str(truth)],
+        cwd=workspace,capture_output=True,text=True,timeout=10)
+    assert process.returncode==0,process.stderr
+    assert json.loads(process.stdout)==[True,False]

@@ -22,7 +22,7 @@ import uuid
 _SAFE_TEXT = ('kind', 'session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id',
     'tool_name', 'provider', 'model', 'response_model', 'status', 'error_type', 'error_code',
     'turn_exit_reason', 'finish_reason', 'arguments_sha256', 'content_sha256', 'request_tools_sha256',
-    'target_path_sha256')
+    'target_path_sha256', 'request_tool_choice')
 
 
 def _safe_diagnostics(value, secret):
@@ -39,7 +39,10 @@ def _safe_diagnostics(value, secret):
             saved = {key: safe_text(row[key]) for key in _SAFE_TEXT if safe_text(row.get(key)) is not None}
             saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code')
                           if number(row.get(key))})
-            saved.update({key: row[key] for key in ('completed','failed','interrupted','verified') if type(row.get(key)) is bool})
+            saved.update({key: row[key] for key in ('completed','failed','interrupted','verified','request_parallel_tool_calls') if type(row.get(key)) is bool})
+            if isinstance(row.get('request_tool_names'), list):
+                saved['request_tool_names'] = [safe_text(name) for name in row['request_tool_names'][:32]
+                    if safe_text(name) is not None]
             calls = row.get('model_tool_calls')
             if isinstance(calls, list):
                 saved['model_tool_calls'] = [{key: safe_text(call[key]) for key in ('tool_call_id','tool_name')
@@ -319,8 +322,10 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
 
 
 def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional'):
-    if entry_mode not in ('optional','strict','skills') or (entry_mode in ('strict','skills') and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills','producer') or (entry_mode in ('strict','skills') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
+    if entry_mode == 'producer' and tool_enabled:
+        raise ValueError('producer entry requires the Harness tool disabled')
     if settings.get('provider') != 'xiaomi':
         raise ValueError('isolated launcher currently requires xiaomi API-key provider')
     if not all(isinstance(settings.get(k), str) and settings[k]
@@ -346,7 +351,8 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'agent': {'max_turns': 12, 'run_budget_seconds': 180, 'api_max_retries': 1,
                   'auto_recovery_cycles': 0, 'environment_probe': False},
         'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
-        'platform_toolsets': {'cli': (['rpe_harness','skills'] if entry_mode=='skills' else
+        'platform_toolsets': {'cli': (['rpe_producer_only'] if entry_mode=='producer' else
+                                     ['rpe_harness','skills'] if entry_mode=='skills' else
                                      ['rpe_harness'] if entry_mode=='strict' else
                                      ['terminal','file']+(['rpe_harness'] if tool_enabled else []))},
         'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
@@ -358,7 +364,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
-    if entry_mode in ('strict','skills'):
+    if entry_mode in ('strict','skills','producer'):
         config['tools'] = {'tool_search':{'enabled':'off'}}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
@@ -531,8 +537,11 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('prompt must be nonempty and at most 1 MiB')
     if not 1 <= timeout <= 1800:
         raise ValueError('timeout must be between 1 and 1800 seconds')
-    if entry_mode not in ('optional','strict','skills') or (entry_mode in ('strict','skills') and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills','producer') or (entry_mode in ('strict','skills') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
+    if entry_mode == 'producer' and (tool_enabled or catalog_root is not None or skill_snapshot_id is not None
+                                    or context_sources is not None or required_request is not None):
+        raise ValueError('producer entry requires no Harness tool, fixed task, or skill catalog context')
     if entry_mode == 'skills' and catalog_root is None:
         raise ValueError('skills entry requires an owned skill catalog')
     if type(max_task_attempts) is not int or not 1 <= max_task_attempts <= 20:
@@ -639,7 +648,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     if not tool_enabled:
         env.pop('PYTHONPATH', None)
     env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
-    tools = ('rpe_harness,skills' if entry_mode=='skills' else
+    tools = ('rpe_producer_only' if entry_mode=='producer' else
+             'rpe_harness,skills' if entry_mode=='skills' else
              'rpe_harness' if entry_mode=='strict' else
              'terminal,file'+(',skills' if snapshot else '')+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),

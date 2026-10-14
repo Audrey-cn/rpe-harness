@@ -20,6 +20,57 @@ from test_worker import session_result
 CODE = 'def prepare(plan, staging_path):\n    raise ValueError("training failure")\n'
 
 
+@pytest.mark.parametrize('learning', [False, True])
+def test_producer_worker_inlines_public_abi_without_read_tools(tmp_path, monkeypatch, learning):
+    worker, database, run, packet = setup(tmp_path)
+    def generate(prompt, workspace, host_db, **options):
+        assert options['entry_mode'] == 'producer' and options['tool_enabled'] is False
+        assert 'Read feedback.json' not in prompt
+        public, _ = json.JSONDecoder().raw_decode(prompt.split('PUBLIC_ABI_JSON\n')[1])
+        assert public['contract']['capability'] == 'tabular.deduplicate'
+        if learning:
+            assert public['verified_feedback'] == [{}]
+        else:
+            assert public['verified_feedback'][0]['verified'] is True
+        assert ('PUBLIC_DATA_JSON\n' in prompt) is learning
+        if learning:
+            data = json.loads(prompt.split('PUBLIC_DATA_JSON\n')[1])
+            assert data['training_packet'] == packet and data['previous_candidate'] == CODE
+            assert data['training_feedback']['outcomes'][0]['candidate_invoked'] is True
+        (Path(workspace) / 'candidate.py').write_text(CODE)
+        return session_result(events=[{'kind': 'pre_api_request', 'request_tool_choice': 'write_file',
+            'request_parallel_tool_calls': False, 'request_tool_names': ['write_file'], 'request_tools_sha256': 'abc'}])
+    monkeypatch.setattr(worker, 'run_hermes_session', generate)
+    options = dict(training_packet=packet, previous_candidate=CODE) if learning else {}
+    report = worker.run_proposal_worker(database, tmp_path, kind='csv_executor', producer_only=True, **options)
+    assert report['producer_only'] is True and report['entry_mode'] == 'producer'
+    assert report['observations'][0]['request_tool_choice'] == 'write_file'
+    assert report['observations'][0]['request_parallel_tool_calls'] is False
+    assert report['observations'][0]['request_tool_names'] == ['write_file']
+
+
+@pytest.mark.parametrize('value', [1, 'yes', None])
+def test_producer_worker_requires_strict_bool(tmp_path, value):
+    worker = importlib.import_module('rpe_harness.evolution.worker')
+    with pytest.raises(ValueError):
+        worker.run_proposal_worker(tmp_path / 'db.sqlite', tmp_path / 'new', producer_only=value)
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_cli_producer_only_flag_is_explicit_and_retained(tmp_path, monkeypatch, capsys):
+    worker, database, _, _ = setup(tmp_path)
+    def generate(prompt, workspace, host_db, **options):
+        assert options['entry_mode'] == 'producer'
+        (Path(workspace) / 'candidate.py').write_text(CODE)
+        return session_result()
+    monkeypatch.setattr(worker, 'run_hermes_session', generate)
+    status = main(['evolution', 'worker', '--db', str(database), '--owned-root', str(tmp_path),
+        '--kind', 'csv_executor', '--producer-only'])
+    report = json.loads(capsys.readouterr().out)
+    assert status == 0 and report['status'] == 'proposed'
+    assert report['producer_only'] is True and report['entry_mode'] == 'producer'
+
+
 def setup(root):
     database, run = verified_run(root)
     packet = build_training_packet(database, [run['run_id']], authorize_data_export=True)

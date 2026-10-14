@@ -14,9 +14,11 @@ Python入口为 `build_training_packet(db_path, run_ids, authorize_data_export=T
 
 ```sh
 rpe-harness evolution worker --owned-root STATE --db DB \
-  --kind csv_executor --timeout 180 --max-turns 6 \
+  --kind csv_executor --timeout 180 --max-turns 6 --producer-only \
   --training-packet PUBLIC_PACKET --previous-candidate G0
 ```
+
+`--producer-only` 使用 Hermes 官方运行时工具集和中间件，只暴露原生 `write_file` 到唯一 `candidate.py`；公开契约与反馈直接提供，成功写入后才进入总结。它是显式选项，旧调用默认模式保留。
 
 生成器会实际探测前一份原始代码，使用可信训练反馈修订，只提出候选。收据包含原始代码路径/hash、来源绑定、实际API/工具写入关联、已观测成本及清理状态。缺失关联保持未证明；AST变化只作诊断。超时、无效代码和观测错误不会自动变成合格升级。
 

@@ -251,6 +251,13 @@ def install_process_telemetry() -> None:
     subprocess.Popen.__init__ = observed
 
 
+def install_producer_toolset() -> None:
+    """Use installed Hermes's runtime toolset API only in an opted-in producer process."""
+    if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'producer':
+        importlib.import_module('toolsets').create_custom_toolset(
+            'rpe_producer_only', 'Bounded RPE candidate generation', tools=['write_file'], includes=[])
+
+
 def main(argv: list[str] | None = None) -> Any:
     """Dispatch unchanged CLI arguments after activating and observing installed Hermes."""
     install_root = os.environ.get("RPE_HERMES_INSTALL_ROOT", "")
@@ -262,6 +269,7 @@ def main(argv: list[str] | None = None) -> Any:
         sys.argv = [sys.argv[0], *argv]
     install_process_telemetry()
     importlib.import_module("hermes_bootstrap")
+    install_producer_toolset()
     install_usage_telemetry()
     return importlib.import_module("hermes_cli.main").main()
 

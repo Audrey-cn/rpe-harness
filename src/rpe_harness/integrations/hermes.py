@@ -7,6 +7,7 @@ import logging
 import math
 import os
 import sqlite3
+import stat
 import subprocess
 import time
 import uuid
@@ -26,16 +27,16 @@ _TEXT_FIELDS = frozenset({
     'request_tool_choice', 'request_tools_sha256',
     'snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256', 'load_receipt_id',
     'recovery_id', 'context_status', 'workflow_phase', 'arguments_sha256',
-    'content_sha256', 'skill_source_path',
+    'content_sha256', 'skill_source_path', 'target_path_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
-    'tool_exit_code',
+    'tool_exit_code', 'bytes_written',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
-                          'request_parallel_tool_calls'})
+                          'request_parallel_tool_calls', 'verified'})
 _CALL_CONTEXT = ContextVar('rpe_native_tool_context', default={})
 _USAGE_FIELDS = frozenset({
     'input_tokens', 'output_tokens', 'cache_read_tokens', 'cache_write_tokens',
@@ -536,6 +537,141 @@ def _execute(args, *, store, workspace, python, task_id=None, session_id=None,
     return json.dumps(result, ensure_ascii=False, allow_nan=False, separators=(',', ':'))
 
 
+class _ProducerPolicy:
+    """Constrain generation only; successful writes remain untrusted proposals."""
+    ids = ('session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id')
+
+    def __init__(self, workspace, store, error_path):
+        self.target = workspace / 'candidate.py'
+        self.store, self.error_path = store, error_path
+        self.lock = threading.RLock()
+        self.policies, self.pending, self.completed = {}, {}, {}
+
+    def identity(self, context, tool=False):
+        values = tuple(context.get(key) for key in self.ids[:5 if tool else 4])
+        if any(type(value) is not str or not value or len(value) > 256 for value in values):
+            raise ValueError('producer requires complete native call identity')
+        return values
+
+    def policy(self, request, **context):
+        try:
+            identity = self.identity(context)
+            tools = request.get('tools') if isinstance(request, dict) else None
+            if (not isinstance(tools, list) or len(tools) != 1 or not isinstance(tools[0], dict)
+                    or tools[0].get('type') != 'function' or not isinstance(tools[0].get('function'), dict)
+                    or tools[0]['function'].get('name') != 'write_file'):
+                raise ValueError('producer requires exactly the write_file tool')
+            with self.lock:
+                choice = 'none' if identity[:3] in self.completed else 'write_file'
+                self.policies[identity] = choice
+            rewritten = {**request, 'parallel_tool_calls': False, 'tool_choice': (
+                {'type': 'function', 'function': {'name': 'write_file'}} if choice == 'write_file' else 'none')}
+            return {'request': rewritten, 'source': 'rpe_harness', 'reason': 'producer_only'}
+        except (OSError, ValueError, TypeError):
+            _mark_observer_failure(self.error_path, 'producer_request_policy')
+            raise
+
+    def arguments(self, args):
+        if (not isinstance(args, dict) or set(args) != {'path', 'content'}
+                or type(args['path']) is not str or type(args['content']) is not str
+                or args['path'] not in ('candidate.py', './candidate.py', str(self.target))):
+            raise ValueError('producer requires the exact candidate path and content')
+        raw = args['content'].encode('utf-8')
+        if not 1 <= len(raw) <= 65536:
+            raise ValueError('producer content exceeds bounds')
+        return raw
+
+    def proof(self, args, result):
+        raw = self.arguments(args)
+        result = json.loads(result) if isinstance(result, str) else None
+        if (not isinstance(result, dict) or result.get('verified') is not True or result.get('error')
+                or type(result.get('bytes_written')) is not int or result['bytes_written'] != len(raw)):
+            raise ValueError('producer requires a verified matching write result')
+        descriptor = os.open(self.target, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        try:
+            before = os.fstat(descriptor)
+            if not stat.S_ISREG(before.st_mode) or before.st_size != len(raw):
+                raise ValueError('producer candidate must be a bounded regular file')
+            chunks, size = [], 0
+            while size <= 65536:
+                chunk = os.read(descriptor, 65537 - size)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                size += len(chunk)
+            after = os.fstat(descriptor)
+            current = self.target.lstat()
+            if (b''.join(chunks) != raw or not stat.S_ISREG(current.st_mode)
+                    or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) !=
+                       (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
+                    or (current.st_dev, current.st_ino) != (before.st_dev, before.st_ino)):
+                raise ValueError('producer write bytes changed')
+        finally:
+            os.close(descriptor)
+        return {'verified': True, 'bytes_written': len(raw), 'arguments_sha256': _digest_json(args),
+                'content_sha256': hashlib.sha256(raw).hexdigest(),
+                'target_path_sha256': hashlib.sha256(str(self.target).encode()).hexdigest()}
+
+    def api_observed(self, identity):
+        rows = self.store.list(identity[0])
+        same = lambda row: tuple(row.get(key) for key in self.ids[:4]) == identity[:4]
+        pre = [row for row in rows if row['kind'] == 'pre_api_request' and same(row)]
+        post = [row for row in rows if row['kind'] == 'post_api_request' and same(row)]
+        return (self.policies.get(identity[:4]) == 'write_file' and len(pre) == len(post) == 1
+                and pre[0].get('request_tool_choice') == 'write_file'
+                and pre[0].get('request_parallel_tool_calls') is False
+                and pre[0].get('request_tool_names') == ['write_file']
+                and post[0].get('model_tool_calls', []).count(
+                    {'tool_call_id': identity[4], 'tool_name': 'write_file'}) == 1
+                and not any(row['kind'] == 'api_request_error' and same(row) for row in rows))
+
+    def guard(self, tool_name, args, next_call, **context):
+        try:
+            identity = self.identity(context, tool=True)
+            if tool_name != 'write_file':
+                raise ValueError('producer permits only write_file')
+            self.arguments(args)
+            with self.lock:
+                if identity[:3] in self.completed or identity in self.pending or not self.api_observed(identity):
+                    raise ValueError('producer call lacks active observed API policy')
+                try:
+                    self.target.lstat()
+                except FileNotFoundError:
+                    pass
+                else:
+                    raise ValueError('producer cannot overwrite an existing path')
+                result = next_call(args)
+                try:
+                    self.pending[identity] = self.proof(args, result)
+                except (OSError, ValueError, TypeError, UnicodeError):
+                    # A real tool failure cannot be upgraded into write proof.
+                    pass
+                return result
+        except (OSError, ValueError, TypeError, UnicodeError, sqlite3.Error):
+            return json.dumps({'error': {'code': 'producer_call_denied',
+                'message': 'Producer call requires an observed write_file request and a new exact candidate path.'}})
+
+    def observe_write(self, payload):
+        try:
+            identity = self.identity(payload, tool=True)
+            with self.lock:
+                expected = self.pending.get(identity)
+                if expected is None or payload.get('status') != 'ok' or not self.api_observed(identity):
+                    return None
+                proof = self.proof(payload.get('args'), payload.get('result'))
+                pre = [row for row in self.store.list(identity[0]) if row['kind'] == 'pre_tool_call'
+                       and tuple(row.get(key) for key in self.ids) == identity]
+                posts = [row for row in self.store.list(identity[0]) if row['kind'] == 'post_tool_call'
+                         and tuple(row.get(key) for key in self.ids) == identity]
+                if (proof != expected or len(pre) != 1 or posts or pre[0].get('tool_name') != 'write_file'
+                        or pre[0].get('arguments_sha256') != proof['arguments_sha256']):
+                    return None
+                payload.update(proof)
+                return identity
+        except (OSError, ValueError, TypeError, UnicodeError, sqlite3.Error):
+            return None
+
+
 def register(ctx) -> None:
     """Register native observers in both comparison arms and an optional Harness task tool."""
     db = Path(os.environ['RPE_HERMES_DB']).expanduser()
@@ -555,9 +691,15 @@ def register(ctx) -> None:
         if config_path.is_symlink() or config_path.stat().st_size>8*1_048_576:
             raise ValueError('invalid native skill observation config')
         native_config = json.loads(config_path.read_text())
+    producer = None
+    if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'producer':
+        if os.environ.get('RPE_HERMES_TOOL_ENABLED', '0') != '0' or native_config_path:
+            raise ValueError('producer entry requires no Harness tool or skill catalog')
+        producer = _ProducerPolicy(workspace, store, error_path)
 
     def observer(kind):
         def observe(**payload):
+            producer_write = None
             if kind in ('pre_tool_call','post_tool_call') and isinstance(payload.get('args'),dict):
                 payload['arguments_sha256'] = _digest_json(payload['args'])
             if kind == 'post_tool_call' and os.environ.get('RPE_HERMES_TOOL_ENABLED') == '0':
@@ -590,6 +732,8 @@ def register(ctx) -> None:
                     for key in ('run_id','receipt_id','contract_sha256','input_sha256'):
                         if isinstance(result.get(key),str):
                             payload[key] = result[key]
+            if producer is not None and kind == 'post_tool_call' and payload.get('tool_name') == 'write_file':
+                producer_write = producer.observe_write(payload)
             try:
                 store.record(kind, payload)
             except (sqlite3.Error, OSError, ValueError):
@@ -599,6 +743,9 @@ def register(ctx) -> None:
                 except (OSError, ValueError):
                     logger.error('Hermes observer failure marker could not be persisted')
                 raise
+            if producer_write is not None:
+                with producer.lock:
+                    producer.completed[producer_write[:3]] = producer.pending.pop(producer_write)
             return None
         return observe
 
@@ -607,6 +754,10 @@ def register(ctx) -> None:
     enabled = os.environ.get('RPE_HERMES_TOOL_ENABLED', '0')
     if enabled not in ('0', '1'):
         raise ValueError('RPE_HERMES_TOOL_ENABLED must be 0 or 1')
+    if producer is not None:
+        ctx.register_middleware('llm_request', producer.policy)
+        ctx.register_middleware('tool_execution', producer.guard)
+        return
     if enabled == '0':
         return
     python = str(Path(os.environ['RPE_HARNESS_PYTHON']).expanduser().absolute())
