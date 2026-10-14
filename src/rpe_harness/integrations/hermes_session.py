@@ -22,7 +22,7 @@ import uuid
 _SAFE_TEXT = ('kind', 'session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id',
     'tool_name', 'provider', 'model', 'response_model', 'status', 'error_type', 'error_code',
     'turn_exit_reason', 'finish_reason', 'arguments_sha256', 'content_sha256', 'request_tools_sha256',
-    'target_path_sha256', 'request_tool_choice')
+    'target_path_sha256', 'request_tool_choice', 'request_thinking_type')
 
 
 def _safe_diagnostics(value, secret):
@@ -37,7 +37,7 @@ def _safe_diagnostics(value, secret):
             if not isinstance(row, dict):
                 continue
             saved = {key: safe_text(row[key]) for key in _SAFE_TEXT if safe_text(row.get(key)) is not None}
-            saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code')
+            saved.update({key: row[key] for key in ('duration_ms','api_duration','bytes_written','tool_exit_code','status_code','request_max_completion_tokens')
                           if number(row.get(key))})
             saved.update({key: row[key] for key in ('completed','failed','interrupted','verified','request_parallel_tool_calls') if type(row.get(key)) is bool})
             if isinstance(row.get('request_tool_names'), list):

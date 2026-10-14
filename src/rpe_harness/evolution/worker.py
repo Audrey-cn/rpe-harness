@@ -210,7 +210,7 @@ def _retain_code(root, report, raw):
 _IDS = ('session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id')
 _OBSERVED_TEXT = (*_IDS, 'kind', 'tool_name', 'provider', 'model', 'response_model',
     'status', 'error_type', 'error_code', 'turn_exit_reason', 'finish_reason',
-    'arguments_sha256', 'content_sha256', 'request_tools_sha256', 'target_path_sha256', 'request_tool_choice')
+    'arguments_sha256', 'content_sha256', 'request_tools_sha256', 'target_path_sha256', 'request_tool_choice', 'request_thinking_type')
 
 
 def _observations(events):
@@ -219,7 +219,7 @@ def _observations(events):
         if not isinstance(event, dict):
             continue
         public = {key: event[key][:256] for key in _OBSERVED_TEXT if isinstance(event.get(key), str)}
-        for key in ('duration_ms', 'api_duration', 'tool_exit_code', 'status_code', 'bytes_written'):
+        for key in ('duration_ms', 'api_duration', 'tool_exit_code', 'status_code', 'bytes_written', 'request_max_completion_tokens'):
             value = event.get(key)
             if type(value) in {int, float} and math.isfinite(value):
                 public[key] = value
@@ -349,6 +349,7 @@ def run_proposal_worker(db_path, owned_root, *, kind='json_executor', timeout=12
               'elapsed_seconds': None, 'process_cleanup': None, 'error': None,
               'workspace_cleaned': True, 'max_turns': max_turns,
               'producer_only': producer_only, 'entry_mode': 'producer' if producer_only else 'optional',
+              'producer_request_policy': {'thinking_type': 'disabled', 'max_completion_tokens': 8192} if producer_only else None,
               'training_packet': training_packet,
               'training_packet_sha256': training_packet['packet_sha256'] if training_packet else None,
               'previous_candidate_sha256': digest(previous_candidate.encode()) if previous_candidate is not None else None,

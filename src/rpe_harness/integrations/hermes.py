@@ -27,13 +27,13 @@ _TEXT_FIELDS = frozenset({
     'request_tool_choice', 'request_tools_sha256',
     'snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256', 'load_receipt_id',
     'recovery_id', 'context_status', 'workflow_phase', 'arguments_sha256',
-    'content_sha256', 'skill_source_path', 'target_path_sha256',
+    'content_sha256', 'skill_source_path', 'target_path_sha256', 'request_thinking_type',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
-    'tool_exit_code', 'bytes_written',
+    'tool_exit_code', 'bytes_written', 'request_max_completion_tokens',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
                           'request_parallel_tool_calls', 'verified'})
@@ -122,6 +122,14 @@ def _metadata(payload: dict[str, Any]) -> dict[str, Any]:
             saved['request_tool_choice'] = choice
         if type(body.get('parallel_tool_calls')) is bool:
             saved['request_parallel_tool_calls'] = body['parallel_tool_calls']
+        extra = body.get('extra_body') or {}
+        thinking = extra.get('thinking') if isinstance(extra, dict) else None
+        thinking = body.get('thinking') if thinking is None else thinking
+        if isinstance(thinking, dict) and thinking.get('type') in ('enabled', 'disabled'):
+            saved['request_thinking_type'] = thinking['type']
+        limit = body.get('max_completion_tokens')
+        if type(limit) is int and limit > 0:
+            saved['request_max_completion_tokens'] = limit
         tools = body.get('tools')
         if isinstance(tools, list):
             saved['request_tool_names'] = sorted((t.get('function') or {}).get('name','')
@@ -566,6 +574,14 @@ class _ProducerPolicy:
                 self.policies[identity] = choice
             rewritten = {**request, 'parallel_tool_calls': False, 'tool_choice': (
                 {'type': 'function', 'function': {'name': 'write_file'}} if choice == 'write_file' else 'none')}
+            # The Xiaomi profile leaves generic reasoning effort off the wire.
+            # Use its documented OpenAI-SDK body fields in this explicit profile.
+            extra = rewritten.get('extra_body') or {}
+            if not isinstance(extra, dict):
+                raise ValueError('producer extra_body must be an object')
+            rewritten['extra_body'] = {**extra, 'thinking': {'type': 'disabled'}}
+            rewritten.pop('max_tokens', None)
+            rewritten['max_completion_tokens'] = 8192
             return {'request': rewritten, 'source': 'rpe_harness', 'reason': 'producer_only'}
         except (OSError, ValueError, TypeError):
             _mark_observer_failure(self.error_path, 'producer_request_policy')

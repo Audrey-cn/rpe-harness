@@ -35,3 +35,5 @@ rpe-harness evolution worker --owned-root STATE --db DB \
 完整反馈/生成/资格验收链与一次真实未见输入复用可以证明局部闭环；16/16复用、48次比较完整性、质量及累计成本改善另外展示。不能用闭环标志代替成功率，也不能用完美成功率作为反馈是否送达的证据。生成前后的样例、前代码和探索预算同时改变，G0/G1只是诊断性前后参考，不能归因于反馈单一因素。
 
 本流程没有安装长期服务或定时任务，也未验证任意技能自动学习。工作根、历史、缓存和进程的精确清理由调用者的本轮ownership管理，长期能力资产及用户既有文件不属于测试清理范围。
+
+当前Xiaomi生成profile显式发送thinking.type=disabled和8192输出token上限，仅作用于producer-only；正式原生/RPE生产参数不变。MiMo可能忽略非auto的tool_choice，故“写入→总结”是客户端准入约束，不能声称模型服务端必然服从。官方字段见[MiMo API](https://mimo.mi.com/docs/en-US/api/chat/openai-api)。

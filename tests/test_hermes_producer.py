@@ -279,3 +279,20 @@ print(json.dumps({'verified':True,'tools':toolsets.resolve_toolset('rpe_producer
         cwd=workspace, env=env, capture_output=True, text=True, timeout=45)
     assert child.returncode == 0, child.stderr + child.stdout
     assert json.loads(child.stdout.strip().splitlines()[-1]) == {'verified': True, 'tools': ['write_file'], 'closed': True}
+
+
+def test_producer_wire_budget_disables_mimo_thinking_without_changing_native(tmp_path, monkeypatch):
+    context,workspace,db=producer(tmp_path,monkeypatch)
+    body={'tools':TOOLS,'max_tokens':131072,'extra_body':{'existing_setting':True}}
+    result=context.middleware['llm_request'](body,**IDS)['request']
+    assert result['max_completion_tokens']==8192
+    assert 'max_tokens' not in result
+    assert result['extra_body']=={'existing_setting':True,'thinking':{'type':'disabled'}}
+    assert 'thinking' not in body['extra_body']
+    context.hooks['pre_api_request'](**IDS,request={'body':result})
+    row=next(row for row in hermes.HostEventStore(db).list('session') if row['kind']=='pre_api_request')
+    assert row['request_thinking_type']=='disabled'
+    assert row['request_max_completion_tokens']==8192
+
+    from rpe_harness.evolution.worker import _observations
+    assert _observations([row])[0]['request_max_completion_tokens']==8192
