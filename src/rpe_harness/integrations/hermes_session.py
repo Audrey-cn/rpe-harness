@@ -766,6 +766,13 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             except ValueError:
                 pass
         terminal = next((r for r in reversed(records) if r.get('type') == 'result'), {})
+        terminal_session = terminal.get('session_id')
+        observed_sessions = {e['session_id'] for e in observed_events
+                             if isinstance(e.get('session_id'), str) and e['session_id']}
+        if observed_sessions and terminal_session and (not isinstance(terminal_session, str)
+                or terminal_session not in observed_sessions):
+            observation_error_code = 'terminal_session_mismatch'
+            raise ValueError('terminal session does not match newly observed DB events')
         events = observed_events
         session_id = terminal.get('session_id') or next((e.get('session_id') for e in events if e.get('session_id')), None)
         events = [e for e in events if e.get('session_id') == session_id]

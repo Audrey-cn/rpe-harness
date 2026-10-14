@@ -389,7 +389,7 @@ def test_unexpected_provenance_failure_cannot_skip_private_cleanup_or_receipt(tm
 
 
 @pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(), reason='macOS real postlaunch diagnostics')
-@pytest.mark.parametrize('fault', ['credential', 'extractor', 'redaction', 'stdout_read', 'metadata', 'terminal_identity'])
+@pytest.mark.parametrize('fault', ['credential', 'extractor', 'redaction', 'stdout_read', 'metadata', 'terminal_identity', 'public_terminal_identity'])
 def test_postlaunch_failure_preserves_observed_cost_identity_and_cleanup_without_secrets(tmp_path, monkeypatch, fault):
     from rpe_harness.integrations import hermes, hermes_session as launcher
     worker, database, _, packet = setup(tmp_path / 'owned')
@@ -416,7 +416,8 @@ print(json.dumps({'type':'result','session_id':TERMINAL_SESSION,'text':RESULT_TE
     (integrations / 'hermes_bootstrap.py').write_text('IMPORT_ROOT=' + repr(str(import_root)) + '\nCODE=' + repr(CODE) +
         '\nRESULT_TEXT=' + repr(dummy if fault in {'credential','redaction'} else 'safe-response') +
         '\nRESPONSE_MODEL=' + repr(dummy if fault == 'metadata' else 'observed-model') +
-        '\nTERMINAL_SESSION=' + repr(dummy if fault == 'terminal_identity' else 'observed-session') + '\n' + program)
+        '\nTERMINAL_SESSION=' + repr(dummy if fault == 'terminal_identity' else
+            'wrong-public-session' if fault == 'public_terminal_identity' else 'observed-session') + '\n' + program)
     monkeypatch.setattr(launcher, '__file__', str(integrations / 'hermes_session.py'))
     monkeypatch.setattr(launcher, '_installed_python', lambda *a: Path(sys.executable).resolve())
     monkeypatch.setattr(launcher, '_read_host_settings', lambda *a: {'provider':'xiaomi','model':'no-model',
@@ -441,6 +442,14 @@ print(json.dumps({'type':'result','session_id':TERMINAL_SESSION,'text':RESULT_TE
         monkeypatch.setattr(Path, 'read_text', fail_read)
     carriers = []
     def launch(*args, **kwargs):
+        if fault == 'public_terminal_identity':
+            # Previous observations in this DB must not inflate this attempt.
+            store = hermes.HostEventStore(args[2])
+            prior = {'session_id':'observed-session','task_id':'previous-task',
+                     'turn_id':'previous-turn','api_request_id':'previous-api'}
+            store.record('pre_api_request', prior)
+            store.record('post_api_request', {**prior,'usage':{'total_tokens':997,
+                'present_fields':['total_tokens'],'raw_provider_usage':{'total_tokens':997}}})
         try:
             return launcher.run_hermes_session(*args, **kwargs)
         except Exception as error:
@@ -456,6 +465,7 @@ print(json.dumps({'type':'result','session_id':TERMINAL_SESSION,'text':RESULT_TE
     assert report['session_id'] == 'observed-session'
     assert report['model_identity']['response_models'] == ([] if fault == 'metadata' else ['observed-model'])
     assert any(e.get('api_request_id') == 'observed-api' for e in report['observations'])
+    assert not any(e.get('api_request_id') == 'previous-api' for e in report['observations'])
     assert report['process_cleanup']['cleanup_complete'] is True
     assert report['process_cleanup']['remaining_descendants'] == []
     assert report['workspace_cleaned'] and not list(owned.glob('proposal-worker-*'))
@@ -467,6 +477,9 @@ print(json.dumps({'type':'result','session_id':TERMINAL_SESSION,'text':RESULT_TE
     assert isinstance(carriers[0], getattr(launcher, 'SessionObservationError', ()))
     assert dummy not in str(carriers[0])
     assert dummy not in json.dumps(carriers[0].diagnostics)
+    if fault == 'public_terminal_identity':
+        assert carriers[0].code == 'terminal_session_mismatch'
+        assert report['error']['reason'] == 'terminal_session_mismatch'
     assert 'stream_tool_calls' not in carriers[0].diagnostics and 'final_response' not in carriers[0].diagnostics
 
 
