@@ -374,8 +374,8 @@ class ContextStore:
                         _digest(raw_result), raw_result, time.time()))
         return json.loads(raw_result)
 
-    def get_recovery(self, recovery_id) -> dict:
-        """Read verified durable evidence; host gates must compare its session and capability."""
+    def _read_recovery(self, recovery_id):
+        """Read one owned immutable row and check both recorded JSON snapshots."""
         _text(recovery_id, 'recovery_id')
         with self._connect() as db:
             row = db.execute('SELECT * FROM context_recoveries WHERE recovery_id=?',
@@ -385,9 +385,54 @@ class ContextStore:
         if _digest(row['request_json']) != row['request_hash'] or _digest(row['result_json']) != row['result_hash']:
             raise ValueError('recovery record hash mismatch')
         result = json.loads(row['result_json'])
+        request = json.loads(row['request_json'])
+        if type(result) is not dict or type(request) is not dict:
+            raise ValueError('recovery record request and result must be objects')
+        _json(request, _SOURCE_LIMIT)
         _json(result, _FACT_LIMIT)
         if (result.get('recovery_id') != recovery_id or result.get('request_sha256') != row['request_hash']
                 or result.get('session_id') != row['session_id'] or result.get('capability') != row['capability']
                 or result.get('requirement_version') != row['requirement_version']):
             raise ValueError('recovery record identity mismatch')
-        return result
+        return request, result
+
+    def get_recovery(self, recovery_id) -> dict:
+        """Read immutable history. Use revalidate_recovery before authorizing current work."""
+        return self._read_recovery(recovery_id)[1]
+
+    def revalidate_recovery(self, recovery_id, *, session_id) -> dict:
+        """Recheck the original request against live sources and persist fresh evidence.
+
+        No caller-supplied requirement or already-recovered fact can replace the
+        original request. Replaying the original current facts preserves which
+        fields genuinely depended on sources and therefore must remain fresh.
+        """
+        _text(session_id, 'session_id')
+        request, historical = self._read_recovery(recovery_id)
+        if historical['session_id'] != session_id or request.get('session_id') != session_id:
+            raise ValueError('recovery session mismatch')
+        if set(request) != {'session_id', 'requirement', 'facts', 'source_refs'}:
+            raise ValueError('recovery request is not a replayable context request')
+        definition = request['requirement']
+        if type(definition) is not dict or set(definition) != {'capability', 'version', 'requirements'}:
+            raise ValueError('recovery request requirement shape is invalid')
+        fields = definition['requirements']
+        if type(fields) is not list:
+            raise ValueError('recovery request requirements must be an array')
+        if any(type(item) is not dict or set(item) != {'name', 'kind', 'max_age_seconds'} for item in fields):
+            raise ValueError('recovery request fact requirement shape is invalid')
+        # Constructor validation retains exact names, types, age policy and version;
+        # consulting current defaults here could silently weaken the old policy.
+        requirement = CapabilityContext(definition['capability'], definition['version'],
+                                         tuple(FactRequirement(**item) for item in fields))
+        if (requirement.capability != historical['capability'] or
+                requirement.version != historical['requirement_version']):
+            raise ValueError('recovery request requirement identity mismatch')
+        if type(request['facts']) is not dict or type(request['source_refs']) is not list:
+            raise ValueError('recovery request facts or source refs are invalid')
+        _json(request['facts'], _FACT_LIMIT)
+        refs = [_ref(item) for item in request['source_refs']]
+        if len(refs) > 8:
+            raise ValueError('recovery request exceeds the source reference limit')
+        return self.recover(requirement=requirement, session_id=session_id,
+                            facts=request['facts'], source_refs=refs)

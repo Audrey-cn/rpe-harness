@@ -267,12 +267,16 @@ def _cycle_owned(db_path, owned_root, auto_apply, proposer, max_proposals, max_h
     # Diagnose occurrences independently so the semantic identity cannot depend
     # on which unrelated failures happened to share a batch.
     generated = []
+    # Observation-only host receipts are not diagnoses. Emit actual host failures
+    # first so the existing first host diagnosis retains its complete error facts.
+    for row in host_rows:
+        diagnoses = _diagnoses(runs_store, [], [], [row])
+        if any(item['content']['host_errors'] for item in diagnoses):
+            generated.extend(diagnoses)
     for run in runs:
         item = cache.get(run['run_id'])
         generated.extend(_diagnoses(runs_store, [run], [item] if item else [], []))
-    for row in host_rows:
-        generated.extend(_diagnoses(runs_store, [], [], [row]))
-    if not runs and not host_rows:
+    if not generated:
         generated = _diagnoses(runs_store, [], [], [])
     grouped = {}
     for item in feedback:
@@ -362,6 +366,7 @@ def _cycle_owned(db_path, owned_root, auto_apply, proposer, max_proposals, max_h
         proposal_id = proposal['proposal_id']
         if proposal['state'] not in {'proposed', 'validated'}:
             # Crash replay or healthy active reuse needs no new candidate work.
+            payload['deferred_apply'] = False
             update_work(store, row['work_key'], 'done', payload)
             continue
         proposals.append(proposal_id)

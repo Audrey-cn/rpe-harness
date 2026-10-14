@@ -160,6 +160,24 @@ def test_deferred_apply_backlog_is_reported_until_all_bounded_work_is_consumed(t
             "WHERE json_extract(payload_json,'$.deferred_apply')=1").fetchone()[0] == 0
 
 
+@pytest.mark.parametrize('terminal', ['applied', 'quarantine'])
+def test_explicit_activation_clears_deferred_work_and_later_cycles_are_idle(tmp_path, terminal):
+    from rpe_harness.evolution import apply_candidate, quarantine_candidate
+    database, _ = json_run(tmp_path)
+    cycle(database, tmp_path, auto_apply=False)
+    store = EvolutionStore(database)
+    recipe = next(item for item in store.list_proposals() if item['kind'] == 'json_recipe')
+    applied = apply_candidate(recipe['proposal_id'], database)
+    if terminal == 'quarantine':
+        quarantine_candidate(applied['version_id'], database, 'explicit quarantine')
+    resumed = cycle(database, tmp_path, max_proposals=1)
+    assert resumed['maintenance']['has_more'] is False
+    assert resumed['proposal_count'] == 0
+    later = cycle(database, tmp_path, max_proposals=1)
+    assert later['maintenance']['has_more'] is False
+    assert later['proposal_count'] == 0
+
+
 def test_host_discovery_budget_and_restart_keep_every_receipt(tmp_path):
     from rpe_harness.integrations.hermes import HostEventStore
     database = tmp_path / 'runs.sqlite'

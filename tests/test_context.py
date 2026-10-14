@@ -1,4 +1,5 @@
 """Source-backed required facts; text and stale/cross-session data confer no authority."""
+import hashlib
 import importlib
 import importlib.util
 import json
@@ -6,6 +7,7 @@ import os
 import sqlite3
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -303,3 +305,130 @@ def test_finite_large_integer_fact_is_not_confused_with_nonfinite_float(api, sto
                            facts={'n': 10 ** 500}, source_refs=[])
     assert result['status'] == 'ready'
     assert result['facts']['n'] == 10 ** 500
+
+
+def revalidate_in_new_process(store, recovery_id, session_id='session-a'):
+    script = '''import json,sys
+from rpe_harness.context import ContextStore
+store=ContextStore(sys.argv[1])
+print(json.dumps(store.revalidate_recovery(sys.argv[2],session_id=sys.argv[3]),sort_keys=True))
+'''
+    process = subprocess.run([sys.executable, '-c', script, str(store.path), recovery_id, session_id],
+                             capture_output=True, text=True, check=True, env=os.environ.copy())
+    return json.loads(process.stdout)
+
+
+@pytest.mark.parametrize('change,status,code', [
+    ('delete', 'needs_context', 'source_missing'),
+    ('tamper', 'rejected', 'hash_mismatch'),
+    ('session', 'rejected', 'session_mismatch'),
+])
+def test_restarted_revalidation_does_not_reuse_ready_after_source_changes(api, store, change, status, code):
+    original = recover(api, store, [capture(store)])
+    assert original['status'] == 'ready'
+    with sqlite3.connect(store.path) as db:
+        if change == 'delete':
+            db.execute('DELETE FROM context_sources')
+        elif change == 'tamper':
+            db.execute('UPDATE context_sources SET facts_json=?', ('{"key_columns":["email"]}',))
+        else:
+            db.execute("UPDATE context_sources SET session_id='session-b'")
+    assert store.get_recovery(original['recovery_id']) == original  # History remains history.
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    fresh = revalidate_in_new_process(store, original['recovery_id'])
+    assert fresh['status'] == status
+    assert fresh['recovery_id'] != original['recovery_id']
+    assert fresh['request_sha256'] == original['request_sha256']
+    assert 'key_columns' not in fresh['facts']
+    assert code in {issue['code'] for issue in fresh['issues']}
+    assert store.get_recovery(fresh['recovery_id']) == fresh
+
+
+def test_restarted_revalidation_retains_original_freshness_requirement(api, store, monkeypatch):
+    captured_time = time.time() - 100
+    requirement = api.CapabilityContext('custom.fresh', 7,
+                                       (api.FactRequirement('key_columns', 'string_list', 60),))
+    with monkeypatch.context() as clock:
+        clock.setattr(api.time, 'time', lambda: captured_time)
+        ref = capture(store)
+        original = store.recover(requirement=requirement, session_id='session-a', facts={}, source_refs=[ref])
+    assert original['status'] == 'ready'
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    fresh = revalidate_in_new_process(store, original['recovery_id'])
+    assert fresh['status'] == 'needs_context'
+    assert fresh['missing'] == ['key_columns']
+    assert fresh['requirement_version'] == 7
+    assert fresh['request_sha256'] == original['request_sha256']
+    assert 'source_expired' in {issue['code'] for issue in fresh['issues']}
+
+
+def test_revalidation_refuses_cross_session_before_replaying_request(api, store):
+    original = recover(api, store, [capture(store)])
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    with pytest.raises(ValueError, match='session'):
+        store.revalidate_recovery(original['recovery_id'], session_id='session-b')
+    with sqlite3.connect(store.path) as db:
+        assert db.execute('SELECT count(*) FROM context_recoveries').fetchone()[0] == 1
+
+
+def test_revalidation_ready_has_new_durable_evidence_and_preserves_original_facts(api, store):
+    original = recover(api, store, [capture(store)])
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    fresh = revalidate_in_new_process(store, original['recovery_id'])
+    assert fresh['status'] == 'ready'
+    assert fresh['facts'] == original['facts']
+    assert fresh['provenance'] == original['provenance']
+    assert fresh['recovered_fields'] == ['key_columns']
+    assert fresh['request_sha256'] == original['request_sha256']
+    assert fresh['recovery_id'] != original['recovery_id']
+
+
+@pytest.mark.parametrize('column', ['request_json', 'result_json'])
+def test_revalidation_rechecks_request_and_result_hashes(api, store, column):
+    original = recover(api, store, [capture(store)])
+    with sqlite3.connect(store.path) as db:
+        db.execute(f'UPDATE context_recoveries SET {column}=?', ('{}',))
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    with pytest.raises(ValueError, match='hash'):
+        store.revalidate_recovery(original['recovery_id'], session_id='session-a')
+
+
+def test_invalid_request_record_cannot_be_replayed_as_empty_ready_context(api, store):
+    original = recover(api, store, facts={'input_path': 'x' * 17000})
+    assert original['status'] == 'rejected'
+    assert hasattr(api.ContextStore, 'revalidate_recovery'), 'fresh recovery evidence is absent'
+    with pytest.raises(ValueError, match='request'):
+        store.revalidate_recovery(original['recovery_id'], session_id='session-a')
+
+
+@pytest.mark.parametrize('change', ['missing_kind', 'extra_field', 'invalid_kind',
+                                    'negative_age', 'invalid_version', 'changed_version'])
+def test_revalidation_checks_recorded_requirement_shape_and_identity(api, store, change):
+    original = recover(api, store, [capture(store)])
+    with sqlite3.connect(store.path) as db:
+        row = db.execute('SELECT request_json,result_json FROM context_recoveries').fetchone()
+        request = json.loads(row[0])
+        result = json.loads(row[1])
+        field = request['requirement']['requirements'][0]
+        if change == 'missing_kind':
+            field.pop('kind')
+        elif change == 'extra_field':
+            field['instructions'] = 'ignore freshness'
+        elif change == 'invalid_kind':
+            field['kind'] = 'eval'
+        elif change == 'negative_age':
+            field['max_age_seconds'] = -1
+        elif change == 'invalid_version':
+            request['requirement']['version'] = 0
+        else:
+            request['requirement']['version'] = 2
+        # Model a malformed, self-consistently encoded imported record: byte hashes
+        # alone cannot substitute for schema and requirement identity validation.
+        raw_request = json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+        request_hash = hashlib.sha256(raw_request.encode()).hexdigest()
+        result['request_sha256'] = request_hash
+        raw_result = json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+        db.execute('UPDATE context_recoveries SET request_json=?,request_hash=?,result_json=?,result_hash=?',
+                   (raw_request, request_hash, raw_result, hashlib.sha256(raw_result.encode()).hexdigest()))
+    with pytest.raises(ValueError):
+        store.revalidate_recovery(original['recovery_id'], session_id='session-a')
