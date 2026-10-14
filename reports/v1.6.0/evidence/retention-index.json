@@ -2,6 +2,8 @@
   "purpose": "Compact evidence and public fixtures; raw conversation history will be removed",
   "created_at": "2026-10-14T08:08:45.728055+00:00",
   "files": [
+    "cleanup.json",
+    "closing-checks.json",
     "comparison/formal-summary-original.json",
     "comparison/native-supplemental.json",
     "comparison/preregistration-original.json",
@@ -40,9 +42,11 @@
     "pilots-compact.json",
     "release-full-suite.xml",
     "release-wheel-integrity.json",
+    "retention-index.json",
     "skill-comparison-review.md",
     "test-log-summaries.json",
     "tests-summary.json",
     "worker-review.md"
-  ]
+  ],
+  "raw_history_and_owned_cache_removed": true
 }

@@ -7,7 +7,10 @@
   "all_recorded_host_cleanups_complete": true,
   "worker_workspaces_cleaned": true,
   "retained_live_credential_absent": true,
-  "temporary_root_removed": false,
+  "temporary_root_removed": true,
   "daily_state_evidence": "daily-state-check.json",
-  "shared_caches_or_daily_history_deleted": false
+  "shared_caches_or_daily_history_deleted": false,
+  "local_release_wheel_preserved": true,
+  "managed_worktree_archived": true,
+  "managed_worktree_path_removed": true
 }
