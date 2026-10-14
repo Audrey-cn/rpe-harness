@@ -1,0 +1,50 @@
+{
+  "daily_files": {
+    "/Users/audrey/.hermes/.env": {
+      "before_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "after_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "unchanged": true
+    },
+    "/Users/audrey/.hermes/auth.json": {
+      "before_sha256": "706a5fe3319664e8eaef83748c60b9d9048e50e934af658e41a0e0c3f0bca1bf",
+      "after_sha256": "706a5fe3319664e8eaef83748c60b9d9048e50e934af658e41a0e0c3f0bca1bf",
+      "unchanged": true
+    },
+    "/Users/audrey/.hermes/config.yaml": {
+      "before_sha256": "50158b3258eac7168785e87cf01891162a240d08c4b632fe87f9183a57a6ec55",
+      "after_sha256": "50158b3258eac7168785e87cf01891162a240d08c4b632fe87f9183a57a6ec55",
+      "unchanged": true
+    },
+    "/Users/audrey/.hermes/state.db": {
+      "before_sha256": "b095826fa6c4daef8275da20ecd9fa1d04298f0fe24eda25f6c897309dd89516",
+      "after_sha256": "b095826fa6c4daef8275da20ecd9fa1d04298f0fe24eda25f6c897309dd89516",
+      "unchanged": true
+    }
+  },
+  "daily_test_session_counts": {
+    "sessions": 0,
+    "messages": 0
+  },
+  "old_repos_unchanged": true,
+  "repos": {
+    "/Users/audrey/项目/progenitor-protocol": {
+      "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+      "status": ""
+    },
+    "/Users/audrey/项目/progenitor-registry": {
+      "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+      "status": ""
+    },
+    "/Users/audrey/.hermes/hermes-agent": {
+      "head": "63d0b94120027d487c9a5235b9ec64b696af1b26",
+      "status": "M cron/scheduler_delivery.py\n M gateway/run_busy.py\n M gateway/run_inbound.py\n M gateway/run_turn.py\n M gateway/run_turn_runner.py\n?? cron/scheduler_delivery.py.hermes_lark.bak\n?? gateway/run_busy.py.hermes_lark.bak\n?? gateway/run_inbound.py.hermes_lark.bak\n?? gateway/run_turn.py.hermes_lark.bak\n?? gateway/run_turn_runner.py.hermes_lark.bak"
+    }
+  },
+  "hermes_source_unchanged": true,
+  "credential_scan": {
+    "retained_files": 22,
+    "actual_secret_values_checked": 11,
+    "hits": []
+  },
+  "daily_database_change_note": "Concurrent daily activity may change state.db; runner used an isolated owned DB and did not restore or clear daily state."
+}

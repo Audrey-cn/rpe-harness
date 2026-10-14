@@ -1,0 +1,6 @@
+﻿id,region,value,note
+001,east,10,first
+002,south,20,second
+001,east,99,later
+003,north,30,last
+002,south,77,later

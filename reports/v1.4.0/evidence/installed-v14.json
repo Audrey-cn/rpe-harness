@@ -1,0 +1,580 @@
+{
+  "passed": true,
+  "version": "1.4.0",
+  "module_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed/lib/python3.12/site-packages/rpe_harness/__init__.py",
+  "checks": [
+    {
+      "check": "separate_registry_and_creator_signers",
+      "passed": true
+    },
+    {
+      "check": "installed_json_crash_recovery",
+      "passed": true,
+      "crashed_exit_code": 77,
+      "original_run_id": "9749d966b47d4597a24138bfea622e00",
+      "recovery_run_id": "13757d2eab9749108fc736f67fa57096",
+      "plan_sha256": "4f812d826cc1cd0c821fb92b09023fc0bfcf2600183f4990e37c0371e1d75706",
+      "idempotent": true
+    }
+  ],
+  "commands": [
+    {
+      "module": "rpe_harness",
+      "arguments": [
+        "assets",
+        "registry-build",
+        "--db",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/state/runs.sqlite",
+        "--version-id",
+        "894cf0054d7dce5bbb00bd542792a463186a31341f1754f171d5d2389dc83aaf",
+        "--destination",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/release-bundle",
+        "--creator-identity",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/creator/test-identity.json",
+        "--registry-identity",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/registry/test-identity.json",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/public-test-trust.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "module": "rpe_harness.assets.prepublish",
+      "arguments": [
+        "--bundle",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/release-bundle",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/public-test-trust.json",
+        "--mode",
+        "integrity",
+        "--report",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/integrity.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "module": "rpe_harness.assets.prepublish",
+      "arguments": [
+        "--bundle",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/release-bundle",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/public-test-trust.json",
+        "--mode",
+        "acceptance",
+        "--owned-root",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance",
+        "--report",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/acceptance.json"
+      ],
+      "returncode": 0
+    },
+    {
+      "module": "rpe_harness.assets.prepublish",
+      "arguments": [
+        "--bundle",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/release-bundle",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/revoked-test-trust.json"
+      ],
+      "returncode": 1
+    },
+    {
+      "module": "rpe_harness.assets.prepublish",
+      "arguments": [
+        "--bundle",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/tampered-bundle",
+        "--keyring",
+        "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/public-test-trust.json"
+      ],
+      "returncode": 1
+    }
+  ],
+  "published": false,
+  "global_changes_by_runner": false,
+  "exceptions": [],
+  "reuse_sequence": {
+    "passed": true,
+    "scope": "literal-truth tasks across separate CLI processes, quarantine, rollback and lookup",
+    "cases": [
+      {
+        "name": "csv-seed",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "13cde8a68207486da9ea4a1b2046a735",
+        "actual_executor": {
+          "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "d262cb336e12ac7fb5d89b2bb7f95e8f8393d80048c09909a0ebd7b27a99ff77"
+        },
+        "artifact_sha256": "9cbd8e69ad6bd5cc65a88ef382bc2f45f5d267c5b0604c5b0941e537439d960a"
+      },
+      {
+        "name": "csv-reuse-0",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "a3d0f223ce824a34af1957bfa605029f",
+        "actual_executor": {
+          "candidate_version_id": "82cfa8eca98455ff411b6324612ab5b33f65a64d8a37c917f357acc234a6c438",
+          "code_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "f1888d4bd03cd5bf144436d6b34dfdf336f0d447da9bebaaf725d3ba0131577c"
+        },
+        "artifact_sha256": "6954164a4dc8b30de08c9c52a4ce95b00397a7365aaae0c2ddfd7a25dfdec7b6"
+      },
+      {
+        "name": "csv-reuse-1",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "d9da69bd62e440c194eea3895a6b1cc8",
+        "actual_executor": {
+          "candidate_version_id": "82cfa8eca98455ff411b6324612ab5b33f65a64d8a37c917f357acc234a6c438",
+          "code_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "e65785dc618765f6465a2afbac12b1938d452fb210cfa07bec759e17d21129db"
+        },
+        "artifact_sha256": "ba00d3682f3e64ca67ebcd01cef5c1cbaf33fa9fac5fdb5e6e1c191285f43229"
+      },
+      {
+        "name": "csv-reuse-2",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "6054b31d95394164961701bce7d4a73b",
+        "actual_executor": {
+          "candidate_version_id": "82cfa8eca98455ff411b6324612ab5b33f65a64d8a37c917f357acc234a6c438",
+          "code_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "candidate",
+          "plan_sha256": "3d8cd77a7bebf93343734b69215b4f56b0e5aa4f65e5b0f94ebe0f4963d8be4d"
+        },
+        "artifact_sha256": "84945552c06edb03d675de80bb9e69d0e2d3a48912da5943910c6e07b647e28e"
+      },
+      {
+        "name": "json-pretty",
+        "capability": "json.normalize",
+        "style": "pretty",
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "3109f29f2be043d58a5ece15fa07e1f9",
+        "actual_executor": {
+          "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+          "executor_id": "builtin/json-normalize",
+          "kind": "builtin",
+          "plan_sha256": "c968c77caaffbc09865bf2c4cebf21cf3b4bd703239b450e63f4e830629cc92a"
+        },
+        "artifact_sha256": "9a24e023565c59c9bb2813fb924d56fcb7a52881c1c88440a14252bbfc6363e3"
+      },
+      {
+        "name": "json-minify",
+        "capability": "json.normalize",
+        "style": "minify",
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "642a0d9d1ac54ba58c84ae108ee1a4e7",
+        "actual_executor": {
+          "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+          "executor_id": "builtin/json-normalize",
+          "kind": "builtin",
+          "plan_sha256": "d07340b81689eb24ebc72647ca76f499956e28a33b0ffe6cbf106a2838ead86a"
+        },
+        "artifact_sha256": "249f3a8730db0799bde07de08b2d690acd945af18db69368205374be2d70c5b4"
+      },
+      {
+        "name": "json-new-input",
+        "capability": "json.normalize",
+        "style": "minify",
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "cf4a7028ab084888a671aeaf5422cb3f",
+        "actual_executor": {
+          "code_sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+          "executor_id": "builtin/json-normalize",
+          "kind": "builtin",
+          "plan_sha256": "483fe9f2864809c975d445c40824228beee6f0a0665a1467e6cce2c7de9df72c"
+        },
+        "artifact_sha256": "067352da7cd3dacdb968626e7d8632de71c832fa833dbc61638bc92de0603c69"
+      },
+      {
+        "name": "csv-corrupt-fallback",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "09d2914079314050a78420d1300198f4",
+        "actual_executor": {
+          "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "514eda7492fd6cf7ef95b642550ba2db4277f01a14364fd2fc64b546362bd346"
+        },
+        "artifact_sha256": "c167d3de71aad9a1eb73057c4782469a4f2225c2835e1b4287e53e43e84d3a11"
+      },
+      {
+        "name": "csv-bad-output",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "e11c7005bb494e648a740f22636fe6fd",
+        "actual_executor": {
+          "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "ddcb8b26245ca70945a9657d6e22d048e44fcb72c9239edf9ec49a3441e6d7f9"
+        },
+        "artifact_sha256": "2bafd6d6e5507b9f2e97b9a6f006d1f634c1fb96843c1839bb10b653f6e5ddf6"
+      },
+      {
+        "name": "csv-rollback",
+        "capability": "tabular.deduplicate",
+        "style": null,
+        "returncode": 0,
+        "status": "succeeded",
+        "truth_passed": true,
+        "run_id": "d530887efea34ded833cb9d6e47d40be",
+        "actual_executor": {
+          "code_sha256": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+          "executor_id": "builtin/csv-deduplicate",
+          "kind": "builtin",
+          "plan_sha256": "a67773bbae1e0c6cf6fc54028e2746550ba90160b051e0ef698820b1b5e69448"
+        },
+        "artifact_sha256": "c1f9bc6e55c56ffd4b1ca1c42458e76fa8778c65d32fbdb08412dd4dbe5630cd"
+      }
+    ],
+    "process_restarts": 10,
+    "candidate_reuse_count": 3,
+    "failed_candidate_quarantined": true,
+    "fallback_used_builtin": true,
+    "rollback_used_builtin": true,
+    "dormant_lookup_retained": true,
+    "learning_benefit_estimated": false,
+    "bad_output_oracle_rejected": true,
+    "bad_output_candidate_quarantined": true,
+    "bad_output_fallback_same_plan": true,
+    "bad_output_fallback_evidence": {
+      "actual_executor": {
+        "candidate_version_id": "686af51ec72cb8c416ba561813e134b0a9807809639aa0ae29320cd57beac992",
+        "code_sha256": "229c0052d9197bf1bb7be102a60a94a925c0c9761103b9965e1eba82116c7d87",
+        "executor_id": "builtin/csv-deduplicate",
+        "kind": "candidate",
+        "plan_sha256": "ddcb8b26245ca70945a9657d6e22d048e44fcb72c9239edf9ec49a3441e6d7f9"
+      },
+      "plan_sha256": "ddcb8b26245ca70945a9657d6e22d048e44fcb72c9239edf9ec49a3441e6d7f9",
+      "quarantine": {
+        "quarantined": true,
+        "reason": "independent production verification failed",
+        "version_id": "686af51ec72cb8c416ba561813e134b0a9807809639aa0ae29320cd57beac992"
+      },
+      "verification": {
+        "checks": {
+          "duplicates_removed": false,
+          "first_records_preserved": false,
+          "headers_preserved": true,
+          "record_order_preserved": false,
+          "request_bound": true,
+          "source_unchanged": true
+        },
+        "input_rows": 3,
+        "input_sha256": "ca06dc1f30dc69c4446873f9c35087fcfadf5bb3b3f632b2c9074f0aab6898c0",
+        "output_rows": 2,
+        "output_sha256": "c42ee14616260489a88319f2f033a62d5a11f4e2c4133d88075708377ad462f7",
+        "passed": false,
+        "plan_sha256": "ddcb8b26245ca70945a9657d6e22d048e44fcb72c9239edf9ec49a3441e6d7f9",
+        "removed_rows": 1
+      }
+    }
+  },
+  "host_candidate": {
+    "db_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/state/runs.sqlite",
+    "version_id": "894cf0054d7dce5bbb00bd542792a463186a31341f1754f171d5d2389dc83aaf",
+    "seed_run_id": "34b4d1f82628429c850be72341bea738",
+    "content_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+    "independent_fixture_checks": 13
+  },
+  "registry": {
+    "built": {
+      "built": true,
+      "bundle_path": "/private/var/folders/6f/1dz7k1mx6mlbk4vwbrg2n00c0000gn/T/rpe-v14-20261014-bc6cv4zw/installed-acceptance/release-bundle",
+      "entries": [
+        {
+          "name": "rpe/csv_executor-f423f76f1b3644ad",
+          "asset_id": "05f8e5e481c6595b40ea54cf3d47ca5565e8a81b3966d9c1652e98b109e95ac0",
+          "package_path": "packages/05f8e5e481c6595b40ea54cf3d47ca5565e8a81b3966d9c1652e98b109e95ac0",
+          "manifest_sha256": "d61532ef2ca325139901dc8b5b2885eceba691e0164cdda23e3fdf8c199fb806",
+          "signature_sha256": "86bb1d5028cd80e4d7a88c5d0ba9941296f5537671878b231ec77f17ea220e93",
+          "content_sha256": "f423f76f1b3644adab23bd828a0db3b5eb82223b51b4f1e3c4dcec36880782f9",
+          "creator_key_id": "8a29a004ff7977110ea21406940a0b4658dcb2cc06db29320a50de738ab97e33",
+          "source_version_id": "894cf0054d7dce5bbb00bd542792a463186a31341f1754f171d5d2389dc83aaf",
+          "certificate_sha256": "2ff03bec60bb7676188f37cfe2a8a77a1d7826ec0d34be790ffe42ec98db5bc1"
+        }
+      ],
+      "published": false,
+      "activated": false,
+      "integrity": {
+        "passed": true,
+        "mode": "integrity",
+        "published": false,
+        "activated": false,
+        "producer_validation": "attested",
+        "independent_acceptance": "not_run",
+        "entries": [
+          {
+            "asset_id": "05f8e5e481c6595b40ea54cf3d47ca5565e8a81b3966d9c1652e98b109e95ac0",
+            "name": "rpe/csv_executor-f423f76f1b3644ad",
+            "creator": {
+              "passed": true,
+              "owner": "acceptance-test-only-creator",
+              "key_id": "8a29a004ff7977110ea21406940a0b4658dcb2cc06db29320a50de738ab97e33",
+              "reason": "trusted_origin"
+            },
+            "integrity": "passed"
+          }
+        ],
+        "catalog_sha256": "664bccd592e1ec5ee300dbbbbd2f7301b97a6dcecbacffd376072098e31fde9b",
+        "keyring_sha256": "c5052cd1cff1a1d1d7325dc64d39b28f7b917b5ebf8c16c663f931f65545fcee",
+        "registry": {
+          "passed": true,
+          "owner": "acceptance-test-only-registry",
+          "key_id": "3cf7ef75c95717aee852dce9d07f0f49309ff509fe33836e3efcd1b4327b7a07",
+          "reason": "trusted_origin"
+        },
+        "revisions": {
+          "contract_version": 1,
+          "contract_revision": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+          "executor_revision": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+          "verifier_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+          "verifier_file_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+          "acceptance_revision": "0e10d0bc46e85af31d8d19247dcde42b62c9c80a285244ae2a589c55fdfec700",
+          "sandbox_revision": "fde29b23b4cad03ffbac7d8d7297a0d96a54ff61b2cd9b164214fdea55f40abb",
+          "fixture_suite_sha256": "24f132156abaeb4c53ccfd4240523ea973d1626b11c661debeaa80347009aebd"
+        }
+      }
+    },
+    "integrity": {
+      "activated": false,
+      "catalog_sha256": "664bccd592e1ec5ee300dbbbbd2f7301b97a6dcecbacffd376072098e31fde9b",
+      "entries": [
+        {
+          "asset_id": "05f8e5e481c6595b40ea54cf3d47ca5565e8a81b3966d9c1652e98b109e95ac0",
+          "creator": {
+            "key_id": "8a29a004ff7977110ea21406940a0b4658dcb2cc06db29320a50de738ab97e33",
+            "owner": "acceptance-test-only-creator",
+            "passed": true,
+            "reason": "trusted_origin"
+          },
+          "integrity": "passed",
+          "name": "rpe/csv_executor-f423f76f1b3644ad"
+        }
+      ],
+      "independent_acceptance": "not_run",
+      "keyring_sha256": "c5052cd1cff1a1d1d7325dc64d39b28f7b917b5ebf8c16c663f931f65545fcee",
+      "mode": "integrity",
+      "passed": true,
+      "producer_validation": "attested",
+      "published": false,
+      "registry": {
+        "key_id": "3cf7ef75c95717aee852dce9d07f0f49309ff509fe33836e3efcd1b4327b7a07",
+        "owner": "acceptance-test-only-registry",
+        "passed": true,
+        "reason": "trusted_origin"
+      },
+      "revisions": {
+        "acceptance_revision": "0e10d0bc46e85af31d8d19247dcde42b62c9c80a285244ae2a589c55fdfec700",
+        "contract_revision": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+        "contract_version": 1,
+        "executor_revision": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+        "fixture_suite_sha256": "24f132156abaeb4c53ccfd4240523ea973d1626b11c661debeaa80347009aebd",
+        "sandbox_revision": "fde29b23b4cad03ffbac7d8d7297a0d96a54ff61b2cd9b164214fdea55f40abb",
+        "verifier_file_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+        "verifier_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38"
+      }
+    },
+    "acceptance": {
+      "activated": false,
+      "catalog_sha256": "664bccd592e1ec5ee300dbbbbd2f7301b97a6dcecbacffd376072098e31fde9b",
+      "entries": [
+        {
+          "acceptance": {
+            "checks": [
+              {
+                "error": null,
+                "fixture": "chinese",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "train"
+              },
+              {
+                "error": null,
+                "fixture": "composite",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "train"
+              },
+              {
+                "error": null,
+                "fixture": "semicolon",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "train"
+              },
+              {
+                "error": null,
+                "fixture": "untrimmed_types",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": null,
+                "fixture": "quoted_multiline",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": null,
+                "fixture": "case_composite",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": null,
+                "fixture": "zero_records",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": "key columns not found in input",
+                "fixture": "missing_column",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": null,
+                "fixture": "empty_key",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": "header must contain unique nonempty column names",
+                "fixture": "duplicate_header",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": "only keep=first is supported",
+                "fixture": "unsupported_keep",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": "execution must have only registered parameters",
+                "fixture": "unknown_option",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              },
+              {
+                "error": "output must be a new path in an existing directory",
+                "fixture": "no_overwrite",
+                "output_preserved": true,
+                "passed": true,
+                "source_preserved": true,
+                "split": "heldout"
+              }
+            ],
+            "passed": true
+          },
+          "asset_id": "05f8e5e481c6595b40ea54cf3d47ca5565e8a81b3966d9c1652e98b109e95ac0",
+          "creator": {
+            "key_id": "8a29a004ff7977110ea21406940a0b4658dcb2cc06db29320a50de738ab97e33",
+            "owner": "acceptance-test-only-creator",
+            "passed": true,
+            "reason": "trusted_origin"
+          },
+          "integrity": "passed",
+          "name": "rpe/csv_executor-f423f76f1b3644ad"
+        }
+      ],
+      "independent_acceptance": "passed",
+      "keyring_sha256": "c5052cd1cff1a1d1d7325dc64d39b28f7b917b5ebf8c16c663f931f65545fcee",
+      "mode": "acceptance",
+      "passed": true,
+      "producer_validation": "attested",
+      "published": false,
+      "registry": {
+        "key_id": "3cf7ef75c95717aee852dce9d07f0f49309ff509fe33836e3efcd1b4327b7a07",
+        "owner": "acceptance-test-only-registry",
+        "passed": true,
+        "reason": "trusted_origin"
+      },
+      "revisions": {
+        "acceptance_revision": "0e10d0bc46e85af31d8d19247dcde42b62c9c80a285244ae2a589c55fdfec700",
+        "contract_revision": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+        "contract_version": 1,
+        "executor_revision": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+        "fixture_suite_sha256": "24f132156abaeb4c53ccfd4240523ea973d1626b11c661debeaa80347009aebd",
+        "sandbox_revision": "fde29b23b4cad03ffbac7d8d7297a0d96a54ff61b2cd9b164214fdea55f40abb",
+        "verifier_file_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+        "verifier_revision": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38"
+      }
+    },
+    "revocation_rejected": {
+      "activated": false,
+      "entries": [],
+      "error": "registry signature failed: revoked_key",
+      "independent_acceptance": "not_run",
+      "mode": "integrity",
+      "passed": false,
+      "producer_validation": "attested",
+      "published": false
+    },
+    "tamper_rejected": {
+      "activated": false,
+      "entries": [],
+      "error": "package content hash mismatch",
+      "independent_acceptance": "not_run",
+      "mode": "integrity",
+      "passed": false,
+      "producer_validation": "attested",
+      "published": false
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "source_manifest_matches": true,
+  "python_310_syntax": true,
+  "missing_document_links": [],
+  "retained_live_fixture_hashes_match": true,
+  "retained_bundle_integrity_passed": true,
+  "wheel_sha256": "61c7cbc0ac57e9a4c7e5a0da16c59d133f4582eb20a9c5292591327ba6362465",
+  "owned_root_removed": true,
+  "implementation_commit": "c2f14bfe46d2baefe8498f1007a8a513ee8d58e7",
+  "base_commit": "b0d0a31079f982517c9df0e709a753df49b8f901",
+  "branch": "codex/rpe-v1.4"
+}
