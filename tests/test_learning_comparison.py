@@ -239,6 +239,227 @@ def test_real_scope_keeps_own_previous_workspace_but_denies_other_arms_and_futur
                               deny_read_roots=m._denied(tmp_path,'native'))
     program = 'import json\nfrom pathlib import Path\nresult=[]\nfor p in '+repr(list(map(str,paths)))+':\n try:\n  Path(p).read_bytes();result.append(True)\n except PermissionError:\n  result.append(False)\nprint(json.dumps(result))'
     result = subprocess.run(['/usr/bin/sandbox-exec','-p',profile,sys.executable,'-B','-c',program],
-                            capture_output=True,text=True,timeout=10)
+                            capture_output=True,text=True,timeout=10,cwd=own)
     assert result.returncode==0,result.stderr
     assert json.loads(result.stdout)==[True,True,False,False,False]
+
+
+def test_post_generation_evidence_change_preserves_observed_cost_and_original(tmp_path, monkeypatch):
+    m = module()
+    from rpe_harness.evolution import worker, training_feedback
+    packet = {'packet_sha256':'p'*64}
+    monkeypatch.setattr(m,'seed_training',lambda *args:packet)
+    monkeypatch.setattr(m,'_host_session',lambda *args:{'status':'failed'})
+    validations=[]
+    def validate(*args):
+        validations.append(1)
+        if len(validations)==2:
+            raise ValueError('private changed evidence detail')
+        return packet
+    monkeypatch.setattr(training_feedback,'validate_training_packet',validate)
+    identity = {'provider':'test','requested_model':'test','response_models':['test']}
+    code = 'def prepare(plan, staging_path): raise ValueError("test")\n'
+    def generate(database, owned, **options):
+        artifact = Path(owned)/'original.py'
+        artifact.write_text(code)
+        return {'completed':True,'candidate_sha256':m._sha(code.encode()),'code_artifact_path':str(artifact),
+                'session_id':'observed-generation','model_identity':identity,
+                'usage':{'api_requests':2,'coverage_complete':False,'known_total_tokens':123,'total_tokens':None},
+                'generation_link':{'proven':True,'content_sha256':m._sha(code.encode())}}
+    monkeypatch.setattr(worker,'run_proposal_worker',generate)
+    result = m.run_learning_comparison(tmp_path)
+    assert result['stage']=='failed' and result['reason']=='training_evidence_changed'
+    evidence = m._read_sealed(tmp_path/'records/generation-G0.json')['result']
+    assert evidence['completed'] is False and evidence['training_evidence_verified'] is False
+    assert evidence['error_code']=='training_evidence_changed' and evidence['error_type']=='ValueError'
+    assert evidence['session_id']=='observed-generation' and evidence['model_identity']==identity
+    assert Path(evidence['code_artifact_path']).read_text()==code
+    assert evidence['generation_link']['proven'] is True
+    assert result['cost']['known_total_tokens']==123
+    assert result['cost']['total_tokens'] is None
+    phase = next(p for p in m.PhaseLedger(tmp_path/'ledger').records() if p['attempt_id']=='generation-G0')
+    assert phase['usage']['known_total_tokens']==123 and phase['elapsed_seconds']>=0
+    assert not (tmp_path/'freeze.json').exists()
+    assert not (tmp_path/'records/generation-G1.json').exists()
+    assert 'private changed evidence detail' not in (tmp_path/'records/generation-G0.json').read_text()
+
+
+@pytest.mark.parametrize('kind',['symlink_parent','traversal','missing_parent','relative'])
+def test_registration_rejects_unsafe_ancestry_before_any_write(tmp_path, monkeypatch, kind):
+    m = module()
+    outside = tmp_path/'outside'
+    outside.mkdir()
+    link = tmp_path/'link'
+    link.symlink_to(outside,target_is_directory=True)
+    if kind=='symlink_parent':
+        root = link/'experiment'
+    elif kind=='traversal':
+        root = tmp_path/'outside/../experiment'
+    elif kind=='missing_parent':
+        root = tmp_path/'missing/experiment'
+    else:
+        monkeypatch.chdir(tmp_path)
+        root = Path('relative-experiment')
+    before = set(tmp_path.rglob('*'))
+    with pytest.raises((ValueError,OSError)):
+        m.preregister_learning(root)
+    assert set(tmp_path.rglob('*'))==before
+    assert not (outside/'experiment').exists()
+
+
+def _linked_learning_evidence(m, plan):
+    """Literal acceptance fixture; no generated-model or runtime-success claim."""
+    identity = {'provider':'test','requested_model':'test','response_models':['test']}
+    before,after,packet_hash='0'*64,'1'*64,'2'*64
+    ids=[f'training-{i}' for i in range(6)]
+    outcomes=[{'run_id':identifier,'candidate_invoked':True} for identifier in ids]
+    packet={'schema_version':'rpe.training-feedback/v1','packet_sha256':packet_hash,'evidence_run_ids':ids}
+    frozen={'registration_sha256':plan['sha256'],'generation':1,'g0_sha256':before,'candidate_sha256':after,'packet_sha256':packet_hash,
+            'version_id':'frozen-version','proposal_id':'proposal-one','model_identity':identity}
+    pilot={
+        'generation-G0':{'status':'succeeded','completed':True,'candidate_sha256':before,'model_identity':identity,
+            'generation_link':{'proven':True,'content_sha256':before},'training_evidence_verified':True},
+        'probe-G0':{'status':'succeeded','candidate_sha256':before,'packet_sha256':packet_hash,'outcomes':outcomes},
+        'generation-G1':{'status':'succeeded','completed':True,'candidate_sha256':after,'proposal_id':'proposal-one',
+            'model_identity':identity,'generation_link':{'proven':True,'content_sha256':after},
+            'training_evidence_verified':True,'training_packet_sha256':packet_hash,'training_packet':packet,
+            'previous_candidate_sha256':before,'training_feedback':{'candidate_sha256':before,
+                'packet_sha256':packet_hash,'outcomes':outcomes}},
+        'probe-G1':{'status':'succeeded','candidate_sha256':after,'packet_sha256':packet_hash,'outcomes':outcomes},
+        'qualify-G1':{'status':'succeeded','passed':True,'proposal_id':'proposal-one','content_hash':after},
+        'activate-G1':{'status':'succeeded','applied':True,'version_id':'frozen-version','content_hash':after}}
+    records=[]
+    for trial in plan['sessions']:
+        learned=trial['arm']=='rpe_learned'
+        records.append({**trial,'status':'succeeded' if learned else 'failed',
+            'model_identity':identity if learned else None,'session_id':trial['attempt_id'],
+            'run_id':'run-'+trial['attempt_id'] if learned else None,'fresh_session':True,'fresh_run':learned,
+            'candidate_direct_success':learned,'artifact_correct':learned,'product_oracle_passed':learned,
+            'workflow_verified':learned,'comparable':learned,'fallback':False,
+            'actual_executor':{'kind':'candidate','candidate_version_id':'frozen-version','code_sha256':after}})
+    return frozen,pilot,records
+
+
+def test_one_proven_new_input_reuse_verifies_loop_without_asserting_full_quality(tmp_path):
+    m = module()
+    plan=m.preregister_learning(tmp_path)
+    frozen,pilot,records=_linked_learning_evidence(m,plan)
+    learned=[r for r in records if r['arm']=='rpe_learned']
+    learned[-1].update(status='failed',candidate_direct_success=False,artifact_correct=False)
+    verdict=m._learning_acceptance(plan,frozen,records,pilot)
+    assert verdict['learning_loop_verified'] is True
+    assert verdict['all_evaluation_reuses_verified'] is False
+    assert verdict['comparison_complete'] is True
+    assert verdict['comparison_model_alignment_verified'] is False
+    # Native identity gaps do not invalidate a linked learned-arm loop or its own quality result.
+    learned[-1].update(status='succeeded',candidate_direct_success=True,artifact_correct=True)
+    verdict=m._learning_acceptance(plan,frozen,records,pilot)
+    assert verdict['learning_loop_verified'] is True and verdict['all_evaluation_reuses_verified'] is True
+    # An existence result is allowed after one real new-input observation, without ending the schedule.
+    assert m._learning_acceptance(plan,frozen,[learned[0]],pilot)['learning_loop_verified'] is True
+    assert m._learning_acceptance(plan,frozen,[learned[0]],pilot)['comparison_complete'] is False
+    # G0 may have a proposal failure after proven code generation; G1 owns qualification.
+    pilot['generation-G0'].update(status='failed',completed=False,error_code='proposal_failed')
+    assert m._learning_acceptance(plan,frozen,[learned[0]],pilot)['learning_loop_verified'] is True
+
+
+@pytest.mark.parametrize('broken',['feedback','qualification','activation','generation_link','candidate_hash','model_identity','fresh_run','unseen_input'])
+def test_learning_loop_refuses_missing_chain_or_unfresh_reuse(tmp_path, broken):
+    m=module()
+    plan=m.preregister_learning(tmp_path)
+    frozen,pilot,records=_linked_learning_evidence(m,plan)
+    reuse=next(r for r in records if r['arm']=='rpe_learned')
+    if broken=='feedback':
+        pilot['generation-G1']['training_feedback']['candidate_sha256']='wrong'
+    elif broken=='qualification':
+        pilot['qualify-G1']['passed']=False
+    elif broken=='activation':
+        pilot['activate-G1']['version_id']='wrong'
+    elif broken=='generation_link':
+        pilot['generation-G1']['generation_link']['proven']=False
+    elif broken=='candidate_hash':
+        reuse['actual_executor']['code_sha256']='wrong'
+    elif broken=='model_identity':
+        reuse['model_identity']={'provider':'other','response_models':['other']}
+    elif broken=='fresh_run':
+        reuse['fresh_run']=False
+    else:
+        reuse['case_id']=plan['training'][0]['case_id']
+        reuse['input_sha256']=plan['training'][0]['input_sha256']
+    assert m._learning_acceptance(plan,frozen,[reuse],pilot)['learning_loop_verified'] is False
+
+
+@pytest.mark.parametrize('arm',['native','rpe_learned'])
+@pytest.mark.parametrize('with_usage',[True,False])
+def test_direct_host_observation_error_keeps_safe_paid_evidence(tmp_path,monkeypatch,arm,with_usage):
+    m=module()
+    from rpe_harness.integrations import hermes_session
+    plan=m.preregister_learning(tmp_path)
+    case=plan['training'][0]
+    identity={'provider':'test','requested_model':'test','response_models':['test']}
+    def paid_but_unreadable(prompt,workspace,database,**options):
+        target=Path(workspace)/case['case_id']/'output.csv'
+        target.write_text('order,amount\n001,10\n002,20\n')
+        diagnostics={'completed':True,'exit_code':0,'session_id':'paid-session','model_identity':identity,
+            'usage':{'api_requests':1,'known_total_tokens':11,'total_tokens':11,'coverage_complete':True} if with_usage else None,
+            'original_prompt_sha256':m._sha(prompt.encode()),
+            'process_cleanup':{'cleanup_complete':True,'remaining_descendants':[]},
+            'session_root':str(tmp_path/'owned-session'),
+            'events':[{'kind':'post_api_request','api_request_id':'paid-api','args':{'private':'PRIVATE_SOURCE'},
+                       'usage':{'raw_provider_usage':{'private':'PRIVATE_USAGE'}},'response_model':'test'}],
+            'final_response':'PRIVATE_RESPONSE','stream_tool_calls':[{'input':{'private':'PRIVATE_ARGUMENTS'}}]}
+        raise hermes_session.SessionObservationError(diagnostics,secret='PRIVATE_SECRET',error_type='JSONDecodeError')
+    monkeypatch.setattr(hermes_session,'run_hermes_session',paid_but_unreadable)
+    result=m._phase(tmp_path,arm,'training','paid-direct-host',
+        lambda:m._host_session(tmp_path,plan,arm,case,case['case_id']),api_expected=True)
+    assert result['status']=='failed' and result['observation_failed'] is True
+    assert result['artifact_correct'] is True
+    assert result['workflow_verified'] is False and result['candidate_direct_success'] is False
+    assert result['session_id']=='paid-session' and result['model_identity']==identity
+    assert result['process_cleanup']['cleanup_complete'] is True
+    assert result['session_root']==str(tmp_path/'owned-session')
+    cost=m.summarize_phases(m.PhaseLedger(tmp_path/'ledger').records())
+    assert cost['known_total_tokens']==(11 if with_usage else 0)
+    assert cost['total_tokens'] is None
+    saved=(tmp_path/'records/paid-direct-host.json').read_text()
+    assert 'PRIVATE_' not in saved and 'raw_provider_usage' not in saved
+    assert 'stream_tool_calls' not in saved and 'final_response' not in saved
+
+
+@pytest.mark.skipif(not Path('/usr/bin/sandbox-exec').exists(),reason='macOS sandbox boundary')
+def test_installed_native_cannot_read_other_checkout_sources_but_can_load_observer(tmp_path,monkeypatch):
+    import subprocess
+    import sys
+    from rpe_harness.evolution import worker
+    from rpe_harness.integrations.hermes_session import sandbox_profile
+    m=module()
+    experiment=tmp_path/'experiment'
+    m.preregister_learning(experiment)
+    workspace=experiment/'arms/native/workspace'
+    own=workspace/'current.txt'
+    own.write_text('own current input')
+    development=tmp_path/'development-checkout'
+    development.mkdir()
+    heldout=development/'learning_comparison.py'
+    heldout.write_text('future independent truth')
+    primary=tmp_path/'primary-checkout'
+    primary.mkdir()
+    oracle=primary/'qualification.py'
+    oracle.write_text('independent qualification truth')
+    installed=tmp_path/'installed-site-packages'
+    observer=installed/'rpe_harness/integrations/hermes.py'
+    observer.parent.mkdir(parents=True)
+    observer.write_text('minimal observer bootstrap')
+    monkeypatch.setattr(worker,'_deny_read_roots',lambda:[development,primary,installed/'rpe_harness'])
+    denied=m._denied(experiment,'native')
+    profile=sandbox_profile([workspace],tmp_path/'fake-home',native_import_root=installed,
+        owner_read_scope=(experiment,[workspace]),deny_read_roots=denied)
+    paths=[own,heldout,oracle,observer]
+    program='import json\nfrom pathlib import Path\nresult=[]\nfor p in '+repr(list(map(str,paths)))+':\n try:\n  Path(p).read_bytes();result.append(True)\n except PermissionError:\n  result.append(False)\nprint(json.dumps(result))'
+    completed=subprocess.run(['/usr/bin/sandbox-exec','-p',profile,sys.executable,'-B','-c',program],
+                             capture_output=True,text=True,timeout=10,cwd=workspace)
+    assert completed.returncode==0,completed.stderr
+    assert json.loads(completed.stdout)==[True,False,False,True]
+    # Strict RPE hosts still need their trusted package imports; they have no native read/terminal tools.
+    assert development not in m._denied(experiment,'rpe_learned')
+    assert installed/'rpe_harness' not in m._denied(experiment,'rpe_no_experience')

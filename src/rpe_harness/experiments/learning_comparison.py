@@ -113,10 +113,22 @@ def _environment():
 def preregister_learning(root, *, timeout=180):
     if type(timeout) is not int or not 1 <= timeout <= 180:
         raise ValueError('timeout must be an integer between 1 and 180')
-    root = Path(root).absolute()
-    if root.is_symlink():
-        raise ValueError('experiment root cannot be a symlink')
-    root.mkdir(parents=True, exist_ok=True)
+    from ..path_binding import _directory
+    root = Path(root)
+    if not root.is_absolute() or '..' in root.parts or not root.name:
+        raise ValueError('experiment root must be absolute without traversal')
+    # Check every existing ancestor before any write. Retain the validated
+    # parent authority for creation/opening of only the final component.
+    parent = _directory(root.parent)
+    try:
+        try:
+            os.mkdir(root.name, mode=0o700, dir_fd=parent)
+        except FileExistsError:
+            pass
+        descriptor = os.open(root.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+        os.close(descriptor)
+    finally:
+        os.close(parent)
     path = root/'preregistration.json'
     if path.exists():
         plan = _read_sealed(path)
@@ -334,12 +346,19 @@ def _native_links(result, database, label):
 
 
 def _denied(root, arm):
-    return [root/'evaluator',root/'records',root/'ledger',root/'preregistration.json',root/'freeze.json',
-            *(root/'arms'/other for other in ARMS if other!=arm)]
+    denied = [root/'evaluator',root/'records',root/'ledger',root/'preregistration.json',root/'freeze.json',
+              Path(__file__).resolve(), *(root/'arms'/other for other in ARMS if other!=arm)]
+    if arm=='native':
+        from ..evolution.worker import _deny_read_roots
+        # An installed package's native_import_root does not cover source
+        # checkouts elsewhere on disk. Preserve bootstrap exceptions supplied
+        # by sandbox_profile, while denying those additional source roots.
+        denied.extend(_deny_read_roots())
+    return list(dict.fromkeys(denied))
 
 
 def _host_session(root, plan, arm, case, label, frozen=None):
-    from ..integrations.hermes_session import run_hermes_session
+    from ..integrations.hermes_session import SessionObservationError, run_hermes_session
     from ..integrations.hermes_gate import evaluate_session, read_run
     from ..tasks import plan_from_request, verify_plan
     workspace, request = _materialize(root,arm,case,label)
@@ -347,10 +366,17 @@ def _host_session(root, plan, arm, case, label, frozen=None):
     # Anchor the product plan before the model creates its output.
     product_plan = plan_from_request(request)
     prompt = _prompt(case,label)
-    result = run_hermes_session(prompt,workspace,database,tool_enabled=arm!='native',
-        owner_root=root/'arms'/arm/'sessions', timeout=plan['timeout'],
-        entry_mode='optional' if arm=='native' else 'strict', max_task_attempts=plan['production_max_task_attempts'],
-        context_sources=[], read_isolation_root=root, deny_read_roots=_denied(root,arm))
+    observation_failed = False
+    try:
+        result = run_hermes_session(prompt,workspace,database,tool_enabled=arm!='native',
+            owner_root=root/'arms'/arm/'sessions', timeout=plan['timeout'],
+            entry_mode='optional' if arm=='native' else 'strict', max_task_attempts=plan['production_max_task_attempts'],
+            context_sources=[], read_isolation_root=root, deny_read_roots=_denied(root,arm))
+    except SessionObservationError as error:
+        # This carrier already excludes private prose, arguments and provider
+        # payloads. Keep paid observations instead of reducing them to a type.
+        result = error.diagnostics
+        observation_failed = True
     record = {'status':'failed','session_id':result.get('session_id'),
         'usage':result.get('usage'),'model_identity':_identity(result.get('model_identity')),
         'original_prompt_sha256':result.get('original_prompt_sha256'),
@@ -397,6 +423,10 @@ def _host_session(root, plan, arm, case, label, frozen=None):
         record['candidate_direct_success'] &= bool(success)
     except Exception as error:
         record['error_code'] = type(error).__name__
+    if observation_failed:
+        record.update(status='failed', observation_failed=True, workflow_verified=False,
+                      invocation_evidence=False, candidate_direct_success=False,
+                      error_code='postlaunch_observation_failed', error_type='SessionObservationError')
     # Compact actual observations survive cleanup; raw provider prose stays in owned sessions.
     record['event_digest'] = _sha(_json(result.get('events') or []).encode())
     record['tool_calls'] = [{key:e.get(key) for key in ('kind','session_id','task_id','turn_id','api_request_id',
@@ -477,12 +507,22 @@ def _pilot(root, plan):
             report = run_proposal_worker(database,learned,kind='csv_executor',timeout=plan['timeout'],
                 training_packet=packet if index else None,previous_candidate=previous if index else None,
                 max_turns=plan['generation_max_turns'],deny_read_roots=_denied(root,'rpe_learned'))
-            validate_training_packet(database,packet)
-            return {**report,'status':'succeeded' if report.get('completed') else 'failed'}
+            try:
+                validate_training_packet(database,packet)
+            except Exception as error:
+                # The worker has already run: its sanitized observations and
+                # retained original code remain attributable even on rejection.
+                return {**report, 'worker_completed':report.get('completed'),
+                    'completed':False, 'status':'failed', 'training_evidence_verified':False,
+                    'error_code':'training_evidence_changed', 'error_type':type(error).__name__}
+            return {**report,'status':'succeeded' if report.get('completed') else 'failed',
+                    'training_evidence_verified':True}
         report = _phase(root,'rpe_learned','generation',phase_id,generation,api_expected=True,
                         scope='operational')
         if report['status']=='incomplete':
             return {'stage':'incomplete','reason':'generation_interrupted','generation':index}
+        if report.get('error_code')=='training_evidence_changed':
+            return {'stage':'failed','reason':'training_evidence_changed','generation':index}
         try:
             code = _original_code(root,report)
         except (ValueError,OSError,UnicodeError):
@@ -542,11 +582,102 @@ def _pilot(root, plan):
     return {'stage':'failed','reason':'no_qualified_feedback_candidate','generation_attempts':plan['generation_limit']+1}
 
 
+def _learning_acceptance(plan, frozen, records, pilot):
+    """Separate existence of the linked learning loop from population quality.
+
+    Pilot inputs are immutable phase results already read through their seals.
+    A success counter alone cannot establish generation or feedback provenance.
+    """
+    from collections import Counter
+    planned = {trial['attempt_id']:trial for trial in plan['sessions']}
+    planned_learned = {key for key,value in planned.items() if value['arm']=='rpe_learned'}
+    identifiers = [row.get('attempt_id') for row in records]
+    identities = [row.get('model_identity') for row in records]
+    complete = (len(identifiers)==len(planned) and set(identifiers)==set(planned) and
+                all(row.get('status') in {'succeeded','failed','timed_out','refused'} for row in records))
+    aligned = (complete and all(identity and identity.get('response_models') and
+                               identity==frozen.get('model_identity') for identity in identities))
+    chain = False
+    generation = frozen.get('generation')
+    if type(generation) is int and 1<=generation<=plan['generation_limit']:
+        initial = pilot.get('generation-G0') or {}
+        generated = pilot.get(f'generation-G{generation}') or {}
+        qualified = pilot.get(f'qualify-G{generation}') or {}
+        activated = pilot.get(f'activate-G{generation}') or {}
+        packet = generated.get('training_packet') or {}
+        anchors = packet.get('evidence_run_ids') or []
+        packet_hash = frozen.get('packet_sha256')
+        candidate_hash = frozen.get('candidate_sha256')
+        previous_hash = generated.get('previous_candidate_sha256')
+
+        def linked(report, expected_hash):
+            link = report.get('generation_link') or {}
+            return bool(expected_hash and report.get('candidate_sha256')==expected_hash and
+                link.get('proven') is True and link.get('content_sha256')==expected_hash and
+                report.get('model_identity')==frozen.get('model_identity'))
+
+        def probed(report, expected_hash):
+            outcomes = report.get('outcomes') or []
+            return bool(expected_hash and report.get('candidate_sha256')==expected_hash and
+                report.get('packet_sha256')==packet_hash and len(outcomes)==len(anchors) and
+                {item.get('run_id') for item in outcomes}==set(anchors) and
+                all(item.get('candidate_invoked') is True for item in outcomes))
+
+        previous_linked = any(linked(pilot.get(f'generation-G{i}') or {},previous_hash)
+                              for i in range(generation))
+        initial_probe = pilot.get('probe-G0') or {}
+        generated_probe = pilot.get(f'probe-G{generation}') or {}
+        chain = bool(
+            frozen.get('registration_sha256')==plan['sha256'] and
+            frozen.get('model_identity') and frozen['model_identity'].get('response_models') and
+            initial.get('status') in {'succeeded','failed'} and
+            initial.get('training_evidence_verified') is True and linked(initial,frozen.get('g0_sha256')) and
+            packet.get('schema_version')=='rpe.training-feedback/v1' and
+            packet_hash and packet.get('packet_sha256')==packet_hash and
+            len(anchors)==len(plan['training']) and len(set(anchors))==len(anchors) and
+            all(isinstance(anchor,str) and anchor for anchor in anchors) and
+            initial_probe.get('status')=='succeeded' and probed(initial_probe,frozen.get('g0_sha256')) and
+            generated.get('status')=='succeeded' and generated.get('completed') is True and
+            generated.get('training_evidence_verified') is True and linked(generated,candidate_hash) and
+            generated.get('training_packet_sha256')==packet_hash and previous_linked and
+            probed(generated.get('training_feedback') or {},previous_hash) and
+            generated_probe.get('status')=='succeeded' and probed(generated_probe,candidate_hash) and
+            generated.get('proposal_id')==frozen.get('proposal_id') and
+            qualified.get('status')=='succeeded' and qualified.get('passed') is True and
+            qualified.get('proposal_id')==frozen.get('proposal_id') and qualified.get('content_hash')==candidate_hash and
+            activated.get('status')=='succeeded' and activated.get('applied') is True and
+            activated.get('content_hash')==candidate_hash and activated.get('version_id')==frozen.get('version_id'))
+
+    sessions = Counter(row.get('session_id') for row in records if row.get('session_id'))
+    runs = Counter(row.get('run_id') for row in records if row.get('run_id'))
+    training_hashes = {case['input_sha256'] for case in plan['training']}
+    verified_reuses = set()
+    for row in records:
+        trial = planned.get(row.get('attempt_id'))
+        if not trial or trial['arm']!='rpe_learned':
+            continue
+        if (all(row.get(key)==trial[key] for key in ('arm','case_id','repeat','input_sha256','prompt_sha256')) and
+            row.get('input_sha256') not in training_hashes and row.get('status')=='succeeded' and
+            all(row.get(key) is True for key in ('artifact_correct','product_oracle_passed','workflow_verified',
+                'candidate_direct_success','fresh_session','fresh_run','comparable')) and
+            row.get('model_identity')==frozen.get('model_identity') and
+            row.get('session_id') and sessions[row['session_id']]==1 and
+            row.get('run_id') and runs[row['run_id']]==1 and
+            executor_score(row.get('actual_executor') or {},row.get('fallback'),frozen)):
+            verified_reuses.add(row['attempt_id'])
+    loop = bool(chain and verified_reuses)
+    return {'pilot_provenance_verified':chain, 'learning_loop_verified':loop,
+        'mechanism_closed_loop_verified':loop,
+        'verified_new_input_reuse_sessions':len(verified_reuses),
+        'all_evaluation_reuses_verified':verified_reuses==planned_learned,
+        'comparison_complete':complete, 'comparison_model_alignment_verified':bool(aligned)}
+
+
 def run_learning_comparison(root, *, timeout=180, formal=False, max_sessions=48):
     """Run/resume pilot, or explicitly run the frozen 48-session production design."""
     if type(max_sessions) is not int or not 0<=max_sessions<=48:
         raise ValueError('max_sessions must be between 0 and 48')
-    root = Path(root).absolute()
+    root = Path(root)
     plan = preregister_learning(root,timeout=timeout)
     freeze_path = root/'freeze.json'
     if formal and not freeze_path.exists():
@@ -598,10 +729,9 @@ def run_learning_comparison(root, *, timeout=180, formal=False, max_sessions=48)
         records.append({**by_attempt[phase['attempt_id']],**record})
     summary = summarize_learning(records,phases)
     freeze = result.get('freeze') or {}
-    summary['mechanism_closed_loop_verified'] = bool(
-        (freeze.get('generation_link') or {}).get('proven') is True and
-        summary['arms']['rpe_learned']['candidate_direct_successes']==16 and
-        summary['model_identity_coverage']==48 and summary['model_identities_consistent'])
+    documents = [_read_sealed(path) for path in (root/'records').glob('*.json')]
+    pilot = {document['attempt_id']:document['result'] for document in documents}
+    summary.update(_learning_acceptance(plan,freeze,records,pilot))
     return {**result,**summary,'registration_sha256':plan['sha256']}
 
 
