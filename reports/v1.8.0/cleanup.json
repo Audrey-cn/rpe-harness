@@ -54,7 +54,13 @@
   "credentials_and_raw_history_exported": false,
   "preserved_wheel": "/Users/audrey/项目/rpe-harness/dist/rpe_harness-1.8.0-py3-none-any.whl",
   "worktree_cleanup": {
-    "status": "pending_local_integration"
+    "status": "archived",
+    "physical_removed": true,
+    "native_attachment_type": "archived_worktree",
+    "native_attachment_id": "01a13cbf-cc14-7bc1-8338-347b004372aa",
+    "source_commit": "2fbc344ba9b3abbc5d8621c1c4ea5aa260799e66",
+    "release_branch": "codex/rpe-v1.8-release",
+    "confirmed_at_unix": 1792020646.510654
   },
   "completed_at_unix": 1792020460.421576
 }
