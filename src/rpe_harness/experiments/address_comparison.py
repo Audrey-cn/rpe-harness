@@ -33,6 +33,10 @@ MAX_ARTIFACT_BYTES = 16 * 1024 * 1024
 _MARKER = '.rpe-address-comparison-owned.json'
 
 
+def _arms(plan):
+    return ('native', 'clean') if plan.get('profile') == 'clean' else ARMS
+
+
 def _sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
@@ -212,6 +216,9 @@ def _fixtures(directory):
 
 
 def _prompt(case, helper_python):
+    if 'source_raw' in case:
+        # Strict source documents cannot carry appended prose or hidden answers.
+        return case['source_raw']
     terminal = ('缺少信息或不支持时，用可用工具发布结构化终态：status为needs_context或unsupported，'
         '缺信息时同时列出missing字段名；原生文件工具写terminal.json，专用入口使用其持久终态。'
         '只写自然语言说明不算结构化终态。') if case['category']=='contract_probe' else ''
@@ -223,13 +230,16 @@ def _prompt(case, helper_python):
 
 
 def preregister_address_comparison(root, *, skill_root, hermes_root=None,
-                                   helper_python=None, timeout=120, max_turns=8):
+                                   helper_python=None, timeout=120, max_turns=8,
+                                   profile='address'):
     """Freeze six paired public tasks, dependencies and at most two separate pilots.
 
     ``root`` must be empty or already owned by this exact registration. The real
     original XLSX skill is snapshotted and its existing registered adapter trusted
     only in this owned database; no daily Hermes configuration is modified.
     """
+    if profile not in {'address', 'clean'}:
+        raise ValueError('comparison profile must be address or clean')
     if type(timeout) is not int or not 1 <= timeout <= 180:
         raise ValueError('timeout must be an integer between 1 and 180')
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
@@ -238,8 +248,12 @@ def preregister_address_comparison(root, *, skill_root, hermes_root=None,
     hermes_root = _safe_path(hermes_root or Path.home()/'.hermes/hermes-agent')
     # Preserve venv identity even when its interpreter is a symlink.
     helper_python = str(Path(helper_python or sys.executable).expanduser().absolute())
+    if profile == 'clean' and helper_python != sys.executable:
+        raise ValueError('clean comparison helper must be the launcher interpreter')
     arguments = {'root':str(root),'skill_root':str(skill_root),'hermes_root':str(hermes_root),
                  'helper_python':helper_python,'timeout':timeout,'max_turns':max_turns}
+    if profile == 'clean':
+        arguments['profile'] = profile
     if (root/'preregistration.json').exists():
         plan = _read(root/'preregistration.json')
         if any(plan.get(k)!=v for k,v in arguments.items()):
@@ -262,12 +276,15 @@ def preregister_address_comparison(root, *, skill_root, hermes_root=None,
     binding = catalog.trust_adapter(XLSX_SKILL_ID, snapshot)
     skill = catalog.lookup(XLSX_SKILL_ID, snapshot)
     cases = _fixtures(root/'fixtures')
+    if profile == 'clean':
+        cases = _clean_cases(cases)
+    registered_arms = ('native', 'clean') if profile == 'clean' else ARMS
     trials, pilots = [], []
     for index, case in enumerate(cases):
-        arms = ARMS if index%2==0 else tuple(reversed(ARMS))
+        arms = registered_arms if index%2==0 else tuple(reversed(registered_arms))
         for arm in arms:
             trials.append(_trial(root,case,arm,'formal',helper_python,binding))
-    for arm in ARMS:
+    for arm in registered_arms:
         pilots.append(_trial(root,cases[0],arm,'pilot',helper_python,binding))
     # The observer needs database access inside its sandbox. A separate database
     # per session prevents that access from exposing another arm's run history.
@@ -293,7 +310,46 @@ def preregister_address_comparison(root, *, skill_root, hermes_root=None,
             'native refusal has no RPE state; only observed structured publication can verify it',
             'tool policies differ; compare whole strategies, never attribute gains to one module',
             'no long-term learning or upgraded skills; no repeated formal sessions or post-failure retuning']}
+    if profile == 'clean':
+        from ..integrations.hermes_clean import CLEAN_SOURCE_CONTRACT
+        plan.update(schema_version='rpe.clean-comparison/v1',
+            tool_policy='native terminal/file/skills/tool_search preserved; clean one understanding tool then controller execution',
+            public_contract='clean',
+            public_contract_template=CLEAN_SOURCE_CONTRACT,
+            public_contract_sha256=_sha(CLEAN_SOURCE_CONTRACT.format(helper_python=helper_python).encode()),
+            coverage_limits=[
+                'six fixed public tasks: four strict structured production sources and two directed source-boundary probes',
+                'strict JSON source v1 only; arbitrary free text cannot authorize clean execution',
+                'same original source, public capability legend, files, model configuration, interpreter and skill snapshot',
+                'native and clean tool policies differ; only whole strategies are compared',
+                'source coverage, business correctness and observed execution are separate metrics',
+                'runtime identity chains are recorded checks, not independent third-party cryptographic attestations',
+                'one pilot pair and six formal pairs; all failures and unknown costs retained without replay',
+                'does not replace, rescore or merge any 1.8 observation'])
     return _save(root/'preregistration.json',plan)
+
+
+def _clean_cases(cases):
+    """Public authorizing sources; literal business truth remains controller only."""
+    result = []
+    for case in cases:
+        case = dict(case)
+        if case['case_id'] == 'unsupported-sum':
+            case.update(case_id='free-text-condition', expected_status='needs_context',
+                expected_missing=['structured_current_request'],
+                task='请按地区求金额合计到 output.csv，并且必须按税后口径；保留原文件。',
+                category='contract_probe')
+        if case['case_id'] == 'free-text-condition':
+            case['source_raw'] = case['task']
+        else:
+            execution = {'input_path':case['input_name'], 'output_path':case['output_name'],
+                         **case.get('parameters', {})}
+            if case['case_id'] == 'missing-keys':
+                execution.update(delimiter=',', encoding='utf-8', keep='first')
+            case['source_raw'] = _json({'capability':case['capability'],
+                'constraints':case['constraints'], 'execution':execution})
+        result.append(case)
+    return result
 
 
 def _trial(root, case, arm, phase, helper_python, binding):
@@ -610,7 +666,11 @@ def _public_gate(gate):
     result = {}
     for key in ('verified','harness_verified','rejection_verified','status','run_id','state_id','capability',
                 'catalog_sha256','state_sha256','handoff_sha256','handoff_bytes','rejection_reason',
-                'task_context_sha256','task_context_bytes','context_minimized','invocation_status','interpreter_sha256'):
+                'task_context_sha256','task_context_bytes','context_minimized','invocation_status','interpreter_sha256',
+                'source_state_id','requirements_sha256','source_sha256','original_source_sha256',
+                'execution_kind','controller_id','understand_receipt_id','requirements_verified',
+                'native_understanding_calls','controller_executions','understanding_api_requests',
+                'reporting_api_requests','controller_receipt_id','source_ref','source_coverage_verified'):
         value = gate.get(key)
         if type(value) in (str,int,bool) or value is None:
             result[key] = value
@@ -665,14 +725,17 @@ def _observe(plan,trial,runner):
         source = read_regular_file(workspace/trial['input_name'],max_bytes=MAX_ARTIFACT_BYTES)
         if _sha(source)!=trial['input_sha256']:
             raise ValueError('frozen_workspace_input_changed')
-        kwargs = {'tool_enabled':trial['arm']=='address','owner_root':root/'sessions'/trial['trial_id'],
+        clean = plan.get('profile') == 'clean'
+        kwargs = {'tool_enabled':trial['arm']!='native','owner_root':root/'sessions'/trial['trial_id'],
             'timeout':plan['timeout'],'hermes_root':plan['hermes_root'],
-            'entry_mode':'address' if trial['arm']=='address' else 'optional',
+            'entry_mode':trial['arm'] if trial['arm']!='native' else 'optional',
             'max_task_attempts':1,'max_turns':plan['max_turns'],'catalog_root':plan['catalog_root'],
             'skill_snapshot_id':plan['skill_snapshot_id'],'context_sources':[],
             'read_isolation_root':root,'deny_read_roots':_denied(plan,trial)}
         if trial['arm']=='native':
             kwargs['preserve_native_tool_search'] = True
+        if clean:
+            kwargs['public_contract'] = 'clean'
         try:
             result = runner((workspace/'prompt.txt').read_text(),workspace,trial['db'],**kwargs)
         except SessionObservationError as error:
@@ -688,10 +751,23 @@ def _observe(plan,trial,runner):
             actual_prompt_sha256=result.get('prompt_sha256'),
             process_cleanup=result.get('process_cleanup'))
         record.update(score_address_artifact(plan,trial))
-        if trial['arm']=='address':
-            from ..integrations.hermes_address import evaluate_address_session
-            gate = evaluate_address_session(result,trial['db'],workspace,catalog_root=plan['catalog_root'])
-            record['contract_faithful'] = _address_contract(plan,trial,gate)
+        if trial['arm'] in {'address','clean'}:
+            if trial['arm']=='clean':
+                from ..integrations.hermes_clean import evaluate_clean_session
+                gate = evaluate_clean_session(result,trial['db'],workspace,catalog_root=plan['catalog_root'])
+                proof = _clean_source_proof(plan,trial,result,gate)
+                record.update(source_proof=proof,source_coverage_verified=proof['coverage_verified'],
+                    controller_execution_verified=gate.get('execution_kind')=='controller'
+                        and gate.get('verified') is True,
+                    native_invocation_verified=False)
+                record['contract_faithful'] = bool(proof['coverage_verified']
+                    and (gate.get('verified') if trial['category']=='production' else
+                         gate.get('rejection_verified') and gate.get('rejection_reason')==case['expected_status']
+                         and _missing_fields(gate.get('missing'))==case['expected_missing']))
+            else:
+                from ..integrations.hermes_address import evaluate_address_session
+                gate = evaluate_address_session(result,trial['db'],workspace,catalog_root=plan['catalog_root'])
+                record['contract_faithful'] = _address_contract(plan,trial,gate)
             # A persisted rejection is the address structured terminal. A file is
             # optional; absence of business artifacts and preserved input remain mandatory.
             if trial['category']=='contract_probe' and record['contract_faithful']:
@@ -700,7 +776,10 @@ def _observe(plan,trial,runner):
         else:
             gate = evaluate_native_address_session(result,plan,trial)
             record['contract_faithful'] = bool(gate.get('verified') and record['business_correct'])
-        observed = gate.get('rejection_verified') if trial['category']=='contract_probe' and trial['arm']=='address' else gate.get('verified')
+            if clean:
+                record.update(source_coverage_verified=None,controller_execution_verified=False,
+                              native_invocation_verified=gate.get('verified') is True)
+        observed = gate.get('rejection_verified') if trial['category']=='contract_probe' and trial['arm']!='native' else gate.get('verified')
         record.update(gate=_public_gate(gate),invocation_evidence=observed is True)
         record['state_evidence'] = {k:gate[k] for k in ('state_id','catalog_sha256','state_sha256','handoff_sha256')
                                     if isinstance(gate.get(k),str)} or None
@@ -716,6 +795,10 @@ def _observe(plan,trial,runner):
         record['comparable'] = bool(result.get('original_prompt_sha256')==trial['prompt_sha256']
             and result.get('prompt_sha256')==trial['prompt_sha256']
             and result.get('catalog_snapshot_id')==plan['skill_snapshot_id'] and _observed_identity(public_identity))
+        if clean:
+            record['public_contract_sha256'] = result.get('public_contract_sha256')
+            record['comparable'] = bool(record['comparable']
+                and result.get('public_contract_sha256')==plan['public_contract_sha256'])
         record['accepted'] = bool(host_ok and record['comparable'] and record['business_correct']
             and record['contract_faithful'] and record['invocation_evidence']
             and (trial['category']=='contract_probe' or record['product_oracle_passed']))
@@ -730,9 +813,45 @@ def _observe(plan,trial,runner):
     return record
 
 
+def _clean_source_proof(plan,trial,result,gate):
+    """Read and regenerate the trusted ledger, never accept a model's coverage claim."""
+    from ..requirements import SourceStateStore, source_document
+    raw = (Path(trial['workspace'])/'prompt.txt').read_text()
+    proof = {'coverage_verified':False, 'source_sha256':_sha(raw.encode()),
+             'source':None, 'requirements':[], 'requirements_sha256':None}
+    try:
+        if gate.get('verified') is True:
+            document = SourceStateStore(trial['db']).resolve(
+                gate.get('source_state_id') or gate['state_id'],session_id=result['session_id'],
+                catalog_sha256=gate['catalog_sha256'])
+            source = document['source']
+            regenerated = source_document(raw,session_id=result['session_id'],source_ref=source['source_ref'])
+            valid = (source==regenerated['source'] and source['raw']==raw
+                and document['requirements']==regenerated['requirements']
+                and document['requirements_sha256']==regenerated['requirements_sha256']
+                and gate.get('requirements_sha256')==document['requirements_sha256'])
+        else:
+            # Refusal has no executable state. Its provenance is the runtime gate
+            # binding the exact current source; the portable ledger is regenerated.
+            regenerated = source_document(raw,session_id=result['session_id'],
+                source_ref=gate.get('source_ref') or 'user_prompt:'+_sha(raw.encode()))
+            source = regenerated['source']
+            valid = (gate.get('rejection_verified') is True
+                and gate.get('source_sha256',gate.get('original_source_sha256'))==source['source_sha256']
+                and gate.get('requirements_sha256')==regenerated['requirements_sha256'])
+        # Only the preregistered public current source may leave this function,
+        # including a failed comparison against another state document.
+        proof.update(source=regenerated['source'],requirements=regenerated['requirements'],
+            requirements_sha256=regenerated['requirements_sha256'],coverage_verified=bool(valid))
+    except (OSError,ValueError,TypeError,KeyError,sqlite3.Error):
+        pass
+    return proof
+
+
 def summarize_address_comparison(root):
     """Read compact evidence and include incomplete reservations as unknown attempts."""
     plan = _load(root)
+    arms = _arms(plan)
     ledger = PhaseLedger(Path(plan['root'])/'ledger')
     phases,records = ledger.records(),[]
     known = {t['trial_id']:t for t in plan['sessions']+plan['pilots']}
@@ -756,7 +875,7 @@ def summarize_address_comparison(root):
     formal = [r for r in records if r['phase']=='formal']
     identities = {json.dumps(r['model_identity'],sort_keys=True) for r in records if r.get('model_identity')}
     by_arm = {}
-    for arm in ARMS:
+    for arm in arms:
         rows = [r for r in formal if r['arm']==arm]
         by_arm[arm] = {**_score_counts(rows),'formal_attempts':len(rows),
             'production_artifact_successes':sum(r.get('accepted') is True and r['category']=='production' for r in rows),
@@ -771,12 +890,12 @@ def summarize_address_comparison(root):
     pairs = []
     for case in plan['cases']:
         rows = {r['arm']:r for r in formal if r['case_id']==case['case_id']}
-        comparable = bool(set(rows)==set(ARMS) and all(r.get('comparable') is True for r in rows.values())
-            and rows['native'].get('model_identity')==rows['address'].get('model_identity'))
+        comparable = bool(set(rows)==set(arms) and all(r.get('comparable') is True for r in rows.values())
+            and rows['native'].get('model_identity')==rows[arms[1]].get('model_identity'))
         pairs.append({'case_id':case['case_id'],'category':case['category'],
-            'observed_arms':[arm for arm in ARMS if arm in rows],'comparable':comparable,
-            **{arm+'_accepted':rows[arm].get('accepted') is True if arm in rows else None for arm in ARMS}})
-    return {'schema_version':'rpe.address-comparison-summary/v1','fingerprint':plan['sha256'],
+            'observed_arms':[arm for arm in arms if arm in rows],'comparable':comparable,
+            **{arm+'_accepted':rows[arm].get('accepted') is True if arm in rows else None for arm in arms}})
+    summary = {'schema_version':'rpe.address-comparison-summary/v1','fingerprint':plan['sha256'],
         **_score_counts(formal),
         'metric_definitions':{
             'production_business_correct':'public business truth and preserved source, independent of host/tool evidence',
@@ -798,6 +917,17 @@ def summarize_address_comparison(root):
         'costs':summarize_phases(phases),'formal_costs':summarize_phases([p for p in phases if p['phase']=='formal']),
         'pilot_costs':summarize_phases([p for p in phases if p['phase']=='pilot']),
         'coverage_limits':plan['coverage_limits'],'tool_policy':plan['tool_policy'],'records':records}
+    if plan.get('profile') == 'clean':
+        summary.update(schema_version='rpe.clean-comparison-summary/v1', profile='clean',
+            source_coverage_verified=sum(r.get('source_coverage_verified') is True for r in formal),
+            controller_execution_verified=sum(r.get('controller_execution_verified') is True for r in formal),
+            native_invocation_verified=sum(r.get('native_invocation_verified') is True for r in formal),
+            runtime_identity_attestation='recorded_runtime_checks_only')
+        summary['metric_definitions'].update(
+            source_coverage_verified='clean runtime state ledger regenerated from complete original source; distinct from business truth',
+            controller_execution_verified='clean controller receipt checked against real understanding call and execution oracle',
+            native_invocation_verified='observed native tool execution/publication; never imputed from a clean controller receipt')
+    return summary
 
 
 def _score_counts(records):
@@ -922,7 +1052,134 @@ def export_address_evidence(root, destination):
             if verified:
                 (folder/name).write_bytes(raw)
         _save(folder/'manifest.json',{'artifacts':artifacts})
+    if plan.get('profile') == 'clean':
+        from ..requirements import source_document
+        documents = []
+        for case in plan['cases']:
+            identity = 'public:'+case['case_id']
+            document = source_document(case['source_raw'],session_id=identity,source_ref=identity)
+            documents.append({'case_id':case['case_id'], **document})
+        _save(destination/'source-requirements.json',{
+            'schema_version':'rpe.clean-public-requirements/v1','documents':documents,
+            'runtime_identity_attestation':'recorded_runtime_checks_only'})
     return summary
+
+
+def _public_business_correct(case, raw):
+    """Portable literal business oracle; no original home, DB, skill or process."""
+    if 'expected_rows' in case:
+        actual = list(csv.reader(io.StringIO(raw.decode('utf-8'),newline=''),
+            delimiter=case['parameters']['delimiter'],strict=True))
+        return exact_json(actual,case['expected_rows'])
+    if 'expected_text' in case:
+        return raw==case['expected_text'].encode('utf-8')
+    return exact_json(json.loads(raw,object_pairs_hook=_unique_pairs),case['expected'])
+
+
+def _evidence_file(root, *parts):
+    path = _safe_path(root.joinpath(*parts))
+    if not path.is_relative_to(root):
+        raise ValueError('public_evidence_path_escaped')
+    return path
+
+
+def verify_clean_evidence(destination):
+    """Recompute public source/coverage/business checks after private-state cleanup.
+
+    Recorded runtime identities remain runtime attestations; hashes do not turn
+    them into third-party cryptographic evidence or replay private provider calls.
+    """
+    from ..requirements import source_document
+    result = {'schema_version':'rpe.clean-public-verification/v1','verified':False,
+        'source_documents_verified':0,'business_artifacts_verified':0,
+        'runtime_source_proofs_verified':0,'runtime_identity_attestation':'recorded_runtime_checks_only',
+        'errors':[]}
+    try:
+        root = _safe_path(destination)
+        plan,summary = _read(root/'preregistration.json'),_read(root/'summary.json')
+        if plan.get('profile')!='clean' or summary.get('profile')!='clean':
+            raise ValueError('not_clean_public_evidence')
+        if summary['fingerprint']!=plan['controller_registration_sha256']:
+            raise ValueError('registration_summary_link_changed')
+        costs = _read(root/'cost-phases.json')['records']
+        if summarize_phases(costs)!=summary['costs']:
+            raise ValueError('cost_summary_changed')
+        documents = _read(root/'source-requirements.json')['documents']
+        cases = {case['case_id']:case for case in plan['cases']}
+        if len(cases)!=6 or len(documents)!=len(cases):
+            raise ValueError('public_source_coverage_incomplete')
+        seen = set()
+        for document in documents:
+            case_id = document['case_id']
+            if case_id in seen or case_id not in cases:
+                raise ValueError('public_source_identity_changed')
+            seen.add(case_id)
+            case = cases[case_id]
+            identity = 'public:'+case_id
+            fresh = source_document(case['source_raw'],session_id=identity,source_ref=identity)
+            if {key:value for key,value in document.items() if key!='case_id'}!=fresh:
+                raise ValueError('public_requirement_ledger_changed')
+            prompt = read_regular_file(_evidence_file(root,'prompts',case_id+'.txt'),max_bytes=1048576)
+            if prompt!=case['source_raw'].encode():
+                raise ValueError('public_source_prompt_changed')
+            source_name = next(item['name'] for item in _read(root/'public-files.json')['files']
+                if item['kind']=='fixture' and item['sha256']==case['input_sha256'])
+            if _sha(read_regular_file(_evidence_file(root,'fixtures',source_name),max_bytes=MAX_ARTIFACT_BYTES))!=case['input_sha256']:
+                raise ValueError('public_fixture_changed')
+            result['source_documents_verified'] += 1
+        trials = {trial['trial_id']:trial for trial in plan['sessions']+plan['pilots']}
+        if len(summary['records'])!=len(costs) or {r['trial_id'] for r in summary['records']}!={r['attempt_id'] for r in costs}:
+            raise ValueError('cost_attempt_coverage_changed')
+        for record in summary['records']:
+            trial = trials[record['trial_id']]
+            case = cases[trial['case_id']]
+            if record.get('fingerprint',summary['fingerprint'] if record['status']=='incomplete' else None)!=summary['fingerprint']:
+                raise ValueError('record_registration_link_changed')
+            if trial['prompt_sha256']!=_sha(case['source_raw'].encode()):
+                raise ValueError('trial_source_link_changed')
+            proof = record.get('source_proof')
+            if record.get('source_coverage_verified') is True:
+                if not isinstance(proof,dict) or proof.get('coverage_verified') is not True:
+                    raise ValueError('runtime_source_coverage_missing')
+                source = proof['source']
+                fresh = source_document(case['source_raw'],session_id=record['session_id'],
+                    source_ref=source['source_ref'])
+                if (source!=fresh['source'] or proof['requirements']!=fresh['requirements']
+                    or proof['requirements_sha256']!=fresh['requirements_sha256']
+                    or proof['source_sha256']!=fresh['source']['source_sha256']
+                    or record['gate']['requirements_sha256']!=fresh['requirements_sha256']):
+                    raise ValueError('runtime_requirement_ledger_changed')
+                result['runtime_source_proofs_verified'] += 1
+            folder = _evidence_file(root,'artifacts',trial['trial_id'])
+            manifest = _read(folder/'manifest.json')
+            exported_business = False
+            for artifact in manifest['artifacts']:
+                if artifact['name'] not in {case['output_name'],'terminal.json'}:
+                    raise ValueError('unapproved_public_artifact')
+                path = _evidence_file(root,'artifacts',trial['trial_id'],artifact['name'])
+                if artifact['raw_exported'] is not True:
+                    if path.exists():
+                        raise ValueError('unverified_artifact_bytes_exported')
+                    continue
+                raw = read_regular_file(path,max_bytes=MAX_ARTIFACT_BYTES)
+                if _sha(raw)!=artifact['sha256'] or len(raw)!=artifact['size_bytes']:
+                    raise ValueError('public_artifact_changed')
+                if case['category']=='production' and artifact['name']==case['output_name']:
+                    if not _public_business_correct(case,raw):
+                        raise ValueError('public_business_truth_failed')
+                    exported_business = True
+                    result['business_artifacts_verified'] += 1
+                elif case['category']=='contract_probe' and artifact['name']=='terminal.json':
+                    if _terminal_value(raw,case) is None:
+                        raise ValueError('public_terminal_changed')
+                else:
+                    raise ValueError('public_artifact_category_changed')
+            if case['category']=='production' and record.get('business_correct') is True and not exported_business:
+                raise ValueError('claimed_business_artifact_missing')
+        result['verified'] = True
+    except (OSError,ValueError,TypeError,KeyError,StopIteration,UnicodeError,csv.Error) as error:
+        result['errors'].append(str(error) if isinstance(error,ValueError) else type(error).__name__)
+    return result
 
 
 def _export_bytes(path,name):
@@ -937,7 +1194,7 @@ def _export_bytes(path,name):
         return None,metadata
 
 
-def main(argv=None):
+def main(argv=None, *, profile='address'):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command',required=True)
     register = sub.add_parser('preregister')
@@ -957,15 +1214,25 @@ def main(argv=None):
     export = sub.add_parser('export')
     export.add_argument('--root',required=True)
     export.add_argument('--destination',required=True)
+    if profile == 'clean':
+        verify = sub.add_parser('verify')
+        verify.add_argument('--destination',required=True)
     arguments = vars(parser.parse_args(argv))
     command = arguments.pop('command')
+    if profile == 'clean' and command not in {'preregister','verify'}:
+        if _load(arguments['root']).get('profile') != 'clean':
+            raise ValueError('clean command requires a clean registration')
     if command=='preregister':
+        if profile == 'clean':
+            arguments['profile'] = 'clean'
         result = preregister_address_comparison(**arguments)
     elif command=='run':
         result = run_address_comparison(**arguments)
     elif command=='summary':
         result = summarize_address_comparison(**arguments)
-    else:
+    elif command=='export':
         result = export_address_evidence(**arguments)
+    else:
+        result = verify_clean_evidence(**arguments)
     print(_json(result))
-    return 0
+    return 1 if command=='verify' and not result['verified'] else 0
