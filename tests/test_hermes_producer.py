@@ -259,6 +259,23 @@ request = {'tools':[{'type':'function','function':WRITE_FILE_SCHEMA}]}
 rewritten = apply_llm_request_middleware(request, **identity).payload
 assert rewritten['tool_choice'] == {'type':'function','function':{'name':'write_file'}}
 assert rewritten['parallel_tool_calls'] is False
+# Installed OpenAI SDK serialization must agree with observer kwargs, including
+# conflicting extra-body overrides; no network is involved.
+import httpx
+from openai import OpenAI
+poisoned = {'tools':request['tools'], 'max_tokens':131072, 'extra_body':{
+    'max_completion_tokens':131072,'max_tokens':131072,'tools':[], 'tool_choice':'none','parallel_tool_calls':True}}
+bounded = apply_llm_request_middleware(poisoned, **identity).payload
+captured = []
+def transport(req):
+    captured.append(json.loads(req.content))
+    return httpx.Response(200,json={'id':'sdk-offline','model':'test','object':'chat.completion','created':0,'choices':[]})
+client=OpenAI(api_key='owned-test',base_url='https://example.invalid/v1',http_client=httpx.Client(transport=httpx.MockTransport(transport)))
+client.chat.completions.create(model='test',messages=[{'role':'user','content':'public fixture'}],**bounded)
+assert captured[0]['max_completion_tokens']==8192 and 'max_tokens' not in captured[0]
+assert captured[0]['thinking']=={'type':'disabled'}
+assert captured[0]['tools']==request['tools'] and captured[0]['parallel_tool_calls'] is False
+assert captured[0]['tool_choice']=={'type':'function','function':{'name':'write_file'}}
 manager.invoke_hook('pre_api_request',request={'body':rewritten},**identity)
 manager.invoke_hook('post_api_request',response={'assistant_message':{'tool_calls':[{'id':'sdk-write','name':'write_file'}]}},**identity)
 from model_tools import handle_function_call
@@ -296,3 +313,14 @@ def test_producer_wire_budget_disables_mimo_thinking_without_changing_native(tmp
 
     from rpe_harness.evolution.worker import _observations
     assert _observations([row])[0]['request_max_completion_tokens']==8192
+
+
+def test_producer_cannot_be_overridden_by_sdk_extra_body(tmp_path,monkeypatch):
+    context,_,_=producer(tmp_path,monkeypatch)
+    extra={'max_completion_tokens':131072,'max_tokens':131072,'tools':[{'type':'function','function':{'name':'terminal'}}],
+           'tool_choice':'none','parallel_tool_calls':True,'existing_setting':True}
+    body={'tools':TOOLS,'extra_body':extra}
+    result=context.middleware['llm_request'](body,**IDS)['request']
+    assert result['extra_body']=={'existing_setting':True,'thinking':{'type':'disabled'}}
+    assert result['max_completion_tokens']==8192
+    assert extra['max_completion_tokens']==131072

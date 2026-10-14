@@ -579,6 +579,9 @@ class _ProducerPolicy:
             extra = rewritten.get('extra_body') or {}
             if not isinstance(extra, dict):
                 raise ValueError('producer extra_body must be an object')
+            extra = dict(extra)
+            for controlled in ('max_tokens', 'max_completion_tokens', 'tools', 'tool_choice', 'parallel_tool_calls'):
+                extra.pop(controlled, None)
             rewritten['extra_body'] = {**extra, 'thinking': {'type': 'disabled'}}
             rewritten.pop('max_tokens', None)
             rewritten['max_completion_tokens'] = 8192
