@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="157" time="86.476" timestamp="2026-10-15T14:39:24.807028+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_quote_contract" name="test_review_delimiter_schema_uses_public_character_contract" time="0.076" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[,-True]" time="0.008" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[\t-True]" time="0.008" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[comma-False]" time="0.004" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[TAB-False]" time="0.004" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[\\t-False]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[\n-False]" time="0.004" /><testcase classname="tests.test_review_quote_contract" name="test_delimiter_values_are_validated_without_rewriting_draft[\x00-False]" time="0.004" /><testcase classname="tests.test_review_quote_contract" name="test_request_anchors_are_exact_bounded_and_bound_to_whole_source" time="0.001" /><testcase classname="tests.test_review_quote_contract" name="test_addressed_request_is_rendered_without_rewriting_model_draft" time="0.207" /><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[unknown]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[paraphrase]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[null]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[source_ref]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[raw_change]" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_preserves_fact_gate_and_live_revalidation" time="0.027" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_never_bypasses_source_or_fact_checks[field]" time="0.011" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_never_bypasses_source_or_fact_checks[source_ref]" time="0.010" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_never_bypasses_source_or_fact_checks[session]" time="0.006" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_never_bypasses_source_or_fact_checks[ref]" time="0.006" /><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_never_bypasses_source_or_fact_checks[projection_ref]" time="0.006" /><testcase classname="tests.test_review_quote_contract" name="test_literal_paraphrase_remains_blocked_without_an_address" time="0.003" /><testcase classname="tests.test_review_quote_contract" name="test_legacy_context_projection_remains_revalidatable" time="0.004" /><testcase classname="tests.test_review_quote_contract" name="test_model_payload_publishes_exact_anchors_and_both_citation_forms" time="0.059" /><testcase classname="tests.test_review_quote_contract" name="test_legacy_consistent_dual_quote_rows_remain_valid_without_rewriting" time="0.008" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys0-True]" time="0.058" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys1-True]" time="0.059" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys2-False]" time="0.063" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys3-False]" time="0.064" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys4-True]" time="0.063" /><testcase classname="tests.test_review_quote_contract" name="test_model_quote_schema_oneof_required_semantics[keys5-True]" time="0.059" /><testcase classname="tests.test_review_quote_contract" name="test_legacy_consistent_attachment_dual_quote_row_remains_valid" time="0.017" /><testcase classname="tests.test_hermes_review_finish" name="test_durable_proposal_finishes_locally_without_an_api_or_approval[False]" time="0.074" /><testcase classname="tests.test_hermes_review_finish" name="test_durable_proposal_finishes_locally_without_an_api_or_approval[True]" time="0.070" /><testcase classname="tests.test_hermes_review_finish" name="test_missing_durable_receipt_cannot_finish_review[post_tool_call]" time="0.069" /><testcase classname="tests.test_hermes_review_finish" name="test_missing_durable_receipt_cannot_finish_review[rpe_review_proposed]" time="0.072" /><testcase classname="tests.test_hermes_review_finish" name="test_missing_durable_receipt_cannot_finish_review[rpe_review_arguments_received]" time="0.076" /><testcase classname="tests.test_hermes_review_finish" name="test_missing_durable_receipt_cannot_finish_review[rpe_review_arguments_checked]" time="0.107" /><testcase classname="tests.test_hermes_review_finish" name="test_missing_durable_receipt_cannot_finish_review[rpe_skill_rpc_received]" time="0.071" /><testcase classname="tests.test_hermes_review_finish" name="test_mismatched_native_tail_or_proposal_cannot_finish_review[tool_id]" time="0.070" /><testcase classname="tests.test_hermes_review_finish" name="test_mismatched_native_tail_or_proposal_cannot_finish_review[api_id]" time="0.071" /><testcase classname="tests.test_hermes_review_finish" name="test_mismatched_native_tail_or_proposal_cannot_finish_review[tail_role]" time="0.072" /><testcase classname="tests.test_hermes_review_finish" name="test_mismatched_native_tail_or_proposal_cannot_finish_review[proposal_document]" time="0.070" /><testcase classname="tests.test_hermes_review_finish" name="test_active_review_and_missing_callback_cannot_signal_success" time="0.058" /><testcase classname="tests.test_hermes_review_finish" name="test_invalid_earlier_multicall_response_is_never_excused_by_a_proposal" time="0.075" /><testcase classname="tests.test_hermes_review_finish" name="test_installed_hermes_native_turn_stops_after_proposal_without_second_provider_request" time="22.880" /><testcase classname="tests.test_hermes_review_finish" name="test_installed_cold_review_finishes_after_four_native_provider_requests[skill_review0]" time="23.249" /><testcase classname="tests.test_hermes_review_finish" name="test_adapter_missing_terminal_status_keeps_native_compression_path" time="0.001" /><testcase classname="tests.test_hermes_review_finish" name="test_adapter_invalid_terminal_value_cannot_stop_successfully[False]" time="0.000" /><testcase classname="tests.test_hermes_review_finish" name="test_adapter_invalid_terminal_value_cannot_stop_successfully[invalid1]" time="0.000" /><testcase classname="tests.test_hermes_review_finish" name="test_adapter_invalid_terminal_value_cannot_stop_successfully[invalid2]" time="0.000" /><testcase classname="tests.test_hermes_review_finish" name="test_rejected_earlier_discovery_never_becomes_verified_after_later_proposal" time="0.150" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_proves_real_helper_success_without_shell_suffix_parser" time="0.244" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_rejects_failed_helper_even_when_shell_or_print_claims_success[]" time="0.237" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_rejects_failed_helper_even_when_shell_or_print_claims_success[; echo &quot;exit=0&quot;; wc -c output.json]" time="0.236" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[wrong_helper]" time="0.219" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[wrong_interpreter]" time="0.222" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[wrong_args]" time="0.225" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[bypass]" time="0.039" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[startup_injection]" time="0.048" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[output_symlink]" time="0.211" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code[input_symlink]" time="0.227" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_binds_final_bytes_without_claiming_exclusive_writer" time="0.236" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_exit_rejects_overlapping_native_calls" time="0.234" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_receipt_rejects_aliases_inode_replacement_and_transient_source_changes[input_hardlink]" time="0.225" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_receipt_rejects_aliases_inode_replacement_and_transient_source_changes[replace_output_inode]" time="0.253" /><testcase classname="tests.test_native_process_evidence" name="test_kernel_receipt_rejects_aliases_inode_replacement_and_transient_source_changes[transient_input_rename]" time="0.223" /><testcase classname="tests.test_native_process_evidence" name="test_native_file_call_overlap_and_duplicate_pre_hook_do_not_leave_observer_threads" time="0.210" /><testcase classname="tests.test_native_process_evidence" name="test_unsupported_kernel_observer_fails_closed_without_affecting_other_native_tools" time="0.030" /><testcase classname="tests.test_native_process_evidence" name="test_observer_drains_registered_kernel_exit_before_joining_after_tool_returns" time="0.234" /><testcase classname="tests.test_review_native_evidence" name="test_native_receipt_requires_actual_new_regular_bytes" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_native_receipt_rejects_concurrent_writes_and_symlinks" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_native_receipt_records_rewrite_even_when_bytes_are_identical" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_native_receipt_does_not_call_failed_tool_io_verified" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_config_rejects_arbitrary_paths" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_cold_configuration_cannot_expand_to_arbitrary_snapshot_paths" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_native_prompt_publishes_original_anchors_and_support_boundary" time="0.001" /><testcase classname="tests.test_review_native_evidence" name="test_native_trace_resolves_explicit_anchor_but_never_support_text" time="0.000" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_missing_observations_has_explicit_diagnostic" time="0.000" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[env-True]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[cd_env-True]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_cwd-False]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_env-False]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[shell_tail-False]" time="0.005" /><testcase classname="tests.test_review_native_evidence" name="test_strict_gate_accepts_actual_native_io_and_detects_final_tamper" time="0.005" /><testcase classname="tests.test_review_native_evidence" name="test_strict_gate_rejects_mention_only_and_duplicate_writes[commands0]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_strict_gate_rejects_mention_only_and_duplicate_writes[commands1]" time="0.006" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[None]" time="0.489" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[other_output]" time="0.486" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[extra_code]" time="0.481" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[substitution]" time="0.483" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[wrong_sheet]" time="0.482" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[stream_tamper]" time="0.337" /><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[view_after_execute]" time="0.488" /><testcase classname="tests.test_review_native_evidence" name="test_installed_native_file_terminal_and_cold_restore_under_real_sandbox" time="2.584" /><testcase classname="tests.test_review_native_evidence" name="test_v113_requires_kernel_receipt_even_when_legacy_native_command_was_accepted" time="0.336" /><testcase classname="tests.test_review_native_evidence" name="test_v113_accepts_authenticated_kernel_exit_and_correct_original_helper_output" time="0.636" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[forged_exit]" time="0.618" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_call]" time="0.645" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_receipt_args]" time="0.626" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_input]" time="0.552" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_output]" time="0.619" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_config]" time="0.547" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[wrong_key]" time="0.618" /><testcase classname="tests.test_review_native_evidence" name="test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings[business_overwrite]" time="0.629" /><testcase classname="tests.test_review_native_evidence" name="test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal" time="3.125"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 87, in &lt;module&gt;&#10;      raise SystemExit(bootstrap.main(['--help']))&#10;                       ~~~~~~~~~~~~~~^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py&quot;, line 307, in main&#10;      return importlib.import_module(&quot;hermes_cli.main&quot;).main()&#10;             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^&#10;    File &quot;&lt;string&gt;&quot;, line 61, in smoke&#10;      assert json.loads(Path('output.json').read_text())==json.loads(sys.argv[2])&#10;                                                                     ~~~~~~~~^^^&#10;  IndexError: list index out of range&#10;  &#10;  &#10;assert False is True">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/package-final-keyed/test_v113_session_co...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b0245c0&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/package-final-keyed/test_v113_session_constructor_0')
+
+    @pytest.mark.skipif(os.environ.get('RPE_RUN_INSTALLED_NATIVE_SMOKE') != '1',
+                        reason='explicit provider-free installed native session smoke')
+    def test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal(helper_execution_protocol, monkeypatch, tmp_path):
+        """Real launcher/sandbox/bootstrap/tools; only CLI provider dispatch is replaced.
+    
+        Direct native hooks use explicit smoke identities. This is runtime readiness,
+        not an API/model success result or a formal comparison trial.
+        """
+        from rpe_harness.integrations import hermes_session as launcher
+        plan, trial, _session, _source, _command = helper_execution_protocol
+        workspace = Path(trial['workspace']); (workspace/'output.json').unlink()
+        case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
+        original_popen = subprocess.Popen
+        program = r'''import importlib.util,json,os,shlex,socket,subprocess,sys
+    from pathlib import Path
+    assert importlib.util.find_spec('rpe_harness') is None,'Harness preloaded at file entry'
+    initial_pythonpath=os.environ.get('PYTHONPATH')
+    expected_json=json.loads(sys.argv[2])
+    key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'])
+    def deny_network(self,address): raise AssertionError('network disabled in keyed native smoke')
+    socket.socket.connect=deny_network
+    spec=importlib.util.spec_from_file_location('actual_keyed_file_bootstrap',sys.argv[1])
+    bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+    
+    def smoke():
+     from rpe_harness.integrations.hermes import register,HostEventStore
+     from rpe_harness.integrations import hermes_native_process as process
+     from tools.terminal_tool import terminal_tool
+     assert process._SIGNING_KEY is not None
+     assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+     assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+     assert os.environ.get('PYTHONPATH')==initial_pythonpath
+     assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+     try: os.fstat(key_fd)
+     except OSError: pass
+     else: raise AssertionError('key descriptor remains open')
+     probe=subprocess.run([sys.executable,'-B','-c',
+      "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],capture_output=True,text=True,timeout=5)
+     assert probe.returncode==0,probe.stderr
+     config_path=Path(os.environ['RPE_HERMES_NATIVE_EXECUTION_CONFIG'])
+     config=json.loads(config_path.read_text())
+     key_path=config_path.parent/'native-execution-auth.key'
+     for mode in ('rb','wb'):
+      try:
+       with key_path.open(mode): pass
+      except PermissionError: pass
+      else: raise AssertionError('native session can access protected receipt key')
+     class Context:
+      def __init__(self): self.hooks={}
+      def register_hook(self,n,c): self.hooks[n]=c
+     context=Context(); register(context)
+     serial=0
+     def invoke(command):
+      nonlocal serial
+      serial+=1
+      ids=dict(session_id='native-process-installed',task_id='native-process-smoke',turn_id='turn',api_request_id='api',tool_call_id=str(serial),tool_name='terminal',args={'command':command})
+      context.hooks['pre_tool_call'](**ids)
+      raw=terminal_tool(command,task_id='native-process-smoke',timeout=20)
+      context.hooks['post_tool_call'](**ids,status='ok',result=raw)
+      return json.loads(raw)
+     argv=[config['helper_python'],'-B',config['helper_path'],config['input_name'],'--json','--sheet',config['parameters']['sheet']]
+     command=shlex.join(argv)+' &gt; output.json'
+     success=invoke(command+'; echo "exit=$?"; wc -c output.json')
+     Path('output.json').unlink()
+     failure=invoke('(ulimit -f 0; '+command+')')
+     Path('output.json').unlink()
+     masked=invoke('(ulimit -f 0; '+command+'); echo exit=0; wc -c output.json')
+     Path('output.json').unlink()
+     injected=Path('injected'); injected.mkdir()
+     (injected/'sitecustomize.py').write_text('import os\nos._exit(0)\n')
+     injection=invoke('PYTHONPATH='+shlex.quote(str(injected.resolve()))+' '+command+'; echo exit=0')
+     Path('output.json').unlink()
+     final=invoke(command)
+     assert final['exit_code']==0,final
+     assert json.loads(Path('output.json').read_text())==expected_json
+     events=HostEventStore(os.environ['RPE_HERMES_DB']).list('native-process-installed')
+     rows=[event for event in events if event['kind']=='native_helper_process_observation']
+     assert len(rows)==5,rows
+     assert rows[0]['verified'] is True and rows[0]['process_returncode']==0,rows
+     assert rows[1]['verified'] is False and rows[1]['process_returncode']!=0,rows
+     assert rows[2]['verified'] is False and rows[2]['process_returncode']!=0,rows
+     assert rows[3]['verified'] is False,rows
+     assert rows[4]['verified'] is True and rows[4]['process_returncode']==0,rows
+     assert success['exit_code']==0 and failure['exit_code']!=0 and masked['exit_code']==0, [success,failure,masked]
+     for row in rows:
+      signature=row['process_receipt_hmac_sha256']
+      body={k:v for k,v in row.items() if k not in {'kind','received_at','source_event_id','ingest_event_id','process_receipt_hmac_sha256'}}
+      assert signature==process.receipt_signature(body,process._SIGNING_KEY),row
+     assert 'rpe_harness.controller' not in sys.modules
+     summary={'provider_calls':0,'native_success':True,'native_failure':True,'masked_failure_rejected':True,'startup_injection_rejected':True,'key_read_write_denied':True,'key_fd_consumed':True,'signed_receipts':5,'business_oracle_matched':True,'child_harness_importable':False,'kernel_returncodes':[r.get('process_returncode') for r in rows],'shell_returncodes':[success['exit_code'],failure['exit_code'],masked['exit_code'],injection['exit_code']]}
+     Path('native-process-smoke-summary.json').write_text(json.dumps(summary))
+     HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'native-process-installed','completed':True})
+     print(json.dumps({'type':'result','session_id':'native-process-installed','text':'provider-free native process smoke'}))
+     return 0
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name,package=None):
+     module=original_import(name,package=package)
+     if name=='hermes_cli.main':
+      bootstrap.importlib.import_module=original_import
+      module.main=smoke
+     return module
+    bootstrap.importlib.import_module=dispatch
+    raise SystemExit(bootstrap.main(['--help']))
+    '''
+        def launch(command, *args, **kwargs):
+            if isinstance(command, list) and command[:1] == ['/usr/bin/sandbox-exec']:
+                # Preserve the constructor's sandbox, environment, stdout/stderr,
+                # process group and inherited key FD. Replace provider entry only.
+                command = command[:5] + ['-c', program, command[5], json.dumps(case['expected'])]
+            return original_popen(command, *args, **kwargs)
+        monkeypatch.setattr(launcher.subprocess, 'Popen', launch)
+        monkeypatch.setattr(launcher, '_read_host_settings', lambda *_: {
+            'provider': 'xiaomi', 'model': 'provider-free-smoke', 'base_url': 'https://example.invalid',
+            'api_key': 'unused-native-process-smoke-key'})
+        options = {'skill_id': 'productivity/xlsx', 'helper_python': plan['helper_python'],
+            'helper_python_sha256': plan['environment']['helper_python_identity']['executable_sha256'],
+            'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
+            'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
+            'output_name': case['output_name'], 'parameters': case['parameters']}
+        result = launcher.run_hermes_session('provider-free native process constructor smoke', workspace, trial['db'],
+            tool_enabled=False, owner_root=Path(plan['root'])/'sessions', hermes_root=Path.home()/'.hermes/hermes-agent',
+            catalog_root=plan['catalog_root'], skill_snapshot_id=plan['skill_snapshot_id'], timeout=70,
+&gt;           public_contract='clean', native_execution_evidence=options)
+E       AssertionError: Traceback (most recent call last):
+E           File "&lt;string&gt;", line 87, in &lt;module&gt;
+E             raise SystemExit(bootstrap.main(['--help']))
+E                              ~~~~~~~~~~~~~~^^^^^^^^^^^^
+E           File "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py", line 307, in main
+E             return importlib.import_module("hermes_cli.main").main()
+E                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E           File "&lt;string&gt;", line 61, in smoke
+E             assert json.loads(Path('output.json').read_text())==json.loads(sys.argv[2])
+E                                                                            ~~~~~~~~^^^
+E         IndexError: list index out of range
+E         
+E         
+E       assert False is True
+
+/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/tests/test_review_native_evidence.py:608: AssertionError</failure></testcase><testcase classname="tests.test_review_v113_comparison" name="test_registration_limits_actual_hosts_without_unused_model_pilots" time="0.056" /><testcase classname="tests.test_review_v113_comparison" name="test_formal_failures_are_consumed_once_and_unknown_cost_stays_unknown" time="0.135" /><testcase classname="tests.test_review_v113_comparison" name="test_native_drafts_retain_real_file_receipts_and_cold_restore" time="0.107" /><testcase classname="tests.test_review_v113_comparison" name="test_portable_verifier_pins_new_budget_and_preserves_old_profiles" time="0.093" /><testcase classname="tests.test_review_v113_comparison" name="test_native_execution_observation_configuration_is_not_a_business_tool" time="0.063" /><testcase classname="tests.test_review_v113_comparison" name="test_native_process_summary_retains_actual_exit_without_private_environment" time="0.000" /><testcase classname="tests.test_hermes_review" name="test_review_integration_has_no_execution_entry" time="0.000" /><testcase classname="tests.test_hermes_review" name="test_review_launcher_and_native_arm_share_public_draft_contract" time="0.002" /><testcase classname="tests.test_hermes_review" name="test_review_rejects_hidden_contract_and_history_before_host_setup" time="0.001" /><testcase classname="tests.test_hermes_review" name="test_current_prose_yields_persisted_review_without_business_output" time="0.072" /><testcase classname="tests.test_hermes_review" name="test_changed_actual_api_payload_never_reaches_provider[messages]" time="0.057" /><testcase classname="tests.test_hermes_review" name="test_changed_actual_api_payload_never_reaches_provider[transport]" time="0.057" /><testcase classname="tests.test_hermes_review" name="test_changed_actual_api_payload_never_reaches_provider[tools]" time="0.060" /><testcase classname="tests.test_hermes_review" name="test_hidden_context_channels_are_rejected_before_provider[system]" time="0.058" /><testcase classname="tests.test_hermes_review" name="test_hidden_context_channels_are_rejected_before_provider[instructions]" time="0.067" /><testcase classname="tests.test_hermes_review" name="test_hidden_context_channels_are_rejected_before_provider[input]" time="0.067" /><testcase classname="tests.test_hermes_review" name="test_hidden_context_channels_are_rejected_before_provider[response_format]" time="0.068" /><testcase classname="tests.test_hermes_review" name="test_hidden_context_channels_are_rejected_before_provider[metadata]" time="0.069" /><testcase classname="tests.test_hermes_review" name="test_model_cannot_call_a_confirmation_tool" time="0.080" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[receipt]" time="0.089" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[draft]" time="0.072" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[source]" time="0.075" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[proposal]" time="0.072" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[raw_receipt]" time="0.072" /><testcase classname="tests.test_hermes_review" name="test_review_gate_rejects_parent_receipt_or_draft_drift[actual_receipt]" time="0.079" /><testcase classname="tests.test_hermes_review" name="test_unknown_argument_transform_is_blocked_before_parent_rpc" time="0.058" /><testcase classname="tests.test_hermes_review" name="test_unresolved_business_clause_is_a_verified_blocked_draft" time="0.071" /><testcase classname="tests.test_hermes_review" name="test_two_api_budget_blocks_a_third_request" time="0.071" /><testcase classname="tests.test_hermes_review" name="test_bootstrap_guard_denies_missing_review_registration" time="0.001" /><testcase classname="tests.test_hermes_review" name="test_request_identity_cannot_reset_actual_api_budget" time="0.060" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_loads_validates_and_invokes_proposal_without_network[valid-awaiting_confirmation]" time="1.875" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_loads_validates_and_invokes_proposal_without_network[malformed_arrays-needs_context]" time="1.872" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_loads_validates_and_invokes_proposal_without_network[capability_description-unsupported]" time="1.876" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_loads_validates_and_invokes_proposal_without_network[illegal_pointer-needs_context]" time="1.858" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_loads_validates_and_invokes_proposal_without_network[xlsx_wrong_flag-unsupported]" time="1.798" /><testcase classname="tests.test_hermes_review" name="test_installed_sdk_final_http_body_and_fail_closed_override_guard" time="5.453" /><testcase classname="tests.test_hermes_bootstrap" name="test_reported_zero_cache_tokens_are_retained_with_their_source_fields" time="0.001" /><testcase classname="tests.test_hermes_bootstrap" name="test_sdk_default_zero_is_not_treated_as_a_provider_report" time="0.001" /><testcase classname="tests.test_hermes_bootstrap" name="test_nested_cache_usage_is_numeric_allowlisted_and_json_safe" time="0.000" /><testcase classname="tests.test_hermes_bootstrap" name="test_augmented_summary_preserves_accounting_and_restricts_response_identity" time="0.000" /><testcase classname="tests.test_hermes_bootstrap" name="test_missing_usage_retains_identity_without_fabricated_zero_usage" time="0.002" /><testcase classname="tests.test_hermes_bootstrap" name="test_runtime_patch_is_idempotent_and_leaves_original_accounting_active" time="0.000" /><testcase classname="tests.test_hermes_bootstrap" name="test_file_bootstrap_dispatches_cli_after_patch_without_modifying_installation" time="0.038" /><testcase classname="tests.test_hermes_bootstrap" name="test_spawn_registry_captures_detached_child_before_short_parent_returns" time="0.149" /><testcase classname="tests.test_hermes_bootstrap" name="test_registry_write_failure_kills_spawned_child_without_leaking_error_details" time="0.037" /><testcase classname="tests.test_hermes_bootstrap" name="test_spawn_registry_works_under_the_actual_launcher_sandbox_profile" time="0.049" /><testcase classname="tests.test_hermes_bootstrap" name="test_non_review_file_bootstrap_never_imports_review_adapter[None]" time="0.002" /><testcase classname="tests.test_hermes_bootstrap" name="test_non_review_file_bootstrap_never_imports_review_adapter[optional]" time="0.001" /><testcase classname="tests.test_hermes_bootstrap" name="test_non_review_file_bootstrap_never_imports_review_adapter[clean]" time="0.001" /><testcase classname="tests.test_hermes_bootstrap" name="test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import[False]" time="1.380"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1016, in _init_openai_client&#10;      agent.client = agent._create_openai_client(client_kwargs, reason=&quot;agent_init&quot;, shared=True)&#10;                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py&quot;, line 22, in forwarder&#10;      return lazy_attr(module, name)(self, *args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py&quot;, line 2091, in create_openai_client&#10;      client = process_bootstrap.OpenAI(**client_kwargs)&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 124, in __call__&#10;      return _load_openai_cls()(*args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 114, in _load_openai_cls&#10;      from openai import OpenAI as _OPENAI_CLS_CACHE&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py&quot;, line 9, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py&quot;, line 5, in &lt;module&gt;&#10;      from .batch import Batch as Batch&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py&quot;, line 6, in &lt;module&gt;&#10;      from .._models import BaseModel&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py&quot;, line 39, in &lt;module&gt;&#10;      from pydantic.fields import FieldInfo&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py&quot;, line 23, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py&quot;, line 34, in &lt;module&gt;&#10;      from ._internal import _fields, _internal_dataclass, _utils, _validators&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py&quot;, line 17, in &lt;module&gt;&#10;      from pydantic import PydanticDeprecatedSince211&#10;    File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1431, in _handle_fromlist&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py&quot;, line 446, in __getattr__&#10;      module = import_module(module_name, package=package)&#10;  TypeError: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;  During handling of the above exception, another exception occurred:&#10;  &#10;  Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 44, in &lt;module&gt;&#10;      assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0&#10;             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py&quot;, line 307, in main&#10;      return importlib.import_module(&quot;hermes_cli.main&quot;).main()&#10;             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^&#10;    File &quot;&lt;string&gt;&quot;, line 29, in constructor_main&#10;      agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',&#10;          provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,&#10;          quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,&#10;          session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/run_agent.py&quot;, line 288, in __init__&#10;      init_agent(self, **init_kwargs)&#10;      ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 2435, in init_agent&#10;      _build_client(agent, api_key, base_url, fallback_model)&#10;      ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1041, in _build_client&#10;      _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)&#10;      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1025, in _init_openai_client&#10;      raise RuntimeError(f&quot;Failed to initialize OpenAI client: {e}&quot;)&#10;  RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}&quot;)\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/package-final-keyed/test_installed_native_clean_fi0')
+with_key = False
+
+    @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+                        reason='actual macOS installed Hermes native-clean startup')
+    @pytest.mark.parametrize('with_key', [False, True])
+    def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path, with_key):
+        from rpe_harness.integrations.hermes_session import prepare_home, sandbox_profile
+        hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
+        interpreter = hermes_root / '.venv/bin/python'
+        if not interpreter.is_file():
+            pytest.skip('installed Hermes runtime unavailable')
+        workspace = tmp_path / 'workspace'
+        workspace.mkdir()
+        home = prepare_home(tmp_path / 'native-session', workspace, tmp_path / 'runs.sqlite',
+            tool_enabled=False, public_contract='review', preserve_native_tool_search=True,
+            settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'provider-free-key',
+                      'base_url': 'https://example.invalid/v1'})
+        (home / '.no-bundled-skills').touch()
+        for name in ('runtime', 'cache', 'tmp'):
+            (home / name).mkdir()
+        environment = {key: value for key, value in os.environ.items() if key in {
+            'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
+        environment.update(HOME=str(home), HERMES_HOME=str(home), XDG_CACHE_HOME=str(home / 'cache'),
+            HERMES_RUNTIME_DIR=str(home / 'runtime'), TMPDIR=str(home / 'tmp'),
+            HERMES_SAFE_MODE='0', HERMES_ENABLE_PROJECT_PLUGINS='0', HERMES_DISABLE_LAZY_INSTALLS='1',
+            PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(hermes_root),
+            RPE_HERMES_INSTALL_ROOT=str(hermes_root), RPE_HERMES_ENTRY_MODE='optional',
+            RPE_HERMES_TOOL_ENABLED='0', RPE_HERMES_DB=str(tmp_path / 'runs.sqlite'),
+            RPE_HERMES_WORKSPACE=str(workspace),
+            RPE_HARNESS_IMPORT_ROOT=str(BOOTSTRAP_PATH.parents[2]),
+            RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'))
+        profile = tmp_path / 'native-clean.sb'
+        profile.write_text(sandbox_profile([tmp_path], Path.home() / '.hermes', hermes_root,
+            tmp_path / 'runs.sqlite', read_roots=[interpreter.parent.parent, Path.home() / '.hermes/tools'],
+            native_import_root=BOOTSTRAP_PATH.parents[2],
+            owner_read_scope=(tmp_path.parent, [tmp_path])))
+        program = r'''import importlib.util,json,os,socket,subprocess,sys
+    network_attempts=[]
+    def deny_network(self,address):
+        network_attempts.append(True)
+        raise AssertionError('network disabled in native-clean constructor smoke')
+    socket.socket.connect=deny_network
+    assert importlib.util.find_spec('rpe_harness') is None,'Harness unexpectedly importable at native entry'
+    spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.argv[1])
+    bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+    initial_pythonpath=os.environ.get('PYTHONPATH')
+    key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD']) if sys.argv[2]=='key' else None
+    actual_constructor_called=[]
+    def constructor_main():
+        assert os.environ.get('PYTHONPATH')==initial_pythonpath
+        assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+        if key_fd is not None:
+            assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+            try: os.fstat(key_fd)
+            except OSError: pass
+            else: raise AssertionError('key descriptor was not closed')
+            from rpe_harness.integrations import hermes_native_process as process
+            assert process._SIGNING_KEY==b'K'*32
+            assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+        probe=subprocess.run([sys.executable,'-B','-c',
+            "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],
+            capture_output=True,text=True,timeout=5)
+        assert probe.returncode==0,probe.stderr
+        from run_agent import AIAgent
+        agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+            provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+            quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+            session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+        assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
+        assert not {'rpe_propose','rpe_task','rpe_confirm'} &amp; agent.valid_tool_names
+        actual_constructor_called.append(True)
+        return 0
+    # Replace only final CLI dispatch when bootstrap imports it, after consuming any key FD.
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name,package=None):
+        module=original_import(name,package=package)
+        if name=='hermes_cli.main':
+            bootstrap.importlib.import_module=original_import
+            module.main=constructor_main
+        return module
+    bootstrap.importlib.import_module=dispatch
+    assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+    assert actual_constructor_called==[True] and network_attempts==[]
+    print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
+        'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0,
+        'key_requested':key_fd is not None,'key_fd_consumed':key_fd is not None,'child_harness_importable':False}))
+    '''
+        key_descriptor = None
+        if with_key:
+            key_descriptor, writer = os.pipe()
+            os.write(writer, b'K' * 32)
+            os.close(writer)
+            environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_descriptor)
+        try:
+            child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+                '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key'],
+                cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
+                pass_fds=(key_descriptor,) if with_key else ())
+        finally:
+            if key_descriptor is not None:
+&gt;               os.close(key_descriptor)
+E               AssertionError: Traceback (most recent call last):
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1016, in _init_openai_client
+E                     agent.client = agent._create_openai_client(client_kwargs, reason="agent_init", shared=True)
+E                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py", line 22, in forwarder
+E                     return lazy_attr(module, name)(self, *args, **kwargs)
+E                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py", line 2091, in create_openai_client
+E                     client = process_bootstrap.OpenAI(**client_kwargs)
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 124, in __call__
+E                     return _load_openai_cls()(*args, **kwargs)
+E                            ~~~~~~~~~~~~~~~~^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 114, in _load_openai_cls
+E                     from openai import OpenAI as _OPENAI_CLS_CACHE
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py", line 9, in &lt;module&gt;
+E                     from . import types
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py", line 5, in &lt;module&gt;
+E                     from .batch import Batch as Batch
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py", line 6, in &lt;module&gt;
+E                     from .._models import BaseModel
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py", line 39, in &lt;module&gt;
+E                     from pydantic.fields import FieldInfo
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py", line 23, in &lt;module&gt;
+E                     from . import types
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py", line 34, in &lt;module&gt;
+E                     from ._internal import _fields, _internal_dataclass, _utils, _validators
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py", line 17, in &lt;module&gt;
+E                     from pydantic import PydanticDeprecatedSince211
+E                   File "&lt;frozen importlib._bootstrap&gt;", line 1431, in _handle_fromlist
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py", line 446, in __getattr__
+E                     module = import_module(module_name, package=package)
+E                 TypeError: dispatch() got an unexpected keyword argument 'package'
+E                 
+E                 During handling of the above exception, another exception occurred:
+E                 
+E                 Traceback (most recent call last):
+E                   File "&lt;string&gt;", line 44, in &lt;module&gt;
+E                     assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+E                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py", line 307, in main
+E                     return importlib.import_module("hermes_cli.main").main()
+E                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E                   File "&lt;string&gt;", line 29, in constructor_main
+E                     agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+E                         provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+E                         quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+E                         session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+E                   File "/Users/audrey/.hermes/hermes-agent/run_agent.py", line 288, in __init__
+E                     init_agent(self, **init_kwargs)
+E                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 2435, in init_agent
+E                     _build_client(agent, api_key, base_url, fallback_model)
+E                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1041, in _build_client
+E                     _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)
+E                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1025, in _init_openai_client
+E                     raise RuntimeError(f"Failed to initialize OpenAI client: {e}")
+E                 RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'
+E                 
+E               assert 1 == 0
+E                +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}")\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode
+
+/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/tests/test_hermes_bootstrap.py:458: AssertionError</failure></testcase><testcase classname="tests.test_hermes_bootstrap" name="test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import[True]" time="1.383"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1016, in _init_openai_client&#10;      agent.client = agent._create_openai_client(client_kwargs, reason=&quot;agent_init&quot;, shared=True)&#10;                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py&quot;, line 22, in forwarder&#10;      return lazy_attr(module, name)(self, *args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py&quot;, line 2091, in create_openai_client&#10;      client = process_bootstrap.OpenAI(**client_kwargs)&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 124, in __call__&#10;      return _load_openai_cls()(*args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 114, in _load_openai_cls&#10;      from openai import OpenAI as _OPENAI_CLS_CACHE&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py&quot;, line 9, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py&quot;, line 5, in &lt;module&gt;&#10;      from .batch import Batch as Batch&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py&quot;, line 6, in &lt;module&gt;&#10;      from .._models import BaseModel&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py&quot;, line 39, in &lt;module&gt;&#10;      from pydantic.fields import FieldInfo&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py&quot;, line 23, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py&quot;, line 34, in &lt;module&gt;&#10;      from ._internal import _fields, _internal_dataclass, _utils, _validators&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py&quot;, line 17, in &lt;module&gt;&#10;      from pydantic import PydanticDeprecatedSince211&#10;    File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1431, in _handle_fromlist&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py&quot;, line 446, in __getattr__&#10;      module = import_module(module_name, package=package)&#10;  TypeError: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;  During handling of the above exception, another exception occurred:&#10;  &#10;  Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 44, in &lt;module&gt;&#10;      assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0&#10;             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py&quot;, line 307, in main&#10;      return importlib.import_module(&quot;hermes_cli.main&quot;).main()&#10;             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^&#10;    File &quot;&lt;string&gt;&quot;, line 29, in constructor_main&#10;      agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',&#10;          provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,&#10;          quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,&#10;          session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/run_agent.py&quot;, line 288, in __init__&#10;      init_agent(self, **init_kwargs)&#10;      ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 2435, in init_agent&#10;      _build_client(agent, api_key, base_url, fallback_model)&#10;      ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1041, in _build_client&#10;      _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)&#10;      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1025, in _init_openai_client&#10;      raise RuntimeError(f&quot;Failed to initialize OpenAI client: {e}&quot;)&#10;  RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}&quot;)\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/package-final-keyed/test_installed_native_clean_fi1')
+with_key = True
+
+    @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+                        reason='actual macOS installed Hermes native-clean startup')
+    @pytest.mark.parametrize('with_key', [False, True])
+    def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path, with_key):
+        from rpe_harness.integrations.hermes_session import prepare_home, sandbox_profile
+        hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
+        interpreter = hermes_root / '.venv/bin/python'
+        if not interpreter.is_file():
+            pytest.skip('installed Hermes runtime unavailable')
+        workspace = tmp_path / 'workspace'
+        workspace.mkdir()
+        home = prepare_home(tmp_path / 'native-session', workspace, tmp_path / 'runs.sqlite',
+            tool_enabled=False, public_contract='review', preserve_native_tool_search=True,
+            settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'provider-free-key',
+                      'base_url': 'https://example.invalid/v1'})
+        (home / '.no-bundled-skills').touch()
+        for name in ('runtime', 'cache', 'tmp'):
+            (home / name).mkdir()
+        environment = {key: value for key, value in os.environ.items() if key in {
+            'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
+        environment.update(HOME=str(home), HERMES_HOME=str(home), XDG_CACHE_HOME=str(home / 'cache'),
+            HERMES_RUNTIME_DIR=str(home / 'runtime'), TMPDIR=str(home / 'tmp'),
+            HERMES_SAFE_MODE='0', HERMES_ENABLE_PROJECT_PLUGINS='0', HERMES_DISABLE_LAZY_INSTALLS='1',
+            PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(hermes_root),
+            RPE_HERMES_INSTALL_ROOT=str(hermes_root), RPE_HERMES_ENTRY_MODE='optional',
+            RPE_HERMES_TOOL_ENABLED='0', RPE_HERMES_DB=str(tmp_path / 'runs.sqlite'),
+            RPE_HERMES_WORKSPACE=str(workspace),
+            RPE_HARNESS_IMPORT_ROOT=str(BOOTSTRAP_PATH.parents[2]),
+            RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'))
+        profile = tmp_path / 'native-clean.sb'
+        profile.write_text(sandbox_profile([tmp_path], Path.home() / '.hermes', hermes_root,
+            tmp_path / 'runs.sqlite', read_roots=[interpreter.parent.parent, Path.home() / '.hermes/tools'],
+            native_import_root=BOOTSTRAP_PATH.parents[2],
+            owner_read_scope=(tmp_path.parent, [tmp_path])))
+        program = r'''import importlib.util,json,os,socket,subprocess,sys
+    network_attempts=[]
+    def deny_network(self,address):
+        network_attempts.append(True)
+        raise AssertionError('network disabled in native-clean constructor smoke')
+    socket.socket.connect=deny_network
+    assert importlib.util.find_spec('rpe_harness') is None,'Harness unexpectedly importable at native entry'
+    spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.argv[1])
+    bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+    initial_pythonpath=os.environ.get('PYTHONPATH')
+    key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD']) if sys.argv[2]=='key' else None
+    actual_constructor_called=[]
+    def constructor_main():
+        assert os.environ.get('PYTHONPATH')==initial_pythonpath
+        assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+        if key_fd is not None:
+            assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+            try: os.fstat(key_fd)
+            except OSError: pass
+            else: raise AssertionError('key descriptor was not closed')
+            from rpe_harness.integrations import hermes_native_process as process
+            assert process._SIGNING_KEY==b'K'*32
+            assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+        probe=subprocess.run([sys.executable,'-B','-c',
+            "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],
+            capture_output=True,text=True,timeout=5)
+        assert probe.returncode==0,probe.stderr
+        from run_agent import AIAgent
+        agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+            provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+            quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+            session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+        assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
+        assert not {'rpe_propose','rpe_task','rpe_confirm'} &amp; agent.valid_tool_names
+        actual_constructor_called.append(True)
+        return 0
+    # Replace only final CLI dispatch when bootstrap imports it, after consuming any key FD.
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name,package=None):
+        module=original_import(name,package=package)
+        if name=='hermes_cli.main':
+            bootstrap.importlib.import_module=original_import
+            module.main=constructor_main
+        return module
+    bootstrap.importlib.import_module=dispatch
+    assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+    assert actual_constructor_called==[True] and network_attempts==[]
+    print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
+        'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0,
+        'key_requested':key_fd is not None,'key_fd_consumed':key_fd is not None,'child_harness_importable':False}))
+    '''
+        key_descriptor = None
+        if with_key:
+            key_descriptor, writer = os.pipe()
+            os.write(writer, b'K' * 32)
+            os.close(writer)
+            environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_descriptor)
+        try:
+            child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+                '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key'],
+                cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
+                pass_fds=(key_descriptor,) if with_key else ())
+        finally:
+            if key_descriptor is not None:
+&gt;               os.close(key_descriptor)
+E               AssertionError: Traceback (most recent call last):
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1016, in _init_openai_client
+E                     agent.client = agent._create_openai_client(client_kwargs, reason="agent_init", shared=True)
+E                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py", line 22, in forwarder
+E                     return lazy_attr(module, name)(self, *args, **kwargs)
+E                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py", line 2091, in create_openai_client
+E                     client = process_bootstrap.OpenAI(**client_kwargs)
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 124, in __call__
+E                     return _load_openai_cls()(*args, **kwargs)
+E                            ~~~~~~~~~~~~~~~~^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 114, in _load_openai_cls
+E                     from openai import OpenAI as _OPENAI_CLS_CACHE
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py", line 9, in &lt;module&gt;
+E                     from . import types
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py", line 5, in &lt;module&gt;
+E                     from .batch import Batch as Batch
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py", line 6, in &lt;module&gt;
+E                     from .._models import BaseModel
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py", line 39, in &lt;module&gt;
+E                     from pydantic.fields import FieldInfo
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py", line 23, in &lt;module&gt;
+E                     from . import types
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py", line 34, in &lt;module&gt;
+E                     from ._internal import _fields, _internal_dataclass, _utils, _validators
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py", line 17, in &lt;module&gt;
+E                     from pydantic import PydanticDeprecatedSince211
+E                   File "&lt;frozen importlib._bootstrap&gt;", line 1431, in _handle_fromlist
+E                   File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py", line 446, in __getattr__
+E                     module = import_module(module_name, package=package)
+E                 TypeError: dispatch() got an unexpected keyword argument 'package'
+E                 
+E                 During handling of the above exception, another exception occurred:
+E                 
+E                 Traceback (most recent call last):
+E                   File "&lt;string&gt;", line 44, in &lt;module&gt;
+E                     assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+E                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_bootstrap.py", line 307, in main
+E                     return importlib.import_module("hermes_cli.main").main()
+E                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E                   File "&lt;string&gt;", line 29, in constructor_main
+E                     agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+E                         provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+E                         quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+E                         session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+E                   File "/Users/audrey/.hermes/hermes-agent/run_agent.py", line 288, in __init__
+E                     init_agent(self, **init_kwargs)
+E                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 2435, in init_agent
+E                     _build_client(agent, api_key, base_url, fallback_model)
+E                     ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1041, in _build_client
+E                     _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)
+E                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1025, in _init_openai_client
+E                     raise RuntimeError(f"Failed to initialize OpenAI client: {e}")
+E                 RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'
+E                 
+E               assert 1 == 0
+E                +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}")\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode
+
+/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/tests/test_hermes_bootstrap.py:458: AssertionError</failure></testcase></testsuite></testsuites>

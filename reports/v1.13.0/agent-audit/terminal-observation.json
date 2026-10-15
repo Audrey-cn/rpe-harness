@@ -1,0 +1,10 @@
+{
+  "errors": [
+    "Reached maximum number of turns (1)"
+  ],
+  "is_error": true,
+  "num_turns": 2,
+  "stop_reason": "max_tokens",
+  "subtype": "error_max_turns",
+  "type": "result"
+}

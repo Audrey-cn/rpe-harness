@@ -1,0 +1,56 @@
+{
+  "base_commit": "71936b9",
+  "completed": [
+    "quote XOR model contract with immutable historical validation",
+    "native Hermes durable post-tool end_turn",
+    "signed actual OS helper exit/artifact evidence",
+    "bounded close-drain race repair with real-kernel RED/GREEN",
+    "native-clean bootstrap mode isolation with actual installed constructor smoke",
+    "1842 source tests plus3subtests7skips; final independently installed package recorded in validation/test-records.json",
+    "initial8trial retained and one whole8trial supplement after explicit amendment",
+    "one isolated CLI audit with raw observed limits and unknown billing retained"
+  ],
+  "final_source_commit": "967c28f6631f482d3daabc383df47a68b04ee676",
+  "formal_source_commit": "ad0561a",
+  "initial_source_commit": "298aa06",
+  "model_validation_of_final_entry_patch": false,
+  "no_model_attempts_after_supplement_and_single_audit": true,
+  "open_followups_not_implemented_this_round": [
+    "provider latency/native completion and missing telemetry coverage",
+    "exact source quotations before confirmation and user-facing context requests",
+    "semantically equivalent parameter spellings in fixed comparison gate",
+    "broader real unattended cross-host evidence"
+  ],
+  "pending": [],
+  "production_source_changes_after_final_formal_freeze": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "production_source_changes_after_initial_freeze": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "schema_version": "rpe.v113-development/v1",
+  "state": "local validation deliverable; cleanup records and verification determine final completion",
+  "validation_outcome": {
+    "all_pairs": 4,
+    "comparable_pairs": 2,
+    "comparison_ready": false,
+    "general_quality_or_total_cost_advantage_proven": false,
+    "native_complete_chain": {
+      "denominator": 4,
+      "passed": 0
+    },
+    "native_production_chain": {
+      "denominator": 3,
+      "passed": 0
+    },
+    "review_complete_chain": {
+      "denominator": 4,
+      "passed": 4
+    },
+    "review_production_chain": {
+      "denominator": 3,
+      "passed": 3
+    },
+    "stable_unattended_ready": false
+  }
+}

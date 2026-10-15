@@ -1,0 +1,72 @@
+[
+  {
+    "accepted": false,
+    "business_correct": false,
+    "error_code": null,
+    "gate_errors": [
+      "native_api_linkage_invalid"
+    ],
+    "status": "failed",
+    "trial_id": "formal-cold-shipment-native"
+  },
+  {
+    "accepted": true,
+    "business_correct": true,
+    "error_code": null,
+    "gate_errors": [],
+    "status": "completed",
+    "trial_id": "formal-cold-shipment-review"
+  },
+  {
+    "accepted": false,
+    "business_correct": false,
+    "error_code": null,
+    "gate_errors": [],
+    "status": "failed",
+    "trial_id": "formal-receipt-comma-native"
+  },
+  {
+    "accepted": true,
+    "business_correct": true,
+    "error_code": null,
+    "gate_errors": [],
+    "status": "completed",
+    "trial_id": "formal-receipt-comma-review"
+  },
+  {
+    "accepted": false,
+    "business_correct": true,
+    "error_code": null,
+    "gate_errors": [
+      "native_output_invocation_missing"
+    ],
+    "status": "failed",
+    "trial_id": "formal-returns-tabs-native"
+  },
+  {
+    "accepted": true,
+    "business_correct": true,
+    "error_code": null,
+    "gate_errors": [],
+    "status": "completed",
+    "trial_id": "formal-returns-tabs-review"
+  },
+  {
+    "accepted": false,
+    "business_correct": null,
+    "error_code": "FileNotFoundError",
+    "gate_errors": [
+      "native_api_linkage_invalid"
+    ],
+    "status": "failed",
+    "trial_id": "formal-undecided-staff-key-native"
+  },
+  {
+    "accepted": true,
+    "business_correct": null,
+    "error_code": null,
+    "gate_errors": [],
+    "status": "completed",
+    "trial_id": "formal-undecided-staff-key-review"
+  }
+]

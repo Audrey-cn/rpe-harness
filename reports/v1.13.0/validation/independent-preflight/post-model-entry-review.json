@@ -1,0 +1,115 @@
+{
+  "schema_version": "rpe.v113-post-model-entry-independent-review/v1",
+  "reviewed_at": 1792046569.933215,
+  "review_scope": "bootstrap-only engineering entry correction and provider-free installed regressions; no model calls or production edits by reviewer",
+  "executed_source_commit": "ad0561a33e778081005f0e192f0a3b2ec0a9d840",
+  "reviewed_working_tree_source_modules": 88,
+  "executed_to_reviewed_changed_modules": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "executed_bootstrap_sha256": "320b13e948e3cb89498a1556e375206e40d90a9ea7c50f0ecdefd4735f90e5cd",
+  "delivery_bootstrap_sha256": "be0e98c30eeb0a5041d46187ce61034d56660876a75a117c7b98c7cc2a6e7e5c",
+  "model_validation_of_final_entry_patch": false,
+  "review_status": "no_remaining_actionable_P1_P2_in_scoped_patch",
+  "findings": [],
+  "historical_finding": {
+    "priority": "P2",
+    "description": "Keyed native file entry had no importable Harness package when consuming inherited signing FD. Previous SDK-preloaded smoke masked the entry failure.",
+    "original_review_file": "final-entry-review.json",
+    "original_review_sha256": "55eff11e9d679049c19f06b87f89679b79258d5f1cadf01be191738a306030a5",
+    "resolution": "Temporary controller-given SDK root is inserted only for canonical native-process key loader, then sys.path is restored in finally before Hermes imports.",
+    "actual_model_retest_performed": false
+  },
+  "code_review": {
+    "production_changed_files": 1,
+    "added_lines": 6,
+    "deleted_lines": 1,
+    "controller_sets_import_root_from_installed_module": true,
+    "canonical_module_name_reused": true,
+    "key_consumed_before_Hermes_imports": true,
+    "sys_path_restored_in_finally": true,
+    "environment_and_pythonpath_unchanged": true,
+    "sandbox_scope_unchanged": true,
+    "prompt_scorer_contract_unchanged": true
+  },
+  "independent_provider_free_tests": {
+    "xml_file": "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/independent-preflight/final-keyed-entry.xml",
+    "xml_sha256": "9122d55c858e0595d245c73a66309899a9cd349056c5a6fb2a3b1ce077448983",
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "tests": [
+      "test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import[True]",
+      "test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal"
+    ],
+    "runtime_smoke": {
+      "provider_calls": 0,
+      "native_success": true,
+      "native_failure": true,
+      "masked_failure_rejected": true,
+      "startup_injection_rejected": true,
+      "key_read_write_denied": true,
+      "key_fd_consumed": true,
+      "signed_receipts": 5,
+      "business_oracle_matched": true,
+      "child_harness_importable": false,
+      "kernel_returncodes": [
+        0,
+        120,
+        120,
+        null,
+        0
+      ],
+      "shell_returncodes": [
+        0,
+        120,
+        0,
+        0
+      ]
+    },
+    "invalid_key_error_path": {
+      "invalid_key_rejected": true,
+      "temporary_sdk_path_restored_on_exception": true,
+      "key_fd_closed": true,
+      "key_fd_environment_removed": true,
+      "hermes_cli_not_imported": true,
+      "provider_calls": 0
+    }
+  },
+  "report_verifier": {
+    "schema_version": "rpe.v113-report-helper-review/v1",
+    "total_verifier_invoked": false,
+    "script_sha256": "55b44ec0c8a90248f3d2b26bbc0813192023b06921bef5e7056bd979fabb8c01",
+    "helper_tests_passed": 6,
+    "initial_phase_count": 20,
+    "supplement_phase_count": 25,
+    "all_phases_counted_once": true,
+    "source_ledgers_unchanged": true,
+    "saved_combined_costs_equal": true,
+    "known_total_tokens": 233383,
+    "whole_total_tokens": null,
+    "known_api_requests": 34,
+    "whole_api_requests": null,
+    "audit_terminal_subtype": "error_max_turns",
+    "audit_stop_reason": "max_tokens",
+    "audit_verdict": null,
+    "audit_limit_observations": {
+      "completed_sessions": 0,
+      "num_turns": 2,
+      "output_tokens": 1200,
+      "requested_turn_limit_adhered": false,
+      "aggregate_output_above_requested_figure": false,
+      "time_limit_adhered": true,
+      "cli_estimated_dollar_limit_adhered": true,
+      "provider_api_requests": null,
+      "per_request_output_limit_enforcement": null
+    },
+    "provider_model_calls": 0
+  },
+  "limitations": [
+    "Model evidence remains bound to executed source ad0561a; final bootstrap key-entry patch was verified only with provider-free installed integration tests.",
+    "Kernel process and HMAC receipts are local runtime evidence, not remote attestation or exclusive output authorship.",
+    "Delivery commit, final wheel byte equality, full XML records and cleanup must be checked from the assembled final report; total delivery verifier was not invoked in this review."
+  ],
+  "provider_model_calls": 0
+}

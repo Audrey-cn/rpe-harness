@@ -1,0 +1,41 @@
+{
+  "schema_version": "rpe.v113-independent-closing-race-review/v1",
+  "reviewer": "independent Codex subagent",
+  "source_edits": 0,
+  "provider_model_calls": 0,
+  "blocking_findings": [],
+  "package_failure_observed": {
+    "reported_package_run": "149passed2failed",
+    "actual_affected_private_receipts": "forged_recei2,4,7 showed registered process with native_process_exit_not_observed and no returncode",
+    "security_effect": "fail closed; no false acceptance",
+    "stability_effect": "valid real helper proof could be discarded while native terminal had already returned"
+  },
+  "reviewed_fix": {
+    "closing_wait_seconds_max": 1,
+    "wait_source": "kernel queue only",
+    "only_already_registered_processes": true,
+    "no_new_process_discovery_after_stop": true,
+    "no_shell_status_inference": true,
+    "no_artificial_status_or_PID": true,
+    "timeout_behavior": "unverified missing exit proof",
+    "all_existing_identity_environment_frozen_file_output_and_HMAC_predicates_preserved": true
+  },
+  "regression": {
+    "scheduling_adapter": "buffers actual kernel process events until positive closing kernel wait; fabricates no event or exit code",
+    "old_code_result": "1failed in0.266s per native-close-race-red.xml",
+    "new_code_independent_result": "11passed in5.88s",
+    "scope": [
+      "deterministically delayed actual kernel notification",
+      "helper exit7 with direct shell exit7 and masked shell exit0",
+      "all8 receipt corruption and changed artifact or configuration tests"
+    ],
+    "corruption_fixture_precondition": "verified and receipt_authenticated asserted before any tampering",
+    "business_overwrite_assertion": "exact native_process_final_output_business_incorrect error retained"
+  },
+  "assessment": "Minimal bounded lifecycle fix reviewed; no P1/P2 remaining. Root must rebuild wheel and rerun required final checks before freezing and starting formal model sessions.",
+  "source_sha256": {
+    "src/rpe_harness/integrations/hermes_native_process.py": "01e0bb7add742b99dea234db9ef27e9dd3888ac2e9357d06fc302f94ebe7fb24",
+    "tests/test_native_process_evidence.py": "ce5575461ab68d95c6141c743d4e75782f4bea05ca75778cca73165a64521b12",
+    "tests/test_review_native_evidence.py": "d74b7325ce3743c532e811ebde4d659a8729caa216620ca380cfcad56254f32c"
+  }
+}

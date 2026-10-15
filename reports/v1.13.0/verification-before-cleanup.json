@@ -1,0 +1,113 @@
+{
+  "all_batches_formal_attempts": 16,
+  "all_batches_native_execution_sessions": 1,
+  "cleanup_required": false,
+  "comparison_ready": false,
+  "current_source_modules_verified": 88,
+  "delivery_source_commit": "967c28f6631f482d3daabc383df47a68b04ee676",
+  "evidence": {
+    "evidence": {
+      "business_artifacts_verified": 4,
+      "errors": [],
+      "human_confirmation_verified": false,
+      "runtime_proof": "recorded_observations_not_independent_attestation",
+      "schema_version": "rpe.v113-evidence-verification/v1",
+      "source_documents_verified": 4,
+      "verified": true
+    },
+    "evidence-initial": {
+      "business_artifacts_verified": 1,
+      "errors": [],
+      "human_confirmation_verified": false,
+      "runtime_proof": "recorded_observations_not_independent_attestation",
+      "schema_version": "rpe.v113-evidence-verification/v1",
+      "source_documents_verified": 4,
+      "verified": true
+    }
+  },
+  "executed_source_commit": "ad0561a33e778081005f0e192f0a3b2ec0a9d840",
+  "executed_source_modules_recorded": 88,
+  "executed_to_delivery_changed_modules": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "fixture_bytes_identical_between_batches": false,
+  "formal_attempts": 8,
+  "formal_pairs": 4,
+  "human_confirmation_verified": false,
+  "independent_agent_limit_observations": {
+    "aggregate_output_above_requested_figure": false,
+    "cli_estimated_dollar_limit_adhered": true,
+    "completed_sessions": 0,
+    "num_turns": 2,
+    "output_tokens": 1200,
+    "per_request_output_limit_enforcement": null,
+    "provider_api_requests": null,
+    "requested_turn_limit_adhered": false,
+    "time_limit_adhered": true
+  },
+  "independent_audit_completed": false,
+  "independent_audit_status": "failed",
+  "independent_audit_stop_reason": "max_tokens",
+  "independent_audit_terminal_subtype": "error_max_turns",
+  "manifest_files_verified": 93,
+  "model_validation_of_final_entry_patch": false,
+  "native_execution_sessions": 1,
+  "original_8_3_budget_met": false,
+  "pilot_attempts": 0,
+  "runtime_proof": "recorded_observations_not_independent_thirdparty_runtime_attestation",
+  "same_case_supplement": true,
+  "test_records": {
+    "bootstrap_post_initial": {
+      "passed": 34,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "final_keyed_native_entry": {
+      "passed": 2,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "final_package": {
+      "passed": 157,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "native_close_race": {
+      "passed": 54,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "native_preconditions": {
+      "passed": 9,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "package_before_keyed_entry_fix": {
+      "passed": 156,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "package_before_native_entry_fix": {
+      "passed": 152,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "review_flow": {
+      "passed": 107,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "runner": {
+      "passed": 39,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "source_full_suite": {
+      "passed": 1842,
+      "skipped": 7,
+      "subtests_passed": 3
+    }
+  },
+  "verified": true,
+  "wheel_bytes_verified": true
+}

@@ -1,0 +1,187 @@
+{
+  "cases": 20,
+  "provider_calls": 0,
+  "all_matched": true,
+  "rows": [
+    {
+      "index": 0,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 1,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 2,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 3,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 4,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 5,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 6,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 7,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 8,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 9,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 10,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 11,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 12,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 13,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 14,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 15,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 16,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 17,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 18,
+      "expected_helper_returncode": 0,
+      "actual_helper_returncode": 0,
+      "shell_returncode": 0,
+      "verified": true,
+      "observer_joined": true,
+      "errors": ""
+    },
+    {
+      "index": 19,
+      "expected_helper_returncode": 7,
+      "actual_helper_returncode": 7,
+      "shell_returncode": 0,
+      "verified": false,
+      "observer_joined": true,
+      "errors": ""
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "provider_calls": 0,
+  "shell_returncode": 0,
+  "helper_body_executed": false,
+  "observed_verified": false,
+  "kernel_returncode": null,
+  "observation_error": "native_process_unsafe_startup_environment,native_unique_helper_process_exit_missing",
+  "output_correct": true
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "rpe.v113-independent-code-review/v1",
+  "scope": [
+    "model quote/ref XOR and strict persisted compatibility",
+    "receipt-bound installed native post-tool end_turn",
+    "versioned finite experiment population, consumed attempts and portable evidence verification"
+  ],
+  "source_edits_by_reviewer": 0,
+  "provider_model_calls_by_reviewer": 0,
+  "findings": [
+    {
+      "severity": "important",
+      "status": "implementation agent correcting; installed constructor smoke pending",
+      "issue": "v113 cold native execution calls public_contract=clean while initial new session observer guard allowed only review; actual execution would be rejected before host launch"
+    }
+  ],
+  "other_blocking_findings": [],
+  "verification": {
+    "fresh_test_result": "59 passed, 2 deselected in 3.34s",
+    "deselected_reason": "installed native one-request and cold four-request smokes already freshly run by implementation agent; independently source-reviewed",
+    "test_files": [
+      "test_review_v113_comparison.py",
+      "test_review_v112_comparison.py",
+      "test_review_quote_contract.py",
+      "test_hermes_review_finish.py"
+    ],
+    "failed_earlier_attempt_retained": {
+      "result": "38passed1failed28.58s",
+      "reason": "installed provider mock seam bypassed; network denied; subsequently corrected by implementer"
+    }
+  },
+  "source_sha256": {
+    "src/rpe_harness/integrations/hermes_review.py": "e0c91b2c2451fead9658c7873bfa3080838e4137e74d4ffa9f1b9b7ef647e565",
+    "src/rpe_harness/integrations/hermes_review_finish.py": "3aaf49327e82d15ac899262a08517b398d8a110fbdebbb245dbcf0a5fed876e4",
+    "src/rpe_harness/experiments/review_v111_comparison.py": "5066dfbed90f6c3a0700561e8f923c2415565fbbaf30ac5b0d93e5e3e8624e7f",
+    "src/rpe_harness/experiments/review_v113_comparison.py": "718b00f679210aa28ec33bcb65baff2534bef5c34ebcbfe9cdaaf5d520587833",
+    "tests/test_review_v113_comparison.py": "dc36167d104175ada8380ec5d4c1c4c8272a60ab1ab7547808d83d108f03c6f1",
+    "tests/test_review_quote_contract.py": "980cee162d70ff3e42333075915c45753fb5719d756e833ea74079dd24728651",
+    "tests/test_hermes_review_finish.py": "90098298903a3f1985ab7a68328d4190cc84d1778b55240e30bc70605d9878b9"
+  },
+  "limits": [
+    "OS observer implementation is still under development and outside this interim review verdict",
+    "portable evidence verifier establishes arithmetic/artifact consistency over supplied records, not third-party runtime truth",
+    "model-session budgets do not establish hard physical-provider API caps"
+  ]
+}

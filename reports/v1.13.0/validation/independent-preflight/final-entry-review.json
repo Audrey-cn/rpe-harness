@@ -1,0 +1,81 @@
+{
+  "schema_version": "rpe.v113-final-entry-independent-review/v1",
+  "source_commit": "ad0561a33e778081005f0e192f0a3b2ec0a9d840",
+  "review_mode": "read-only source, frozen mappings, actual wheel and installed module bytes, retained XML",
+  "provider_model_calls": 0,
+  "production_source_edits": 0,
+  "blocking_findings": [
+    {
+      "priority": "P2",
+      "title": "Keyed native file bootstrap still imports an unavailable Harness package",
+      "file": "src/rpe_harness/integrations/hermes_bootstrap.py",
+      "lines": [
+        293,
+        294
+      ],
+      "trigger": "Native clean execution with RPE_HERMES_NATIVE_EXECUTION_KEY_FD and only installed Hermes on PYTHONPATH; rpe_harness unimportable at entry",
+      "observed": "ModuleNotFoundError: No module named rpe_harness before any network attempt",
+      "effect": "Cold native execution cannot initialize its signed real-helper proof through the actual file bootstrap entry",
+      "evidence": "independent-preflight/native-key-entry-probe/result.json",
+      "test_gap": "New real entry test has no key FD; existing keyed constructor smoke inserts Harness root into sys.path before bootstrap"
+    }
+  ],
+  "production_changed_modules": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "module_counts": {
+    "initial_freeze": 88,
+    "final_freeze": 88,
+    "current": 88,
+    "wheel": 88,
+    "installed": 88
+  },
+  "module_bytes_all_equal": true,
+  "wheel_path_inspected": "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/wheels/rpe_harness-1.13.0-py3-none-any.whl",
+  "wheel_sha256_actual": "274353de1275bc0a5fb3cf100e16bc40ba52907207e4ba726d657a0a6675dace",
+  "wheel_sha256_recorded": "274353de1275bc0a5fb3cf100e16bc40ba52907207e4ba726d657a0a6675dace",
+  "wheel_sha256_matches": true,
+  "installed_outside_checkout": true,
+  "installed_source_editable": false,
+  "package_xml": {
+    "testcases": 156,
+    "passed": 156,
+    "failures_or_errors": [],
+    "skips": [],
+    "native_entry_cases": [
+      "test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import"
+    ],
+    "review_finish_cases": [
+      "test_installed_hermes_native_turn_stops_after_proposal_without_second_provider_request",
+      "test_installed_cold_review_finishes_after_four_native_provider_requests[skill_review0]"
+    ]
+  },
+  "entry_guard_review": "Only review mode imports the Harness review-finish adapter; non-review startup reaches installed CLI without importing Harness as a package. Existing review-mode finalization remains exercised.",
+  "new_test_scope": "Actual file-loaded bootstrap with Harness unimportable at entry; real sandbox and installed AIAgent constructor; only CLI final dispatch callback replaced; socket.connect denied; zero attempted network/provider calls. It proves entry readiness, not a real provider session outcome.",
+  "public_contract_hashes_unchanged": true,
+  "runtime_limits": [
+    "No complete-delivery verifier executed; final comparison results were incomplete at review time",
+    "Recorded XML and installed constructor readiness do not attest formal model correctness or exclusive artifact authorship"
+  ],
+  "report_script_only_compatibility_edit": "final-wheel-proof installed_import_path/source_editable/source_wheel_installed_modules_equal accepted as explicit outside-checkout proof in addition to legacy installed_outside_checkout flag",
+  "production_source_changed_after_commit": false,
+  "delivery_report_wheel_proof_checked": {
+    "path": "reports/v1.13.0/validation/final-wheel-proof.json",
+    "modules_equal_raw_proof": true,
+    "sha256_equal_raw_proof": true,
+    "installed_outside_checkout": true,
+    "modules_verified": 88
+  },
+  "assessment": "The non-keyed review-mode import regression is fixed, but actual keyed native execution entry remains blocked. The earlier no-blocker assessment in this report was withdrawn after the bounded direct entry probe.",
+  "nonkeyed_native_entry_verified": true,
+  "keyed_native_entry_verified": false,
+  "actual_entry_probe": {
+    "dummy_key_only": true,
+    "provider_calls": 0,
+    "network_attempts": 0,
+    "correct_harness_import_root_environment_present": true,
+    "entry_completed": false,
+    "exception_type": "ModuleNotFoundError",
+    "exception": "No module named rpe_harness"
+  }
+}

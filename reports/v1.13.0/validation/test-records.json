@@ -1,0 +1,64 @@
+{
+  "records": {
+    "bootstrap_post_initial": {
+      "file": "bootstrap-native-clean-final.xml",
+      "passed": 34,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "final_keyed_native_entry": {
+      "file": "bootstrap-keyed-green-final.xml",
+      "passed": 2,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "final_package": {
+      "file": "package-final-delivery.xml",
+      "passed": 157,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "native_close_race": {
+      "file": "native-close-race-green.xml",
+      "passed": 54,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "native_preconditions": {
+      "file": "native-close-preconditions.xml",
+      "passed": 9,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "package_before_keyed_entry_fix": {
+      "file": "package-delivery.xml",
+      "passed": 156,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "package_before_native_entry_fix": {
+      "file": "package-final.xml",
+      "passed": 152,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "review_flow": {
+      "file": "review-flow-final.xml",
+      "passed": 107,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "runner": {
+      "file": "runner-final.xml",
+      "passed": 39,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "source_full_suite": {
+      "file": "full-suite.xml",
+      "passed": 1842,
+      "skipped": 7,
+      "subtests_passed": 3
+    }
+  }
+}

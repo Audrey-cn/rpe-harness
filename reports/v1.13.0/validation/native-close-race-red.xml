@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.266" timestamp="2026-10-15T13:59:06.254686+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_native_process_evidence" name="test_observer_drains_registered_kernel_exit_before_joining_after_tool_returns" time="0.219"><failure message="AssertionError: {'kind': 'native_helper_process_observation', 'verified': False, 'proof_kind': 'darwin_kernel_process_exit', 'process_config_sha256': '955f894e1051dfbca8ec71af6193c40a8fa2ec43f2e6e1ba742cb565a842a812', ...}&#10;assert (None == 0)&#10; +  where None = &lt;built-in method get of dict object at 0x108fa8a80&gt;('process_returncode')&#10; +    where &lt;built-in method get of dict object at 0x108fa8a80&gt; = {'kind': 'native_helper_process_observation', 'verified': False, 'proof_kind': 'darwin_kernel_process_exit', 'process_config_sha256': '955f894e1051dfbca8ec71af6193c40a8fa2ec43f2e6e1ba742cb565a842a812', ...}.get">process_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/native-close-race-red/test_observer...se-race-red/test_observer_drains_registere0/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', '--sheet', ...])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108d28b00&gt;
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    def test_observer_drains_registered_kernel_exit_before_joining_after_tool_returns(process_case, monkeypatch):
+        """Delay real queued exit delivery until the closing bounded kernel wait.
+    
+        This deterministically reproduces scheduler timing where native terminal has
+        returned while an already registered helper's exit notification is pending.
+        No process event or exit status is fabricated by the scheduling adapter.
+        """
+        module = process_module()
+        original_kqueue = module.select.kqueue
+        class DeferredExitQueue:
+            def __init__(self):
+                self.actual = original_kqueue()
+                self.deferred = []
+            def control(self, changes, max_events, timeout=None):
+                if timeout and self.deferred:
+                    rows, self.deferred = self.deferred[:max_events], self.deferred[max_events:]
+                    return rows
+                rows = self.actual.control(changes, max_events, timeout)
+                if timeout == 0 and max_events:
+                    self.deferred.extend(row for row in rows if row.filter == module.select.KQ_FILTER_PROC)
+                    return [row for row in rows if row.filter != module.select.KQ_FILTER_PROC]
+                return rows
+            def close(self): self.actual.close()
+            def __getattr__(self, name): return getattr(self.actual, name)
+        monkeypatch.setattr(module.select, 'kqueue', DeferredExitQueue)
+        config, argv = process_case
+        child, rows = execute(config, argv)
+        assert child.returncode == 0
+        row, = rows
+&gt;       assert row.get('process_returncode') == 0 and row['verified'] is True, row
+E       AssertionError: {'kind': 'native_helper_process_observation', 'verified': False, 'proof_kind': 'darwin_kernel_process_exit', 'process_config_sha256': '955f894e1051dfbca8ec71af6193c40a8fa2ec43f2e6e1ba742cb565a842a812', ...}
+E       assert (None == 0)
+E        +  where None = &lt;built-in method get of dict object at 0x108fa8a80&gt;('process_returncode')
+E        +    where &lt;built-in method get of dict object at 0x108fa8a80&gt; = {'kind': 'native_helper_process_observation', 'verified': False, 'proof_kind': 'darwin_kernel_process_exit', 'process_config_sha256': '955f894e1051dfbca8ec71af6193c40a8fa2ec43f2e6e1ba742cb565a842a812', ...}.get
+
+tests/test_native_process_evidence.py:218: AssertionError</failure></testcase></testsuite></testsuites>

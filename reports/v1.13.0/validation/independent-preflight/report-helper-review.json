@@ -1,0 +1,30 @@
+{
+  "schema_version": "rpe.v113-report-helper-review/v1",
+  "total_verifier_invoked": false,
+  "script_sha256": "55b44ec0c8a90248f3d2b26bbc0813192023b06921bef5e7056bd979fabb8c01",
+  "helper_tests_passed": 6,
+  "initial_phase_count": 20,
+  "supplement_phase_count": 25,
+  "all_phases_counted_once": true,
+  "source_ledgers_unchanged": true,
+  "saved_combined_costs_equal": true,
+  "known_total_tokens": 233383,
+  "whole_total_tokens": null,
+  "known_api_requests": 34,
+  "whole_api_requests": null,
+  "audit_terminal_subtype": "error_max_turns",
+  "audit_stop_reason": "max_tokens",
+  "audit_verdict": null,
+  "audit_limit_observations": {
+    "completed_sessions": 0,
+    "num_turns": 2,
+    "output_tokens": 1200,
+    "requested_turn_limit_adhered": false,
+    "aggregate_output_above_requested_figure": false,
+    "time_limit_adhered": true,
+    "cli_estimated_dollar_limit_adhered": true,
+    "provider_api_requests": null,
+    "per_request_output_limit_enforcement": null
+  },
+  "provider_model_calls": 0
+}

@@ -1,0 +1,109 @@
+{
+  "schema_version": "rpe.v113-independent-whole-branch-review/v1",
+  "reviewer": "independent Codex subagent",
+  "mode": "read-only source and local deterministic or installed-tool evidence",
+  "source_edits_by_reviewer": 0,
+  "provider_model_calls_by_reviewer": 0,
+  "blocking_findings": [],
+  "p1_p2_findings": [],
+  "assessment": "No remaining blocking source issue found in reviewed branch. Ready for source freeze after root full suite and required installed checks pass. This review is not a formal model experiment result.",
+  "reviewed_requirements": {
+    "model_quote_xor": "oneOf applies only to model-facing requirements schema; persisted exact matching dual-field rows remain compatible and mismatches remain rejected",
+    "durable_native_turn_finish": "receipt-validated proposal then installed post-tool end_turn seam; strict prior API sequence and sole-tool policy remain enforced; invalid earlier multicall still blocks; missing or invalid callbacks cannot signal success",
+    "finite_experiment": "four fresh paired cases; three production plus one missing-key probe; no model pilot; eight consumed-once draft sessions; at most three native production execution sessions; v113 portable verifier pins counts and caps; old profile gates unchanged",
+    "actual_helper_process_exit": "Darwin libproc process identity, observed argv/startup env/cwd/stdout inode, kqueue real exit status; frozen interpreter/helper/input and vnode observations; output identity plus independent business oracle",
+    "receipt_authentication": "per-session random32byte HMAC key consumed through inherited pipe before tools; file read/write denied inside sandbox; persisted signatures verified outside sandbox; DB or model-readable configuration cannot alone mint a verified exit",
+    "bounded_cleanup": "percall60second observer, at most512descendants and32argv,1MiB procargs and32MiB regular-file reads, bounded readiness/join; duplicate or overlapping tools and missing or short processes fail closed; parent process cleanup retained"
+  },
+  "resolved_review_findings": [
+    {
+      "issue": "initial observer guard rejected clean native execution caller",
+      "resolution": "guard now requires native-only clean contract; actual constructor sandbox smoke passed"
+    },
+    {
+      "issue": "native ABI parse struct.error could escape observer error recording",
+      "resolution": "inner and outer run catches now mark failure"
+    },
+    {
+      "issue": "public compact gate lost scope and exit details",
+      "resolution": "v113 native_execution_summary retains bounded safe exit and artifact-binding fields"
+    }
+  ],
+  "independent_verification": [
+    {
+      "result": "59 passed, 2 installed smokes deselected in3.34s",
+      "scope": "v113 and v112 runner, quote contract and review finish"
+    },
+    {
+      "result": "51 passed,2 explicitly opt-in installed smokes skipped in12.17s",
+      "scope": "native process and native evidence tests"
+    },
+    {
+      "result": "6 passed in0.67s",
+      "scope": "latest v113 runner including sanitized process summary"
+    },
+    {
+      "result": "git diff --check clean",
+      "scope": "tracked branch changes"
+    },
+    {
+      "result": "all six extraction attempts denied EPERM",
+      "scope": "actual macOS sandbox with fresh dummy key: direct read,hardlink,symlink,key rename,parent rename,normalized path alias",
+      "evidence": "key-alias-probe/result.json"
+    },
+    {
+      "result": "injected expected artifact rejected before helper proof",
+      "scope": "sitecustomize attempted environment-key tampering then expected-byte output and exit0 without helperbody; observed_verified false",
+      "evidence": "startup-env-tamper/result.json"
+    }
+  ],
+  "installed_evidence_inspected": {
+    "review_flow_final": "107 passed in67.35s; real installed AIAgent one-request and cold four-request loops with only provider stub; durable on_session_end and zero reporting API calls",
+    "native_constructor_result": "completed true,exit0,observer_errors0,cleanup_complete true",
+    "native_constructor_processes": {
+      "shell_returncodes": [
+        0,
+        120,
+        0,
+        0
+      ],
+      "kernel_returncodes": [
+        0,
+        120,
+        120,
+        null
+      ],
+      "signed_receipts": 4,
+      "key_read_write_denied": true,
+      "key_fd_consumed": true,
+      "startup_injection_rejected": true,
+      "provider_calls": 0
+    }
+  },
+  "remaining_limits": [
+    "OS argv and environment are local observations, not immutable script-body or remote runtime attestation",
+    "sampled fast processes may be missed and then provide no positive receipt",
+    "kernel exit plus final stdout inode binding does not establish exclusive output-byte authorship; separate final business oracle is required",
+    "portable public verification checks supplied record arithmetic, source text, artifact correctness and declared acceptance consistency; private runtime HMAC verification was local before cleanup",
+    "CLI max-turns and output-token request settings are not verified provider hard caps; preserve actual reported usage, turn deviations and unknown physical API count",
+    "full root suite, installed wheel validation and actual finite formal model run remain separate work by parent"
+  ],
+  "source_sha256": {
+    "pyproject.toml": "dee1d932bce9934350f0de2ced51a4b80f78a58d2e7715c3fbf918e5a87e614e",
+    "src/rpe_harness/__init__.py": "3688a119b599866008584c29b387985734c1ca97a735b85c228ef2bb216c0b2f",
+    "src/rpe_harness/experiments/review_v111_comparison.py": "82e3f9a9e284a47094cd195fc786df90f32ffdbe299dbd77dbee6b303d1e02c6",
+    "src/rpe_harness/experiments/review_v113_comparison.py": "33d97d403478ec4cdf57088a65cdf40a339cfacf7f587a2b2f54c51e94b42a00",
+    "src/rpe_harness/experiments/review_native_evidence.py": "4ea9711b0d9e9b0a0f8febdf075e8ced9c12afa124e5865e26a6f5b1ec8812a6",
+    "src/rpe_harness/integrations/hermes.py": "4918c8aca7fe2e16bc282eec43e55717cdc073b3f2bca6521074048abc4d3a72",
+    "src/rpe_harness/integrations/hermes_bootstrap.py": "273f1fc9e6ae0b2a4a66c202e8f15cf3b490a461636eadc4a41b0488cf1f9103",
+    "src/rpe_harness/integrations/hermes_review.py": "e0c91b2c2451fead9658c7873bfa3080838e4137e74d4ffa9f1b9b7ef647e565",
+    "src/rpe_harness/integrations/hermes_review_finish.py": "3aaf49327e82d15ac899262a08517b398d8a110fbdebbb245dbcf0a5fed876e4",
+    "src/rpe_harness/integrations/hermes_session.py": "7ad1d5142cb5da17a1db5b0ed7550e448aa0d7a424714359594dfedd77a80186",
+    "src/rpe_harness/integrations/hermes_native_process.py": "bfaad62c2c037f8619d54ea35a21a6dc06031e1383c2cf77c2242a73abd3416e",
+    "tests/test_hermes_review_finish.py": "90098298903a3f1985ab7a68328d4190cc84d1778b55240e30bc70605d9878b9",
+    "tests/test_native_process_evidence.py": "733bba8982228e81ccfd9fe3d08933be1b45524a6d8c7d07833993ad1c65f55b",
+    "tests/test_review_native_evidence.py": "c0446bbba64bc9858209b8e9192252f51c8f309012d3b772b118b8effd3a8a87",
+    "tests/test_review_quote_contract.py": "980cee162d70ff3e42333075915c45753fb5719d756e833ea74079dd24728651",
+    "tests/test_review_v113_comparison.py": "8a326232ee8f289450723aeea97a144d70f9b4ea71d99111ee54f09294b80054"
+  }
+}

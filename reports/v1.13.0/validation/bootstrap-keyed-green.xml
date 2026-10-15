@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="4.827" timestamp="2026-10-15T14:38:22.390397+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_hermes_bootstrap" name="test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import[True]" time="1.431"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1016, in _init_openai_client&#10;      agent.client = agent._create_openai_client(client_kwargs, reason=&quot;agent_init&quot;, shared=True)&#10;                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py&quot;, line 22, in forwarder&#10;      return lazy_attr(module, name)(self, *args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py&quot;, line 2091, in create_openai_client&#10;      client = process_bootstrap.OpenAI(**client_kwargs)&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 124, in __call__&#10;      return _load_openai_cls()(*args, **kwargs)&#10;             ~~~~~~~~~~~~~~~~^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py&quot;, line 114, in _load_openai_cls&#10;      from openai import OpenAI as _OPENAI_CLS_CACHE&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py&quot;, line 9, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py&quot;, line 5, in &lt;module&gt;&#10;      from .batch import Batch as Batch&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py&quot;, line 6, in &lt;module&gt;&#10;      from .._models import BaseModel&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py&quot;, line 39, in &lt;module&gt;&#10;      from pydantic.fields import FieldInfo&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py&quot;, line 23, in &lt;module&gt;&#10;      from . import types&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py&quot;, line 34, in &lt;module&gt;&#10;      from ._internal import _fields, _internal_dataclass, _utils, _validators&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py&quot;, line 17, in &lt;module&gt;&#10;      from pydantic import PydanticDeprecatedSince211&#10;    File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 1431, in _handle_fromlist&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py&quot;, line 446, in __getattr__&#10;      module = import_module(module_name, package=package)&#10;  TypeError: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;  During handling of the above exception, another exception occurred:&#10;  &#10;  Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 44, in &lt;module&gt;&#10;      assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0&#10;             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/src/rpe_harness/integrations/hermes_bootstrap.py&quot;, line 307, in main&#10;      return importlib.import_module(&quot;hermes_cli.main&quot;).main()&#10;             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^&#10;    File &quot;&lt;string&gt;&quot;, line 29, in constructor_main&#10;      agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',&#10;          provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,&#10;          quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,&#10;          session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/run_agent.py&quot;, line 288, in __init__&#10;      init_agent(self, **init_kwargs)&#10;      ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 2435, in init_agent&#10;      _build_client(agent, api_key, base_url, fallback_model)&#10;      ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1041, in _build_client&#10;      _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)&#10;      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.hermes/hermes-agent/agent/agent_init.py&quot;, line 1025, in _init_openai_client&#10;      raise RuntimeError(f&quot;Failed to initialize OpenAI client: {e}&quot;)&#10;  RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}&quot;)\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/bootstrap-keyed-green/test_installed_native_clean_fi0')
+with_key = True
+
+    @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+                        reason='actual macOS installed Hermes native-clean startup')
+    @pytest.mark.parametrize('with_key', [False, True])
+    def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path, with_key):
+        from rpe_harness.integrations.hermes_session import prepare_home, sandbox_profile
+        hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
+        interpreter = hermes_root / '.venv/bin/python'
+        if not interpreter.is_file():
+            pytest.skip('installed Hermes runtime unavailable')
+        workspace = tmp_path / 'workspace'
+        workspace.mkdir()
+        home = prepare_home(tmp_path / 'native-session', workspace, tmp_path / 'runs.sqlite',
+            tool_enabled=False, public_contract='review', preserve_native_tool_search=True,
+            settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'provider-free-key',
+                      'base_url': 'https://example.invalid/v1'})
+        (home / '.no-bundled-skills').touch()
+        for name in ('runtime', 'cache', 'tmp'):
+            (home / name).mkdir()
+        environment = {key: value for key, value in os.environ.items() if key in {
+            'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
+        environment.update(HOME=str(home), HERMES_HOME=str(home), XDG_CACHE_HOME=str(home / 'cache'),
+            HERMES_RUNTIME_DIR=str(home / 'runtime'), TMPDIR=str(home / 'tmp'),
+            HERMES_SAFE_MODE='0', HERMES_ENABLE_PROJECT_PLUGINS='0', HERMES_DISABLE_LAZY_INSTALLS='1',
+            PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(hermes_root),
+            RPE_HERMES_INSTALL_ROOT=str(hermes_root), RPE_HERMES_ENTRY_MODE='optional',
+            RPE_HERMES_TOOL_ENABLED='0', RPE_HERMES_DB=str(tmp_path / 'runs.sqlite'),
+            RPE_HERMES_WORKSPACE=str(workspace),
+            RPE_HARNESS_IMPORT_ROOT=str(BOOTSTRAP_PATH.parents[2]),
+            RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'))
+        profile = tmp_path / 'native-clean.sb'
+        profile.write_text(sandbox_profile([tmp_path], Path.home() / '.hermes', hermes_root,
+            tmp_path / 'runs.sqlite', read_roots=[interpreter.parent.parent, Path.home() / '.hermes/tools'],
+            native_import_root=BOOTSTRAP_PATH.parents[2],
+            owner_read_scope=(tmp_path.parent, [tmp_path])))
+        program = r'''import importlib.util,json,os,socket,subprocess,sys
+    network_attempts=[]
+    def deny_network(self,address):
+        network_attempts.append(True)
+        raise AssertionError('network disabled in native-clean constructor smoke')
+    socket.socket.connect=deny_network
+    assert importlib.util.find_spec('rpe_harness') is None,'Harness unexpectedly importable at native entry'
+    spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.argv[1])
+    bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+    initial_pythonpath=os.environ.get('PYTHONPATH')
+    key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD']) if sys.argv[2]=='key' else None
+    actual_constructor_called=[]
+    def constructor_main():
+        assert os.environ.get('PYTHONPATH')==initial_pythonpath
+        assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+        if key_fd is not None:
+            assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+            try: os.fstat(key_fd)
+            except OSError: pass
+            else: raise AssertionError('key descriptor was not closed')
+            from rpe_harness.integrations import hermes_native_process as process
+            assert process._SIGNING_KEY==b'K'*32
+            assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+        probe=subprocess.run([sys.executable,'-B','-c',
+            "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],
+            capture_output=True,text=True,timeout=5)
+        assert probe.returncode==0,probe.stderr
+        from run_agent import AIAgent
+        agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+            provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+            quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+            session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+        assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
+        assert not {'rpe_propose','rpe_task','rpe_confirm'} &amp; agent.valid_tool_names
+        actual_constructor_called.append(True)
+        return 0
+    # Replace only final CLI dispatch when bootstrap imports it, after consuming any key FD.
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name):
+        module=original_import(name)
+        if name=='hermes_cli.main': module.main=constructor_main
+        return module
+    bootstrap.importlib.import_module=dispatch
+    assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+    assert actual_constructor_called==[True] and network_attempts==[]
+    print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
+        'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0,
+        'key_requested':key_fd is not None,'key_fd_consumed':key_fd is not None,'child_harness_importable':False}))
+    '''
+        key_descriptor = None
+        if with_key:
+            key_descriptor, writer = os.pipe()
+            os.write(writer, b'K' * 32)
+            os.close(writer)
+            environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_descriptor)
+        try:
+            child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+                '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key'],
+                cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
+                pass_fds=(key_descriptor,) if with_key else ())
+        finally:
+            if key_descriptor is not None:
+                os.close(key_descriptor)
+        (tmp_path / 'native-clean-bootstrap.stderr.log').write_text(child.stderr)
+&gt;       assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
+E       AssertionError: Traceback (most recent call last):
+E           File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1016, in _init_openai_client
+E             agent.client = agent._create_openai_client(client_kwargs, reason="agent_init", shared=True)
+E                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/lazy_forward.py", line 22, in forwarder
+E             return lazy_attr(module, name)(self, *args, **kwargs)
+E                    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/agent_runtime_helpers.py", line 2091, in create_openai_client
+E             client = process_bootstrap.OpenAI(**client_kwargs)
+E           File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 124, in __call__
+E             return _load_openai_cls()(*args, **kwargs)
+E                    ~~~~~~~~~~~~~~~~^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/process_bootstrap.py", line 114, in _load_openai_cls
+E             from openai import OpenAI as _OPENAI_CLS_CACHE
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/__init__.py", line 9, in &lt;module&gt;
+E             from . import types
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/__init__.py", line 5, in &lt;module&gt;
+E             from .batch import Batch as Batch
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/types/batch.py", line 6, in &lt;module&gt;
+E             from .._models import BaseModel
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/openai/_models.py", line 39, in &lt;module&gt;
+E             from pydantic.fields import FieldInfo
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/fields.py", line 23, in &lt;module&gt;
+E             from . import types
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/types.py", line 34, in &lt;module&gt;
+E             from ._internal import _fields, _internal_dataclass, _utils, _validators
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/_internal/_fields.py", line 17, in &lt;module&gt;
+E             from pydantic import PydanticDeprecatedSince211
+E           File "&lt;frozen importlib._bootstrap&gt;", line 1431, in _handle_fromlist
+E           File "/Users/audrey/.hermes/hermes-agent/.venv/lib/python3.14/site-packages/pydantic/__init__.py", line 446, in __getattr__
+E             module = import_module(module_name, package=package)
+E         TypeError: dispatch() got an unexpected keyword argument 'package'
+E         
+E         During handling of the above exception, another exception occurred:
+E         
+E         Traceback (most recent call last):
+E           File "&lt;string&gt;", line 44, in &lt;module&gt;
+E             assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+E                    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/src/rpe_harness/integrations/hermes_bootstrap.py", line 307, in main
+E             return importlib.import_module("hermes_cli.main").main()
+E                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E           File "&lt;string&gt;", line 29, in constructor_main
+E             agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+E                 provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+E                 quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+E                 session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+E           File "/Users/audrey/.hermes/hermes-agent/run_agent.py", line 288, in __init__
+E             init_agent(self, **init_kwargs)
+E             ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 2435, in init_agent
+E             _build_client(agent, api_key, base_url, fallback_model)
+E             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1041, in _build_client
+E             _init_openai_client(agent, api_key, base_url, fallback_model, _provider_timeout)
+E             ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           File "/Users/audrey/.hermes/hermes-agent/agent/agent_init.py", line 1025, in _init_openai_client
+E             raise RuntimeError(f"Failed to initialize OpenAI client: {e}")
+E         RuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument 'package'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306... {e}")\nRuntimeError: Failed to initialize OpenAI client: dispatch() got an unexpected keyword argument \'package\'\n').returncode
+
+tests/test_hermes_bootstrap.py:458: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal" time="3.308"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 87, in &lt;module&gt;&#10;      raise SystemExit(bootstrap.main(['--help']))&#10;                       ~~~~~~~~~~~~~~^^^^^^^^^^^^&#10;    File &quot;/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/src/rpe_harness/integrations/hermes_bootstrap.py&quot;, line 307, in main&#10;      return importlib.import_module(&quot;hermes_cli.main&quot;).main()&#10;             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^&#10;    File &quot;&lt;string&gt;&quot;, line 61, in smoke&#10;      assert json.loads(Path('output.json').read_text())==json.loads(sys.argv[2])&#10;                                                                     ~~~~~~~~^^^&#10;  IndexError: list index out of range&#10;  &#10;  &#10;assert False is True">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/bootstrap-keyed-green/test_v113_session_...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10bcc0e60&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96/bootstrap-keyed-green/test_v113_session_constructor_0')
+
+    @pytest.mark.skipif(os.environ.get('RPE_RUN_INSTALLED_NATIVE_SMOKE') != '1',
+                        reason='explicit provider-free installed native session smoke')
+    def test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal(helper_execution_protocol, monkeypatch, tmp_path):
+        """Real launcher/sandbox/bootstrap/tools; only CLI provider dispatch is replaced.
+    
+        Direct native hooks use explicit smoke identities. This is runtime readiness,
+        not an API/model success result or a formal comparison trial.
+        """
+        from rpe_harness.integrations import hermes_session as launcher
+        plan, trial, _session, _source, _command = helper_execution_protocol
+        workspace = Path(trial['workspace']); (workspace/'output.json').unlink()
+        case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
+        original_popen = subprocess.Popen
+        program = r'''import importlib.util,json,os,shlex,socket,subprocess,sys
+    from pathlib import Path
+    assert importlib.util.find_spec('rpe_harness') is None,'Harness preloaded at file entry'
+    initial_pythonpath=os.environ.get('PYTHONPATH')
+    key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'])
+    def deny_network(self,address): raise AssertionError('network disabled in keyed native smoke')
+    socket.socket.connect=deny_network
+    spec=importlib.util.spec_from_file_location('actual_keyed_file_bootstrap',sys.argv[1])
+    bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+    
+    def smoke():
+     from rpe_harness.integrations.hermes import register,HostEventStore
+     from rpe_harness.integrations import hermes_native_process as process
+     from tools.terminal_tool import terminal_tool
+     assert process._SIGNING_KEY is not None
+     assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+     assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+     assert os.environ.get('PYTHONPATH')==initial_pythonpath
+     assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+     try: os.fstat(key_fd)
+     except OSError: pass
+     else: raise AssertionError('key descriptor remains open')
+     probe=subprocess.run([sys.executable,'-B','-c',
+      "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],capture_output=True,text=True,timeout=5)
+     assert probe.returncode==0,probe.stderr
+     config_path=Path(os.environ['RPE_HERMES_NATIVE_EXECUTION_CONFIG'])
+     config=json.loads(config_path.read_text())
+     key_path=config_path.parent/'native-execution-auth.key'
+     for mode in ('rb','wb'):
+      try:
+       with key_path.open(mode): pass
+      except PermissionError: pass
+      else: raise AssertionError('native session can access protected receipt key')
+     class Context:
+      def __init__(self): self.hooks={}
+      def register_hook(self,n,c): self.hooks[n]=c
+     context=Context(); register(context)
+     serial=0
+     def invoke(command):
+      nonlocal serial
+      serial+=1
+      ids=dict(session_id='native-process-installed',task_id='native-process-smoke',turn_id='turn',api_request_id='api',tool_call_id=str(serial),tool_name='terminal',args={'command':command})
+      context.hooks['pre_tool_call'](**ids)
+      raw=terminal_tool(command,task_id='native-process-smoke',timeout=20)
+      context.hooks['post_tool_call'](**ids,status='ok',result=raw)
+      return json.loads(raw)
+     argv=[config['helper_python'],'-B',config['helper_path'],config['input_name'],'--json','--sheet',config['parameters']['sheet']]
+     command=shlex.join(argv)+' &gt; output.json'
+     success=invoke(command+'; echo "exit=$?"; wc -c output.json')
+     Path('output.json').unlink()
+     failure=invoke('(ulimit -f 0; '+command+')')
+     Path('output.json').unlink()
+     masked=invoke('(ulimit -f 0; '+command+'); echo exit=0; wc -c output.json')
+     Path('output.json').unlink()
+     injected=Path('injected'); injected.mkdir()
+     (injected/'sitecustomize.py').write_text('import os\nos._exit(0)\n')
+     injection=invoke('PYTHONPATH='+shlex.quote(str(injected.resolve()))+' '+command+'; echo exit=0')
+     Path('output.json').unlink()
+     final=invoke(command)
+     assert final['exit_code']==0,final
+     assert json.loads(Path('output.json').read_text())==json.loads(sys.argv[2])
+     events=HostEventStore(os.environ['RPE_HERMES_DB']).list('native-process-installed')
+     rows=[event for event in events if event['kind']=='native_helper_process_observation']
+     assert len(rows)==5,rows
+     assert rows[0]['verified'] is True and rows[0]['process_returncode']==0,rows
+     assert rows[1]['verified'] is False and rows[1]['process_returncode']!=0,rows
+     assert rows[2]['verified'] is False and rows[2]['process_returncode']!=0,rows
+     assert rows[3]['verified'] is False,rows
+     assert rows[4]['verified'] is True and rows[4]['process_returncode']==0,rows
+     assert success['exit_code']==0 and failure['exit_code']!=0 and masked['exit_code']==0, [success,failure,masked]
+     for row in rows:
+      signature=row['process_receipt_hmac_sha256']
+      body={k:v for k,v in row.items() if k not in {'kind','received_at','source_event_id','ingest_event_id','process_receipt_hmac_sha256'}}
+      assert signature==process.receipt_signature(body,process._SIGNING_KEY),row
+     assert 'rpe_harness.controller' not in sys.modules
+     summary={'provider_calls':0,'native_success':True,'native_failure':True,'masked_failure_rejected':True,'startup_injection_rejected':True,'key_read_write_denied':True,'key_fd_consumed':True,'signed_receipts':5,'business_oracle_matched':True,'child_harness_importable':False,'kernel_returncodes':[r.get('process_returncode') for r in rows],'shell_returncodes':[success['exit_code'],failure['exit_code'],masked['exit_code'],injection['exit_code']]}
+     Path('native-process-smoke-summary.json').write_text(json.dumps(summary))
+     HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'native-process-installed','completed':True})
+     print(json.dumps({'type':'result','session_id':'native-process-installed','text':'provider-free native process smoke'}))
+     return 0
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name):
+     module=original_import(name)
+     if name=='hermes_cli.main': module.main=smoke
+     return module
+    bootstrap.importlib.import_module=dispatch
+    raise SystemExit(bootstrap.main(['--help']))
+    '''
+        def launch(command, *args, **kwargs):
+            if isinstance(command, list) and command[:1] == ['/usr/bin/sandbox-exec']:
+                # Preserve the constructor's sandbox, environment, stdout/stderr,
+                # process group and inherited key FD. Replace provider entry only.
+                command = command[:5] + ['-c', program, command[5], json.dumps(case['expected'])]
+            return original_popen(command, *args, **kwargs)
+        monkeypatch.setattr(launcher.subprocess, 'Popen', launch)
+        monkeypatch.setattr(launcher, '_read_host_settings', lambda *_: {
+            'provider': 'xiaomi', 'model': 'provider-free-smoke', 'base_url': 'https://example.invalid',
+            'api_key': 'unused-native-process-smoke-key'})
+        options = {'skill_id': 'productivity/xlsx', 'helper_python': plan['helper_python'],
+            'helper_python_sha256': plan['environment']['helper_python_identity']['executable_sha256'],
+            'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
+            'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
+            'output_name': case['output_name'], 'parameters': case['parameters']}
+        result = launcher.run_hermes_session('provider-free native process constructor smoke', workspace, trial['db'],
+            tool_enabled=False, owner_root=Path(plan['root'])/'sessions', hermes_root=Path.home()/'.hermes/hermes-agent',
+            catalog_root=plan['catalog_root'], skill_snapshot_id=plan['skill_snapshot_id'], timeout=70,
+            public_contract='clean', native_execution_evidence=options)
+        session = Path(result['session_root'])
+        (tmp_path/'native-process-constructor-result.json').write_text(json.dumps(result, ensure_ascii=False))
+&gt;       assert result['completed'] is True, (session/'stderr.log').read_text()+'\n'+(session/'stdout.jsonl').read_text()
+E       AssertionError: Traceback (most recent call last):
+E           File "&lt;string&gt;", line 87, in &lt;module&gt;
+E             raise SystemExit(bootstrap.main(['--help']))
+E                              ~~~~~~~~~~~~~~^^^^^^^^^^^^
+E           File "/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness/src/rpe_harness/integrations/hermes_bootstrap.py", line 307, in main
+E             return importlib.import_module("hermes_cli.main").main()
+E                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E           File "&lt;string&gt;", line 61, in smoke
+E             assert json.loads(Path('output.json').read_text())==json.loads(sys.argv[2])
+E                                                                            ~~~~~~~~^^^
+E         IndexError: list index out of range
+E         
+E         
+E       assert False is True
+
+tests/test_review_native_evidence.py:608: AssertionError</failure></testcase></testsuite></testsuites>

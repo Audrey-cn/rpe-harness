@@ -1,0 +1,17 @@
+{
+  "allowed_changed_modules": [
+    "integrations/hermes_bootstrap.py"
+  ],
+  "comparison_kind": "same_case_supplement_not_new_sample",
+  "declared_at": 1792044614.555808,
+  "final_registration_sha256": "2a777b448de964924532aeda91e79208a554bd0f5c04306180e9449aa05e430f",
+  "initial_batch_preserved": true,
+  "initial_registration_sha256": "97e65e9ed69b868fda1f68b76355f8d72284b9106ccd5ddb66ec36a04f64fc43",
+  "max_audit_cli_processes": 1,
+  "max_draft_sessions": 16,
+  "max_native_execution_sessions": 6,
+  "original_budget_exceeded": true,
+  "reason": "首批native-clean起草入口在模型调用前因bootstrap无条件导入review适配器而失败；保留首批全部成绩/成本，仅修复模式隔离后进行一次完整四对补充复测，不挑失败项。",
+  "same_business_inputs_not_claimed_byte_identical_across_batches": true,
+  "schema_version": "rpe.v113-budget-amendment/v1"
+}

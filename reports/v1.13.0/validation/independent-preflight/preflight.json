@@ -1,0 +1,25 @@
+{
+  "schema_version": "rpe.v113-cli-readonly-preflight/v1",
+  "provider_calls": 0,
+  "cli_processes_with_model_request": 0,
+  "readonly_cli_help_processes": 2,
+  "installed_cli": "Claude Code 2.1.295",
+  "executable": "/Users/audrey/.local/share/claude/versions/2.1.295",
+  "route_origin": "https://token-plan-cn.xiaomimimo.com",
+  "configured_model": "mimo-v2.6-flash",
+  "credential_present": true,
+  "secret_values_copied": false,
+  "max_turns_public_help_documented": false,
+  "max_budget_usd_print_flag_documented": true,
+  "hard_provider_api_cap_verified": false,
+  "per_request_output_token_cap_verified": false,
+  "recommendation": "one isolated process with tiny frozen blind artifact bundle; preserve actual reported turns, aggregate usage, CLI estimated cost, failures and unknown physical API count; no upgrade or route change",
+  "prior_v112_observed": {
+    "cli_processes": 1,
+    "requested_max_turns": 1,
+    "reported_num_turns": 3,
+    "requested_output_figure": 1200,
+    "reported_aggregate_output_tokens": 2110,
+    "per_request_semantics_unknown": true
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "rpe.v113-initial-boundary-readonly-diagnosis/v1",
+  "provider_calls": 0,
+  "official_records_modified": false,
+  "method": "immutable read-only SQLite and preserved records; no CLI or confirmation invoked",
+  "cases": {
+    "formal-receipt-comma-review": {
+      "record_sha256": "0ab4a62a918ec797df86b6332e0b5e111cb70304dfde382b324ebb2eb4ed621e",
+      "record_error_code": "ValueError",
+      "draft_invocation_verified": true,
+      "draft_faithful": true,
+      "proposal_status": "needs_context",
+      "missing": [
+        "requirements.4.quote"
+      ],
+      "errors": [
+        "source quotes must be nonempty literal substrings"
+      ],
+      "confirmation_rows": 0,
+      "record_sha256_unchanged": true,
+      "requirement_index": 4,
+      "quote": "保留原行顺序",
+      "quote_literal_substring_of_request": false,
+      "exact_request_phrase": "保留首条整行与原行顺序",
+      "exact_request_phrase_present": true,
+      "causal_interpretation": "Parent persisted needs_context for nonliteral quote. The runner show guard requires awaiting_confirmation before calling confirm; saved state is consistent with this pre-confirm guard. The ValueError message itself was not preserved, so it is not claimed observed."
+    },
+    "formal-returns-tabs-review": {
+      "record_sha256": "6258606db03831fe64f7d583f80850e86cdef7abad66912a221aca96640ffe97",
+      "record_error_code": null,
+      "draft_invocation_verified": true,
+      "draft_faithful": false,
+      "proposal_status": "awaiting_confirmation",
+      "missing": [],
+      "errors": [],
+      "confirmation_rows": 0,
+      "record_sha256_unchanged": true,
+      "actual_encoding": "UTF-8",
+      "frozen_expected_encoding": "utf-8",
+      "delimiter_codepoints": [
+        9
+      ],
+      "causal_interpretation": "Persisted proposal is awaiting_confirmation, but the fixed experiment semantic_decision compares encoding spelling with exact_json. UTF-8 differs from utf-8; real TAB is correct. No candidate normalization or rescoring performed."
+    }
+  }
+}
