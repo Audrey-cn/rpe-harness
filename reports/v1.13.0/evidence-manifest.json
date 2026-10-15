@@ -1,6 +1,6 @@
 {
   "sha256": {
-    "1.13开发与验收报告.md": "3f39f7d64aca47c536434ee3b8466bc7cdbbf9701d59176a68fb5d38f96be0e3",
+    "1.13开发与验收报告.md": "3cb979720e8afdb70856742f56c5ae064e93a17f17366da6f6558b82926fb011",
     "agent-audit/bundle.json": "3ad94cdc2eae9fcf227597c82e3d2ea819f96c19fddf13f3136b42e808a32780",
     "agent-audit/claim.json": "214c7a3944cf05d30ae24d7ce37805b423455033f3da58ebfa47007f337c603b",
     "agent-audit/mapping.json": "ac63bcdc468d1f436c3587440cac34454d1685f9ab0ef11e8e0ae384c92601df",
@@ -8,8 +8,9 @@
     "agent-audit/terminal-observation.json": "d9a7baed3217f713d7ced3138a73d50d7f33e9bb2d197a91b3580c6fafad8dc0",
     "all-observed-costs.json": "518032cdde132b656a9719750b2fca6a4853dbaf794056761f3c3c5e92201005",
     "budget-amendment.json": "f4f13ca322e158a662fb82855297bc7a03261deb9149f08e582de71dbfdae6e0",
+    "cleanup.json": "ea1b3bf3a7695eea72d2e5fbea0720019ecfaa752c38dbd4f92aecac7a28adb6",
     "delivery-source-freeze.json": "16bf39b60996a566be68e5504dca7a1581d38ab4b5cc98de929aeaef9fcb0c01",
-    "development-ledger.json": "f5066ac568c23c696908e0095029afad3f209235a2ea727049c46fa6a2bd473c",
+    "development-ledger.json": "d7c9cdd8fd01570b70f5394ea7e31780456953561b5ae282232b19bbde17a102",
     "evidence-initial/artifacts/formal-cold-shipment-native/manifest.json": "e945d2c48005a945eeeaba5baccdb45e1ae8b5108591cdbf3fd894676a7a19ec",
     "evidence-initial/artifacts/formal-cold-shipment-review/manifest.json": "fe18645b0c8074759ee1f7303c0c5a6f74a11c688a0f1c36ea71e36bd78f95a9",
     "evidence-initial/artifacts/formal-cold-shipment-review/output.json": "5a6f27454c33d3617ad907a041b9d018e77727e52e7812b9ed44754d8503d72e",
@@ -84,13 +85,17 @@
     "validation/package-final-keyed.xml": "9e200821370effa877abb4236b6218860bf03a5758c0b670e42aa82165eab111",
     "validation/package-final.xml": "278effb2cee74650f8d2127ed1c19abbb72e6d7eafdde8c764f055781f5378b8",
     "validation/package-initial.xml": "cc57ed23ad505a1f710ba4faf620f0f0d98abe52dfa18a628b092fe63355d647",
-    "validation/post-cleanup-preservation.py": "55a949b2cc773240364ca6c6b5af18acc2d3e4396f20e4308f09f6276e56c6fa",
-    "validation/preservation-baseline.json": "b5bdd3399cbc4f3b8a2834bf5baea68fbade69030e85e716baad4fa04b812f32",
+    "validation/post-cleanup-preservation.py": "71fa23a77c320d93c3e9bfa7f355b0e6b8ef8edb0bfa12e132046878d0c1c26d",
+    "validation/preservation-after-cleanup-initial.json": "53cfa00d7f079ed4887108a42dcfa18d3bd4caf3d504ec943e91560f0a53dee2",
+    "validation/preservation-after-cleanup.json": "66542e22b858938995edcee51aea1018f9b89851084df304f1304dd74fdd95d7",
+    "validation/preservation-baseline-original.json": "b5bdd3399cbc4f3b8a2834bf5baea68fbade69030e85e716baad4fa04b812f32",
+    "validation/preservation-baseline.json": "b7983bc57cd8ddc9586b94204b5f6a3cc63c347275bfc40e6b5e2b9b23a694ca",
     "validation/preservation-before-cleanup.json": "835f4b8f270795145f2161285bbf820af434994da0d2a6ee0da066530975a4e0",
     "validation/retained-secrets-final.json": "d61605c4305b6f44d749476b3760e2aee98ca3628798f9379db8841b1e4219fd",
     "validation/review-flow-final.xml": "9cec11185dc32a225fc6a44cc69c63a273575fb61f46e9e451e23dad138e7996",
     "validation/run-independent-audit.py": "e2a1b4b4517cfabdfcc41eb2b8f232d40de0e0a797f8155db86d60ba0dcd07ef",
     "validation/runner-final.xml": "989cb4bc543604573401b3b8d3f14aea67d1b0409d12656a6c70a0ceda887165",
+    "validation/skill-link-checker-correction.json": "4b13c0e00a5620e13b60d89cb2270f7ab49fb640b1da0d0b49a6ac51f22c31f5",
     "validation/test-records.json": "76ac3bc1ae4563e7fce929440e3e2b413fa4970e613d58913bb6ee739b3b6642",
     "verify_delivery.py": "55b44ec0c8a90248f3d2b26bbc0813192023b06921bef5e7056bd979fabb8c01"
   }

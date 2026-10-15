@@ -23,6 +23,9 @@ import time
 BASELINE = Path('/Users/audrey/项目/rpe-harness/reports/v1.13.0/validation/preservation-baseline.json')
 SCHEMA = 'rpe.post-cleanup-preservation-baseline/v1'
 ERRORS = []
+PREEXISTING_SKILL_LINKS = frozenset(
+    name+'/SKILL.md' for name in ('uaek-agent-enhancement', 'uaek-effort-control',
+        'uaek-memory-management', 'uaek-verification-framework', 'uaek-workflow-guidance'))
 
 
 def sha(raw):
@@ -68,6 +71,49 @@ def fingerprint(path):
         os.close(fd)
 
 
+def fingerprint_preexisting_link(path, recorded, original, goal_started_at):
+    """Verify an explicit old skill link against supplemental topology evidence.
+
+    Link topology was measured after cleanup, not in the original snapshot.
+    Pre-goal link birth/ctime corroborates age; original target hash/size remains
+    the content baseline. This exception never applies to production modules.
+    """
+    path = absolute(path)
+    if any(parent.is_symlink() for parent in path.parents):
+        raise ValueError('preexisting skill link has a linked parent')
+    required = {'target', 'target_resolved', 'mtime_ns', 'ctime_ns', 'birthtime',
+                'target_sha256', 'target_size'}
+    if (type(recorded) is not dict or required-set(recorded)
+            or type(original) is not dict
+            or recorded['target_sha256'] != original['sha256']
+            or recorded['target_size'] != original['size']
+            or type(goal_started_at) not in (int, float) or goal_started_at <= 0):
+        raise ValueError('preexisting link evidence differs from original content baseline')
+    before = path.lstat()
+    if (not stat.S_ISLNK(before.st_mode)
+            or before.st_mtime_ns != recorded['mtime_ns']
+            or before.st_ctime_ns != recorded['ctime_ns']
+            or before.st_birthtime != recorded['birthtime']
+            or not 0 <= before.st_birthtime < goal_started_at
+            or not 0 <= before.st_ctime_ns < goal_started_at * 1_000_000_000
+            or not 0 <= before.st_mtime_ns < goal_started_at * 1_000_000_000
+            or os.readlink(path) != recorded['target']):
+        raise ValueError('preexisting skill link topology or pre-goal times changed')
+    target = path.resolve(strict=True)
+    if target != absolute(recorded['target_resolved']):
+        raise ValueError('preexisting skill link resolved target changed')
+    current = fingerprint(target)
+    after = path.lstat()
+    identity = lambda row: (row.st_dev, row.st_ino, row.st_mode, row.st_size,
+                           row.st_mtime_ns, row.st_ctime_ns, row.st_birthtime)
+    if (identity(before) != identity(after) or os.readlink(path) != recorded['target']
+            or path.resolve(strict=True) != target
+            or current['sha256'] != original['sha256'] or current['size'] != original['size']
+            or current['stable_during_read'] is not True):
+        raise ValueError('preexisting skill link or original target bytes changed')
+    return {**current, 'preexisting_link_verified': True}
+
+
 def inventory(root, suffix=None):
     root = absolute(root)
     if root.is_symlink() or not root.is_dir():
@@ -109,27 +155,40 @@ def checked_files(expected, mutable=()):
     return result
 
 
-def checked_tree(root, expected, *, suffix=None):
+def checked_tree(root, expected, *, suffix=None, preexisting_links=None, goal_started_at=None):
+    preexisting_links = {} if preexisting_links is None else preexisting_links
+    if type(preexisting_links) is not dict or set(preexisting_links)-set(expected):
+        raise ValueError('skill-link allowlist escaped the original content baseline')
     result = {'baseline_count': len(expected), 'checked_count': 0,
-              'changed': [], 'missing': [], 'added': [], 'links': []}
+              'changed': [], 'missing': [], 'added': [], 'links': [],
+              'verified_preexisting_links': [], 'unverified_links': []}
     for relative, wanted in expected.items():
         try:
             path = Path(relative)
             if path.is_absolute() or '..' in path.parts:
                 raise ValueError('tree entry escaped root')
-            current = fingerprint(absolute(root)/path)
+            current = (fingerprint_preexisting_link(absolute(root)/path,
+                preexisting_links[relative], wanted, goal_started_at)
+                if relative in preexisting_links else fingerprint(absolute(root)/path))
             result['checked_count'] += 1
             wanted_sha = wanted['sha256'] if isinstance(wanted, dict) else wanted
             wanted_size = wanted.get('size') if isinstance(wanted, dict) else None
             if (current['sha256'] != wanted_sha or not current['stable_during_read']
                     or wanted_size is not None and current['size'] != wanted_size):
                 result['changed'].append(relative)
+            elif current.get('preexisting_link_verified') is True:
+                result['verified_preexisting_links'].append(relative)
         except FileNotFoundError:
             result['missing'].append(relative)
         except Exception as exc:
+            result['changed'].append(relative)
             error('tree_file', exc, str(Path(root)/relative))
     try:
         names, result['links'] = inventory(root, suffix)
+        # Keep every observed link visible. Only a verified explicit old link
+        # contributes to the original file inventory and can pass tree_ok().
+        names.update(set(result['verified_preexisting_links']) & set(result['links']))
+        result['unverified_links'] = sorted(set(result['links'])-set(result['verified_preexisting_links']))
         result['added'] = sorted(names-set(expected))
         result['missing'] = sorted(set(result['missing']) | (set(expected)-names))
     except Exception as exc:
@@ -275,7 +334,8 @@ def process_snapshot(markers):
 
 
 def tree_ok(value):
-    return not any(value.get(key) for key in ('changed', 'missing', 'added', 'links'))
+    return (not any(value.get(key) for key in ('changed', 'missing', 'added'))
+            and not value.get('unverified_links', value.get('links')))
 
 
 def main():
@@ -302,6 +362,10 @@ def main():
                          'production_root', 'production_files'}
         if required_main-set(baseline['main_repository']) or not baseline['main_repository']['production_files']:
             raise ValueError('main source and original-untracked baseline is incomplete')
+        skill_links = baseline.get('preexisting_skill_links', {})
+        if skill_links and (type(skill_links) is not dict or set(skill_links) != PREEXISTING_SKILL_LINKS
+                            or not set(skill_links) <= set(baseline['skill_files'])):
+            raise ValueError('only the five explicitly recorded preexisting skill links are allowed')
         target_hashes = baseline['actual_test_session_id_sha256']
         if (not target_hashes or len(target_hashes) != len(set(target_hashes))
                 or any(not isinstance(value, str) or not re.fullmatch('[a-f0-9]{64}', value) for value in target_hashes)):
@@ -337,7 +401,11 @@ def main():
     snapshot['prior_reports'] = {'baseline_count': len(report_names),
         'changed': sorted(report_names & set(files['changed'])),
         'missing': sorted(report_names & set(files['missing']))}
-    skills = checked_tree(baseline['skill_root'], baseline['skill_files'])
+    skills = checked_tree(baseline['skill_root'], baseline['skill_files'], preexisting_links=skill_links,
+                          goal_started_at=baseline.get('baseline_observation_started_at'))
+    if skill_links:
+        skills['link_topology_observation'] = 'post_cleanup_supplement_not_initial_topology_snapshot'
+        skills['link_age_corroboration'] = 'birthtime_and_ctime_predate_goal; target_hash_and_size_match_original_baseline'
     snapshot['skills'] = skills
     snapshot['repositories'] = {}
     for name, expected in baseline['repositories'].items():

@@ -8,7 +8,9 @@
     "native-clean bootstrap mode isolation with actual installed constructor smoke",
     "1842 source tests plus3subtests7skips; final independently installed package recorded in validation/test-records.json",
     "initial8trial retained and one whole8trial supplement after explicit amendment",
-    "one isolated CLI audit with raw observed limits and unknown billing retained"
+    "one isolated CLI audit with raw observed limits and unknown billing retained",
+    "owned histories/caches/keys/processes cleaned; native worktree archived",
+    "post-cleanup baseline verified with explicit preexisting skill-link correction and original rejection retained"
   ],
   "final_source_commit": "967c28f6631f482d3daabc383df47a68b04ee676",
   "formal_source_commit": "ad0561a",
@@ -21,9 +23,7 @@
     "semantically equivalent parameter spellings in fixed comparison gate",
     "broader real unattended cross-host evidence"
   ],
-  "pending": [
-    "final post-cleanup checker correction and verification"
-  ],
+  "pending": [],
   "production_source_changes_after_final_formal_freeze": [
     "integrations/hermes_bootstrap.py"
   ],
@@ -31,7 +31,7 @@
     "integrations/hermes_bootstrap.py"
   ],
   "schema_version": "rpe.v113-development/v1",
-  "state": "local validation deliverable; cleanup records and verification determine final completion",
+  "state": "local 1.13 validation release delivered; owned cleanup and post-cleanup preservation verified",
   "validation_outcome": {
     "all_pairs": 4,
     "comparable_pairs": 2,
