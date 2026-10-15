@@ -265,3 +265,92 @@ def native_cold_proof(result, plan, trial):
     except (ValueError, TypeError, KeyError, OSError, sqlite3.Error) as error:
         verdict['errors'].append(str(error) if isinstance(error, ValueError) else type(error).__name__)
     return verdict
+
+
+def evaluate_native_review_execution_v113(result, plan, trial):
+    """Require an authenticated actual helper exit, plus independent business truth.
+
+    Only 1.13 XLSX execution uses this gate. A final artifact is bound to the
+    observed helper's stdout inode and current bytes; this is not an exclusive
+    writer claim. Historical 1.11/1.12 command scoring is unchanged.
+    """
+    from .address_comparison import (_python_metadata, evaluate_native_address_session,
+                                     score_address_artifact)
+    case = next(case for case in plan['cases'] if case['case_id'] == trial['case_id'])
+    if case['capability'] != 'xlsx.inspect' or case['expected_status'] != 'ready':
+        return evaluate_native_address_session(result, plan, trial)
+    verdict = {'verified': False, 'status': 'unverified', 'errors': [],
+               'proof_kind': 'authenticated_darwin_kernel_process_exit', 'receipt_authenticated': False,
+               'artifact_binding': 'final_bytes_on_observed_stdout_inode_not_exclusive_writer'}
+    try:
+        import hmac
+        from ..integrations.hermes_native_process import (_digest, _validate_config, file_snapshot,
+                                                         receipt_signature)
+        posts, _streams = _native_calls(result, trial['db'])
+        session = Path(result['session_root'])
+        if (not session.is_absolute() or session != session.resolve()
+                or not session.is_relative_to(Path(plan['root'])/'sessions')):
+            raise ValueError('native_process_session_not_owned')
+        config = json.loads(read_regular_file(session/'native-execution-config.json', max_bytes=65536))
+        _validate_config(config)
+        expected = {'workspace': str(Path(trial['workspace']).resolve()), 'skill_id': XLSX_SKILL_ID,
+            'snapshot_id': plan['skill_snapshot_id'], 'helper_python': plan['helper_python'],
+            'helper_python_sha256': plan['environment']['helper_python_identity']['executable_sha256'],
+            'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
+            'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
+            'output_name': case['output_name'], 'parameters': case['parameters']}
+        if any(not exact_json(config.get(key), value) for key, value in expected.items()):
+            raise ValueError('native_process_configuration_changed')
+        allowed_sources = [session/'home/skills/xlsx/SKILL.md',
+                           session/'home/skills/productivity/xlsx/SKILL.md']
+        source, helper = Path(config['skill_path']), Path(config['helper_path'])
+        if source not in allowed_sources or helper != source.parent/'scripts/xlsx_read.py':
+            raise ValueError('native_process_original_helper_path_changed')
+        for path, key in [(source, 'skill_sha256'), (helper, 'script_sha256'),
+                          (Path(config['workspace'])/case['input_name'], 'input_sha256')]:
+            if file_snapshot(path).get('sha256') != config[key]:
+                raise ValueError('native_process_frozen_helper_or_input_changed')
+        if _python_metadata(plan['helper_python']) != plan['environment']['helper_python_identity']:
+            raise ValueError('native_process_frozen_interpreter_changed')
+        rows = [event for event in result['events'] if event.get('kind') == 'native_helper_process_observation'
+                and event.get('kernel_exit_observed') is True]
+        if len(rows) != 1 or rows[0].get('verified') is not True:
+            raise ValueError('native_unique_successful_helper_process_exit_missing')
+        receipt = rows[0]
+        key = read_regular_file(session/'native-execution-auth.key', max_bytes=32)
+        signed = {key: value for key, value in receipt.items() if key not in {
+            'kind', 'received_at', 'source_event_id', 'ingest_event_id', 'process_receipt_hmac_sha256'}}
+        signature = receipt.get('process_receipt_hmac_sha256')
+        if (len(key) != 32 or not isinstance(signature, str)
+                or not hmac.compare_digest(signature, receipt_signature(signed, key))):
+            raise ValueError('native_process_receipt_authentication_failed')
+        verdict['receipt_authenticated'] = True
+        if (receipt.get('process_config_sha256') != _digest(config)
+                or receipt.get('process_returncode') != 0 or receipt.get('observer_joined') is not True
+                or receipt.get('overlap') is not False or receipt.get('process_observation_error') != ''):
+            raise ValueError('native_process_receipt_configuration_or_exit_mismatch')
+        matching = [post for post in posts if _same_call(post, receipt)]
+        if len(matching) != 1 or matching[0].get('status') != 'succeeded' or matching[0].get('tool_exit_code') != 0:
+            raise ValueError('native_process_receipt_call_mismatch')
+        pre = [event for event in result['events'] if event.get('kind') == 'pre_tool_call'
+               and _same_call(event, matching[0])]
+        loaded = [post for post in posts if post.get('tool_name') == 'skill_view' and post.get('status') == 'loaded'
+            and post.get('skill_id') == XLSX_SKILL_ID and post.get('snapshot_id') == plan['skill_snapshot_id']
+            and post.get('content_sha256') == plan['skill_sha256'] and post.get('skill_source_path') == str(source)]
+        if len(pre) != 1 or not any(result['events'].index(load) < result['events'].index(pre[0]) for load in loaded):
+            raise ValueError('native_process_original_skill_not_loaded_before_helper')
+        output_path = Path(config['workspace'])/case['output_name']
+        output = file_snapshot(output_path)
+        if (output.get('sha256') != receipt.get('output_sha256') or output.get('size') != receipt.get('output_size')
+                or _digest(output.get('identity')) != receipt.get('output_identity_sha256')
+                or _sha(str(output_path).encode()) != receipt.get('output_path_sha256')):
+            raise ValueError('native_process_final_output_changed')
+        business = score_address_artifact(plan, trial)
+        if business.get('business_correct') is not True or business.get('product_oracle_passed') is not True:
+            raise ValueError('native_process_final_output_business_incorrect')
+        verdict.update(verified=True, status='accepted', process_returncode=0, kernel_exit_observed=True,
+            helper_call_id=receipt['tool_call_id'], arguments_sha256=receipt['arguments_sha256'],
+            output_sha256=receipt['output_sha256'], process_argv_sha256=receipt['process_argv_sha256'])
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
+        verdict['errors'].append(str(error) if isinstance(error, ValueError) else type(error).__name__)
+    return verdict

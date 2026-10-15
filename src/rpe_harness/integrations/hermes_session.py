@@ -215,7 +215,7 @@ def aggregate_usage(events):
 
 def sandbox_profile(write_roots, real_home, install_root=None, database=None, read_roots=(),
                     native_import_root=None, owner_read_scope=None, deny_read_roots=(),
-                    protected_write_roots=()):
+                    protected_write_roots=(), protected_read_roots=()):
     """macOS denies take precedence over allows; scope both writes and signals."""
     def quote(value):
         return json.dumps(str(value), ensure_ascii=False)
@@ -242,7 +242,8 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
         minimal = [import_root, package, package / 'integrations',
                    package / '__init__.py', package / 'integrations/__init__.py',
                    package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py',
-                   package / 'integrations/hermes_native.py']
+                   package / 'integrations/hermes_native.py', package / 'integrations/hermes_native_process.py',
+                   package / 'integrations/hermes_review_finish.py']
         allowed = ' '.join('(literal '+quote(p)+')' for p in minimal)
         native_scope = ('(deny file-read-data (require-all (subpath '+quote(repository)+') '
                         '(require-not (require-any '+allowed+'))))\n')
@@ -287,7 +288,9 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
     return ('(version 1)\n(allow default)\n'
             '(deny file-write* (require-not (require-any '+roots+' (literal "/dev/null"))))\n'
             '(deny signal (require-not (target same-sandbox)))\n'+credentials+'\n'+private_state+'\n'
-            +native_scope+owned_scope+denied_scope+protected_scope+'\n')
+            +native_scope+owned_scope+denied_scope+protected_scope+'\n'+
+            '\n'.join('(deny file-read* (subpath '+quote(Path(p).resolve())+'))'
+                      for p in protected_read_roots)+'\n')
 
 
 def _installed_python(hermes_root):
@@ -549,7 +552,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        required_request=None, max_task_attempts=3, catalog_root=None,
                        skill_snapshot_id=None, context_sources=None,
                        read_isolation_root=None, deny_read_roots=(), max_turns=12,
-                       preserve_native_tool_search=False, public_contract=None, native_evidence=None):
+                       preserve_native_tool_search=False, public_contract=None, native_evidence=None,
+                       native_execution_evidence=None):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -564,6 +568,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('unknown public contract')
     if native_evidence is not None and (tool_enabled or public_contract != 'review'):
         raise ValueError('native evidence requires a native review session')
+    if native_execution_evidence is not None and (tool_enabled or public_contract != 'clean'):
+        raise ValueError('native execution evidence requires a native clean execution session')
     if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
                                   or len(prompt.encode()) > 65536):
         raise ValueError(entry_mode + ' requires only the exact current source, at most 64 KiB; no hidden contract or context')
@@ -687,6 +693,19 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         native_evidence_path.write_text(json.dumps(native_evidence_config(
             workspace, native_evidence, snapshot), ensure_ascii=False, allow_nan=False), encoding='utf-8')
         os.chmod(native_evidence_path, 0o600)
+    native_execution_path = native_execution_key_path = None
+    native_execution_key = None
+    if native_execution_evidence is not None:
+        from .hermes_native_process import native_execution_evidence_config
+        native_execution_path = session_root/'native-execution-config.json'
+        native_execution_path.write_text(json.dumps(native_execution_evidence_config(
+            workspace, native_execution_evidence, snapshot), ensure_ascii=False, allow_nan=False))
+        os.chmod(native_execution_path, 0o600)
+        native_execution_key = os.urandom(32)
+        native_execution_key_path = session_root/'native-execution-auth.key'
+        descriptor = os.open(native_execution_key_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, 'wb') as key_file:
+            key_file.write(native_execution_key)
     if fixed_request is not None:
         fixed_path = session_root/'fixed-request.json'
         descriptor = os.open(fixed_path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
@@ -713,7 +732,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        deny_read_roots=deny_read_roots,
                                        protected_write_roots=(([skill_config_path] if entry_mode == 'review'
                                            or public_contract == 'review' else [home/'skills', skill_config_path])
-                                           if snapshot else []) + ([native_evidence_path] if native_evidence_path else [])))
+                                           if snapshot else []) + ([native_evidence_path] if native_evidence_path else [])
+                                           + ([native_execution_path, native_execution_key_path] if native_execution_path else []),
+                                       protected_read_roots=([native_execution_key_path] if native_execution_key_path else [])))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
@@ -741,6 +762,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         env['RPE_HERMES_SKILL_CONFIG'] = str(skill_config_path)
     if native_evidence_path is not None:
         env['RPE_HERMES_NATIVE_EVIDENCE_CONFIG'] = str(native_evidence_path)
+    if native_execution_path is not None:
+        env['RPE_HERMES_NATIVE_EXECUTION_CONFIG'] = str(native_execution_path)
     if address_config_path is not None:
         env['RPE_HERMES_ADDRESS_CONFIG'] = str(address_config_path)
     if clean_config_path is not None:
@@ -801,8 +824,20 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 db_path=db_path, workspace=workspace, python=sys.executable,extension=extension))
             env.update(broker_environment)
         with stdout_path.open('w') as output, stderr_path.open('w') as errors:
-            process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
-                                       start_new_session=True)
+            key_read = None
+            try:
+                if native_execution_key is not None:
+                    key_read, key_write = os.pipe()
+                    try:
+                        os.write(key_write, native_execution_key)
+                    finally:
+                        os.close(key_write)
+                    env['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_read)
+                process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
+                    start_new_session=True, **({'pass_fds': (key_read,)} if key_read is not None else {}))
+            finally:
+                if key_read is not None:
+                    os.close(key_read)
             owned_descendants = {}
             start_identity = None
             cleanup_errors = []

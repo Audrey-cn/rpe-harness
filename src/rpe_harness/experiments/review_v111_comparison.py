@@ -105,7 +105,7 @@ def _fixtures(directory):
 
 def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
                                 helper_python=None, timeout=180, max_turns=8, profile='review-v111'):
-    if profile not in {'review-v111', 'review-v112'}:
+    if profile not in {'review-v111', 'review-v112', 'review-v113'}:
         raise ValueError('unsupported review profile')
     version = profile.removeprefix('review-')
     started = time.monotonic()
@@ -136,7 +136,10 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
     snapshot = catalog.sync(skill_root)['snapshot_id']
     binding = catalog.trust_adapter(XLSX_SKILL_ID, snapshot)
     skill = catalog.lookup(XLSX_SKILL_ID, snapshot)
-    if profile == 'review-v112':
+    if profile == 'review-v113':
+        from .review_v113_comparison import fixtures
+        cases = fixtures(root/'fixtures')
+    elif profile == 'review-v112':
         from .review_v112_comparison import fixtures
         cases = fixtures(root/'fixtures')
     else:
@@ -153,24 +156,30 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
     if profile == 'review-v112':
         from .review_v112_comparison import pilot_fixture
         pilot_case = pilot_fixture(root/'fixtures', cases)
+    elif profile == 'review-v113':
+        # No provider pilot is budgeted in this version. Keep no unused trial
+        # or fixture in the registered population.
+        pilot_source.unlink()
+        pilot_case = None
     sessions, pilots = [], []
     for index, case in enumerate(cases):
         for arm in _ARMS if index % 2 == 0 else tuple(reversed(_ARMS)):
             sessions.append(_new_trial(root, case, arm, 'formal', helper_python, binding))
-    for arm in _ARMS:
-        pilots.append(_new_trial(root, pilot_case, arm, 'pilot', helper_python, binding))
+    if pilot_case is not None:
+        for arm in _ARMS:
+            pilots.append(_new_trial(root, pilot_case, arm, 'pilot', helper_python, binding))
     for trial in sessions+pilots:
         trial['db'] = str(root/'databases'/(trial['trial_id']+'.sqlite'))
         with sqlite3.connect(database) as source, sqlite3.connect(trial['db']) as target:
             source.backup(target)
-        if trial['case_id'] in {c['case_id'] for c in cases+[pilot_case] if c['use_skills']}:
+        if trial['case_id'] in {c['case_id'] for c in cases+([pilot_case] if pilot_case else []) if c['use_skills']}:
             SkillCatalog(trial['db'], root/'catalog').set_temperature(XLSX_SKILL_ID, 'cold')
     plan = {**arguments, 'schema_version': f'rpe.{version}-comparison/v1', 'profile': profile,
         'db': str(database), 'catalog_root': str(root/'catalog'), 'skill_snapshot_id': snapshot,
         'skill_sha256': skill['skill_sha256'], 'script_sha256': skill['script_sha256'],
         'environment': _environment(helper_python, hermes_root), 'cases': cases, 'pilot_case': pilot_case,
-        'sessions': sessions, 'pilots': pilots, 'max_draft_sessions': 10,
-        'max_native_execution_sessions': 5, 'max_task_attempts': 1,
+        'sessions': sessions, 'pilots': pilots, 'max_draft_sessions': 8 if profile == 'review-v113' else 10,
+        'max_native_execution_sessions': 3 if profile == 'review-v113' else 5, 'max_task_attempts': 1,
         'public_contract_sha256': _sha(_contract().encode()),
         'execution_public_contract_sha256': _sha(_execution_contract(helper_python).encode()),
         'reviewer_kind': _REVIEWER, 'human_confirmation_verified': False,
@@ -187,6 +196,11 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
             'driver and full-trial timers overlap phase timers; never add overlapping timers']}
     if profile == 'review-v112':
         plan['independent_audit_budget'] = {'sessions': 1, 'max_turns': 1, 'timeout': 180, 'cli_estimated_usd': .25}
+    elif profile == 'review-v113':
+        plan['method'] = 'four new paired cases, no model pilot, one attempt; no replay, repair, gold request or old rescoring'
+        plan['independent_audit_budget'] = {'cli_processes': 1, 'timeout': 180,
+            'requested_max_turns': 1, 'requested_max_output_tokens': 1200,
+            'cli_estimated_usd': .25, 'provider_api_limit_verified': False}
     ledger.finish('shared-preregistration', {'status': 'completed', 'elapsed_seconds': time.monotonic()-started})
     return _save(root/'preregistration.json', plan)
 
@@ -204,7 +218,7 @@ def _load(root):
     if _read(root/_MARKER).get('root') != str(root):
         raise ValueError('owned root marker differs')
     plan = _read(root/'preregistration.json')
-    if plan.get('profile') not in {'review-v111', 'review-v112'} or plan['root'] != str(root):
+    if plan.get('profile') not in {'review-v111', 'review-v112', 'review-v113'} or plan['root'] != str(root):
         raise ValueError('not a 1.11 comparison')
     return plan
 
@@ -253,7 +267,7 @@ def _case(plan, trial):
 
 
 def _all_cases(plan):
-    return plan['cases']+[plan['pilot_case']]
+    return plan['cases']+([plan['pilot_case']] if plan.get('pilot_case') else [])
 
 
 def _gate_plan(plan):
@@ -305,7 +319,7 @@ def _native_context(plan, trial):
 
 def _native_prompt(plan, trial):
     case = _case(plan, trial)
-    if plan['profile'] == 'review-v112':
+    if plan['profile'] in {'review-v112', 'review-v113'}:
         from .review_native_evidence import native_review_prompt
         bindings = _native_context(plan, trial)['model_sources'] if case['sources'] else []
         from ..integrations.hermes_session import _installed_python
@@ -403,7 +417,7 @@ def _native_draft(plan, trial, runner):
         deny_read_roots=_denied(plan, trial),
         **({'native_evidence': {'draft_name': 'draft.json',
              **({'cold_skill_id': XLSX_SKILL_ID} if _case(plan, trial)['use_skills'] else {})}}
-            if plan['profile'] == 'review-v112' else {}), **_skill_kwargs(plan, trial))
+            if plan['profile'] in {'review-v112', 'review-v113'} else {}), **_skill_kwargs(plan, trial))
 
 
 def _public_candidate(proposal):
@@ -528,7 +542,7 @@ def _controller_execution_verified(trial, result, proposal, confirmation):
 
 def _observe(plan, trial, ledger, native_runner, public_runner):
     started, case = time.monotonic(), _case(plan, trial)
-    strict = plan['profile'] == 'review-v112'
+    strict = plan['profile'] in {'review-v112', 'review-v113'}
     record = {k: trial[k] for k in ('trial_id', 'phase', 'arm', 'case_id', 'category')}
     record.update(fingerprint=plan['sha256'], status='failed', approved=False, accepted=False,
         draft_invocation_verified=False, execution_verified=False, comparable=False,
@@ -645,22 +659,34 @@ def _approve_and_execute(plan, trial, ledger, proposal, draft, record, native_ru
             'candidate_sha256': _sha(_json(candidate).encode())})
         record['approved'] = True
         prompt = _json(candidate)
+        native_observation = {}
+        if plan['profile'] == 'review-v113':
+            from .review_v113_comparison import native_execution_options
+            native_observation = native_execution_options(plan, trial)
         _executed, observation, error = _model_phase(plan, trial, ledger, 'execute', lambda:
             native_runner(prompt, Path(trial['workspace']), trial['db'], tool_enabled=False,
                 owner_root=Path(plan['root'])/'sessions'/(trial['trial_id']+'-execute'), timeout=120,
                 hermes_root=plan['hermes_root'], max_turns=8, max_task_attempts=1,
                 preserve_native_tool_search=True, public_contract='clean',
-                read_isolation_root=plan['root'], deny_read_roots=_denied(plan, trial), **_skill_kwargs(plan, trial)))
-        if plan['profile'] == 'review-v112':
+                read_isolation_root=plan['root'], deny_read_roots=_denied(plan, trial),
+                **native_observation, **_skill_kwargs(plan, trial)))
+        if plan['profile'] == 'review-v113':
+            from .review_native_evidence import evaluate_native_review_execution_v113
+            gate = evaluate_native_review_execution_v113(observation, _gate_plan(plan), trial)
+        elif plan['profile'] == 'review-v112':
             from .review_native_evidence import evaluate_native_review_execution
             gate = evaluate_native_review_execution(observation, _gate_plan(plan), trial)
         else:
             gate = evaluate_native_address_session(observation, _gate_plan(plan), trial)
+        compact_gate = _compact_draft_gate(gate)
+        if plan['profile'] == 'review-v113':
+            from .review_v113_comparison import native_execution_summary
+            compact_gate.update(native_execution_summary(gate))
         record.update(execution_verified=bool(not error and _host_ok(observation) and gate.get('verified') is True
             and observation.get('original_prompt_sha256') == _sha(prompt.encode())
             and observation.get('public_contract_sha256') == _sha(_execution_contract(plan['helper_python']).encode())
             and _public_identity(observation.get('model_identity')) == record['model_identity']),
-            execution_kind='approved_native', execution_gate=_compact_draft_gate(gate))
+            execution_kind='approved_native', execution_gate=compact_gate)
 
 
 def _verify_trial(plan, trial, record):
@@ -764,7 +790,8 @@ def export_v111_evidence(root, destination):
         {'root', 'skill_root', 'hermes_root', 'helper_python', 'db', 'catalog_root', 'cases', 'pilot_case', 'sessions', 'pilots', 'sha256'}}
     public['controller_registration_sha256'] = plan['sha256']
     public['cases'] = [{k: v for k, v in c.items() if k != 'source_path'} for c in plan['cases']]
-    public['pilot_case'] = {k: v for k, v in plan['pilot_case'].items() if k != 'source_path'}
+    public['pilot_case'] = ({k: v for k, v in plan['pilot_case'].items() if k != 'source_path'}
+                            if plan.get('pilot_case') else None)
     for key in ('sessions', 'pilots'):
         public[key] = [{k: v for k, v in t.items() if k not in {'workspace', 'db', 'oracle_plan'}} for t in plan[key]]
     _save(destination/'preregistration.json', public)
@@ -808,7 +835,7 @@ def verify_review_evidence(destination, *, profile):
         root = _safe_path(destination)
         plan, summary = _read(root/'preregistration.json'), _read(root/'summary.json')
         phases = _read(root/'cost-phases.json')['records']
-        if (profile not in {'review-v111', 'review-v112'} or plan['profile'] != profile or summary['profile'] != profile or
+        if (profile not in {'review-v111', 'review-v112', 'review-v113'} or plan['profile'] != profile or summary['profile'] != profile or
             summary['fingerprint'] != plan['controller_registration_sha256'] or
             summary['reviewer_kind'] != _REVIEWER or summary['human_confirmation_verified'] is not False):
             raise ValueError('registration_identity_changed')
@@ -818,10 +845,15 @@ def verify_review_evidence(destination, *, profile):
         formal_path = root/'formal-freeze.json'
         verify_aggregates(plan, summary, phases, _read(formal_path) if formal_path.exists() else None)
         _verify_phase_records(plan, summary, phases)
-        if len(plan['cases']) != 4 or len(plan['sessions']) != 8 or len(plan['pilots']) != 2:
+        new_profile = profile == 'review-v113'
+        if len(plan['cases']) != 4 or len(plan['sessions']) != 8 or len(plan['pilots']) != (0 if new_profile else 2):
             raise ValueError('finite_population_changed')
+        draft_limit, execution_limit = (8, 3) if new_profile else (10, 5)
+        if new_profile and (plan.get('pilot_case') is not None or plan.get('max_draft_sessions') != 8
+                            or plan.get('max_native_execution_sessions') != 3):
+            raise ValueError('finite_budget_changed')
         trials = {t['trial_id']: t for t in plan['sessions']+plan['pilots']}
-        if len([p for p in phases if p['phase'] == 'draft']) > 10 or summary['native_execution_sessions'] > 5:
+        if len([p for p in phases if p['phase'] == 'draft']) > draft_limit or summary['native_execution_sessions'] > execution_limit:
             raise ValueError('finite_budget_exceeded')
         for case in _all_cases(plan):
             prompt = read_regular_file(_safe_path(root/'prompts'/(case['case_id']+'.txt')), max_bytes=65536)
@@ -842,7 +874,7 @@ def verify_review_evidence(destination, *, profile):
                 if [_sha(v.encode()) for v in candidate['unresolved']] != unresolved_hashes:
                     raise ValueError('unresolved_proof_changed')
                 decision = semantic_decision(case, candidate)
-                if profile == 'review-v112' and record['arm'] == 'native':
+                if profile in {'review-v112', 'review-v113'} and record['arm'] == 'native':
                     from .review_native_evidence import native_draft_trace as strict_trace
                     if strict_trace(case['task'], candidate, record.get('source_bindings', [])) != record.get('trace_verified'):
                         raise ValueError('native_trace_changed')

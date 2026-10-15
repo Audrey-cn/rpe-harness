@@ -290,11 +290,14 @@ def main(argv: list[str] | None = None) -> Any:
     sys.path.insert(0, str(root))
     if argv is not None:
         sys.argv = [sys.argv[0], *argv]
+    if os.environ.get('RPE_HERMES_NATIVE_EXECUTION_KEY_FD'):
+        importlib.import_module('rpe_harness.integrations.hermes_native_process').install_native_execution_signing_key()
     install_process_telemetry()
     importlib.import_module("hermes_bootstrap")
     install_producer_toolset()
     install_usage_telemetry()
     install_clean_ingress_guard()
+    importlib.import_module('rpe_harness.integrations.hermes_review_finish').install_review_finish_adapter()
     return importlib.import_module("hermes_cli.main").main()
 
 

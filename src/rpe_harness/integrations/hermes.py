@@ -31,15 +31,21 @@ _TEXT_FIELDS = frozenset({
     'state_id', 'catalog_sha256', 'request_messages_sha256',
     'controller_id', 'requirements_sha256', 'source_sha256', 'understand_receipt_id',
     'request_payload_sha256',
+    'proof_kind', 'helper_python_sha256', 'process_argv_sha256', 'startup_environment_sha256',
+    'process_start_identity_sha256', 'output_sha256', 'output_identity_sha256', 'output_path_sha256',
+    'artifact_binding', 'process_observation_error', 'process_receipt_hmac_sha256', 'tool_status',
+    'process_config_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
     'tool_exit_code', 'bytes_written', 'request_max_completion_tokens', 'request_messages_bytes',
+    'pid', 'parent_pid', 'process_returncode', 'output_size',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
-                          'request_parallel_tool_calls', 'verified'})
+                          'request_parallel_tool_calls', 'verified', 'kernel_exit_observed',
+                          'overlap', 'observer_joined'})
 _CALL_CONTEXT = ContextVar('rpe_native_tool_context', default={})
 _USAGE_FIELDS = frozenset({
     'input_tokens', 'output_tokens', 'cache_read_tokens', 'cache_write_tokens',
@@ -715,6 +721,7 @@ def register(ctx) -> None:
         native_config = json.loads(config_path.read_text())
     producer = None
     native_evidence = None
+    native_execution = None
     if os.environ.get('RPE_HERMES_NATIVE_EVIDENCE_CONFIG'):
         if os.environ.get('RPE_HERMES_TOOL_ENABLED') != '0':
             raise ValueError('native evidence requires native tools only')
@@ -726,6 +733,17 @@ def register(ctx) -> None:
         if evidence_config.get('workspace') != str(workspace):
             raise ValueError('native evidence workspace differs')
         native_evidence = NativeEvidenceObserver(evidence_config)
+    if os.environ.get('RPE_HERMES_NATIVE_EXECUTION_CONFIG'):
+        if os.environ.get('RPE_HERMES_TOOL_ENABLED') != '0':
+            raise ValueError('native execution evidence requires native tools only')
+        from .hermes_native_process import NativeExecutionObserver
+        execution_path = Path(os.environ['RPE_HERMES_NATIVE_EXECUTION_CONFIG'])
+        if execution_path.is_symlink() or execution_path.stat().st_size > 65536:
+            raise ValueError('invalid native execution evidence configuration file')
+        execution_config = json.loads(execution_path.read_text())
+        if execution_config.get('workspace') != str(workspace):
+            raise ValueError('native execution evidence workspace differs')
+        native_execution = NativeExecutionObserver(execution_config)
     if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'producer':
         if os.environ.get('RPE_HERMES_TOOL_ENABLED', '0') != '0' or native_config_path:
             raise ValueError('producer entry requires no Harness tool or skill catalog')
@@ -738,6 +756,8 @@ def register(ctx) -> None:
                 payload['arguments_sha256'] = _digest_json(payload['args'])
             if native_evidence is not None and kind == 'pre_tool_call':
                 native_evidence.before(payload)
+            if native_execution is not None and kind == 'pre_tool_call':
+                native_execution.before(payload)
             if kind == 'post_tool_call' and os.environ.get('RPE_HERMES_TOOL_ENABLED') == '0':
                 try:
                     native_result = json.loads(payload.get('result',''))
@@ -775,6 +795,10 @@ def register(ctx) -> None:
                 store.record(kind, payload)
                 if native_evidence is not None and kind == 'post_tool_call':
                     for receipt in native_evidence.after(payload):
+                        receipt_kind = receipt.pop('kind')
+                        store.record(receipt_kind, receipt)
+                if native_execution is not None and kind == 'post_tool_call':
+                    for receipt in native_execution.after(payload):
                         receipt_kind = receipt.pop('kind')
                         store.record(receipt_kind, receipt)
             except (sqlite3.Error, OSError, ValueError):

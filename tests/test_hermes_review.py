@@ -272,6 +272,8 @@ def _sdk_home(env, name):
     if not interpreter.is_file():
         pytest.skip('installed Hermes SDK unavailable')
     from rpe_harness.integrations.hermes_session import prepare_home
+    import rpe_harness
+    package_import_root = str(Path(rpe_harness.__file__).resolve().parent.parent)
     home = prepare_home(env['config'].parent / name, env['workspace'], env['db'],
         tool_enabled=True, entry_mode='review', public_contract='review',
         settings={'provider': 'xiaomi', 'model': 'test', 'api_key': 'fake-no-model-key',
@@ -281,9 +283,9 @@ def _sdk_home(env, name):
         'HERMES_SAFE_MODE': '0', 'HERMES_ENABLE_PROJECT_PLUGINS': '0',
         'HERMES_DISABLE_LAZY_INSTALLS': '1', 'RPE_HERMES_DB': str(env['db']),
         'RPE_HERMES_WORKSPACE': str(env['workspace']), 'RPE_HARNESS_PYTHON': sys.executable,
-        'RPE_HERMES_TOOL_ENABLED': '1', 'RPE_HARNESS_IMPORT_ROOT': str(Path(__file__).parents[1] / 'src'),
+        'RPE_HERMES_TOOL_ENABLED': '1', 'RPE_HARNESS_IMPORT_ROOT': package_import_root,
         'RPE_HERMES_ENTRY_MODE': 'review', 'RPE_HERMES_ERROR_PATH': str(home / 'observer-errors'),
-        'PYTHONPATH': str(Path(__file__).parents[1] / 'src') + os.pathsep + str(sdk_root)}
+        'PYTHONPATH': package_import_root + os.pathsep + str(sdk_root)}
     environment.pop('HERMES_IGNORE_USER_CONFIG', None)
     return interpreter, environment
 

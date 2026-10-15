@@ -176,5 +176,40 @@ def test_model_payload_publishes_exact_anchors_and_both_citation_forms(review):
     assert json.dumps(request_quote_anchors(config['raw']), ensure_ascii=False, sort_keys=True) in messages[2]['content']
     item = review['sdk'].tools['rpe_propose']['schema']['parameters']['properties']['requirements']['items']
     assert item['required'] == ['text', 'fields']
-    assert item['anyOf'] == [{'required': ['quote']}, {'required': ['quote_ref']}]
+    assert 'anyOf' not in item
+    assert item['oneOf'] == [{'required': ['quote']}, {'required': ['quote_ref']}]
+    assert 'exactly one of quote or quote_ref' in api.REVIEW_CONTRACT
+    assert 'If quote or source_ref is also supplied with quote_ref' not in api.REVIEW_CONTRACT
     assert item['properties']['quote_ref']['pattern'] == '^q:[a-f0-9]{64}$'
+
+
+def test_legacy_consistent_dual_quote_rows_remain_valid_without_rewriting(tmp_path):
+    from rpe_harness.review_quotes import request_quote_anchors
+    candidate = draft()
+    row = candidate['requirements'][0]
+    anchor = request_quote_anchors(RAW)[0]
+    row['quote'] = anchor['quote']
+    row['quote_ref'] = anchor['quote_ref']
+    original = copy.deepcopy(candidate)
+    result = proposed(tmp_path, candidate)
+    assert result['status'] == 'awaiting_confirmation', result
+    assert result['draft'] == candidate == original
+
+
+@pytest.mark.parametrize('keys,valid', [(('quote',), True), (('quote_ref',), True),
+    (('quote', 'quote_ref'), False), ((), False), (('quote_ref', 'source_ref'), True),
+    (('quote', 'source_ref'), True)])
+def test_model_quote_schema_oneof_required_semantics(review, keys, valid):
+    item = review['sdk'].tools['rpe_propose']['schema']['parameters']['properties']['requirements']['items']
+    # JSON Schema oneOf requires exactly one matching required-field alternative.
+    matches = sum(set(branch['required']) <= set(keys) for branch in item['oneOf'])
+    assert (matches == 1) is valid
+
+
+def test_legacy_consistent_attachment_dual_quote_row_remains_valid(tmp_path):
+    path, context, candidate = setup(tmp_path)
+    candidate['requirements'][-1]['quote_ref'] = context['model_sources'][0]['quote_refs']['key_columns']
+    original = copy.deepcopy(candidate)
+    result = propose(tmp_path, path, context, candidate)
+    assert result['status'] == 'awaiting_confirmation', result
+    assert result['draft'] == original == candidate

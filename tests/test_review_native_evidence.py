@@ -362,3 +362,228 @@ print(json.dumps(dict(provider_calls=0,read=True,file_write=True,terminal_write=
         'exit_code': child.returncode, 'stdout': child.stdout, 'stderr': child.stderr}, ensure_ascii=False))
     assert child.returncode == 0, child.stderr+'\n'+child.stdout
     assert json.loads(child.stdout)['provider_calls'] == 0
+
+
+def test_v113_requires_kernel_receipt_even_when_legacy_native_command_was_accepted(helper_execution_protocol):
+    """No command grammar or printed exit status can replace a signed OS observation."""
+    module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+    evaluate = getattr(module, 'evaluate_native_review_execution_v113', None)
+    assert callable(evaluate), '1.13 authenticated process exit gate is missing'
+    plan, trial, session, source, command = helper_execution_protocol
+    assert evaluate({'session_root': str(session)}, plan, trial)['verified'] is False
+
+
+@pytest.fixture
+def authenticated_native_execution(helper_execution_protocol, monkeypatch):
+    """Real original helper/kernel proof; API IDs below are synthetic unit protocol."""
+    from rpe_harness.integrations import hermes_native_process as process
+    from rpe_harness.integrations.hermes import HostEventStore, register
+    from rpe_harness.integrations.hermes_gate import digest_json
+    plan, trial, session, source, command = helper_execution_protocol
+    workspace = Path(trial['workspace'])
+    (workspace/'output.json').unlink()
+    case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
+    config = {'workspace': str(workspace), 'helper_path': str(source.parent/'scripts/xlsx_read.py'),
+        'skill_path': str(source), 'snapshot_id': plan['skill_snapshot_id'],
+        'skill_id': 'productivity/xlsx', 'helper_python': plan['helper_python'],
+        'helper_python_sha256': plan['environment']['helper_python_identity']['executable_sha256'],
+        'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
+        'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
+        'output_name': case['output_name'], 'parameters': case['parameters']}
+    config_path = session/'native-execution-config.json'
+    config_path.write_text(json.dumps(config))
+    key = os.urandom(32)
+    (session/'native-execution-auth.key').write_bytes(key)
+    key_read, key_write = os.pipe()
+    os.write(key_write, key); os.close(key_write)
+    monkeypatch.setattr(process, '_SIGNING_KEY', None)
+    monkeypatch.setenv('RPE_HERMES_NATIVE_EXECUTION_KEY_FD', str(key_read))
+    process.install_native_execution_signing_key()
+    assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+    with pytest.raises(OSError): os.fstat(key_read)
+    for name, value in {'RPE_HERMES_DB': trial['db'], 'RPE_HERMES_WORKSPACE': str(workspace),
+        'RPE_HERMES_TOOL_ENABLED': '0', 'RPE_HERMES_NATIVE_EXECUTION_CONFIG': str(config_path)}.items():
+        monkeypatch.setenv(name, value)
+    class Context:
+        def __init__(self): self.hooks = {}
+        def register_hook(self, name, callback): self.hooks[name] = callback
+    context = Context(); register(context)
+    ids = {'session_id': 'authenticated-unit', 'task_id': 'task', 'turn_id': 'turn', 'api_request_id': 'api'}
+    context.hooks['pre_api_request'](**ids)
+    context.hooks['post_api_request'](**ids, response={'assistant_message': {'tool_calls': [
+        {'id': 'view', 'name': 'skill_view'}, {'id': 'execute', 'name': 'terminal'}]}})
+    view = {**ids, 'tool_call_id': 'view', 'tool_name': 'skill_view', 'args': {'name': 'xlsx'}}
+    context.hooks['pre_tool_call'](**view)
+    context.hooks['post_tool_call'](**view, status='loaded', skill_id='productivity/xlsx',
+        snapshot_id=plan['skill_snapshot_id'], content_sha256=plan['skill_sha256'], skill_source_path=str(source))
+    command = command.replace(' && echo "EXIT=$?" && wc', '; echo "exit=$?"; wc')
+    execute = {**ids, 'tool_call_id': 'execute', 'tool_name': 'terminal', 'args': {'command': command}}
+    context.hooks['pre_tool_call'](**execute)
+    child = subprocess.run(['/bin/bash', '-c', command], cwd=workspace, capture_output=True, text=True,
+        env={key: value for key, value in os.environ.items() if not key.startswith(('PYTHON', 'DYLD_', 'LD_'))})
+    context.hooks['post_tool_call'](**execute, status='ok', result=json.dumps({'exit_code': child.returncode}))
+    store = HostEventStore(trial['db'])
+    result = {'session_id': ids['session_id'], 'session_root': str(session), 'events': store.list(ids['session_id']),
+        'stream_tool_calls': [{'name': 'skill_view', 'input': view['args']}, {'name': 'terminal', 'input': execute['args']}]}
+    from rpe_harness.experiments.review_native_evidence import evaluate_native_review_execution_v113
+    baseline = evaluate_native_review_execution_v113(result, plan, trial)
+    assert baseline['verified'] is True and baseline['receipt_authenticated'] is True, baseline
+    return result, plan, trial, store
+
+
+@pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+def test_v113_accepts_authenticated_kernel_exit_and_correct_original_helper_output(authenticated_native_execution):
+    result, plan, trial, _store = authenticated_native_execution
+    from rpe_harness.experiments.review_native_evidence import evaluate_native_review_execution_v113
+    gate = evaluate_native_review_execution_v113(result, plan, trial)
+    assert gate['verified'] is True and gate['receipt_authenticated'] is True, gate
+
+
+@pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+@pytest.mark.parametrize('fault', ['forged_exit', 'wrong_call', 'wrong_receipt_args', 'wrong_input', 'wrong_output', 'wrong_config', 'wrong_key', 'business_overwrite'])
+def test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings(authenticated_native_execution, fault):
+    result, plan, trial, store = authenticated_native_execution
+    from rpe_harness.experiments.review_native_evidence import evaluate_native_review_execution_v113
+    from rpe_harness.integrations.hermes_native_process import _digest, file_snapshot, receipt_signature
+    workspace, session = Path(trial['workspace']), Path(result['session_root'])
+    if fault in {'forged_exit', 'wrong_call', 'wrong_receipt_args'}:
+        row = next(event for event in result['events'] if event['kind'] == 'native_helper_process_observation')
+        field, value = {'forged_exit': ('process_returncode', 7), 'wrong_call': ('tool_call_id', 'other'),
+                        'wrong_receipt_args': ('arguments_sha256', '0'*64)}[fault]
+        with store._connect() as db:
+            raw, = db.execute('SELECT metadata_json FROM hermes_host_events WHERE ingest_event_id=?', (row['ingest_event_id'],)).fetchone()
+            metadata = json.loads(raw); metadata[field] = value
+            db.execute('UPDATE hermes_host_events SET metadata_json=? WHERE ingest_event_id=?', (json.dumps(metadata), row['ingest_event_id']))
+        result['events'] = store.list(result['session_id'])
+    elif fault == 'wrong_input':
+        (workspace/'input.xlsx').write_text('changed')
+    elif fault == 'wrong_output':
+        (workspace/'output.json').write_text('{}')
+    elif fault == 'wrong_config':
+        path = session/'native-execution-config.json'; config = json.loads(path.read_text()); config['parameters']['sheet'] = 'wrong'; path.write_text(json.dumps(config))
+    elif fault == 'wrong_key':
+        (session/'native-execution-auth.key').write_bytes(b'0'*32)
+    elif fault == 'business_overwrite':
+        # Even an authenticated process exit does not establish exclusive output
+        # authorship. Re-signing here models a real final-byte observation of a
+        # shell rewrite; the independent business oracle must still reject it.
+        (workspace/'output.json').write_text('{}')
+        row = next(event for event in result['events'] if event['kind'] == 'native_helper_process_observation')
+        with store._connect() as db:
+            raw, = db.execute('SELECT metadata_json FROM hermes_host_events WHERE ingest_event_id=?', (row['ingest_event_id'],)).fetchone()
+            metadata = json.loads(raw); out = file_snapshot(workspace/'output.json')
+            metadata.update(output_sha256=out['sha256'], output_size=out['size'], output_identity_sha256=_digest(out['identity']))
+            metadata.pop('process_receipt_hmac_sha256')
+            metadata['process_receipt_hmac_sha256'] = receipt_signature(metadata, (session/'native-execution-auth.key').read_bytes())
+            db.execute('UPDATE hermes_host_events SET metadata_json=? WHERE ingest_event_id=?', (json.dumps(metadata), row['ingest_event_id']))
+        result['events'] = store.list(result['session_id'])
+    gate = evaluate_native_review_execution_v113(result, plan, trial)
+    assert gate['verified'] is False, gate
+    if fault == 'business_overwrite':
+        assert gate['errors'] == ['native_process_final_output_business_incorrect'], gate
+
+
+@pytest.mark.skipif(os.environ.get('RPE_RUN_INSTALLED_NATIVE_SMOKE') != '1',
+                    reason='explicit provider-free installed native session smoke')
+def test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal(helper_execution_protocol, monkeypatch, tmp_path):
+    """Real launcher/sandbox/bootstrap/tools; only CLI provider dispatch is replaced.
+
+    Direct native hooks use explicit smoke identities. This is runtime readiness,
+    not an API/model success result or a formal comparison trial.
+    """
+    from rpe_harness.integrations import hermes_session as launcher
+    plan, trial, _session, _source, _command = helper_execution_protocol
+    workspace = Path(trial['workspace']); (workspace/'output.json').unlink()
+    case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
+    original_popen = subprocess.Popen
+    program = r'''import json,os,shlex,sys
+from pathlib import Path
+sys.path[:0]=[os.environ['RPE_HARNESS_IMPORT_ROOT'],os.environ['RPE_HERMES_INSTALL_ROOT']]
+import hermes_bootstrap
+import hermes_cli.main as cli
+from rpe_harness.integrations import hermes_bootstrap as bootstrap
+
+def smoke():
+ from rpe_harness.integrations.hermes import register,HostEventStore
+ from rpe_harness.integrations import hermes_native_process as process
+ from tools.terminal_tool import terminal_tool
+ assert process._SIGNING_KEY is not None
+ assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+ config_path=Path(os.environ['RPE_HERMES_NATIVE_EXECUTION_CONFIG'])
+ config=json.loads(config_path.read_text())
+ key_path=config_path.parent/'native-execution-auth.key'
+ for mode in ('rb','wb'):
+  try:
+   with key_path.open(mode): pass
+  except PermissionError: pass
+  else: raise AssertionError('native session can access protected receipt key')
+ class Context:
+  def __init__(self): self.hooks={}
+  def register_hook(self,n,c): self.hooks[n]=c
+ context=Context(); register(context)
+ serial=0
+ def invoke(command):
+  nonlocal serial
+  serial+=1
+  ids=dict(session_id='native-process-installed',task_id='native-process-smoke',turn_id='turn',api_request_id='api',tool_call_id=str(serial),tool_name='terminal',args={'command':command})
+  context.hooks['pre_tool_call'](**ids)
+  raw=terminal_tool(command,task_id='native-process-smoke',timeout=20)
+  context.hooks['post_tool_call'](**ids,status='ok',result=raw)
+  return json.loads(raw)
+ argv=[config['helper_python'],'-B',config['helper_path'],config['input_name'],'--json','--sheet',config['parameters']['sheet']]
+ command=shlex.join(argv)+' > output.json'
+ success=invoke(command+'; echo "exit=$?"; wc -c output.json')
+ Path('output.json').unlink()
+ failure=invoke('(ulimit -f 0; '+command+')')
+ Path('output.json').unlink()
+ masked=invoke('(ulimit -f 0; '+command+'); echo exit=0; wc -c output.json')
+ Path('output.json').unlink()
+ injected=Path('injected'); injected.mkdir()
+ (injected/'sitecustomize.py').write_text('import os\nos._exit(0)\n')
+ injection=invoke('PYTHONPATH='+shlex.quote(str(injected.resolve()))+' '+command+'; echo exit=0')
+ events=HostEventStore(os.environ['RPE_HERMES_DB']).list('native-process-installed')
+ rows=[event for event in events if event['kind']=='native_helper_process_observation']
+ assert len(rows)==4,rows
+ assert rows[0]['verified'] is True and rows[0]['process_returncode']==0,rows
+ assert rows[1]['verified'] is False and rows[1]['process_returncode']!=0,rows
+ assert rows[2]['verified'] is False and rows[2]['process_returncode']!=0,rows
+ assert rows[3]['verified'] is False,rows
+ assert success['exit_code']==0 and failure['exit_code']!=0 and masked['exit_code']==0, [success,failure,masked]
+ for row in rows:
+  signature=row['process_receipt_hmac_sha256']
+  body={k:v for k,v in row.items() if k not in {'kind','received_at','source_event_id','ingest_event_id','process_receipt_hmac_sha256'}}
+  assert signature==process.receipt_signature(body,process._SIGNING_KEY),row
+ assert 'rpe_harness.controller' not in sys.modules
+ summary={'provider_calls':0,'native_success':True,'native_failure':True,'masked_failure_rejected':True,'startup_injection_rejected':True,'key_read_write_denied':True,'key_fd_consumed':True,'signed_receipts':4,'kernel_returncodes':[r.get('process_returncode') for r in rows],'shell_returncodes':[success['exit_code'],failure['exit_code'],masked['exit_code'],injection['exit_code']]}
+ Path('native-process-smoke-summary.json').write_text(json.dumps(summary))
+ HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'native-process-installed','completed':True})
+ print(json.dumps({'type':'result','session_id':'native-process-installed','text':'provider-free native process smoke'}))
+ return 0
+cli.main=smoke
+raise SystemExit(bootstrap.main(['--help']))
+'''
+    def launch(command, *args, **kwargs):
+        if isinstance(command, list) and command[:1] == ['/usr/bin/sandbox-exec']:
+            # Preserve the constructor's sandbox, environment, stdout/stderr,
+            # process group and inherited key FD. Replace provider entry only.
+            command = command[:5] + ['-c', program]
+        return original_popen(command, *args, **kwargs)
+    monkeypatch.setattr(launcher.subprocess, 'Popen', launch)
+    monkeypatch.setattr(launcher, '_read_host_settings', lambda *_: {
+        'provider': 'xiaomi', 'model': 'provider-free-smoke', 'base_url': 'https://example.invalid',
+        'api_key': 'unused-native-process-smoke-key'})
+    options = {'skill_id': 'productivity/xlsx', 'helper_python': plan['helper_python'],
+        'helper_python_sha256': plan['environment']['helper_python_identity']['executable_sha256'],
+        'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
+        'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
+        'output_name': case['output_name'], 'parameters': case['parameters']}
+    result = launcher.run_hermes_session('provider-free native process constructor smoke', workspace, trial['db'],
+        tool_enabled=False, owner_root=Path(plan['root'])/'sessions', hermes_root=Path.home()/'.hermes/hermes-agent',
+        catalog_root=plan['catalog_root'], skill_snapshot_id=plan['skill_snapshot_id'], timeout=70,
+        public_contract='clean', native_execution_evidence=options)
+    session = Path(result['session_root'])
+    (tmp_path/'native-process-constructor-result.json').write_text(json.dumps(result, ensure_ascii=False))
+    assert result['completed'] is True, (session/'stderr.log').read_text()+'\n'+(session/'stdout.jsonl').read_text()
+    summary = json.loads((workspace/'native-process-smoke-summary.json').read_text())
+    assert summary['provider_calls'] == 0 and summary['signed_receipts'] == 4
+    assert result['process_cleanup']['cleanup_complete'] is True, result['process_cleanup']
