@@ -2,10 +2,41 @@
 from __future__ import annotations
 
 from functools import wraps
+from dataclasses import asdict
 import importlib
 import inspect
 import json
 import os
+
+
+def install_review_response_adapter():
+    """Use the native response-intake verdict before any tool can dispatch."""
+    if os.environ.get('RPE_HERMES_ENTRY_MODE') != 'review':
+        return
+    loop = importlib.import_module('agent.conversation_loop')
+    original = loop.normalize_model_response
+    if getattr(original, '_rpe_review_response_adapter', False):
+        return
+    required = {'response', 'api_request_id', 'effective_task_id'}
+    if not required <= set(inspect.signature(original).parameters):
+        raise RuntimeError('installed Hermes response-intake seam differs')
+
+    @wraps(original)
+    def intake(agent, **context):
+        from .hermes_review import ReviewIngressBlocked, recover_review_response
+        verdict = original(agent, **context)
+        try:
+            retry = recover_review_response(agent, effective_task_id=context['effective_task_id'],
+                api_request_id=context['api_request_id'], response=asdict(verdict.assistant_message),
+                intake_action=verdict.action)
+        except (TypeError, ValueError, AttributeError) as error:
+            raise ReviewIngressBlocked('review protocol response serialization failed') from error
+        if retry:
+            verdict.action = 'continue'
+        return verdict
+
+    intake._rpe_review_response_adapter = True
+    loop.normalize_model_response = intake
 
 
 def install_review_finish_adapter():

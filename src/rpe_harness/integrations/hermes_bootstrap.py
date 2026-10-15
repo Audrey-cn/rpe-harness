@@ -303,7 +303,9 @@ def main(argv: list[str] | None = None) -> Any:
     install_usage_telemetry()
     install_clean_ingress_guard()
     if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'review':
-        importlib.import_module('rpe_harness.integrations.hermes_review_finish').install_review_finish_adapter()
+        review = importlib.import_module('rpe_harness.integrations.hermes_review_finish')
+        review.install_review_finish_adapter()
+        review.install_review_response_adapter()
     for variable, module, function in (
         ('RPE_HERMES_REQUEST_BUDGET_CONFIG', 'hermes_request_budget', 'install_request_budget_adapter'),
         ('RPE_HERMES_NATIVE_FINISH_ENABLED', 'hermes_native_finish', 'install_native_finish_adapter')):
