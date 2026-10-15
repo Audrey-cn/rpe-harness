@@ -8,8 +8,10 @@ from __future__ import annotations
 from collections import Counter
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
+import re
 import sqlite3
 import threading
 
@@ -20,6 +22,47 @@ from .hermes_skills import (IDS, WorkflowStore, _identity, _actual_policy, _raw_
 
 CONTROLLER = 'rpe.clean.controller/v1'
 _INGRESS_VALIDATOR = None
+_TRANSPORT_KEYS = frozenset({'model', 'temperature', 'max_tokens', 'max_completion_tokens',
+    'timeout', 'stream', 'stream_options', 'reasoning_effort', 'extra_body'})
+_CONTROLLED_KEYS = frozenset({'messages', 'tools', 'tool_choice', 'parallel_tool_calls'})
+
+
+def _transport_parameters(request):
+    """Bound the fixed Xiaomi chat transport; no second text/context channel."""
+    if type(request) is not dict or set(request) - (_TRANSPORT_KEYS | _CONTROLLED_KEYS):
+        raise ValueError('clean transport contains unknown request fields')
+    parameters = {key: value for key, value in request.items() if key in _TRANSPORT_KEYS}
+    model = parameters.get('model')
+    if 'model' in parameters and (type(model) is not str or
+            not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._:/+\-]{0,255}', model)):
+        raise ValueError('clean transport model is not a bounded identifier')
+    for key, minimum, maximum in (('temperature', 0, 2), ('timeout', 0, 1800)):
+        if key in parameters:
+            value = parameters[key]
+            if (type(value) not in (int, float) or not minimum <= value <= maximum
+                    or not math.isfinite(value) or key == 'timeout' and value == 0):
+                raise ValueError('clean transport numeric setting is invalid')
+    for key in ('max_tokens', 'max_completion_tokens'):
+        if key in parameters and (type(parameters[key]) is not int or not 1 <= parameters[key] <= 1_000_000):
+            raise ValueError('clean transport token limit is invalid')
+    if 'stream' in parameters and type(parameters['stream']) is not bool:
+        raise ValueError('clean transport stream setting is invalid')
+    if 'stream_options' in parameters:
+        value = parameters['stream_options']
+        if (type(value) is not dict or set(value) - {'include_usage'} or
+                any(type(item) is not bool for item in value.values())):
+            raise ValueError('clean transport stream options are invalid')
+    if 'reasoning_effort' in parameters and parameters['reasoning_effort'] not in (
+            'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'):
+        raise ValueError('clean transport reasoning setting is invalid')
+    if 'extra_body' in parameters:
+        value = parameters['extra_body']
+        if type(value) is not dict or set(value) - {'thinking'}:
+            raise ValueError('clean transport extra_body contains unknown fields')
+        if 'thinking' in value and (type(value['thinking']) is not dict or
+                set(value['thinking']) != {'type'} or value['thinking']['type'] not in ('enabled', 'disabled')):
+            raise ValueError('clean transport thinking setting is invalid')
+    return json.loads(json.dumps(parameters, ensure_ascii=False, allow_nan=False))
 
 
 class CleanIngressBlocked(BaseException):
@@ -262,6 +305,10 @@ def register_clean_workflow(ctx, *, store, workspace, python, error_path):
                     'key_columns': {'type': 'array', 'items': {'type': 'string'}}}}}}}
 
     def policy(request, **context):
+        try:
+            transport = _transport_parameters(request)
+        except Exception as error:
+            raise CleanIngressBlocked('clean transport request blocked before provider') from error
         native = _identity(context, entry_key, api=True)
         with lock:
             if _configuration()[2] != config_sha:
@@ -274,23 +321,20 @@ def register_clean_workflow(ctx, *, store, workspace, python, error_path):
             state.update(config_path=config_path, config_sha256=config_sha, catalog_sha256=config['catalog_sha256'], helper_python=str(python))
             tools = [{'type': 'function', 'function': schema}]
             choice = 'rpe_understand' if state['phase'] == 'understand' else 'none'
-            rewritten = {**request, 'messages': _messages(config, state), 'tools': tools,
+            rewritten = {**transport, 'messages': _messages(config, state), 'tools': tools,
                 'parallel_tool_calls': False, 'tool_choice': 'none' if choice == 'none' else
                 {'type': 'function', 'function': {'name': choice}}}
-            # Providers may merge extra_body after named SDK arguments. Never
-            # permit that second channel to replace the admitted context/tools.
-            if isinstance(rewritten.get('extra_body'), dict):
-                rewritten['extra_body'] = {k: v for k, v in rewritten['extra_body'].items()
-                    if k not in {'messages', 'input', 'instructions', 'tools', 'tool_choice', 'parallel_tool_calls'}}
             mode, observed = _observer_policy(rewritten)
             state['policies'][native['api_request_id']] = {'choice': choice, 'tools_sha256': observed,
                 'raw_tools_sha256': digest_json(tools), 'tools_schema': tools, 'projection_mode': mode,
                 'phase': state['phase'], 'messages_sha256': digest_json(rewritten['messages']),
-                'messages_bytes': _json_bytes(rewritten['messages'])}
+                'messages_bytes': _json_bytes(rewritten['messages']), 'transport': transport,
+                'payload_sha256': digest_json(rewritten)}
             workflows.put(state)
         return {'request': rewritten, 'source': 'rpe_harness', 'reason': 'clean_workflow'}
 
     def validate_request(request, **context):
+        _transport_parameters(request)
         native = _identity(context, entry_key, api=True)
         with lock:
             if _configuration()[2] != config_sha:
@@ -303,11 +347,9 @@ def register_clean_workflow(ctx, *, store, workspace, python, error_path):
                     or request.get('parallel_tool_calls') is not False
                     or digest_json(request.get('tools')) != planned['raw_tools_sha256']
                     or digest_json(request.get('messages')) != planned['messages_sha256']
-                    or _json_bytes(request.get('messages')) != planned['messages_bytes']):
+                    or _json_bytes(request.get('messages')) != planned['messages_bytes']
+                    or digest_json(request) != planned['payload_sha256']):
                 raise ValueError('actual clean API context or policy differs')
-            extra = request.get('extra_body')
-            if isinstance(extra, dict) and set(extra) & {'messages', 'input', 'instructions', 'tools', 'tool_choice', 'parallel_tool_calls'}:
-                raise ValueError('actual clean API has a shadow context')
             return native, state, planned
 
     def api_execution(request, next_call, **context):
@@ -317,7 +359,8 @@ def register_clean_workflow(ctx, *, store, workspace, python, error_path):
                 receipt = store.record('rpe_skill_api_checked', {**native, 'request': {'body': request},
                     'arguments_sha256': planned['tools_sha256'], 'status': planned['projection_mode'],
                     'workflow_phase': planned['phase'], 'request_messages_sha256': planned['messages_sha256'],
-                    'request_messages_bytes': planned['messages_bytes']})
+                    'request_messages_bytes': planned['messages_bytes'],
+                    'request_payload_sha256': planned['payload_sha256']})
                 planned['raw_receipt_id'] = receipt['ingest_event_id']
                 workflows.put(state)
         except Exception as error:
@@ -391,12 +434,17 @@ def _verify_policy(events, state, config):
         choice = planned['choice']
         phases.append(choice)
         expected = _messages(config, {**state, 'phase': planned['phase']})
+        expected_payload = {**planned['transport'], 'messages': expected, 'tools': planned['tools_schema'],
+            'parallel_tool_calls': False, 'tool_choice': 'none' if choice == 'none' else
+            {'type': 'function', 'function': {'name': 'rpe_understand'}}}
+        _transport_parameters(expected_payload)
         if (pre.get('request_tool_choice') != choice or pre.get('request_tool_names') != ['rpe_understand']
                 or pre.get('request_parallel_tool_calls') is not False
                 or pre.get('request_tools_sha256') != planned['tools_sha256']
                 or digest_json(project_observer_tools(planned['tools_schema'], planned['projection_mode'])) != planned['tools_sha256']
                 or digest_json(planned['tools_schema']) != planned['raw_tools_sha256']
-                or digest_json(expected) != planned['messages_sha256'] or _json_bytes(expected) != planned['messages_bytes']):
+                or digest_json(expected) != planned['messages_sha256'] or _json_bytes(expected) != planned['messages_bytes']
+                or digest_json(expected_payload) != planned['payload_sha256']):
             raise ValueError('clean_actual_policy_or_source_context_differs')
         raw = [e for e in events if e['kind'] == 'rpe_skill_api_checked' and
                all(e.get(k) == pre.get(k) for k in IDS[:-1])]
@@ -408,6 +456,7 @@ def _verify_policy(events, state, config):
                 or raw[0].get('request_parallel_tool_calls') is not False
                 or raw[0].get('entry_key') != state['entry_key']
                 or raw[0].get('status') != planned['projection_mode']
+                or raw[0].get('request_payload_sha256') != planned['payload_sha256']
                 or raw[0].get('request_messages_sha256') != planned['messages_sha256']
                 or raw[0].get('request_messages_bytes') != planned['messages_bytes']):
             raise ValueError('clean_raw_API_proof_missing')

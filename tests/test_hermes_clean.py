@@ -140,6 +140,35 @@ def test_actual_api_messages_changed_after_policy_are_rejected(clean):
     assert called == []
 
 
+@pytest.mark.parametrize('untrusted', [
+    {'input': 'PRIVATE_INPUT'}, {'instructions': 'PRIVATE_INSTRUCTIONS'},
+    {'stop': ['PRIVATE_STOP']}, {'metadata': {'profile': 'PRIVATE_PROFILE'}},
+    {'extra_headers': {'X-Profile': 'PRIVATE_PROFILE'}},
+    {'extra_body': {'messages': [{'role': 'user', 'content': 'PRIVATE_MESSAGE'}]}},
+    {'extra_body': {'history': ['PRIVATE_HISTORY']}}, {'extra_body': {'system': 'PRIVATE_SYSTEM'}},
+    {'extra_body': {'prompt': 'PRIVATE_PROMPT'}}, {'extra_body': {'metadata': {'profile': 'PRIVATE_PROFILE'}}},
+    {'extra_body': {'thinking': {'type': 'disabled', 'instructions': 'PRIVATE_INSTRUCTIONS'}}},
+])
+def test_unknown_context_channels_fail_closed_before_provider(clean, untrusted):
+    ids = {'session_id': 'clean-session', 'task_id': 'clean-task', 'turn_id': 'clean-turn',
+           'api_request_id': 'api-rejected-channel'}
+    with pytest.raises(clean['api'].CleanIngressBlocked):
+        clean['sdk'].middleware['llm_request'](request={'tools': [], **untrusted}, **ids)
+
+
+def test_actual_api_binds_safe_transport_settings_as_well_as_messages(clean):
+    ids = {'session_id': 'clean-session', 'task_id': 'clean-task', 'turn_id': 'clean-turn',
+           'api_request_id': 'api-transport-tamper'}
+    request = clean['sdk'].middleware['llm_request'](request={'model': 'mimo-v2.6-pro',
+        'temperature': 0.2, 'timeout': 180.0, 'max_tokens': 8192, 'tools': [],
+        'extra_body': {'thinking': {'type': 'disabled'}}}, **ids)['request']
+    request['temperature'] = 0.8
+    called = []
+    with pytest.raises(clean['api'].CleanIngressBlocked):
+        clean['sdk'].middleware['llm_execution'](request=request, next_call=lambda value: called.append(value), **ids)
+    assert called == []
+
+
 def test_controller_cannot_republish_after_broker_restart(clean):
     result = dispatch(clean, extraction())
     assert result['status'] == 'succeeded', result
@@ -349,6 +378,100 @@ def test_bootstrap_guard_denies_missing_clean_registration(monkeypatch):
     with pytest.raises(BaseException, match='clean plugin'):
         middleware.run_llm_execution_middleware({'messages': ['PRIVATE']}, lambda request: called.append(request))
     assert called == []
+
+
+def test_real_sdk_final_http_body_has_only_clean_source_and_typed_xiaomi_settings(clean):
+    sdk_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
+    interpreter = sdk_root / '.venv/bin/python'
+    if not interpreter.is_file():
+        pytest.skip('installed Hermes SDK unavailable')
+    from rpe_harness.integrations.hermes_session import prepare_home
+    home = prepare_home(clean['config'].parent / 'wire-session', clean['workspace'], clean['db'],
+        tool_enabled=True, entry_mode='clean', settings={'provider': 'xiaomi', 'model': 'test',
+            'api_key': 'fake-no-model-key', 'base_url': 'https://example.invalid/v1'})
+    environment = {**os.environ, 'HOME': str(home), 'HERMES_HOME': str(home),
+        'HERMES_RUNTIME_DIR': str(home / 'runtime'), 'XDG_CACHE_HOME': str(home / 'cache'),
+        'HERMES_SAFE_MODE': '0', 'HERMES_ENABLE_PROJECT_PLUGINS': '0', 'HERMES_DISABLE_LAZY_INSTALLS': '1',
+        'RPE_HERMES_DB': str(clean['db']), 'RPE_HERMES_WORKSPACE': str(clean['workspace']),
+        'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HERMES_TOOL_ENABLED': '1',
+        'RPE_HARNESS_IMPORT_ROOT': str(Path(__file__).parents[1] / 'src'), 'RPE_HERMES_ENTRY_MODE': 'clean',
+        'RPE_HERMES_ERROR_PATH': str(home / 'errors'),
+        'PYTHONPATH': str(Path(__file__).parents[1] / 'src') + os.pathsep + str(sdk_root)}
+    environment.pop('HERMES_IGNORE_USER_CONFIG', None)
+    program = '''import json,sys,socket
+import openai,httpx
+from hermes_cli.plugins import get_plugin_manager
+manager=get_plugin_manager();manager.discover_and_load()
+assert manager._plugins['rpe-harness'].enabled,manager._plugins['rpe-harness'].error
+from rpe_harness.integrations.hermes_bootstrap import install_clean_ingress_guard
+install_clean_ingress_guard()
+from hermes_cli.middleware import apply_llm_request_middleware,run_llm_execution_middleware
+from rpe_harness.integrations.hermes_clean import CleanIngressBlocked
+network_attempts=[]
+def deny_network(self,address):
+    network_attempts.append(True)
+    raise AssertionError('real network disabled for no-model agent construction')
+socket.socket.connect=deny_network
+from run_agent import AIAgent
+agent=AIAgent(model='mimo-v2.6-pro',provider='xiaomi',api_key='fake-no-provider',
+    base_url='https://example.invalid/v1',max_iterations=8,enabled_toolsets=['rpe_harness'],
+    quiet_mode=True,platform='cli',session_id='wire-agent',skip_context_files=True)
+defaults=agent._build_api_kwargs([{'role':'system','content':'PRIVATE_HOST_HISTORY'}])
+assert network_attempts==[], 'agent construction attempted real network'
+assert set(defaults)<= {'model','messages','tools','temperature','timeout','max_tokens','max_completion_tokens','extra_body'}
+seen=[]
+def fake_http(request):
+    seen.append(json.loads(request.content))
+    return httpx.Response(200,json={'id':'fake','object':'chat.completion','created':1,'model':'test',
+        'choices':[{'index':0,'finish_reason':'stop','message':{'role':'assistant','content':'fixture'}}]})
+client=openai.OpenAI(api_key='fake-no-provider',base_url='https://example.invalid/v1',
+    http_client=httpx.Client(transport=httpx.MockTransport(fake_http)))
+def send(index,request,mutate=None):
+    ids={'session_id':'wire-'+str(index),'task_id':'wire-task','turn_id':'wire-turn','api_request_id':'wire-api'}
+    projected=apply_llm_request_middleware(request,**ids).payload
+    if mutate: mutate(projected)
+    return run_llm_execution_middleware(projected,lambda value:client.chat.completions.create(**value),**ids)
+send(0,defaults)
+send(1,{**defaults,'extra_body':{'thinking':{'type':'disabled'}},'stream':False,
+    'stream_options':{'include_usage':True},'reasoning_effort':'none','temperature':0.2})
+assert len(seen)==2 and seen[1]['thinking']=={'type':'disabled'}
+for wire in seen:
+    assert wire['messages'][1]['content']==sys.argv[2]
+    assert 'PRIVATE' not in json.dumps(wire)
+    assert not set(wire)&{'input','instructions','history','system','prompt','metadata','stop'}
+blocked=[{'input':'PRIVATE_INPUT'},{'instructions':'PRIVATE_INSTRUCTIONS'},
+    {'extra_headers':{'X-History':'PRIVATE_HISTORY'}},{'stop':['PRIVATE_STOP']},
+    {'extra_body':{'messages':[{'role':'user','content':'PRIVATE_MESSAGE'}]}},
+    {'extra_body':{'input':'PRIVATE_INPUT'}},{'extra_body':{'instructions':'PRIVATE_INSTRUCTIONS'}},
+    {'extra_body':{'history':['PRIVATE_HISTORY']}},{'extra_body':{'system':'PRIVATE_SYSTEM'}},
+    {'extra_body':{'prompt':'PRIVATE_PROMPT'}},{'extra_body':{'metadata':{'profile':'PRIVATE_PROFILE'}}},
+    {'extra_body':{'thinking':{'type':'disabled','instructions':'PRIVATE_INSTRUCTIONS'}}},
+    {'temperature':float('nan')},{'max_tokens':True},{'stream':'PRIVATE_STREAM'},
+    {'stream_options':{'include_usage':True,'instructions':'PRIVATE_INSTRUCTIONS'}},
+    {'reasoning_effort':'PRIVATE_REASONING'},{'model':'PRIVATE MODEL PROMPT'}]
+for index,taint in enumerate(blocked,2):
+    before=len(seen)
+    try: send(index,{**defaults,**taint})
+    except CleanIngressBlocked: pass
+    else: raise AssertionError('untrusted kwargs were admitted')
+    assert len(seen)==before,'contaminated kwargs reached mock HTTP'
+before=len(seen)
+try: send(100,defaults,lambda value:value.update(extra_body={'history':['PRIVATE_LATE_HISTORY']}))
+except CleanIngressBlocked: pass
+else: raise AssertionError('bootstrap did not reject late override')
+assert len(seen)==before
+client.close()
+print(json.dumps({'safe_http_calls':len(seen),'rejected_before_http':len(blocked)+1,
+    'actual_xiaomi_keys':sorted(defaults),'real_network_attempts':len(network_attempts),'sdk_version':openai.__version__}))
+'''
+    child = subprocess.run([str(interpreter), '-B', '-c', program, str(sdk_root), SOURCE],
+        env=environment, cwd=clean['workspace'], capture_output=True, text=True, timeout=30)
+    assert child.returncode == 0, child.stderr[-4000:]
+    proof = json.loads(child.stdout.strip().splitlines()[-1])
+    assert proof['safe_http_calls'] == 2
+    assert proof['rejected_before_http'] == 19
+    assert proof['real_network_attempts'] == 0
+    (clean['config'].parent / 'wire-proof.json').write_text(json.dumps(proof, sort_keys=True))
 
 
 @pytest.mark.parametrize('corruption', ['session', 'state', 'fake_native', 'source_ledger', 'input'])

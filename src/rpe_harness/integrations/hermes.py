@@ -30,6 +30,7 @@ _TEXT_FIELDS = frozenset({
     'content_sha256', 'skill_source_path', 'target_path_sha256', 'request_thinking_type',
     'state_id', 'catalog_sha256', 'request_messages_sha256',
     'controller_id', 'requirements_sha256', 'source_sha256', 'understand_receipt_id',
+    'request_payload_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
