@@ -42,3 +42,7 @@ C0 公共状态修正：`review draft` 未能核验提案（协议、宿主或�
 审查补充：若父进程无法安全持久化诊断，仍返回 `unverified`/exit 1，保留已观测用量与清理信息，标记 `diagnostic_persistence_failed` 和 coverage 不完整，`diagnostics_ref=null`；不返回虚构文件引用或任意异常正文。
 
 隔离 review 在 Hermes 的原生 response-check 阶段拦截 length/content_filter/incomplete，防止 intake 前的原生续写或 fallback。此时诊断明确 `stage=response_check`、`intake=not_reached`、`native_action=null`，保留实际 finish reason。已收到的用量通过一次 adapter 自己拥有的 `api_request_error` outcome 记录：`error_type=RPEReviewResponseCheckBlocked`、`error_code=review_native_response_before_intake_blocked`。因此 `usage.api_errors` 包括这种应用层拒绝，不能等同于服务端或网络故障；不会伪造正常 post/intake verdict，也不会重复计费事件。原始参数 capture/admission 的拒绝另有固定诊断码；正文和参数不进入该诊断渠道，真实业务 needs_context 不变。
+
+协议门禁还在原生工具参数校验前只读检查每个调用的原始参数：必须是有界、严格的 JSON object，拒绝重复键、NaN/Infinity、数值溢出、坏语法和超限；不替换原始字符串或任何业务值。仅在多调用恢复资格判定时，另外用第一次实际发布并哈希绑定的 schema 检查各调用的结构，所有工具名/原生 ID 必须有效；不支持的验证关键字阻止恢复。最终恢复证明也重验原始坏响应与原始 schema。此检查不证明任意自然语言语义完整、引用真实或业务决定正确，单个正常 JSON object 仍由原有不可变提案与来源门禁处理真实 needs_context。
+
+同一阶段的下一次 API 请求必须对应已经记录的那一次首阶段恢复，并匹配原请求、outcome 与恢复收据；其他隐式同阶段重试在 provider 之前拒绝。合法 discover/select/view/propose 阶段推进和原有一次恢复额度不变。

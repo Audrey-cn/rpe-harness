@@ -16,7 +16,8 @@ PHASES = {'discover', 'select', 'view', 'propose', 'none'}
 CODES = {'review_protocol_native_API_identity_differs', 'review_protocol_native_response_not_dispatchable',
     'review_protocol_recovery_not_allowed', 'review_protocol_response_observation_missing',
     'review_protocol_response_observation_differs', 'review_protocol_response_invalid',
-    'review_protocol_unexpected_error', 'review_native_response_before_intake_blocked',
+    'review_protocol_unexpected_error', 'review_unexpected_phase_repeat',
+    'review_protocol_wrong_tool_or_identity', 'review_protocol_arguments_invalid', 'review_native_response_before_intake_blocked',
     'review_raw_arguments_invalid', 'review_argument_capture_failed', 'review_argument_admission_failed',
     'review_native_normalization_failed',
     'review_response_serialization_failed', 'review_plugin_unavailable',
@@ -45,7 +46,7 @@ def response_summary(native, response, *, phase=None, expected_tool=None, native
     calls = response.get('tool_calls')
     return {**{key: _identity(native.get(key)) for key in
                 ('session_id', 'task_id', 'turn_id', 'api_request_id')},
-        'stage': _enum(stage, {'normalization', 'serialization', 'response_guard', 'ingress', 'api', 'response_check', 'argument_capture', 'argument_admission'}),
+        'stage': _enum(stage, {'normalization', 'serialization', 'response_guard', 'ingress', 'api', 'response_check', 'argument_capture', 'argument_admission', 'request_policy'}),
         'phase': _enum(phase, PHASES), 'expected_tool': _enum(expected_tool, TOOLS),
         'intake': 'not_reached' if stage in ('response_check', 'api') else 'reached' if stage == 'response_guard' else None,
         'native_action': _enum(native_action, {'fallthrough', 'continue', 'return'}),
@@ -174,7 +175,7 @@ def collect_diagnostics(path, result=None, *, secret=''):
     if result.get('failure'):
         item = result['failure']
         failures.append(failure(item.get('code'), domain=_enum(item.get('domain'), {'protocol','host','observation','model'}) or 'observation',
-            stage=_enum(item.get('stage'), {'response_guard','finalization','session','normalization','serialization','api','ingress','response_check','argument_capture','argument_admission'}) or 'finalization'))
+            stage=_enum(item.get('stage'), {'response_guard','finalization','session','normalization','serialization','api','ingress','response_check','argument_capture','argument_admission','request_policy'}) or 'finalization'))
     if (result.get('completed') is not True or result.get('observer_errors') or result.get('timed_out')
             or (result.get('process_cleanup') or {}).get('cleanup_complete') is not True):
         failures.append(failure('host_or_observation_incomplete', domain='host', stage='session'))

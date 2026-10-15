@@ -9,6 +9,7 @@ from collections import Counter
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import sqlite3
 import threading
@@ -473,6 +474,14 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                     if state.get('review_context') is not None and state['review_context'] != bundle:
                         raise ValueError('session review source bundle changed')
                     state['review_context'] = bundle
+                try:
+                    _allow_phase_repeat(store, state, config)
+                except ValueError:
+                    from .review_diagnostics import append_response, response_summary
+                    append_response(response_summary(native, None, phase=state['phase'],
+                        expected_tool=PHASE_TOOL[state['phase']], stage='request_policy',
+                        failure_code='review_unexpected_phase_repeat'))
+                    raise
                 choice = PHASE_TOOL[state['phase']]
                 if choice == 'skill_view':
                     tools = [tool for tool in request.get('tools', []) if type(tool) is dict and
@@ -494,7 +503,9 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                     'payload_sha256': digest_json(rewritten), 'protocol_recovery': recovery}
                 workflows.put(state)
         except Exception as error:
-            raise ReviewIngressBlocked('review transport request blocked before provider') from error
+            raise ReviewIngressBlocked('review transport request blocked before provider',
+                code='review_unexpected_phase_repeat' if type(error) is ValueError and
+                    str(error) == 'review_unexpected_phase_repeat' else None) from error
         return {'request': rewritten, 'source': 'rpe_harness', 'reason': 'review_workflow'}
 
     def validate_request(request, **context):
@@ -688,7 +699,7 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                 raise ValueError('review_protocol_native_response_not_dispatchable')
             state = workflows.get(native, create=False)
             planned = state['policies'][api_request_id]
-            calls = _response_calls(response)
+            calls = _validate_response_arguments(response, planned)
             choice = planned['choice']
             if (choice == 'none' and not calls or choice != 'none' and len(calls) == 1
                     and calls[0]['tool_name'] == choice and calls[0]['tool_call_id']):
@@ -760,8 +771,163 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
     _RESPONSE_GUARD = response_guard
 
 
+def _strict_argument_object(call):
+    """Inspect bounded original arguments; never replace the native response."""
+    def reject_constant(value):
+        raise ValueError('nonfinite JSON constant')
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('duplicate JSON key')
+            result[key] = value
+        return result
+    try:
+        raw = call.get('arguments')
+        if type(raw) is str:
+            if not 0 < len(raw.encode('utf-8')) <= 65536:
+                raise ValueError('argument size')
+            value = json.loads(raw, parse_constant=reject_constant, object_pairs_hook=unique_object)
+        else:
+            value = raw
+        if type(value) is not dict or _json_bytes(value) > 65536:
+            raise ValueError('argument object required')
+        return value
+    except (ValueError, TypeError, UnicodeError, RecursionError, OverflowError):
+        raise ValueError('review_protocol_arguments_invalid') from None
+
+
+def _recovery_schema_matches(value, schema):
+    """Only the bounded schema subset actually advertised by review, for retry eligibility."""
+    annotations = {'description', 'examples', 'title', 'default', '$schema'}
+    supported = annotations | {'type', 'enum', 'properties', 'required', 'additionalProperties',
+        'items', 'uniqueItems', 'minItems', 'maxItems', 'minLength', 'maxLength', 'pattern', 'oneOf'}
+    types = {'object': dict, 'array': list, 'string': str, 'integer': int, 'boolean': bool, 'null': type(None)}
+
+    def bounded(item, depth=0):
+        if depth > 16:
+            return False
+        if type(item) is dict:
+            return all(type(key) is str and bounded(child, depth + 1) for key, child in item.items())
+        if type(item) is list:
+            return all(bounded(child, depth + 1) for child in item)
+        return type(item) in (str, int, float, bool, type(None))
+
+    def known(node, depth=0):
+        if depth > 16 or type(node) is not dict or set(node) - supported:
+            return False
+        kinds = node.get('type', [])
+        kinds = [kinds] if type(kinds) is str else kinds
+        if type(kinds) is not list or any(kind not in {*types, 'number'} for kind in kinds):
+            return False
+        properties, required = node.get('properties', {}), node.get('required', [])
+        if (type(properties) is not dict or type(required) is not list
+                or any(type(key) is not str for key in required)
+                or type(node.get('additionalProperties', True)) is not bool
+                or type(node.get('uniqueItems', False)) is not bool):
+            return False
+        if any(type(node[key]) is not int or not 0 <= node[key] <= 65536
+               for key in ('minItems', 'maxItems', 'minLength', 'maxLength') if key in node):
+            return False
+        if ('enum' in node and type(node['enum']) is not list
+                or 'pattern' in node and type(node['pattern']) is not str
+                or 'oneOf' in node and type(node['oneOf']) is not list):
+            return False
+        children = [*properties.values(), *node.get('oneOf', [])]
+        if 'items' in node:
+            children.append(node['items'])
+        return all(known(child, depth + 1) for child in children)
+
+    def matches(item, node, depth=0):
+        if depth > 16:
+            return False
+        kind = node.get('type')
+        kinds = [kind] if type(kind) is str else kind
+        if kinds is not None and not any(
+                type(item) in (int, float) if tag == 'number' else type(item) is types[tag]
+                for tag in kinds):
+            return False
+        if 'enum' in node and digest_json(item) not in {digest_json(entry) for entry in node['enum']}:
+            return False
+        if 'oneOf' in node and sum(matches(item, branch, depth + 1) for branch in node['oneOf']) != 1:
+            return False
+        if type(item) is dict:
+            properties = node.get('properties', {})
+            if (not set(node.get('required', [])) <= set(item)
+                    or node.get('additionalProperties') is False and set(item) - set(properties)):
+                return False
+            if any(not matches(child, properties[key], depth + 1) for key, child in item.items() if key in properties):
+                return False
+        elif type(item) is list:
+            if not node.get('minItems', 0) <= len(item) <= node.get('maxItems', 65536):
+                return False
+            if node.get('uniqueItems') and len({digest_json(child) for child in item}) != len(item):
+                return False
+            if 'items' in node and any(not matches(child, node['items'], depth + 1) for child in item):
+                return False
+        elif type(item) is str:
+            if not node.get('minLength', 0) <= len(item) <= node.get('maxLength', 65536):
+                return False
+            if 'pattern' in node and re.search(node['pattern'], item) is None:
+                return False
+        return True
+    try:
+        return (_json_bytes(value) <= 65536 and _json_bytes(schema) <= 65536
+                and bounded(value) and bounded(schema) and known(schema) and matches(value, schema))
+    except (ValueError, TypeError, KeyError, RecursionError, OverflowError, re.error):
+        return False
+
+
+def _validate_response_arguments(response, planned):
+    calls = _response_calls(response)
+    if (any(call['tool_name'] != planned['choice'] or type(call['tool_call_id']) is not str
+            or not call['tool_call_id'] for call in calls)
+            or len({call['tool_call_id'] for call in calls}) != len(calls)):
+        raise ValueError('review_protocol_wrong_tool_or_identity')
+    arguments = [_strict_argument_object(call) for call in response.get('tool_calls') or []]
+    if len(calls) > 1:
+        tools = planned['tools_schema']
+        if (len(tools) != 1 or tools[0]['function']['name'] != planned['choice']
+                or any(not _recovery_schema_matches(value, tools[0]['function']['parameters']) for value in arguments)):
+            raise ValueError('review_protocol_arguments_invalid')
+    return calls
+
+
+def _allow_phase_repeat(store, state, config):
+    """Only the one receipt-authorized first-phase retry may reuse a phase."""
+    same = [(key, value) for key, value in state['policies'].items()
+            if value['phase'] == state['phase']]
+    if not same:
+        return
+    recovery = state.get('protocol_recovery') or {}
+    if (len(same) != 1 or len(state['policies']) != 1 or same[0][1].get('protocol_recovery')
+            or state['phase'] != ('discover' if 'skills' in config else 'propose')
+            or recovery.get('phase') != state['phase']
+            or (recovery.get('native') or {}).get('api_request_id') != same[0][0]):
+        raise ValueError('review_unexpected_phase_repeat')
+    events = store.list(state['session_id'])
+    receipts = [event for event in events if event['kind'] == 'rpe_review_protocol_recovery']
+    if (len(receipts) != 1 or receipts[0]['ingest_event_id'] != recovery.get('receipt_id')
+            or receipts[0].get('receipt_id') != recovery.get('outcome_receipt_id')
+            or receipts[0].get('workflow_phase') != state['phase']
+            or receipts[0].get('status') != 'retry_before_dispatch'
+            or receipts[0].get('content_sha256') != digest_json(recovery.get('response'))
+            or any(receipts[0].get(key) != recovery.get('native', {}).get(key)
+                   for key in (*IDS[:-1], 'entry_key'))):
+        raise ValueError('review_unexpected_phase_repeat')
+    try:
+        _verify_policy(events, state, config, recovery_pending=True)
+        outcome = next(event for event in events if event['ingest_event_id'] == recovery['outcome_receipt_id'])
+        if events.index(outcome) >= events.index(receipts[0]):
+            raise ValueError('receipt order')
+    except (ValueError, TypeError, KeyError, StopIteration):
+        raise ValueError('review_unexpected_phase_repeat') from None
+
+
 def _response_calls(response):
     if type(response) is not dict or type(response.get('tool_calls')) not in (list, type(None)):
+        raise ValueError('review_protocol_response_invalid')
+    if any(type(call) is not dict or not {'id', 'name'} <= set(call) for call in response.get('tool_calls') or []):
         raise ValueError('review_protocol_response_invalid')
     return [{'tool_call_id': call['id'], 'tool_name': call['name']}
             for call in response.get('tool_calls') or []]
@@ -827,6 +993,7 @@ def _verify_policy(events, state, config, *, recovery_pending=False):
             raise ValueError('review_api_identity_differs')
         calls = outcome.get('model_tool_calls', [])
         if recovery and pre['api_request_id'] == recovery['native']['api_request_id']:
+            _validate_response_arguments(recovery['response'], planned)
             expected_phase = 'discover' if 'skills' in config else 'propose'
             receipt = recovery_events[0] if recovery_events else None
             if (pre is not requests[0] or choice != PHASE_TOOL[expected_phase]

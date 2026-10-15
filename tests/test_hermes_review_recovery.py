@@ -24,8 +24,8 @@ def invalid_response(env, *, number=1, calls=None):
 
 
 @pytest.mark.parametrize('calls', [[], [
-    {'id': 'bad-1', 'name': 'rpe_propose', 'arguments': '{}'},
-    {'id': 'bad-2', 'name': 'rpe_propose', 'arguments': '{}'}]])
+    {'id': 'bad-1', 'name': 'rpe_propose', 'arguments': json.dumps(draft())},
+    {'id': 'bad-2', 'name': 'rpe_propose', 'arguments': json.dumps(draft())}]])
 def test_initial_protocol_failure_can_recover_once_with_original_response(review, calls):
     response = invalid_response(review, calls=calls)
     assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
@@ -183,7 +183,7 @@ def test_installed_review_recovers_before_dispatch_and_finishes_with_two_observe
     program = program.replace("name,args=steps[len(calls)-1]", "name,args=steps[len(calls)-1]\n"
         "    if len(calls)==1:\n"
         "        wrong=[] if sys.argv[4]=='missing' else [{'id':'bad-'+str(i),'type':'function',"
-        "'function':{'name':name,'arguments':'{}'}} for i in range(2)]\n"
+        "'function':{'name':name,'arguments':json.dumps(args)}} for i in range(2)]\n"
         "        return ChatCompletion.model_validate({'id':'bad-response','created':0,'model':'test-model',"
         "'object':'chat.completion','choices':[{'index':0,'finish_reason':'stop' if not wrong else 'tool_calls',"
         "'message':{'role':'assistant','content':'Keep this rejected reply.','tool_calls':wrong}}]})")
@@ -349,3 +349,131 @@ def test_argument_admission_rejection_is_diagnostic_not_business_context(review,
     assert rows[-1]['stage'] == 'argument_admission'
     assert rows[-1]['failure_code'] == 'review_argument_admission_failed'
     assert 'PRIVATE_UNREGISTERED_CAPABILITY' not in journal.read_text()
+
+
+def test_installed_malformed_argument_json_does_not_trigger_native_retry(review):
+    from pathlib import Path
+    interpreter, environment = _sdk_home(review, 'invalid-json-arguments')
+    program = _NATIVE_TURN_PROGRAM.replace(
+        'install_clean_ingress_guard();install_review_finish_adapter()',
+        'install_clean_ingress_guard();install_review_finish_adapter();'
+        'from rpe_harness.integrations.hermes_review_finish import install_review_response_adapter;'
+        'install_review_response_adapter()')
+    program = program.replace('name,args=steps[len(calls)-1]', 'name,args=steps[len(calls)-1]\n'
+        '    if len(calls)==1:\n'
+        "        return ChatCompletion.model_validate({'id':'bad-json-response','created':0,'model':'test-model',"
+        "'object':'chat.completion','choices':[{'index':0,'finish_reason':'tool_calls',"
+        "'message':{'role':'assistant','content':None,'tool_calls':[{'id':'bad-json-call','type':'function',"
+        "'function':{'name':name,'arguments':'{bad}'}}]}}]})")
+    program = program.replace("result=agent.run_conversation(sys.argv[2],task_id='review-task')",
+        "from rpe_harness.integrations.hermes_review import ReviewIngressBlocked\n"
+        "try:\n    result=agent.run_conversation(sys.argv[2],task_id='review-task')\n"
+        "except ReviewIngressBlocked:\n    print(json.dumps({'blocked':True,'provider_calls':len(calls)}));sys.exit(0)\n"
+        "print(json.dumps({'blocked':False,'provider_calls':len(calls)}));sys.exit(0)")
+    child = subprocess.run([str(interpreter), '-B', '-c', program, json.dumps(draft()), RAW,
+        json.dumps([['rpe_propose', draft()], ['rpe_propose', draft()]])],
+        cwd=review['workspace'], env=environment, capture_output=True, text=True, timeout=45)
+    assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
+    result = json.loads(child.stdout.strip().splitlines()[-1])
+    assert result == {'blocked': True, 'provider_calls': 1}, result
+    events = review['store'].list('review-session')
+    assert len([e for e in events if e['kind'] == 'pre_api_request']) == 1
+    assert not [e for e in events if e['kind'] in ('pre_tool_call', 'rpe_review_protocol_recovery')]
+    rows = [json.loads(line) for line in Path(environment['RPE_HERMES_REVIEW_DIAGNOSTICS']).read_text().splitlines()]
+    assert rows[-1]['stage'] == 'response_guard'
+    assert rows[-1]['failure_code'] == 'review_protocol_arguments_invalid'
+    assert rows[-1]['native_action'] == 'fallthrough'
+    assert not (review['workspace']/'out.csv').exists()
+
+
+@pytest.mark.parametrize('fault', ['no_recovery', 'receipt'])
+def test_same_phase_repeat_requires_prior_authorized_recovery_receipt(review, monkeypatch, fault):
+    journal = review['config'].parent/'repeat-diagnostics.jsonl'
+    monkeypatch.setenv('RPE_HERMES_REVIEW_DIAGNOSTICS', str(journal))
+    response = invalid_response(review)
+    if fault == 'receipt':
+        assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+            api_request_id='api-1', response=response, intake_action='fallthrough')
+        from rpe_harness.integrations.hermes_gate import digest_json
+        with sqlite3.connect(review['db']) as db:
+            state = json.loads(db.execute('SELECT state_json FROM rpe_skill_workflows').fetchone()[0])
+            state['protocol_recovery']['receipt_id'] = 'forged-recovery-receipt'
+            db.execute('UPDATE rpe_skill_workflows SET state_json=?,state_sha256=?',
+                       (json.dumps(state), digest_json(state)))
+    ids = dict(session_id='review-session', task_id='review-task', turn_id='review-turn', api_request_id='api-2')
+    with pytest.raises(review['api'].ReviewIngressBlocked) as raised:
+        review['sdk'].middleware['llm_request'](request={'tools': []}, **ids)
+    assert raised.value.code == 'review_unexpected_phase_repeat'
+    rows = [json.loads(line) for line in journal.read_text().splitlines()]
+    assert rows[-1]['stage'] == 'request_policy'
+    assert rows[-1]['failure_code'] == 'review_unexpected_phase_repeat'
+    with sqlite3.connect(review['db']) as db:
+        state = json.loads(db.execute('SELECT state_json FROM rpe_skill_workflows').fetchone()[0])
+    assert set(state['policies']) == {'api-1'}
+
+
+@pytest.mark.parametrize('raw', ['{bad}', '[]', 'null', '{"v":NaN}', '{"x":1,"x":2}', '{"v":1e400}', '{"x":"' + 'a'*65536 + '"}'],
+                         ids=['malformed', 'array', 'null', 'nonfinite', 'duplicate', 'overflow', 'oversize'])
+def test_raw_argument_syntax_and_size_reject_without_modifying_response(review, raw):
+    import copy
+    response = invalid_response(review, calls=[{'id': 'call-1', 'name': 'rpe_propose', 'arguments': raw}])
+    original = copy.deepcopy(response)
+    with pytest.raises(review['api'].ReviewIngressBlocked) as raised:
+        review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+            api_request_id='api-1', response=response, intake_action='fallthrough')
+    assert raised.value.code == 'review_protocol_arguments_invalid'
+    assert response == original
+    assert not [e for e in review['store'].list('review-session') if e['kind'] == 'rpe_review_protocol_recovery']
+
+
+@pytest.mark.parametrize('fault', ['type', 'required', 'unique', 'unknown_keyword'])
+def test_multicall_recovery_checks_original_advertised_proposal_schema(review, fault):
+    import copy
+    candidate = draft()
+    if fault == 'type':
+        candidate['execution']['output_path'] = 42
+    elif fault == 'required':
+        candidate.pop('constraints')
+    elif fault == 'unique':
+        candidate['requirements'][0]['fields'] = ['/capability', '/capability']
+    else:
+        review['sdk'].tools['rpe_propose']['schema']['parameters']['not'] = {}
+    response = invalid_response(review, calls=[{'id': 'c1', 'name': 'rpe_propose', 'arguments': json.dumps(candidate)},
+                                             {'id': 'c2', 'name': 'rpe_propose', 'arguments': json.dumps(draft())}])
+    original = copy.deepcopy(response)
+    with pytest.raises(review['api'].ReviewIngressBlocked) as raised:
+        review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+            api_request_id='api-1', response=response, intake_action='fallthrough')
+    assert raised.value.code == 'review_protocol_arguments_invalid'
+    assert response == original
+    assert not [e for e in review['store'].list('review-session') if e['kind'] == 'rpe_review_protocol_recovery']
+
+
+@pytest.mark.parametrize('query,eligible', [('watercolor landscape', True), (3, False), ('', False), ('a'*4097, False)],
+                         ids=['valid', 'type', 'empty', 'oversize'])
+def test_discovery_multicall_schema_and_identity_are_checked_before_recovery(skill_review, query, eligible):
+    response = invalid_response(skill_review, calls=[
+        {'id': 'd1', 'name': 'rpe_discover', 'arguments': json.dumps({'q': query})},
+        {'id': 'd2', 'name': 'rpe_discover', 'arguments': json.dumps({'q': 'landscape'})}])
+    if eligible:
+        assert skill_review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+            api_request_id='api-1', response=response, intake_action='fallthrough') is True
+    else:
+        with pytest.raises(skill_review['api'].ReviewIngressBlocked) as raised:
+            skill_review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+                api_request_id='api-1', response=response, intake_action='fallthrough')
+        assert raised.value.code == 'review_protocol_arguments_invalid'
+    assert len([e for e in skill_review['store'].list('review-session') if e['kind'] == 'rpe_review_protocol_recovery']) == int(eligible)
+
+
+def test_multicall_business_incomplete_proposal_is_not_filled_or_schema_rejected(review):
+    candidate = draft()
+    candidate['execution'].pop('key_columns')
+    candidate['requirements'] = [row for row in candidate['requirements'] if row['fields'] != ['/execution/key_columns']]
+    candidate['unresolved'] = ['Which business columns define duplicates?']
+    response = invalid_response(review, calls=[
+        {'id': 'p1', 'name': 'rpe_propose', 'arguments': json.dumps(candidate)},
+        {'id': 'p2', 'name': 'rpe_propose', 'arguments': json.dumps(draft())}])
+    assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+        api_request_id='api-1', response=response, intake_action='fallthrough') is True
+    assert 'key_columns' not in json.loads(response['tool_calls'][0]['arguments'])['execution']

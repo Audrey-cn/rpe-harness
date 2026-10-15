@@ -166,3 +166,15 @@ def test_unexpected_intake_failure_is_fail_closed_without_error_text(tmp_path, m
     saved = json.loads(journal.read_text())
     assert saved['stage'] == stage and saved['rpe_action'] == 'blocked'
     assert 'PRIVATE_SECRET' not in journal.read_text()
+
+
+def test_recovery_schema_subset_bounds_value_depth_and_exact_json_types():
+    from rpe_harness.integrations.hermes_review import _recovery_schema_matches
+    value = {}
+    for _ in range(18):
+        value = {'nested': value}
+    assert _recovery_schema_matches(value, {'type': 'object'}) is False
+    assert _recovery_schema_matches(True, {'type': 'integer'}) is False
+    assert _recovery_schema_matches(1, {'type': 'integer'}) is True
+    assert _recovery_schema_matches(float('inf'), {'type': 'number'}) is False
+    assert _recovery_schema_matches({}, {'type': 'object', 'properties': {'unused': {'not': {}}}}) is False
