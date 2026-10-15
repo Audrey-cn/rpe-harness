@@ -17,7 +17,7 @@ TOKEN = '37f23ae55b694cb3912f32f88684cfe2'
 OWNED = Path('/Users/audrey/项目/缓存/test/rpe-v110-' + TOKEN)
 REPO = Path(__file__).absolute().parents[3]
 REPORT = REPO / 'reports/v1.10.0/cleanup.json'
-EXPORTS = [REPO / 'reports/v1.10.0' / name for name in ('pilot-original', 'public-evidence')]
+EXPORTS = [REPO / 'reports/v1.10.0' / name for name in ('pilot-original', 'public-evidence', 'contract-check')]
 DAILY = Path('/Users/audrey/.hermes/state.db')
 
 
@@ -134,7 +134,7 @@ def main():
         if live or report.get('stop_survivors') or report['owned_session_rows_in_daily_history'] or not report['preservation_before']['strict_preservation']:
             raise ValueError('live_owned_or_history_or_preservation_guard_failed')
         if not all(item['verified'] for item in report['public_before'].values()):
-            raise ValueError('both_portable_public_exports_must_verify_before_cleanup')
+            raise ValueError('all_three_portable_public_exports_must_verify_before_cleanup')
         entries = [item for path in OWNED.rglob('*') if not stat.S_ISDIR((item := path.lstat()).st_mode)]
         report['owned_size'] = {'files': len(entries), 'bytes': sum(item.st_size for item in entries)}
         if args.delete:
