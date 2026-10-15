@@ -35,13 +35,14 @@ _TEXT_FIELDS = frozenset({
     'process_start_identity_sha256', 'output_sha256', 'output_identity_sha256', 'output_path_sha256',
     'artifact_binding', 'process_observation_error', 'process_receipt_hmac_sha256', 'tool_status',
     'process_config_sha256', 'artifact_config_sha256', 'artifact_receipt_hmac_sha256',
+    'stdout_sha256', 'stdout_identity_sha256', 'stdout_path_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
     'first_chunk_at', 'message_count', 'assistant_content_chars', 'assistant_tool_call_count',
     'task_attempt',
     'tool_exit_code', 'bytes_written', 'request_max_completion_tokens', 'request_messages_bytes',
-    'pid', 'parent_pid', 'process_returncode', 'output_size',
+    'pid', 'parent_pid', 'process_returncode', 'output_size', 'stdout_size',
 })
 _BOOL_FIELDS = frozenset({'completed', 'failed', 'interrupted', 'is_first_turn',
                           'request_parallel_tool_calls', 'verified', 'kernel_exit_observed',

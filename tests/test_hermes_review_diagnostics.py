@@ -2,6 +2,8 @@
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -34,6 +36,29 @@ def test_private_journal_permissions_and_missing_observations_are_not_complete(t
     assert result['coverage']['complete'] is True
     no_events = {**observed(), 'events': []}
     assert collect_diagnostics(journal, no_events)['coverage']['complete'] is False
+
+
+def test_deep_journal_json_is_invalid_without_losing_known_observations(tmp_path):
+    journal = tmp_path / 'journal'
+    journal.write_text('[' * 1000 + ']' * 1000 + '\n' + json.dumps(row()) + '\n')
+    # Exercise the standard library's pure Python decoder too: accelerated
+    # decoder recursion limits differ between supported Python versions.
+    program = '''import sys
+sys.modules['_json']=None
+import json
+from rpe_harness.integrations.review_diagnostics import collect_diagnostics
+sys.setrecursionlimit(500)
+result=collect_diagnostics(sys.argv[1],json.loads(sys.argv[2]))
+print(json.dumps(result))
+'''
+    child = subprocess.run([sys.executable, '-B', '-c', program, str(journal), json.dumps(observed())],
+        capture_output=True, text=True, timeout=10)
+    assert child.returncode == 0, child.stderr
+    result = json.loads(child.stdout)
+    assert result['coverage']['complete'] is False
+    assert 'diagnostic_invalid' in result['coverage']['reasons']
+    assert len(result['responses']) == 1
+    assert result['responses'][0]['failure_code'] == 'review_protocol_recovery_not_allowed'
 
 
 @pytest.mark.parametrize('fault', ['missing', 'empty', 'nested', 'symlink', 'fifo', 'json', 'oversize', 'rows', 'secret', 'injection'])

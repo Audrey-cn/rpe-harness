@@ -28,6 +28,12 @@ def verify_aggregates(plan, summary, phases, formal_freeze=None):
             if (sum(phase['phase'] == 'draft' for phase in phases) > 10
                     or sum(phase['phase'] == 'execute' and phase['arm'] == 'native' for phase in phases) > 4):
                 raise ValueError('v114_finite_budget_exceeded')
+        elif plan.get('profile') == 'review-v115':
+            from .review_v115_comparison import validate_registration_budget
+            validate_registration_budget(plan)
+            if (sum(phase['phase'] == 'draft' for phase in phases) > 6
+                    or sum(phase['phase'] == 'execute' and phase['arm'] == 'native' for phase in phases) > 2):
+                raise ValueError('v115_finite_budget_exceeded')
         registration = plan['controller_registration_sha256']
         _same(summary['fingerprint'], registration, 'registration')
         trials = plan['sessions'] + plan['pilots']
@@ -76,7 +82,8 @@ def verify_aggregates(plan, summary, phases, formal_freeze=None):
             expected_pairs.append({'case_id': case['case_id'], 'comparable': comparable,
                 **{arm + '_accepted': rows[arm].get('accepted') if arm in rows else None for arm in _ARMS}})
         _same(summary['pairs'], expected_pairs, 'pairs')
-        _same(summary['comparison_ready'], len(formal) == 8 and all(
+        expected_count = 6 if plan.get('profile') == 'review-v115' else 8
+        _same(summary['comparison_ready'], len(formal) == expected_count and all(
             pair['comparable'] for pair in expected_pairs), 'comparison_ready')
         for key, selected in (
                 ('costs', phases),
@@ -91,6 +98,11 @@ def verify_aggregates(plan, summary, phases, formal_freeze=None):
                 if not isinstance(formal_freeze[field], str) or not _SHA.fullmatch(formal_freeze[field]):
                     raise ValueError('formal_contract_hash_invalid')
                 _same(formal_freeze[field], plan[field], 'formal_' + field)
+            if plan.get('profile') == 'review-v115':
+                for field in ('native_public_contract_sha256', 'staged_execution_public_contract_sha256'):
+                    if not isinstance(formal_freeze[field], str) or not _SHA.fullmatch(formal_freeze[field]):
+                        raise ValueError('v115_formal_contract_hash_invalid')
+                    _same(formal_freeze[field], plan[field], 'formal_' + field)
             sources = formal_freeze['environment']['source_sha256']
             if (type(sources) is not dict or 'experiments/review_v111_comparison.py' not in sources
                     or any(type(name) is not str or not name.endswith('.py') or

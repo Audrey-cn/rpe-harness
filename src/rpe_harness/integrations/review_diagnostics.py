@@ -135,7 +135,7 @@ def collect_diagnostics(path, result=None, *, secret=''):
                 if row != value:
                     reasons.append('diagnostic_invalid')
                 rows.append(row)
-            except (ValueError, TypeError, UnicodeError):
+            except (ValueError, TypeError, UnicodeError, RecursionError):
                 reasons.append('diagnostic_invalid')
     except FileNotFoundError:
         reasons.append('diagnostic_missing')

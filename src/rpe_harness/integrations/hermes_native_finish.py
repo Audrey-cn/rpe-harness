@@ -91,6 +91,18 @@ class NativeTurnFinisher:
                     or native._digest(output.get('identity')) != receipt.get('output_identity_sha256')):
                 return None
             name, digest = self.execution['output_name'], output['sha256']
+            if 'stdout_name' in self.execution:
+                stdout_path = Path(self.execution['workspace'])/self.execution['stdout_name']
+                stdout = native.file_snapshot(stdout_path)
+                if (receipt.get('artifact_binding') != 'same_call_final_bytes_equal_observed_stdout_not_exclusive_writer'
+                        or stdout.get('state') != 'regular'
+                        or stdout.get('sha256') != receipt.get('stdout_sha256')
+                        or stdout.get('size') != receipt.get('stdout_size')
+                        or native._digest(stdout.get('identity')) != receipt.get('stdout_identity_sha256')
+                        or hashlib.sha256(str(stdout_path).encode()).hexdigest() != receipt.get('stdout_path_sha256')
+                        or stdout.get('sha256') != output.get('sha256')
+                        or stdout.get('size') != output.get('size')):
+                    return None
         elif self.config and 'artifact_name' in self.config:
             from . import hermes_native_process as native
             from .hermes_native import evaluate_artifact_receipt

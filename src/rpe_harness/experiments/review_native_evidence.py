@@ -269,21 +269,18 @@ def native_cold_proof(result, plan, trial):
     return verdict
 
 
-def evaluate_native_review_execution_v113(result, plan, trial):
-    """Require an authenticated actual helper exit, plus independent business truth.
-
-    Only 1.13 XLSX execution uses this gate. A final artifact is bound to the
-    observed helper's stdout inode and current bytes; this is not an exclusive
-    writer claim. Historical 1.11/1.12 command scoring is unchanged.
-    """
+def _evaluate_native_process(result, plan, trial, *, stdout_name=None):
+    """Share process authentication while keeping direct and staged scopes explicit."""
     from .address_comparison import (_python_metadata, evaluate_native_address_session,
                                      score_address_artifact)
     case = next(case for case in plan['cases'] if case['case_id'] == trial['case_id'])
     if case['capability'] != 'xlsx.inspect' or case['expected_status'] != 'ready':
         return evaluate_native_address_session(result, plan, trial)
+    binding = ('same_call_final_bytes_equal_observed_stdout_not_exclusive_writer' if stdout_name is not None
+        else 'final_bytes_on_observed_stdout_inode_not_exclusive_writer')
     verdict = {'verified': False, 'status': 'unverified', 'errors': [],
                'proof_kind': 'authenticated_darwin_kernel_process_exit', 'receipt_authenticated': False,
-               'artifact_binding': 'final_bytes_on_observed_stdout_inode_not_exclusive_writer'}
+               'artifact_binding': binding}
     try:
         import hmac
         from ..integrations.hermes_native_process import (_digest, _validate_config, file_snapshot,
@@ -301,7 +298,10 @@ def evaluate_native_review_execution_v113(result, plan, trial):
             'skill_sha256': plan['skill_sha256'], 'script_sha256': plan['script_sha256'],
             'input_name': case['input_name'], 'input_sha256': trial['input_sha256'],
             'output_name': case['output_name'], 'parameters': case['parameters']}
-        if any(not exact_json(config.get(key), value) for key, value in expected.items()):
+        if stdout_name is not None:
+            expected['stdout_name'] = stdout_name
+        if ((stdout_name is None and 'stdout_name' in config)
+                or any(not exact_json(config.get(key), value) for key, value in expected.items())):
             raise ValueError('native_process_configuration_changed')
         allowed_sources = [session/'home/skills/xlsx/SKILL.md',
                            session/'home/skills/productivity/xlsx/SKILL.md']
@@ -329,7 +329,8 @@ def evaluate_native_review_execution_v113(result, plan, trial):
         verdict['receipt_authenticated'] = True
         if (receipt.get('process_config_sha256') != _digest(config)
                 or receipt.get('process_returncode') != 0 or receipt.get('observer_joined') is not True
-                or receipt.get('overlap') is not False or receipt.get('process_observation_error') != ''):
+                or receipt.get('overlap') is not False or receipt.get('process_observation_error') != ''
+                or receipt.get('artifact_binding') != binding):
             raise ValueError('native_process_receipt_configuration_or_exit_mismatch')
         matching = [post for post in posts if _same_call(post, receipt)]
         if len(matching) != 1 or matching[0].get('status') != 'succeeded' or matching[0].get('tool_exit_code') != 0:
@@ -343,19 +344,40 @@ def evaluate_native_review_execution_v113(result, plan, trial):
             raise ValueError('native_process_original_skill_not_loaded_before_helper')
         output_path = Path(config['workspace'])/case['output_name']
         output = file_snapshot(output_path)
-        if (output.get('sha256') != receipt.get('output_sha256') or output.get('size') != receipt.get('output_size')
+        if (output.get('state') != 'regular' or output.get('sha256') != receipt.get('output_sha256')
+                or output.get('size') != receipt.get('output_size')
                 or _digest(output.get('identity')) != receipt.get('output_identity_sha256')
                 or _sha(str(output_path).encode()) != receipt.get('output_path_sha256')):
             raise ValueError('native_process_final_output_changed')
+        if stdout_name is not None:
+            stdout_path = Path(config['workspace'])/stdout_name
+            stdout = file_snapshot(stdout_path)
+            if (stdout.get('state') != 'regular' or stdout.get('sha256') != receipt.get('stdout_sha256')
+                    or stdout.get('size') != receipt.get('stdout_size')
+                    or _digest(stdout.get('identity')) != receipt.get('stdout_identity_sha256')
+                    or _sha(str(stdout_path).encode()) != receipt.get('stdout_path_sha256')
+                    or stdout.get('sha256') != output['sha256'] or stdout.get('size') != output['size']):
+                raise ValueError('native_process_final_stdout_changed')
         business = score_address_artifact(plan, trial)
         if business.get('business_correct') is not True or business.get('product_oracle_passed') is not True:
             raise ValueError('native_process_final_output_business_incorrect')
         verdict.update(verified=True, status='accepted', process_returncode=0, kernel_exit_observed=True,
             helper_call_id=receipt['tool_call_id'], arguments_sha256=receipt['arguments_sha256'],
             output_sha256=receipt['output_sha256'], process_argv_sha256=receipt['process_argv_sha256'])
+        if stdout_name is not None:
+            verdict['stdout_sha256'] = receipt['stdout_sha256']
     except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         verdict['errors'].append(str(error) if isinstance(error, ValueError) else type(error).__name__)
     return verdict
+
+
+def evaluate_native_review_execution_v113(result, plan, trial):
+    """Require the original direct-stdout inode proof and independent business truth.
+
+    Staged configurations and proof scopes are rejected here, including when
+    called through 1.14. Historical 1.11/1.12 command scoring is unchanged.
+    """
+    return _evaluate_native_process(result, plan, trial)
 
 
 def evaluate_native_review_execution_v114(result, plan, trial):
@@ -403,6 +425,20 @@ def evaluate_native_review_execution_v114(result, plan, trial):
     except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         verdict['errors'] = [str(error) if isinstance(error, ValueError) else type(error).__name__]
     return verdict
+
+
+def evaluate_native_review_execution_v115(result, plan, trial):
+    """Opt into a preregistered same-call staged stdout binding for ready XLSX."""
+    case = next(case for case in plan['cases'] if case['case_id'] == trial['case_id'])
+    if case['capability'] != 'xlsx.inspect' or case['expected_status'] != 'ready':
+        return evaluate_native_review_execution_v114(result, plan, trial)
+    stdout_name = plan.get('native_stdout_name')
+    if not isinstance(stdout_name, str) or not stdout_name:
+        return {'verified': False, 'status': 'unverified',
+            'errors': ['native_staged_stdout_configuration_missing'], 'receipt_authenticated': False,
+            'proof_kind': 'authenticated_darwin_kernel_process_exit',
+            'artifact_binding': 'same_call_final_bytes_equal_observed_stdout_not_exclusive_writer'}
+    return _evaluate_native_process(result, plan, trial, stdout_name=stdout_name)
 
 
 def native_chain_diagnostics(result, db_path):

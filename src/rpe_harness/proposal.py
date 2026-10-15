@@ -188,6 +188,8 @@ def render_review(document):
         defaults = {key: value for key, value in document['machine_contract'].get('execution', {}).items()
                     if key not in draft['execution']}
     lines.append('执行默认值（同样需要确认）：' + _shown(defaults))
+    if 'parameter_evidence' in document:
+        lines.append('原文字面参数核验（不证明要求没有遗漏）：' + _shown(document['parameter_evidence']))
     lines.append('待澄清：' + _shown(draft.get('unresolved', []) if type(draft) is dict else []))
     lines.append('缺少字段：' + _shown(document['missing']))
     lines.append('问题：' + _shown(document['errors']))
@@ -198,7 +200,7 @@ def render_review(document):
 
 def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
                     catalog_root=None, skill_snapshot_id=None, review_context=None,
-                    skill_selection=None):
+                    skill_selection=None, value_evidence=False):
     """Validate one model draft without granting confirmation or writing output."""
     try:
         _identity(session_id, 'session_id')
@@ -209,6 +211,8 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
         draft = copy.deepcopy(draft)
     except (ValueError, TypeError, UnicodeError, RecursionError) as error:
         return {'status': 'needs_context', 'missing': ['bounded_source_or_draft'], 'errors': [str(error)]}
+    if type(value_evidence) is not bool:
+        raise ValueError('value_evidence must be a boolean')
     root = _absolute(workspace)
     if not root.is_dir():
         raise ValueError('workspace must be an existing directory')
@@ -229,6 +233,12 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
         except (ValueError, TypeError, KeyError, OSError) as error:
             context_errors.append('invalid skill selection: ' + str(error))
     rows, missing, errors = _rows(raw, draft, source_contents)
+    parameter_evidence = None
+    if value_evidence:
+        from .review_values import validate_parameter_witnesses
+        parameter_evidence = validate_parameter_witnesses(raw, draft, source_contents)
+        missing += parameter_evidence['missing']
+        errors += parameter_evidence['errors']
     if context_errors:
         missing.append('verified_review_context_or_skill')
         errors += context_errors
@@ -317,6 +327,8 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
         'review_context': bound_context, 'context_recovery': recovery,
         'field_provenance': provenance, 'skill_selection': bound_selection,
         'missing': sorted(set(missing)), 'errors': errors}
+    if parameter_evidence is not None:
+        document['parameter_evidence'] = parameter_evidence
     document['summary'] = render_review(document)
     if len(_canonical(document)) > _MAX_DOCUMENT:
         return {'status': 'needs_context', 'missing': ['bounded_review'], 'errors': ['review exceeds 512 KiB']}
@@ -391,6 +403,11 @@ class ProposalStore:
                     {key: value for key, value in historical.items() if key != 'recovery_id'}):
                 raise ValueError('review context source freshness or recovery changed')
         rows, missing, errors = _rows(proposal['source']['raw'], proposal['draft'], source_contents)
+        if 'parameter_evidence' in proposal:
+            from .review_values import validate_parameter_witnesses
+            evidence = validate_parameter_witnesses(proposal['source']['raw'], proposal['draft'], source_contents)
+            if evidence != proposal['parameter_evidence'] or evidence['missing'] or evidence['errors']:
+                raise ValueError('proposal literal parameter evidence differs or is incomplete')
         if rows != proposal['requirements'] or missing or errors:
             raise ValueError('proposal requirement quote addresses or source mappings differ')
         if proposal.get('skill_selection') is not None:

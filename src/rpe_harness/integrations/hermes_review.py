@@ -159,13 +159,15 @@ def _configuration():
     raw = path.read_bytes()
     value = json.loads(raw)
     if (type(value) is not dict or set(value) - {'catalog_sha256', 'entries', 'raw', 'source_ref',
-                                               'skills', 'context_sources'}
+                                               'skills', 'context_sources', 'review_profile'}
             or not {'catalog_sha256', 'entries', 'raw', 'source_ref'} <= set(value)
             or type(value['raw']) is not str or not value['raw'].strip()
             or not 0 < len(value['raw'].encode()) <= 65536
             or type(value['source_ref']) is not str or not value['source_ref']
             or type(value['catalog_sha256']) is not str or len(value['catalog_sha256']) != 64):
         raise ValueError('invalid review configuration')
+    if value.get('review_profile') not in (None, 'values-v1'):
+        raise ValueError('unknown review profile')
     value['entries'] = _model_catalog_entries(value['entries'])
     if 'skills' in value and (type(value['skills']) is not dict
             or set(value['skills']) != {'snapshot_id', 'materialized_path', 'entries'}
@@ -186,6 +188,9 @@ def _messages(config, state, *, recovery=False):
         instructions += (' Call exactly once the current required tool ' + PHASE_TOOL[state['phase']] +
             ' with native JSON arguments. Do not return prose or emit multiple calls. '
             'For discovery combine related search terms into one concise q.')
+        if config.get('review_profile') == 'values-v1':
+            from ..review_values import VALUE_EVIDENCE_CONTRACT
+            instructions += '\n' + VALUE_EVIDENCE_CONTRACT
         messages = [{'role': 'system', 'content': instructions}, {'role': 'user', 'content': config['raw']}]
         anchors = request_quote_anchors(config['raw'])
         messages.append({'role': 'system', 'content': 'Selectable exact current-request quote anchors. '
@@ -270,7 +275,7 @@ def _argument_provenance(events, state, native, actual):
 
 
 def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, snapshot_id=None,
-                     context_sources=None):
+                     context_sources=None, review_profile=None):
     """Capture current prose in the parent; model arguments can supply only a draft."""
     from .hermes import HostEventStore
     from ..proposal import create_proposal
@@ -356,7 +361,8 @@ def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, 
                 optional['skill_selection'] = state['skill_selection']
             result = create_proposal(raw, arguments, db_path=db_path, workspace=directory,
                 session_id=native['session_id'], source_ref=source_ref,
-                catalog_root=catalog_root, skill_snapshot_id=snapshot_id, **optional)
+                catalog_root=catalog_root, skill_snapshot_id=snapshot_id,
+                **({'value_evidence': True} if review_profile == 'values-v1' else {}), **optional)
             if transform != 'identity' and result.get('status') == 'awaiting_confirmation':
                 raise ValueError('review_coerced_draft_cannot_be_confirmable')
             state.update(phase='none', source_raw=raw, draft=arguments,
@@ -1104,6 +1110,8 @@ def evaluate_review_session(result, db_path, workspace, *, catalog_root=None):
         if current.snapshot_id != state['catalog_sha256'] or current.snapshot_id != config['catalog_sha256']:
             raise ValueError('review_capability_catalog_changed')
         proposal = ProposalStore(db_path).show(state['proposal_result']['proposal_id'], session_id=result['session_id'])
+        if config.get('review_profile') == 'values-v1' and 'parameter_evidence' not in proposal:
+            raise ValueError('review_parameter_value_evidence_missing')
         skill_evidence = {}
         if state.get('review_context'):
             from ..review_context import validate_context
@@ -1184,7 +1192,7 @@ def evaluate_review_session(result, db_path, workspace, *, catalog_root=None):
 
 def run_hermes_review(raw, workspace, db_path, *, owner_root, timeout=180, hermes_root=None,
                       catalog_root=None, skill_snapshot_id=None, max_turns=8, context_sources=None,
-                      read_isolation_root=None, deny_read_roots=(), request_budget=None):
+                      read_isolation_root=None, deny_read_roots=(), request_budget=None, review_profile=None):
     """Run the installed host for a draft and return its parent-persisted proposal."""
     from .hermes_session import run_hermes_session
     from .skill_gate import _state
@@ -1194,7 +1202,8 @@ def run_hermes_review(raw, workspace, db_path, *, owner_root, timeout=180, herme
         catalog_root=catalog_root, skill_snapshot_id=skill_snapshot_id, max_turns=max_turns,
         context_sources=context_sources,
         read_isolation_root=read_isolation_root, deny_read_roots=deny_read_roots,
-        **({'request_budget': request_budget} if request_budget is not None else {}))
+        **({'request_budget': request_budget} if request_budget is not None else {}),
+        **({'review_profile': review_profile} if review_profile is not None else {}))
     result['proposal_verification'] = evaluate_review_session(result, db_path, workspace, catalog_root=catalog_root)
     result['proposal'] = None
     if result['proposal_verification']['proposal_verified']:

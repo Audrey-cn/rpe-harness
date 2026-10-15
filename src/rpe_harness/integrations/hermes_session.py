@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from contextlib import ExitStack
 from pathlib import Path
 import signal
@@ -329,8 +330,30 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
         raise ValueError('invalid installed Hermes settings') from exc
 
 
+def native_execution_contract(helper_python, stdout_name=None):
+    """A runtime delivery protocol, separate from the approved JSON business task."""
+    from .hermes_clean import CLEAN_SOURCE_CONTRACT
+    contract = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', str(helper_python))
+    if stdout_name is None:
+        return contract
+    if (type(stdout_name) is not str or not re.fullmatch(r'[A-Za-z0-9_.-]{1,120}', stdout_name)
+            or stdout_name in ('.', '..')):
+        raise ValueError('native stdout name must be a bounded workspace basename')
+    return contract + ('\nRuntime delivery evidence protocol (no additional business authority): '
+        'For xlsx.inspect, load the real xlsx skill through native skill_view before execution. '
+        'If archived, restore it through the installed Hermes curator CLI, then read it. '
+        'Use the original helper with the approved input/mode/sheet; do not rewrite the helper. '
+        'In ONE terminal tool call, redirect helper stdout to the fresh workspace file '
+        + json.dumps(stdout_name) + ', check successful helper exit, then COPY its unchanged bytes '
+        'to the approved final output. Keep the stdout file unchanged until verification; '
+        'do not rename, delete, link or overwrite it. Both files must be absent before that call. '
+        'This protocol binds observed stdout bytes to the final file within one tool call; '
+        'it does not claim an exclusive writer or authorize any other business action.')
+
+
 def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional',
-                 preserve_native_tool_search=False, public_contract=None, request_budget=None):
+                 preserve_native_tool_search=False, public_contract=None, request_budget=None,
+                 native_stdout_name=None):
     if entry_mode not in ('optional','strict','skills','address','clean','review','producer') or (entry_mode in ('strict','skills','address','clean','review') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
@@ -390,8 +413,9 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     if entry_mode in ('address','clean','review') or (entry_mode in ('strict','skills','producer') and not preserve_native_tool_search):
         config['tools'] = {'tool_search':{'enabled':'off'}}
     if public_contract == 'clean' or entry_mode == 'clean':
-        from .hermes_clean import CLEAN_SOURCE_CONTRACT
-        config['agent']['system_prompt'] = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', sys.executable)
+        config['agent']['system_prompt'] = native_execution_contract(sys.executable, native_stdout_name)
+    elif native_stdout_name is not None:
+        raise ValueError('native stdout protocol requires the clean execution contract')
     if public_contract == 'review' or entry_mode == 'review':
         from .hermes_review import REVIEW_CONTRACT
         config['agent']['system_prompt'] = REVIEW_CONTRACT
@@ -562,7 +586,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        skill_snapshot_id=None, context_sources=None,
                        read_isolation_root=None, deny_read_roots=(), max_turns=12,
                        preserve_native_tool_search=False, public_contract=None, native_evidence=None,
-                       native_execution_evidence=None, request_budget=None, native_finish_enabled=False):
+                       native_execution_evidence=None, request_budget=None, native_finish_enabled=False,
+                       review_profile=None):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -575,6 +600,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
+    if review_profile not in (None, 'values-v1') or (review_profile is not None and entry_mode != 'review'):
+        raise ValueError('review profile requires the public review entry')
     artifact_mode = type(native_evidence) is dict and 'artifact_name' in native_evidence
     if native_evidence is not None and (tool_enabled or public_contract != ('clean' if artifact_mode else 'review')):
         raise ValueError('native evidence requires the corresponding native review or clean session')
@@ -588,6 +615,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         request_budget = validate_request_budget_profile(request_budget)
     if native_execution_evidence is not None and (tool_enabled or public_contract != 'clean'):
         raise ValueError('native execution evidence requires a native clean execution session')
+    if native_execution_evidence is not None and type(native_execution_evidence) is not dict:
+        raise ValueError('native execution options must be an object')
+    native_stdout_name = (native_execution_evidence or {}).get('stdout_name')
     if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
                                   or len(prompt.encode()) > 65536):
         raise ValueError(entry_mode + ' requires only the exact current source, at most 64 KiB; no hidden contract or context')
@@ -615,12 +645,15 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     original_prompt_sha = hashlib.sha256(prompt.encode()).hexdigest()
     public_contract_sha = None
     if public_contract == 'clean' or entry_mode == 'clean':
-        from .hermes_clean import CLEAN_SOURCE_CONTRACT
-        public_contract_sha = hashlib.sha256(CLEAN_SOURCE_CONTRACT.replace(
-            '{helper_python}', sys.executable).encode()).hexdigest()
+        public_contract_sha = hashlib.sha256(native_execution_contract(
+            sys.executable, native_stdout_name).encode()).hexdigest()
     if public_contract == 'review' or entry_mode == 'review':
         from .hermes_review import REVIEW_CONTRACT
-        public_contract_sha = hashlib.sha256(REVIEW_CONTRACT.encode()).hexdigest()
+        contract = REVIEW_CONTRACT
+        if review_profile == 'values-v1':
+            from ..review_values import VALUE_EVIDENCE_CONTRACT
+            contract += '\n' + VALUE_EVIDENCE_CONTRACT
+        public_contract_sha = hashlib.sha256(contract.encode()).hexdigest()
     fixed_request, fixed_input_sha = None, None
     if required_request is not None:
         from .hermes import _prepare_request
@@ -640,7 +673,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
                         tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode,
                         preserve_native_tool_search=preserve_native_tool_search, public_contract=public_contract,
-                        request_budget=request_budget)
+                        request_budget=request_budget,
+                        **({'native_stdout_name': native_stdout_name} if native_stdout_name is not None else {}))
     request_budget_path = None
     if request_budget is not None:
         request_budget_path = session_root/'request-budget.json'
@@ -706,6 +740,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         review_config_path.write_text(json.dumps({'catalog_sha256': unified.snapshot_id,
             'entries': _model_catalog_entries(unified.entries()), 'raw': prompt,
             'source_ref': 'user_prompt:' + original_prompt_sha,
+            **({'review_profile': review_profile} if review_profile is not None else {}),
             **({'skills': snapshot} if snapshot else {}),
             **({'context_sources': context_sources} if context_sources else {})}, ensure_ascii=False, allow_nan=False))
         os.chmod(review_config_path, 0o600)
@@ -852,7 +887,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 extension = review_extension(db_path, workspace, raw=prompt,
                     source_ref='user_prompt:' + original_prompt_sha, catalog_root=catalog_root,
                     snapshot_id=snapshot['snapshot_id'] if snapshot else None,
-                    context_sources=context_sources)
+                    context_sources=context_sources,
+                    **({'review_profile': review_profile} if review_profile is not None else {}))
             broker_environment = broker_stack.enter_context(execution_broker(
                 db_path=db_path, workspace=workspace, python=sys.executable,extension=extension, review_auto=entry_mode == 'review'))
             env.update(broker_environment)

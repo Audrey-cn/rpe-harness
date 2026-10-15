@@ -106,7 +106,8 @@ def file_snapshot(path):
 
 def native_execution_evidence_config(workspace, options, snapshot):
     """Resolve fixed original helper paths from the owned materialized skill copy."""
-    if type(options) is not dict or set(options) != _OPTION_KEYS or type(snapshot) is not dict:
+    if (type(options) is not dict or set(options) not in (_OPTION_KEYS, _OPTION_KEYS | {'stdout_name'})
+            or type(snapshot) is not dict):
         raise ValueError('invalid native execution evidence options')
     rows = [row for row in snapshot['entries'] if row['skill_id'] == options['skill_id']]
     if len(rows) != 1:
@@ -126,7 +127,7 @@ def native_execution_evidence_config(workspace, options, snapshot):
 
 
 def _validate_config(config):
-    if type(config) is not dict or set(config) != _CONFIG_KEYS:
+    if type(config) is not dict or set(config) not in (_CONFIG_KEYS, _CONFIG_KEYS | {'stdout_name'}):
         raise ValueError('invalid native execution evidence configuration')
     for key in ('workspace', 'helper_python', 'helper_path', 'skill_path'):
         path = Path(config[key])
@@ -137,6 +138,11 @@ def _validate_config(config):
             raise ValueError('native execution observes fixed workspace filenames')
     if config['input_name'] == config['output_name']:
         raise ValueError('native execution output must be new')
+    if 'stdout_name' in config:
+        name = config['stdout_name']
+        if (not isinstance(name, str) or Path(name).name != name or '\0' in name
+                or name in ('', '.', '..', config['input_name'], config['output_name'])):
+            raise ValueError('native staged stdout requires a distinct fixed workspace filename')
     for key in ('helper_python_sha256', 'script_sha256', 'skill_sha256', 'input_sha256'):
         if not isinstance(config[key], str) or not re.fullmatch('[a-f0-9]{64}', config[key]):
             raise ValueError('native execution requires frozen file hashes')
@@ -247,6 +253,8 @@ class _KernelCall:
         self.initial = self.snapshots()
         self.directories = self.directory_snapshots()
         self.output_before = file_snapshot(Path(config['workspace'])/config['output_name'])
+        self.stdout_path = Path(config['workspace'])/config.get('stdout_name', config['output_name'])
+        self.stdout_before = file_snapshot(self.stdout_path)
         self.thread = threading.Thread(target=self.run, name='native-exit-observer')
         self.thread.start()
         if not self.ready.wait(1):
@@ -354,7 +362,7 @@ class _KernelCall:
                     row = watched.pop(event.ident)
                     row['process_returncode'] = os.waitstatus_to_exitcode(event.data)
                     row['kernel_exit_observed'] = bool(event.fflags & 0x04000000)
-                    row['exit_output'] = file_snapshot(Path(self.config['workspace'])/self.config['output_name'])
+                    row['exit_output'] = file_snapshot(self.stdout_path)
                     self.rows.append(row)
                 if self.stop.is_set():
                     continue
@@ -368,7 +376,7 @@ class _KernelCall:
                             continue
                         seen.add(pid)
                         cwd, stdout, stdout_identity = process.io_paths(pid)
-                        if (cwd != self.config['workspace'] or stdout != str(Path(cwd)/self.config['output_name'])
+                        if (cwd != self.config['workspace'] or stdout != str(self.stdout_path)
                                 or not self.fixed_bytes()):
                             raise ValueError('native_process_paths_or_frozen_bytes_changed')
                         out = file_snapshot(stdout)
@@ -412,9 +420,25 @@ class _KernelCall:
         if len(self.rows) != 1:
             self.errors.append('native_unique_helper_process_exit_missing')
         row = self.rows[0] if len(self.rows) == 1 else {}
+        stdout = file_snapshot(self.stdout_path) if 'stdout_name' in self.config else output
         valid = bool(valid and row.get('kernel_exit_observed') is True and row.get('process_returncode') == 0
-                     and output['state'] == 'regular' and row.get('exit_output') == output
-                     and output.get('identity', [])[:2] == row.get('stdout_identity'))
+                     and output['state'] == 'regular' and stdout['state'] == 'regular'
+                     and row.get('exit_output') == stdout
+                     and stdout.get('identity', [])[:2] == row.get('stdout_identity'))
+        staged = {}
+        if 'stdout_name' in self.config:
+            # This binds equal bytes across two new regular files observed in
+            # one real terminal call. It does not infer a copy operation or an
+            # exclusive writer from shell syntax or model statements.
+            copied = (self.stdout_before['state'] == 'absent'
+                and stdout.get('sha256') == output.get('sha256')
+                and stdout.get('size') == output.get('size'))
+            valid = bool(valid and copied)
+            staged = {'stdout_sha256': stdout.get('sha256'), 'stdout_size': stdout.get('size'),
+                'stdout_identity_sha256': _digest(stdout['identity']) if 'identity' in stdout else None,
+                'stdout_path_sha256': _sha(str(self.stdout_path).encode())}
+            if not valid:
+                self.errors.append('native_process_staged_output_binding_failed')
         c = self.config
         return {'kind': 'native_helper_process_observation', 'verified': valid,
             'proof_kind': 'darwin_kernel_process_exit', 'errors': sorted(set(self.errors)),
@@ -427,7 +451,9 @@ class _KernelCall:
             'output_identity_sha256': _digest(output['identity']) if 'identity' in output else None,
             'output_path_sha256': _sha(str(Path(c['workspace'])/c['output_name']).encode()),
             'overlap': self.overlap, 'observer_joined': not self.thread.is_alive(),
-            'artifact_binding': 'final_bytes_on_observed_stdout_inode_not_exclusive_writer'}
+            'artifact_binding': ('same_call_final_bytes_equal_observed_stdout_not_exclusive_writer'
+                if 'stdout_name' in c else 'final_bytes_on_observed_stdout_inode_not_exclusive_writer'),
+            **staged}
 
 
 class NativeExecutionObserver:
