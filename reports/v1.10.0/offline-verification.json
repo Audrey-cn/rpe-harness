@@ -1,0 +1,12 @@
+{
+  "approved_proposals_verified": 0,
+  "business_artifacts_verified": 0,
+  "errors": [],
+  "human_confirmation_verified": false,
+  "reviewer_kind": "simulated_fixture_reviewer",
+  "runtime_identity_attestation": "recorded_runtime_checks_only",
+  "schema_version": "rpe.review-public-verification/v1",
+  "sha256": "b2de6f94e0e5670203d4e7f7f56d5c0a26bd57e4481af1c0b20f99fddf86b9dd",
+  "source_documents_verified": 6,
+  "verified": true
+}

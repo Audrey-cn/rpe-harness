@@ -1,0 +1,12 @@
+{
+  "artifacts": [
+    {
+      "name": "output.json",
+      "raw_exported": false,
+      "reason": "unverified_or_absent_artifact",
+      "sha256": null,
+      "size_bytes": null
+    }
+  ],
+  "sha256": "e3e81bc5a36a74f6994cbc5823d2756b1062b0ac8ebfa9cd050b8000804d482d"
+}

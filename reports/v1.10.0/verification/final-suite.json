@@ -1,0 +1,19 @@
+{
+  "source_commit": "aa5d9a51aed97ba77753ac28df083bc6347e3b31",
+  "pytest_passed": 1615,
+  "subtests_passed": 3,
+  "junit": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "1618",
+    "time": "354.124",
+    "timestamp": "2026-10-15T09:17:28.500914+08:00",
+    "hostname": "AudreydeMacBook-Pro.local"
+  },
+  "duration_seconds": 354.18,
+  "cache_provider": false,
+  "bytecode_disabled": true,
+  "native_model_calls": 0
+}
