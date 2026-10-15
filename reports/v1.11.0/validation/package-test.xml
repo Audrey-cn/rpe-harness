@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="106" time="5.134" timestamp="2026-10-15T11:22:49.683721+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="package-tests.test_proposal_cli_integration" name="test_public_draft_accepts_actual_gate_and_wrapper" time="0.089" /><testcase classname="package-tests.test_proposal_context" name="test_source_quote_is_bound_and_reviewed_without_full_history_or_raw_rewrite" time="0.021" /><testcase classname="package-tests.test_proposal_context" name="test_verified_source_proposal_executes_and_replays_one_durable_result" time="0.222" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[unknown_ref]" time="0.014" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[quote]" time="0.013" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[field]" time="0.012" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[conflict]" time="0.012" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[session]" time="0.010" /><testcase classname="package-tests.test_proposal_context" name="test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[extra]" time="0.012" /><testcase classname="package-tests.test_proposal_context" name="test_missing_business_key_is_not_filled_from_prose_or_repaired_in_draft" time="0.010" /><testcase classname="package-tests.test_proposal_context" name="test_explicit_source_does_not_repair_a_model_omission" time="0.011" /><testcase classname="package-tests.test_proposal_context" name="test_source_constraint_conflict_is_not_silently_dropped" time="0.010" /><testcase classname="package-tests.test_proposal_context" name="test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[None]" time="0.010" /><testcase classname="package-tests.test_proposal_context" name="test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[,]" time="0.010" /><testcase classname="package-tests.test_proposal_context" name="test_source_constraint_membership_does_not_depend_on_flag_order" time="0.017" /><testcase classname="package-tests.test_proposal_context" name="test_discovery_only_selected_skill_cannot_authorize_a_registered_capability" time="0.023" /><testcase classname="package-tests.test_proposal_context" name="test_invalid_execution_with_context_capability_citation_is_a_blocked_draft" time="0.008" /><testcase classname="package-tests.test_proposal_context" name="test_two_explicit_sources_disagreeing_on_key_cannot_be_confirmed" time="0.017" /><testcase classname="package-tests.test_proposal_context" name="test_selected_canonical_source_is_rechecked_when_using_proposal[confirm]" time="0.047" /><testcase classname="package-tests.test_proposal_context" name="test_selected_canonical_source_is_rechecked_when_using_proposal[resolve]" time="0.054" /><testcase classname="package-tests.test_proposal_context" name="test_selected_canonical_source_is_rechecked_when_using_proposal[execute]" time="0.060" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[delete-confirm]" time="0.016" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[delete-resolve]" time="0.022" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[delete-execute]" time="0.029" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[hash-confirm]" time="0.017" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[hash-resolve]" time="0.022" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[hash-execute]" time="0.024" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[session-confirm]" time="0.016" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[session-resolve]" time="0.020" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[session-execute]" time="0.022" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[future-confirm]" time="0.015" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[future-resolve]" time="0.020" /><testcase classname="package-tests.test_proposal_context" name="test_source_is_revalidated_before_accepting_or_using_authority[future-execute]" time="0.023" /><testcase classname="package-tests.test_review_context" name="test_import_projects_only_explicit_fact_and_literal_excerpt" time="0.011" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;0]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;1]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;2]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;3]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;4]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_invalid_imports_are_rejected_before_any_source_write[&lt;lambda&gt;5]" time="0.001" /><testcase classname="package-tests.test_review_context" name="test_bundle_and_live_source_must_still_match[session]" time="0.004" /><testcase classname="package-tests.test_review_context" name="test_bundle_and_live_source_must_still_match[ref]" time="0.005" /><testcase classname="package-tests.test_review_context" name="test_bundle_and_live_source_must_still_match[projection]" time="0.006" /><testcase classname="package-tests.test_review_context" name="test_bundle_and_live_source_must_still_match[source]" time="0.005" /><testcase classname="package-tests.test_review_context" name="test_source_can_explicitly_supply_the_supported_tab_delimiter" time="0.003" /><testcase classname="package-tests.test_review_skills" name="test_cold_materialization_is_archived_without_touching_original" time="0.027" /><testcase classname="package-tests.test_review_skills" name="test_selection_revalidates_after_temporary_home_is_removed" time="0.035" /><testcase classname="package-tests.test_review_skills" name="test_nonadapter_metadata_cannot_be_relabelled_executable" time="0.030" /><testcase classname="package-tests.test_review_skills" name="test_review_search_discovers_nonadapter_without_native_activation_or_confirmation[quoted_deps]" time="0.145" /><testcase classname="package-tests.test_review_skills" name="test_explicit_none_skips_native_view_and_keeps_review_verifiable" time="0.139" /><testcase classname="package-tests.test_review_skills" name="test_select_rejects_a_skill_not_returned_by_discovery" time="0.130" /><testcase classname="package-tests.test_review_skills" name="test_native_view_with_unready_skill_cannot_advance_to_propose[warm]" time="0.127" /><testcase classname="package-tests.test_review_skills" name="test_cold_copy_uses_real_hermes_restoration_and_original_native_view" time="0.073"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 7, in &lt;module&gt;&#10;      from rpe_harness.integrations.review_skills import restore_review_skill&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', &quot;\nimport hashlib,json...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">skill_env = {'source': PosixPath('/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_copy...udrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_copy_uses_real_herme0/owned'), ...}
+
+    def test_cold_copy_uses_real_hermes_restoration_and_original_native_view(skill_env):
+        hermes_root = Path('/Users/audrey/.hermes/hermes-agent')
+        runtime = hermes_root / '.venv/bin/python'
+        if not runtime.is_file():
+            pytest.skip('installed Hermes runtime unavailable')
+        api = skills_api()
+        prepared = api.prepare_review_skills(skill_env['snapshot'])
+        document = skill_env['home'] / 'prepared.json'
+        document.write_text(json.dumps(prepared))
+        script = '''
+    import hashlib,json,os,sys
+    from pathlib import Path
+    sys.path[:0] = [sys.argv[1],sys.argv[2]]
+    snapshot = json.loads(Path(sys.argv[3]).read_text())
+    os.environ['HERMES_HOME'] = str(Path(snapshot['materialized_path']).parent)
+    from rpe_harness.integrations.review_skills import restore_review_skill
+    from tools.skills_tool import skill_view
+    row = next(row for row in snapshot['entries'] if row['skill_id']=='productivity/xlsx')
+    path = restore_review_skill(row,snapshot['materialized_path'])
+    result = json.loads(skill_view(row['native_load_name'],preprocess=False))
+    assert result['success'],result
+    print(json.dumps({'source':result['_source_path'],'restored':str(path),
+     'digest':hashlib.sha256(result['content'].encode()).hexdigest(),
+     'archive_exists':Path(row['archive_path']).exists()}))
+    '''
+        result = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+            str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root), str(document)],
+            capture_output=True, text=True, cwd=skill_env['home'], timeout=30)
+&gt;       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "&lt;string&gt;", line 7, in &lt;module&gt;
+E             from rpe_harness.integrations.review_skills import restore_review_skill
+E         ModuleNotFoundError: No module named 'rpe_harness'
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport hashlib,json...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_skills.py:224: AssertionError</failure></testcase><testcase classname="package-tests.test_review_skills" name="test_cold_skill_review_receipts_lead_to_original_helper_execution[active-None-Inspect source.xlsx as rows into output.json; preserve original.]" time="0.197"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;&#10;      from rpe_harness.integrations.review_skills import restore_review_skill&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', &quot;\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">skill_review = {'source': PosixPath('/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skil...udrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skill_review_receipt0/owned'), ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b02edb0&gt;
+corruption = None
+
+    @pytest.mark.parametrize('skill_review', ['Inspect source.xlsx as rows into output.json; preserve original.'], indirect=True)
+    @pytest.mark.parametrize('corruption', [None, 'restore_receipt'])
+    @pytest.mark.parametrize('skill_env', ['active', 'native_archive'], indirect=True)
+    def test_cold_skill_review_receipts_lead_to_original_helper_execution(skill_review, monkeypatch, corruption):
+        from openpyxl import Workbook
+        from rpe_harness.proposal import ProposalStore
+        hermes_root = Path('/Users/audrey/.hermes/hermes-agent')
+        runtime = hermes_root / '.venv/bin/python'
+        if not runtime.is_file() or not Path('/usr/bin/sandbox-exec').exists():
+            pytest.skip('installed native Hermes/macOS helper runtime unavailable')
+        wb = Workbook()
+        wb.active.append(['id', 'flag'])
+        wb.active.append([1, True])
+        wb.save(skill_review['workspace'] / 'source.xlsx')
+        wb.close()
+        # Only relocate the actual Hermes process boundary: production restore and
+        # native skill_view both run unchanged under Hermes' installed interpreter.
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+            assert completed.returncode == 0, completed.stderr
+            return json.loads(completed.stdout.splitlines()[-1])
+        monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+        found = step(skill_review, 'rpe_discover', {'q': 'Excel spreadsheet'})
+        assert any(row['skill_id'] == 'productivity/xlsx' and row['temperature'] == 'cold'
+                   for row in found['candidates'])
+&gt;       assert step(skill_review, 'rpe_select', {'skill_id': 'productivity/xlsx'})['status'] == 'selected'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+package-tests/test_review_skills.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+package-tests/test_review_skills.py:131: in step
+    response = env['sdk'].middleware['tool_execution'](tool_name=name, args=args,
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:548: in middleware
+    return next_call(args)
+           ^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:132: in &lt;lambda&gt;
+    next_call=(native or (lambda value: env['sdk'].tools[name]['handler'](
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:558: in &lt;lambda&gt;
+    handle(args, task_id, session_id, name=_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:475: in handle
+    path = restore_review_skill(row, config['skills']['materialized_path'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:269: in &lt;lambda&gt;
+    monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+                                                                                            ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+action = 'restore'
+row = {'category': 'productivity', 'description': 'Create, read, edit Excel .xlsx workbooks and CSVs.', 'dynamic': False, 'load_name': 'xlsx', ...}
+
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+&gt;           assert completed.returncode == 0, completed.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "&lt;string&gt;", line 8, in &lt;module&gt;
+E                 from rpe_harness.integrations.review_skills import restore_review_skill
+E             ModuleNotFoundError: No module named 'rpe_harness'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_skills.py:267: AssertionError</failure></testcase><testcase classname="package-tests.test_review_skills" name="test_cold_skill_review_receipts_lead_to_original_helper_execution[active-restore_receipt-Inspect source.xlsx as rows into output.json; preserve original.]" time="0.140"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;&#10;      from rpe_harness.integrations.review_skills import restore_review_skill&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', &quot;\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">skill_review = {'source': PosixPath('/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skil...udrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skill_review_receipt1/owned'), ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b02ef60&gt;
+corruption = 'restore_receipt'
+
+    @pytest.mark.parametrize('skill_review', ['Inspect source.xlsx as rows into output.json; preserve original.'], indirect=True)
+    @pytest.mark.parametrize('corruption', [None, 'restore_receipt'])
+    @pytest.mark.parametrize('skill_env', ['active', 'native_archive'], indirect=True)
+    def test_cold_skill_review_receipts_lead_to_original_helper_execution(skill_review, monkeypatch, corruption):
+        from openpyxl import Workbook
+        from rpe_harness.proposal import ProposalStore
+        hermes_root = Path('/Users/audrey/.hermes/hermes-agent')
+        runtime = hermes_root / '.venv/bin/python'
+        if not runtime.is_file() or not Path('/usr/bin/sandbox-exec').exists():
+            pytest.skip('installed native Hermes/macOS helper runtime unavailable')
+        wb = Workbook()
+        wb.active.append(['id', 'flag'])
+        wb.active.append([1, True])
+        wb.save(skill_review['workspace'] / 'source.xlsx')
+        wb.close()
+        # Only relocate the actual Hermes process boundary: production restore and
+        # native skill_view both run unchanged under Hermes' installed interpreter.
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+            assert completed.returncode == 0, completed.stderr
+            return json.loads(completed.stdout.splitlines()[-1])
+        monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+        found = step(skill_review, 'rpe_discover', {'q': 'Excel spreadsheet'})
+        assert any(row['skill_id'] == 'productivity/xlsx' and row['temperature'] == 'cold'
+                   for row in found['candidates'])
+&gt;       assert step(skill_review, 'rpe_select', {'skill_id': 'productivity/xlsx'})['status'] == 'selected'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+package-tests/test_review_skills.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+package-tests/test_review_skills.py:131: in step
+    response = env['sdk'].middleware['tool_execution'](tool_name=name, args=args,
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:548: in middleware
+    return next_call(args)
+           ^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:132: in &lt;lambda&gt;
+    next_call=(native or (lambda value: env['sdk'].tools[name]['handler'](
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:558: in &lt;lambda&gt;
+    handle(args, task_id, session_id, name=_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:475: in handle
+    path = restore_review_skill(row, config['skills']['materialized_path'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:269: in &lt;lambda&gt;
+    monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+                                                                                            ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+action = 'restore'
+row = {'category': 'productivity', 'description': 'Create, read, edit Excel .xlsx workbooks and CSVs.', 'dynamic': False, 'load_name': 'xlsx', ...}
+
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+&gt;           assert completed.returncode == 0, completed.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "&lt;string&gt;", line 8, in &lt;module&gt;
+E                 from rpe_harness.integrations.review_skills import restore_review_skill
+E             ModuleNotFoundError: No module named 'rpe_harness'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_skills.py:267: AssertionError</failure></testcase><testcase classname="package-tests.test_review_skills" name="test_cold_skill_review_receipts_lead_to_original_helper_execution[native_archive-None-Inspect source.xlsx as rows into output.json; preserve original.]" time="0.146"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;&#10;      from rpe_harness.integrations.review_skills import restore_review_skill&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', &quot;\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">skill_review = {'source': PosixPath('/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skil...udrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skill_review_receipt2/owned'), ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b02c5f0&gt;
+corruption = None
+
+    @pytest.mark.parametrize('skill_review', ['Inspect source.xlsx as rows into output.json; preserve original.'], indirect=True)
+    @pytest.mark.parametrize('corruption', [None, 'restore_receipt'])
+    @pytest.mark.parametrize('skill_env', ['active', 'native_archive'], indirect=True)
+    def test_cold_skill_review_receipts_lead_to_original_helper_execution(skill_review, monkeypatch, corruption):
+        from openpyxl import Workbook
+        from rpe_harness.proposal import ProposalStore
+        hermes_root = Path('/Users/audrey/.hermes/hermes-agent')
+        runtime = hermes_root / '.venv/bin/python'
+        if not runtime.is_file() or not Path('/usr/bin/sandbox-exec').exists():
+            pytest.skip('installed native Hermes/macOS helper runtime unavailable')
+        wb = Workbook()
+        wb.active.append(['id', 'flag'])
+        wb.active.append([1, True])
+        wb.save(skill_review['workspace'] / 'source.xlsx')
+        wb.close()
+        # Only relocate the actual Hermes process boundary: production restore and
+        # native skill_view both run unchanged under Hermes' installed interpreter.
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+            assert completed.returncode == 0, completed.stderr
+            return json.loads(completed.stdout.splitlines()[-1])
+        monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+        found = step(skill_review, 'rpe_discover', {'q': 'Excel spreadsheet'})
+        assert any(row['skill_id'] == 'productivity/xlsx' and row['temperature'] == 'cold'
+                   for row in found['candidates'])
+&gt;       assert step(skill_review, 'rpe_select', {'skill_id': 'productivity/xlsx'})['status'] == 'selected'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+package-tests/test_review_skills.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+package-tests/test_review_skills.py:131: in step
+    response = env['sdk'].middleware['tool_execution'](tool_name=name, args=args,
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:548: in middleware
+    return next_call(args)
+           ^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:132: in &lt;lambda&gt;
+    next_call=(native or (lambda value: env['sdk'].tools[name]['handler'](
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:558: in &lt;lambda&gt;
+    handle(args, task_id, session_id, name=_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:475: in handle
+    path = restore_review_skill(row, config['skills']['materialized_path'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:269: in &lt;lambda&gt;
+    monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+                                                                                            ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+action = 'restore'
+row = {'archived': True, 'category': 'productivity', 'description': 'Create, read, edit Excel .xlsx workbooks and CSVs.', 'dynamic': False, ...}
+
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+&gt;           assert completed.returncode == 0, completed.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "&lt;string&gt;", line 8, in &lt;module&gt;
+E                 from rpe_harness.integrations.review_skills import restore_review_skill
+E             ModuleNotFoundError: No module named 'rpe_harness'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_skills.py:267: AssertionError</failure></testcase><testcase classname="package-tests.test_review_skills" name="test_cold_skill_review_receipts_lead_to_original_helper_execution[native_archive-restore_receipt-Inspect source.xlsx as rows into output.json; preserve original.]" time="0.136"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 8, in &lt;module&gt;&#10;      from rpe_harness.integrations.review_skills import restore_review_skill&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', &quot;\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">skill_review = {'source': PosixPath('/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skil...udrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/package-pytest/test_cold_skill_review_receipt3/owned'), ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10b485ee0&gt;
+corruption = 'restore_receipt'
+
+    @pytest.mark.parametrize('skill_review', ['Inspect source.xlsx as rows into output.json; preserve original.'], indirect=True)
+    @pytest.mark.parametrize('corruption', [None, 'restore_receipt'])
+    @pytest.mark.parametrize('skill_env', ['active', 'native_archive'], indirect=True)
+    def test_cold_skill_review_receipts_lead_to_original_helper_execution(skill_review, monkeypatch, corruption):
+        from openpyxl import Workbook
+        from rpe_harness.proposal import ProposalStore
+        hermes_root = Path('/Users/audrey/.hermes/hermes-agent')
+        runtime = hermes_root / '.venv/bin/python'
+        if not runtime.is_file() or not Path('/usr/bin/sandbox-exec').exists():
+            pytest.skip('installed native Hermes/macOS helper runtime unavailable')
+        wb = Workbook()
+        wb.active.append(['id', 'flag'])
+        wb.active.append([1, True])
+        wb.save(skill_review['workspace'] / 'source.xlsx')
+        wb.close()
+        # Only relocate the actual Hermes process boundary: production restore and
+        # native skill_view both run unchanged under Hermes' installed interpreter.
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+            assert completed.returncode == 0, completed.stderr
+            return json.loads(completed.stdout.splitlines()[-1])
+        monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+        found = step(skill_review, 'rpe_discover', {'q': 'Excel spreadsheet'})
+        assert any(row['skill_id'] == 'productivity/xlsx' and row['temperature'] == 'cold'
+                   for row in found['candidates'])
+&gt;       assert step(skill_review, 'rpe_select', {'skill_id': 'productivity/xlsx'})['status'] == 'selected'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+package-tests/test_review_skills.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+package-tests/test_review_skills.py:131: in step
+    response = env['sdk'].middleware['tool_execution'](tool_name=name, args=args,
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:548: in middleware
+    return next_call(args)
+           ^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:132: in &lt;lambda&gt;
+    next_call=(native or (lambda value: env['sdk'].tools[name]['handler'](
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:558: in &lt;lambda&gt;
+    handle(args, task_id, session_id, name=_name))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wheel-venv/lib/python3.12/site-packages/rpe_harness/integrations/hermes_review.py:475: in handle
+    path = restore_review_skill(row, config['skills']['materialized_path'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+package-tests/test_review_skills.py:269: in &lt;lambda&gt;
+    monkeypatch.setattr(skill_review['api'], 'restore_review_skill', lambda row, root: Path(native('restore', row)))
+                                                                                            ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+action = 'restore'
+row = {'archived': True, 'category': 'productivity', 'description': 'Create, read, edit Excel .xlsx workbooks and CSVs.', 'dynamic': False, ...}
+
+        def native(action, row=None):
+            payload = {'action': action, 'row': row, 'root': str(skill_review['home'] / 'skills')}
+            script = '''
+    import json,os,sys
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    data=json.loads(sys.stdin.read())
+    os.environ['HERMES_HOME']=str(Path(data['root']).parent)
+    if data['action']=='restore':
+     from rpe_harness.integrations.review_skills import restore_review_skill
+     result=str(restore_review_skill(data['row'],data['root']))
+    else:
+     from tools.skills_tool import skill_view
+     result=json.loads(skill_view('xlsx',preprocess=False))
+    print(json.dumps(result))
+    '''
+            completed = subprocess.run([str(runtime), '-I', '-B', '-c', script,
+                str(Path(__file__).resolve().parents[1] / 'src'), str(hermes_root)], input=json.dumps(payload),
+                capture_output=True, text=True, cwd=skill_review['home'], timeout=30)
+&gt;           assert completed.returncode == 0, completed.stderr
+E           AssertionError: Traceback (most recent call last):
+E               File "&lt;string&gt;", line 8, in &lt;module&gt;
+E                 from rpe_harness.integrations.review_skills import restore_review_skill
+E             ModuleNotFoundError: No module named 'rpe_harness'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport json,os,sys\...arness.integrations.review_skills import restore_review_skill\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_skills.py:267: AssertionError</failure></testcase><testcase classname="package-tests.test_review_skills" name="test_current_session_sees_only_verified_source_facts_and_can_bind_them[skill_review0]" time="0.152" /><testcase classname="package-tests.test_review_skills" name="test_existing_native_archive_row_is_not_moved_into_itself" time="0.042" /><testcase classname="package-tests.test_skill_catalog_archive" name="test_physically_archived_real_skill_discovered_as_cold_and_explicitly_trusted" time="0.023" /><testcase classname="package-tests.test_skill_catalog_archive" name="test_flat_native_restoration_rebinds_only_exact_registered_bytes" time="0.031" /><testcase classname="package-tests.test_skill_catalog_archive" name="test_archived_unregistered_skill_never_gains_adapter" time="0.007" /><testcase classname="package-tests.test_skill_catalog_archive" name="test_duplicate_native_archive_copies_do_not_collapse_to_one_trusted_identity" time="0.015" /><testcase classname="package-tests.test_review_v111_comparison" name="test_finite_pairs_share_business_input_but_not_answers" time="0.087" /><testcase classname="package-tests.test_review_v111_comparison" name="test_business_review_accepts_omitted_redundant_preservation_flags" time="0.082" /><testcase classname="package-tests.test_review_v111_comparison" name="test_missing_business_key_is_never_approved" time="0.081" /><testcase classname="package-tests.test_review_v111_comparison" name="test_public_cli_runner_uses_module_entry_and_preserves_observations" time="0.081" /><testcase classname="package-tests.test_review_v111_comparison" name="test_failure_attempts_are_reserved_once_and_usage_stays_unknown" time="0.179" /><testcase classname="package-tests.test_review_v111_comparison" name="test_export_verifies_after_owned_root_removal_and_detects_source_tamper" time="0.104" /><testcase classname="package-tests.test_review_v111_comparison" name="test_actual_public_show_confirm_run_produces_business_artifact_and_portable_proof" time="0.572" /><testcase classname="package-tests.test_review_v111_comparison" name="test_pilot_requires_cold_skill_and_context_but_never_supplies_business_gold" time="0.091" /><testcase classname="package-tests.test_review_v111_comparison" name="test_native_trace_cannot_relabel_attachment_as_current_user_quote" time="0.082" /><testcase classname="package-tests.test_review_v111_comparison" name="test_export_rechecks_inner_cost_receipts_when_outer_hash_is_rewritten" time="0.094" /><testcase classname="package-tests.test_review_v111_comparison" name="test_native_trace_rejects_forged_or_cross_attachment_reference" time="0.083" /><testcase classname="package-tests.test_review_v111_comparison" name="test_negative_unresolved_text_is_preserved_for_identical_offline_scoring" time="0.084" /><testcase classname="package-tests.test_review_v111_comparison" name="test_native_recovered_key_must_not_be_relabelled_default" time="0.085" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_recomputes_partial_formal_and_pilot_aggregates" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[by_arm]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[pairs]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[ready]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[formal_count]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[pilot_count]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[native_execution]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[arm_cost]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[formal_cost]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[pilot_cost]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[model_pair]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_changed_summary_is_rejected_even_with_a_new_outer_hash[duplicate_record]" time="0.000" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_formal_freeze_is_bound_to_public_registration[registration_sha256]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_formal_freeze_is_bound_to_public_registration[public_contract_sha256]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_formal_freeze_is_bound_to_public_registration[execution_public_contract_sha256]" time="0.001" /><testcase classname="package-tests.test_review_v111_aggregate" name="test_formal_freeze_is_bound_to_public_registration[source]" time="0.001" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_draft_uses_original_prose_and_lazy_real_hermes_wrapper" time="0.009" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_show_infers_original_session_and_remains_read_only" time="0.010" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_confirm_displays_whole_review_before_typed_confirmation" time="0.013" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_confirm_does_not_treat_pipe_or_wrong_text_as_human_confirmation" time="0.009" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_automation_confirmation_requires_exact_display_digest_and_labels_actor" time="0.015" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_run_infers_immutable_workspace_and_session" time="0.259" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_exposes_no_handwritten_json_draft_or_model_confirmation_field" time="0.002" /><testcase classname="package-tests.test_proposal_cli" name="test_cli_rejects_legacy_passed_without_verified_proposal" time="0.003" /><testcase classname="package-tests.test_review_entry_cli" name="test_review_cli_is_discoverable_and_describes_plain_text_drafting" time="0.008" /><testcase classname="package-tests.test_review_entry_cli" name="test_review_cli_has_distinct_confirmation_and_run_commands" time="0.010" /><testcase classname="package-tests.test_review_entry_cli" name="test_review_execution_failure_has_a_nonzero_exit_status" time="0.018" /><testcase classname="package-tests.test_review_entry_cli" name="test_review_json_output_is_structured_and_preserves_verification" time="0.005" /><testcase classname="package-tests.test_native_skill_receipts" name="test_native_observer_binds_real_skill_bytes_and_tool_arguments" time="0.005" /><testcase classname="package-tests.test_native_skill_receipts" name="test_native_terminal_receipt_requires_actual_zero_exit_result" time="0.004" /></testsuite></testsuites>

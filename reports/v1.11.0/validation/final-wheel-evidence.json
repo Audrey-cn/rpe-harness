@@ -1,0 +1,12 @@
+{
+  "schema_version": "rpe.v111-final-wheel/v1",
+  "verified": true,
+  "version": "1.11.0",
+  "wheel_name": "rpe_harness-1.11.0-py3-none-any.whl",
+  "wheel_sha256": "c7f572b88aedc3f781715e7cd6ef39839b240c53f5a58ffac5ffb292bdcbb213",
+  "modules_verified": 80,
+  "installed_outside_checkout": true,
+  "source_reference": "post-acceptance/source-freeze.json",
+  "formal_source_identical": false,
+  "note": "Formal comparison remains frozen on earlier source; final two modules have focused regressions and one post-formal real acceptance."
+}

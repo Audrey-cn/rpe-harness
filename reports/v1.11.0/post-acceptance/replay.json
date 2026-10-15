@@ -1,0 +1,246 @@
+{
+  "artifact": {
+    "actual_executor": {
+      "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+      "executor_id": "builtin/xlsx-inspect",
+      "kind": "builtin",
+      "native_helper": "xlsx_read.py",
+      "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+      "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+      "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+      "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+    },
+    "format": "xlsx",
+    "input_bytes": 4938,
+    "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+    "output_bytes": 102,
+    "path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/output.json",
+    "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+    "published": true,
+    "root_type": "object",
+    "sha256": "306d0bce232d63450d565c769d4d21bea29a670cdac64db9d21b63cf716054b1"
+  },
+  "attempted": 1,
+  "cli_exit_code": 0,
+  "confirmation_id": "96b7e0151ff39cee4eb12354a3ddf81207e01c9e11f9289cab04899ca59ebcef",
+  "error": null,
+  "event": {
+    "capability": "xlsx.inspect",
+    "constraints": [
+      "preserve_original"
+    ],
+    "contract_version": 1,
+    "event_id": "review-96b7e0151ff39cee4eb12354a3ddf81207e01c9e11f9289cab04899ca59ebcef",
+    "execution": {
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/input.xlsx",
+      "mode": "rows",
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/output.json",
+      "sheet": "复核",
+      "skill_binding": {
+        "script_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/catalog/skill-snapshots/5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30/skills/productivity/xlsx/scripts/xlsx_read.py",
+        "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+        "skill_id": "productivity/xlsx",
+        "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+      }
+    },
+    "goal": "Execute xlsx.inspect",
+    "schema_version": 2,
+    "session_id": "20261015_114318_55408a",
+    "source_ref": "user_prompt:7c4c7469f5c1562dce15f6ada928efb56bbb4a0afae6b76cea88a85b66dd7c2a"
+  },
+  "event_id": "review-96b7e0151ff39cee4eb12354a3ddf81207e01c9e11f9289cab04899ca59ebcef",
+  "finished_at": 1792035848.960313,
+  "owner_pid": 39639,
+  "payload_hash": "9d852dae0e926c75089c330428ddefef7c74bd004330a9b95ceeb7dcb11f1c75",
+  "proposal_id": "0469c7d468b2db94e5938534e99c807b5b444ab37ad3b7c373f881a208b3d199",
+  "run_id": "9e5bbc7fd17a41d1af523f55d41bc653",
+  "skill_id": "builtin/xlsx-inspect",
+  "source": "hermes",
+  "stage": "complete",
+  "started_at": 1792035848.785472,
+  "state": {
+    "constraints": [
+      "preserve_original"
+    ],
+    "context_tokens_saved": 0,
+    "created_at": 1792035848.8341,
+    "facts": [
+      "file_exists",
+      "output_available"
+    ],
+    "goal": "Execute xlsx.inspect",
+    "input_format": "xlsx",
+    "priority": 5,
+    "required_capability": "xlsx.inspect",
+    "session_id": "20261015_114318_55408a",
+    "source_ref": "user_prompt:7c4c7469f5c1562dce15f6ada928efb56bbb4a0afae6b76cea88a85b66dd7c2a",
+    "task_type": "unknown"
+  },
+  "status": "succeeded",
+  "steps": [
+    {
+      "created_at": 1792035848.83517,
+      "evidence": {
+        "plan": {
+          "capability": "xlsx.inspect",
+          "constraints": [
+            "preserve_original"
+          ],
+          "contract_version": 1,
+          "executor_id": "builtin/xlsx-inspect",
+          "executor_revision": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+          "goal": "Execute xlsx.inspect",
+          "input_format": "xlsx",
+          "input_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/input.xlsx",
+          "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+          "mode": "rows",
+          "output_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/output.json",
+          "session_id": "20261015_114318_55408a",
+          "sheet": "复核",
+          "skill_binding": {
+            "script_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/catalog/skill-snapshots/5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30/skills/productivity/xlsx/scripts/xlsx_read.py",
+            "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+            "skill_id": "productivity/xlsx",
+            "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+            "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+          },
+          "source_ref": "user_prompt:7c4c7469f5c1562dce15f6ada928efb56bbb4a0afae6b76cea88a85b66dd7c2a",
+          "verifier_revision": "21050f78a5c93b6982172b109b097254a170de4d39293c48b4e580da7e4cc894"
+        },
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46"
+      },
+      "stage": "plan"
+    },
+    {
+      "created_at": 1792035848.8359182,
+      "evidence": {
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+        "reason": "registered_contract"
+      },
+      "stage": "route"
+    },
+    {
+      "created_at": 1792035848.8363452,
+      "evidence": {
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46"
+      },
+      "stage": "execute"
+    },
+    {
+      "created_at": 1792035848.95213,
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+          "executor_id": "builtin/xlsx-inspect",
+          "kind": "builtin",
+          "native_helper": "xlsx_read.py",
+          "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+        },
+        "helper_execution": {
+          "argv_mode": "--json",
+          "duration_ms": 107.6461670018034,
+          "fork": "denied",
+          "helper_pid": 39643,
+          "memory_enforcement": "rss_monitor_soft",
+          "network": "denied",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916"
+        },
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46"
+      },
+      "stage": "execute"
+    },
+    {
+      "created_at": 1792035848.952648,
+      "evidence": {
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46"
+      },
+      "stage": "verify"
+    },
+    {
+      "created_at": 1792035848.958532,
+      "evidence": {
+        "output_path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/output.json",
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+        "publication_confirmed": false,
+        "verification": {
+          "checks": {
+            "executor_revision": true,
+            "independent_workbook_result": true,
+            "request_bound": true,
+            "skill_binding": true,
+            "source_unchanged": true,
+            "verifier_revision": true
+          },
+          "input_bytes": 4938,
+          "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+          "mode": "rows",
+          "output_bytes": 102,
+          "output_sha256": "306d0bce232d63450d565c769d4d21bea29a670cdac64db9d21b63cf716054b1",
+          "passed": true,
+          "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+          "root_type": "object",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+        }
+      },
+      "stage": "publish"
+    },
+    {
+      "created_at": 1792035848.960022,
+      "evidence": {
+        "actual_executor": {
+          "code_sha256": "501479d8681d723023f08a17ec03eeac5161bf729636419f7ce5fd6f03d15f10",
+          "executor_id": "builtin/xlsx-inspect",
+          "kind": "builtin",
+          "native_helper": "xlsx_read.py",
+          "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+          "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+          "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+        },
+        "format": "xlsx",
+        "input_bytes": 4938,
+        "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+        "output_bytes": 102,
+        "path": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5/post-acceptance/workspace/output.json",
+        "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+        "published": true,
+        "root_type": "object",
+        "sha256": "306d0bce232d63450d565c769d4d21bea29a670cdac64db9d21b63cf716054b1"
+      },
+      "stage": "complete"
+    }
+  ],
+  "verification": {
+    "checks": {
+      "executor_revision": true,
+      "independent_workbook_result": true,
+      "request_bound": true,
+      "skill_binding": true,
+      "source_unchanged": true,
+      "verifier_revision": true
+    },
+    "input_bytes": 4938,
+    "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+    "mode": "rows",
+    "output_bytes": 102,
+    "output_sha256": "306d0bce232d63450d565c769d4d21bea29a670cdac64db9d21b63cf716054b1",
+    "passed": true,
+    "plan_sha256": "4e35c82ba7e7ce89745ac8ca31deffd702c879372c0da04792c5fa7a44ba0f46",
+    "root_type": "object",
+    "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+    "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+    "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+  },
+  "verification_ok": 1,
+  "worker_cleanup": {
+    "cleanup_complete": true,
+    "errors": [],
+    "remaining_children": []
+  }
+}

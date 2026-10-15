@@ -1,0 +1,65 @@
+{
+  "current_cases_verified": 1720,
+  "current_collected_cases": 1720,
+  "distinct_installed_cases_verified": 147,
+  "installed_package_runs": [
+    {
+      "cases": 106,
+      "failures": 5,
+      "file": "package-test.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 14,
+      "failures": 0,
+      "file": "package-skills-portable.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 55,
+      "failures": 0,
+      "file": "package-post.xml",
+      "skipped": 0
+    }
+  ],
+  "method": "One complete run plus affected supplements; not a claim that the complete final suite was rerun in one green invocation. Installed tests normalized by module, class and parameterized name.",
+  "remaining_package_failures": 0,
+  "remaining_source_failures": 0,
+  "schema_version": "rpe.v111-test-coverage/v1",
+  "source_runs": [
+    {
+      "cases": 1699,
+      "failures": 1,
+      "file": "full-suite.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 121,
+      "failures": 0,
+      "file": "final-supplement.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 46,
+      "failures": 0,
+      "file": "scalar-final.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 83,
+      "failures": 0,
+      "file": "scalar-receipt-final.xml",
+      "skipped": 0
+    },
+    {
+      "cases": 2,
+      "failures": 0,
+      "file": "scalar-wire-source.xml",
+      "skipped": 0
+    }
+  ],
+  "subtests_passed": 3,
+  "superseded_or_renamed_test_ids": [
+    "tests/test_review_skills.py::test_explicit_none_skips_native_view_and_keeps_review_verifiable"
+  ]
+}

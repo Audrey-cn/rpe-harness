@@ -250,7 +250,10 @@ class HarnessRuntime:
                               recipe_content_sha256=prepared.get('recipe_content_sha256'))
             else:
                 raise RuntimeError('candidate artifact has no registered version evidence')
-            self.store.step(run_id, stage, {'actual_executor': actual, 'plan_sha256': plan.sha256})
+            execution_evidence = {'actual_executor': actual, 'plan_sha256': plan.sha256}
+            if plan.capability == 'xlsx.inspect':
+                execution_evidence['helper_execution'] = prepared['helper_execution']
+            self.store.step(run_id, stage, execution_evidence)
             stage = 'verify'
             self.store.step(run_id, stage, {'plan_sha256': plan.sha256})
             try:

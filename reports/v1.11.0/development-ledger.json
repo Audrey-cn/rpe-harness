@@ -1,7 +1,7 @@
 {
   "schema_version": "rpe.v111-development/v1",
   "started_at": 1792031910,
-  "updated_at": 1792033752.210665,
+  "updated_at": 1792036505.744954,
   "base_commit": "c9445972ba5a058724fadf39135de3bc6c1e0ee9",
   "scope": [
     "public entry",
@@ -21,11 +21,20 @@
     "independent_review": "55 passed; quoted deps side effect safely reproduced and fixed; forged native refs reproduced and fixed"
   },
   "pending": [
-    "full regression",
-    "aggregate verifier extension",
-    "real pilot",
-    "frozen formal comparison",
-    "independent installed wheel",
-    "owned cleanup"
-  ]
+    "managed worktree archive",
+    "local release branch and tag final verification"
+  ],
+  "status": "local_delivery_cleanup_finishing",
+  "completed_validation": {
+    "current_source_cases": 1720,
+    "subtests": 3,
+    "installed_package_cases": 147,
+    "formal_complete_chain": {
+      "review": "1/4",
+      "native": "0/4",
+      "comparison_ready": false
+    },
+    "postfix_single_model_acceptance": true,
+    "owned_root_removed": true
+  }
 }

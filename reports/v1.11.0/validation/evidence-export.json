@@ -1,0 +1,23 @@
+{
+  "exported_at": 1792036273.6824288,
+  "history_and_credentials_exported": false,
+  "installed_cases_verified": 147,
+  "postfix_export_files": [
+    "confirmation.json",
+    "draft.json",
+    "durable-replay.json",
+    "execution.json",
+    "helper-execution.json",
+    "input.xlsx",
+    "output.json",
+    "prompt.txt",
+    "protocol.json",
+    "replay.json",
+    "result.json",
+    "run_once.py",
+    "show.json",
+    "source-freeze.json",
+    "sources.json"
+  ],
+  "source_cases_verified": 1720
+}

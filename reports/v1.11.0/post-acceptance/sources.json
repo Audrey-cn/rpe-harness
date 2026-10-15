@@ -1,0 +1,1 @@
+[{"source": "explicit-postfix-user-decision", "event_id": "review-mode-and-sheet", "payload": {"text": "本次检查决定：mode=rows；sheet=复核。"}, "facts": {"mode": "rows", "sheet": "复核"}}]

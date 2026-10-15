@@ -1,0 +1,590 @@
+{
+  "tests/test_native_skill_receipts.py::test_native_observer_binds_real_skill_bytes_and_tool_arguments": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_native_skill_receipts.py::test_native_terminal_receipt_requires_actual_zero_exit_result": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_automation_confirmation_requires_exact_display_digest_and_labels_actor": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_confirm_displays_whole_review_before_typed_confirmation": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_confirm_does_not_treat_pipe_or_wrong_text_as_human_confirmation": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_draft_uses_original_prose_and_lazy_real_hermes_wrapper": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_exposes_no_handwritten_json_draft_or_model_confirmation_field": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_rejects_legacy_passed_without_verified_proposal": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_run_infers_immutable_workspace_and_session": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli.py::test_cli_show_infers_original_session_and_remains_read_only": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_cli_integration.py::test_public_draft_accepts_actual_gate_and_wrapper": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_discovery_only_selected_skill_cannot_authorize_a_registered_capability": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[,]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[None]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_explicit_source_does_not_repair_a_model_omission": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_invalid_execution_with_context_capability_citation_is_a_blocked_draft": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_missing_business_key_is_not_filled_from_prose_or_repaired_in_draft": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_selected_canonical_source_is_rechecked_when_using_proposal[confirm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_selected_canonical_source_is_rechecked_when_using_proposal[execute]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_selected_canonical_source_is_rechecked_when_using_proposal[resolve]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_constraint_conflict_is_not_silently_dropped": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_constraint_membership_does_not_depend_on_flag_order": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[delete-confirm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[delete-execute]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[delete-resolve]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[future-confirm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[future-execute]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[future-resolve]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[hash-confirm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[hash-execute]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[hash-resolve]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[session-confirm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[session-execute]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_is_revalidated_before_accepting_or_using_authority[session-resolve]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_source_quote_is_bound_and_reviewed_without_full_history_or_raw_rewrite": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_two_explicit_sources_disagreeing_on_key_cannot_be_confirmed": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[conflict]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[extra]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[field]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[quote]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[session]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[unknown_ref]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_proposal_context.py::test_verified_source_proposal_executes_and_replays_one_durable_result": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_bundle_and_live_source_must_still_match[projection]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_bundle_and_live_source_must_still_match[ref]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_bundle_and_live_source_must_still_match[session]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_bundle_and_live_source_must_still_match[source]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_import_projects_only_explicit_fact_and_literal_excerpt": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>0]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>1]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>2]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>3]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>4]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_invalid_imports_are_rejected_before_any_source_write[<lambda>5]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_context.py::test_source_can_explicitly_supply_the_supported_tab_delimiter": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_entry_cli.py::test_review_cli_has_distinct_confirmation_and_run_commands": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_entry_cli.py::test_review_cli_is_discoverable_and_describes_plain_text_drafting": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_entry_cli.py::test_review_execution_failure_has_a_nonzero_exit_status": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_entry_cli.py::test_review_json_output_is_structured_and_preserves_verification": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_select_scalar.py::test_scalar_select_wire_preserves_named_tool_and_exact_selection[__no_skill__-selected_none-warm]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_select_scalar.py::test_scalar_select_wire_preserves_named_tool_and_exact_selection[productivity/xlsx-selected-warm]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_copy_uses_real_hermes_restoration_and_original_native_view": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_materialization_is_archived_without_touching_original": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_skill_review_receipts_lead_to_original_helper_execution[active-None-Inspect source.xlsx as rows into output.json; preserve original.]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_skill_review_receipts_lead_to_original_helper_execution[active-restore_receipt-Inspect source.xlsx as rows into output.json; preserve original.]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_skill_review_receipts_lead_to_original_helper_execution[native_archive-None-Inspect source.xlsx as rows into output.json; preserve original.]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_cold_skill_review_receipts_lead_to_original_helper_execution[native_archive-restore_receipt-Inspect source.xlsx as rows into output.json; preserve original.]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_current_session_sees_only_verified_source_facts_and_can_bind_them[skill_review0]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_existing_native_archive_row_is_not_moved_into_itself": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_explicit_none_skips_native_view_and_keeps_review_verifiable": {
+    "evidence": "package-skills-portable.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_explicit_none_skips_native_view_and_keeps_review_verifiable[None]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_explicit_none_skips_native_view_and_keeps_review_verifiable[__no_skill__]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_native_view_with_unready_skill_cannot_advance_to_propose[warm]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_nonadapter_metadata_cannot_be_relabelled_executable": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_review_search_discovers_nonadapter_without_native_activation_or_confirmation[quoted_deps]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_select_rejects_a_skill_not_returned_by_discovery": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_skills.py::test_selection_revalidates_after_temporary_home_is_removed": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[arm_cost]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[by_arm]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[duplicate_record]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[formal_cost]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[formal_count]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[model_pair]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[native_execution]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[pairs]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[pilot_cost]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[pilot_count]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_changed_summary_is_rejected_even_with_a_new_outer_hash[ready]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_formal_freeze_is_bound_to_public_registration[execution_public_contract_sha256]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_formal_freeze_is_bound_to_public_registration[public_contract_sha256]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_formal_freeze_is_bound_to_public_registration[registration_sha256]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_formal_freeze_is_bound_to_public_registration[source]": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_aggregate.py::test_recomputes_partial_formal_and_pilot_aggregates": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_actual_public_show_confirm_run_produces_business_artifact_and_portable_proof": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_business_review_accepts_omitted_redundant_preservation_flags": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_export_rechecks_inner_cost_receipts_when_outer_hash_is_rewritten": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_export_verifies_after_owned_root_removal_and_detects_source_tamper": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_failure_attempts_are_reserved_once_and_usage_stays_unknown": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_finite_pairs_share_business_input_but_not_answers": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_missing_business_key_is_never_approved": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_native_recovered_key_must_not_be_relabelled_default": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_native_trace_cannot_relabel_attachment_as_current_user_quote": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_native_trace_rejects_forged_or_cross_attachment_reference": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_negative_unresolved_text_is_preserved_for_identical_offline_scoring": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_pilot_requires_cold_skill_and_context_but_never_supplies_business_gold": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_review_v111_comparison.py::test_public_cli_runner_uses_module_entry_and_preserves_observations": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_skill_catalog_archive.py::test_archived_unregistered_skill_never_gains_adapter": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_skill_catalog_archive.py::test_duplicate_native_archive_copies_do_not_collapse_to_one_trusted_identity": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_skill_catalog_archive.py::test_flat_native_restoration_rebinds_only_exact_registered_bytes": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_skill_catalog_archive.py::test_physically_archived_real_skill_discovered_as_cold_and_explicitly_trusted": {
+    "evidence": "package-test.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_binding_tampering_and_source_change_rejected": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_bool_int_tampering_fails_and_cannot_publish": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_child_rejects_helper_bytes_changed_after_binding_check": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_cumulative_workbook_grid_precedes_normal_loader": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_namespace_alias-oracle]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_namespace_alias-producer]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_wrong_type-oracle]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[custom_part_wrong_type-producer]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[normal-oracle]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[normal-producer]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[wrong_root-oracle]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_giant_merge_rejected_before_openpyxl_allocation[wrong_root-producer]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_hand_written_cached_formula_fixture": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_independent_oracle_rejects_wrong_formulas_and_inventory[formulas-bad0]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_independent_oracle_rejects_wrong_formulas_and_inventory[sheets-bad1]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_invalid_inspection_parameters[input_path-/tmp/other.csv]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_invalid_inspection_parameters[mode-shell]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_invalid_inspection_parameters[sheet-Missing]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_normalized_contract_is_stable_after_publication_and_source_removal": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_oracle_independently_rejects_oversized_grid_for_correct_inventory": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_original_helper_execution_and_independent_oracle[formulas-expected1]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_original_helper_execution_and_independent_oracle[rows-expected0]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_shared_worksheet_part_is_rejected_before_each_instance_expands[oracle]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_shared_worksheet_part_is_rejected_before_each_instance_expands[producer]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_sheets_inventory_uses_all_sheets": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_small_ordinary_merge_remains_supported": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_source_changed_after_production_clears_verification_seal": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_source_helper_changed_after_sync_is_rejected": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_sparse_large_dimension_is_rejected_before_helper_or_staging": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_streamed_xml_budgets_precede_workbook_construction[MAX_XML_BYTES-1024]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_streamed_xml_budgets_precede_workbook_construction[MAX_XML_NODES-20]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_xml_depth_and_dtd_entities_are_rejected_without_loading": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_xml_external_relationship_is_refused_without_fetching": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_xml_range_and_cumulative_expansion_budgets[<c r=\"XFD1048576\"><v>1</v></c>]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_xml_range_and_cumulative_expansion_budgets[<hyperlinks><hyperlink ref=\"A1:XFD1048576\" location=\"Data!A1\"/></hyperlinks>]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_xml_range_and_cumulative_expansion_budgets[<mergeCells count=\"3\"><mergeCell ref=\"A1:J5000\"/><mergeCell ref=\"A1:J5000\"/><mergeCell ref=\"A1:J5000\"/></mergeCells>]": {
+    "evidence": "package-post.xml",
+    "passed": true
+  },
+  "tests/test_skill_inspection.py::test_zip_bomb_declared_members_rejected": {
+    "evidence": "package-post.xml",
+    "passed": true
+  }
+}

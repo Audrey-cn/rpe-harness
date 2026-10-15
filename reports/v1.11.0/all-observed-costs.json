@@ -1,0 +1,17 @@
+{
+  "cost_receipts": [
+    "evidence/cost-phases.json",
+    "post-acceptance/result.json"
+  ],
+  "draft_host_sessions": 11,
+  "formal_result_unchanged": true,
+  "known_logical_api_requests": 36,
+  "known_total_tokens": 276431,
+  "missing_usage_observations": 4,
+  "native_execution_sessions": 0,
+  "note": "Logical API identities need not equal physical provider retries. Unknown use is not zero; elapsed observations can overlap and are not added as wall time.",
+  "postfix_model_sessions": 1,
+  "scope": "1.11 preregistered pilot, frozen formal comparison and one separately registered real-model postfix acceptance; excludes development-agent billing and no-model engineering tests",
+  "total_tokens": null,
+  "verified_currency_bill": null
+}

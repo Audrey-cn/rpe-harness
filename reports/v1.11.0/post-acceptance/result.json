@@ -1,0 +1,32 @@
+{
+  "artifact_sha256": "306d0bce232d63450d565c769d4d21bea29a670cdac64db9d21b63cf716054b1",
+  "cold_skill_restore_verified": true,
+  "deterministic_replay_verified": true,
+  "elapsed_seconds": 53.485866749993875,
+  "errors": [],
+  "formal_scores_unchanged": true,
+  "human_confirmation_verified": false,
+  "input_sha256": "d61a62efd8db3670eb7dc39018252d6393e76a613145aa65764f817f3bbccdec",
+  "model_sessions": 1,
+  "original_helper_artifact_verified": true,
+  "proposal_id": "0469c7d468b2db94e5938534e99c807b5b444ab37ad3b7c373f881a208b3d199",
+  "reviewer_kind": "simulated_postfix_semantic_reviewer",
+  "schema_version": "rpe.v111-postfix-result/v1",
+  "source_restore_verified": true,
+  "usage": {
+    "api_errors": 0,
+    "api_requests": 5,
+    "cache_read_tokens": 1920,
+    "cache_write_tokens": null,
+    "coverage_complete": true,
+    "input_tokens": 6266,
+    "known_total_tokens": 10559,
+    "missing_observations": 0,
+    "output_tokens": 2373,
+    "prompt_tokens": 8186,
+    "reasoning_tokens": 1426,
+    "requests_with_usage": 5,
+    "total_tokens": 10559
+  },
+  "verified": true
+}

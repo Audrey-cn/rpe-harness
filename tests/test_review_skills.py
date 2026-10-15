@@ -164,9 +164,10 @@ def test_review_search_discovers_nonadapter_without_native_activation_or_confirm
     assert verdict['native_skill_view_calls'] == 0
 
 
-def test_explicit_none_skips_native_view_and_keeps_review_verifiable(skill_review):
+@pytest.mark.parametrize('selection', [None, '__no_skill__'])
+def test_explicit_none_skips_native_view_and_keeps_review_verifiable(skill_review, selection):
     step(skill_review, 'rpe_discover', {'q': 'watercolor'})
-    selected = step(skill_review, 'rpe_select', {'skill_id': None})
+    selected = step(skill_review, 'rpe_select', {'skill_id': selection})
     assert selected['status'] == 'selected_none'
     proposal = step(skill_review, 'rpe_propose', draft())
     assert proposal['status'] == 'awaiting_confirmation', proposal
@@ -310,6 +311,12 @@ print(json.dumps(result))
     result = proposals.execute(confirmed['confirmation_id'], session_id='review-session',
         workspace=skill_review['workspace'], catalog_root=skill_review['owned'], python=sys.executable)
     assert result['status'] == 'succeeded', result
+    from rpe_harness.integrations.hermes_gate import read_run
+    durable = read_run(skill_review['db'], result['run_id'])
+    receipts = [step['evidence']['helper_execution'] for step in durable['steps']
+        if step['stage'] == 'execute' and 'helper_execution' in step.get('evidence', {})]
+    assert len(receipts) == 1 and receipts[0]['helper_pid'] > 1
+    assert receipts[0]['script_sha256'] == proposal['skill_selection']['script_sha256']
     assert json.loads((skill_review['workspace'] / 'output.json').read_text()) == {
         'sheet': 'Sheet', 'rows': [['id', 'flag'], [1, True]]}
 

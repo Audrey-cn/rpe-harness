@@ -1,0 +1,9 @@
+{
+  "argv_mode": "--json",
+  "duration_ms": 107.6461670018034,
+  "fork": "denied",
+  "helper_pid": 39643,
+  "memory_enforcement": "rss_monitor_soft",
+  "network": "denied",
+  "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916"
+}

@@ -1,0 +1,55 @@
+{
+  "formal_and_pilot_inputs": [
+    {
+      "input_sha256": "bcc4f5db4a342c2d62b29c7e979092f722246133dc604c2899e182185b0268a9",
+      "trial_id": "formal-csv-complete-native",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "bcc4f5db4a342c2d62b29c7e979092f722246133dc604c2899e182185b0268a9",
+      "trial_id": "formal-csv-complete-review",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "d513d7590be8edf4aa820b18cd6fa99df719bc9015723a213920edca1a43cd96",
+      "trial_id": "formal-cold-xlsx-review",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "d513d7590be8edf4aa820b18cd6fa99df719bc9015723a213920edca1a43cd96",
+      "trial_id": "formal-cold-xlsx-native",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "2bee9dbb4b164285c96c620c51be28b12c4814c1ef8fea16a52e2c4728c2029e",
+      "trial_id": "formal-source-key-native",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "2bee9dbb4b164285c96c620c51be28b12c4814c1ef8fea16a52e2c4728c2029e",
+      "trial_id": "formal-source-key-review",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "ad706891c4e3f220f6872ba1089961d3bdf21e895a5c7b223b5ad6e859c7bdc2",
+      "trial_id": "formal-missing-key-review",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "ad706891c4e3f220f6872ba1089961d3bdf21e895a5c7b223b5ad6e859c7bdc2",
+      "trial_id": "formal-missing-key-native",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "d513d7590be8edf4aa820b18cd6fa99df719bc9015723a213920edca1a43cd96",
+      "trial_id": "pilot-pilot-cold-context-native",
+      "unchanged": true
+    },
+    {
+      "input_sha256": "d513d7590be8edf4aa820b18cd6fa99df719bc9015723a213920edca1a43cd96",
+      "trial_id": "pilot-pilot-cold-context-review",
+      "unchanged": true
+    }
+  ],
+  "postfix_input_unchanged": true
+}

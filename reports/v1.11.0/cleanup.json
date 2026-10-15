@@ -1,0 +1,188 @@
+{
+  "bytes_to_remove": 985805904,
+  "checked_at": 1792036446.244629,
+  "credential_scan": {
+    "exact_configured_secret_matches": 0,
+    "values_exported": false
+  },
+  "daily_directory_changes": {
+    "cache": {
+      "added_names": [],
+      "exists_after": true,
+      "exists_before": true,
+      "removed_names": []
+    },
+    "history": {
+      "added_names": [],
+      "exists_after": false,
+      "exists_before": false,
+      "removed_names": []
+    },
+    "logs": {
+      "added_names": [],
+      "exists_after": true,
+      "exists_before": true,
+      "removed_names": []
+    },
+    "sessions": {
+      "added_names": [],
+      "exists_after": true,
+      "exists_before": true,
+      "removed_names": []
+    }
+  },
+  "daily_skill_additions_preserved": [
+    "uaek-agent-enhancement/SKILL.md",
+    "uaek-effort-control/SKILL.md",
+    "uaek-memory-management/SKILL.md",
+    "uaek-verification-framework/SKILL.md",
+    "uaek-workflow-guidance/SKILL.md"
+  ],
+  "daily_skill_files_verified": 473,
+  "daily_state_counts_after": {
+    "async_delegations": 8,
+    "compression_locks": 0,
+    "conversation_generations": 0,
+    "delivery_obligations": 25,
+    "feishu_card_inbox": 2,
+    "gateway_heartbeats": 20,
+    "gateway_hygiene_state": 0,
+    "gateway_routing": 1,
+    "messages": 2544,
+    "messages_fts": 2544,
+    "messages_fts_config": 2,
+    "messages_fts_data": 1696,
+    "messages_fts_docsize": 2544,
+    "messages_fts_idx": 1487,
+    "messages_fts_trigram": 1179,
+    "messages_fts_trigram_config": 2,
+    "messages_fts_trigram_data": 478,
+    "messages_fts_trigram_docsize": 1179,
+    "messages_fts_trigram_idx": 476,
+    "schema_version": 1,
+    "session_model_usage": 42,
+    "session_turn_leases": 0,
+    "sessions": 19,
+    "sqlite_sequence": 1,
+    "state_meta": 8,
+    "system_prompts": 15
+  },
+  "daily_state_counts_before": {
+    "async_delegations": 8,
+    "compression_locks": 0,
+    "conversation_generations": 0,
+    "delivery_obligations": 25,
+    "feishu_card_inbox": 2,
+    "gateway_heartbeats": 20,
+    "gateway_hygiene_state": 0,
+    "gateway_routing": 1,
+    "messages": 2544,
+    "messages_fts": 2544,
+    "messages_fts_config": 2,
+    "messages_fts_data": 1696,
+    "messages_fts_docsize": 2544,
+    "messages_fts_idx": 1487,
+    "messages_fts_trigram": 1179,
+    "messages_fts_trigram_config": 2,
+    "messages_fts_trigram_data": 478,
+    "messages_fts_trigram_docsize": 1179,
+    "messages_fts_trigram_idx": 476,
+    "schema_version": 1,
+    "session_model_usage": 42,
+    "session_turn_leases": 0,
+    "sessions": 19,
+    "sqlite_sequence": 1,
+    "state_meta": 8,
+    "system_prompts": 15
+  },
+  "daily_state_restored": false,
+  "directories_to_remove": 29593,
+  "files_to_remove": 37905,
+  "finished_at": 1792036450.9590862,
+  "historical_reports_unchanged": true,
+  "managed_worktree_archive": "pending",
+  "old_repositories": [
+    {
+      "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+      "path": "/Users/audrey/项目/progenitor-protocol",
+      "unchanged": true
+    },
+    {
+      "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+      "path": "/Users/audrey/项目/progenitor-registry",
+      "unchanged": true
+    }
+  ],
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v111-31887330f90d49a4a4489d639468adb5",
+  "owned_root_removed": true,
+  "pre_delete_owned_processes": [],
+  "preexisting_daily_skills_unchanged": true,
+  "protected_files": [
+    {
+      "after_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+      "baseline_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+      "path": "/Users/audrey/.hermes/config.yaml",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "baseline_sha256": "a9faffdfaf4adc07ae257281ed9bfea4737a03bfc72cc4fd3f3e5addde49f3d1",
+      "path": "/Users/audrey/.hermes/.env",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "a63f7cb48e510e41979b5d7a804f2eb61f00cb79db9afaf8da17d11ddd004345",
+      "baseline_sha256": "052074bc6549059daa848e165da9b43139ea53fa3e48a50095fd2cbfc58c65f9",
+      "path": "/Users/audrey/.hermes/auth.json",
+      "unchanged": false
+    },
+    {
+      "after_sha256": "6f2d5727e3f577e57c6dc04b70a7346982f3190432bcbfcd81751845e946642e",
+      "baseline_sha256": "2994c4759678230ba4232e61544786edc70b7c08443f3fcb240c6bddc22bb81b",
+      "path": "/Users/audrey/.hermes/state.db",
+      "unchanged": false
+    },
+    {
+      "after_sha256": "2439c49c0a0396dac2334a225b24b4cb5ed1d41e9b819bfa894708a22d62623f",
+      "baseline_sha256": "2439c49c0a0396dac2334a225b24b4cb5ed1d41e9b819bfa894708a22d62623f",
+      "path": "/Users/audrey/项目/rpe-harness/reports/design-alignment-2026-10-15-v1.10/evidence.json",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "a059cb1a4575489a0f77d0834cb53b5aa9c68058bd171e86b7829700bbc9418f",
+      "baseline_sha256": "a059cb1a4575489a0f77d0834cb53b5aa9c68058bd171e86b7829700bbc9418f",
+      "path": "/Users/audrey/项目/rpe-harness/reports/design-alignment-2026-10-15-v1.10/原始讨论与1.10对齐审计.md",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "e6b0b8d5652791737b69e00058a9a610b6f578bc561a2cbfb96915ae0cb4de66",
+      "baseline_sha256": "e6b0b8d5652791737b69e00058a9a610b6f578bc561a2cbfb96915ae0cb4de66",
+      "path": "/Users/audrey/项目/rpe-harness/reports/design-trace-2026-10-14/原始设计溯源与方向审核.md",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "49b4d779c51fc750b7d7d4fc2c06f307243317bf5bc355309a361f3ff82bf752",
+      "baseline_sha256": "49b4d779c51fc750b7d7d4fc2c06f307243317bf5bc355309a361f3ff82bf752",
+      "path": "/Users/audrey/项目/rpe-harness/reports/design-trace-2026-10-14/evidence/provenance.json",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "77d50f31b45ea964dab7e78a52b0df58351947f010e519ec8a7c33f4c1388554",
+      "baseline_sha256": "77d50f31b45ea964dab7e78a52b0df58351947f010e519ec8a7c33f4c1388554",
+      "path": "/Users/audrey/项目/rpe-harness/reports/direction-review-2026-10-15/开发方向与最小状态寻址讨论.md",
+      "unchanged": true
+    },
+    {
+      "after_sha256": "97d60793eab7b9d1dfc01f3587c643789f7f0c3e2c26cc9bafd9aee3c9f1c805",
+      "baseline_sha256": "97d60793eab7b9d1dfc01f3587c643789f7f0c3e2c26cc9bafd9aee3c9f1c805",
+      "path": "/Users/audrey/项目/rpe-harness/reports/direction-review-2026-10-15/原稿复盘与主体开发方向重审.md",
+      "unchanged": true
+    }
+  ],
+  "schema_version": "rpe.v111-owned-cleanup/v1",
+  "scope": "only this run owned root and its separately managed worktree; retained sanitized reports and installable wheel",
+  "signals_sent": 0,
+  "test_session_ids_checked": 11,
+  "test_session_ids_in_daily_db": [],
+  "verification_before_cleanup": "verification-before-cleanup.json"
+}

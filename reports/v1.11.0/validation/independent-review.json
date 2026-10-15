@@ -1,0 +1,14 @@
+{
+  "decision": "deliverable_as_limited_local_1.11",
+  "final_two_module_patch_review": "no new execution or permission risk found",
+  "limits": [
+    "postfix acceptance is one model sample with a simulated semantic reviewer",
+    "formal comparison_ready=false; no established overall quality or total-cost benefit"
+  ],
+  "resolved_findings": [
+    "quoted YAML dependencies no longer activate an untrusted native skill",
+    "native source references must cite the exact authorized source",
+    "native skill load receipts require real success"
+  ],
+  "reviewer": "independent_subagent"
+}

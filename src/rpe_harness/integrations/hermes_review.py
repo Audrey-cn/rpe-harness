@@ -75,6 +75,8 @@ REVIEW_CONTRACT = (
     'Do not install, train, upgrade, or read controller files/databases/other sessions/reports/RPE implementation. '
     'Only a later explicit human confirmation of the displayed proposal can authorize execution.')
 
+NO_SKILL_SENTINEL = '__no_skill__'
+
 _INGRESS_VALIDATOR = None
 
 
@@ -152,7 +154,7 @@ def _messages(config, state):
                         'matching the request, including likely English terms from skill descriptions. Discovery '
                         'never grants authority. Do not restrict the search to a capability ID.')
             elif phase == 'select':
-                hint = ('Choose exactly one returned skill_id with rpe_select, or skill_id=null when the task needs '
+                hint = ('Choose exactly one returned skill_id with rpe_select, or skill_id="__no_skill__" when the task needs '
                         'no skill. Non-adapter skills remain discovery_only. Candidates:\n' +
                         json.dumps(state['candidates'], ensure_ascii=False, allow_nan=False))
             elif phase == 'view':
@@ -253,6 +255,8 @@ def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, 
                 if not skills or set(arguments) != {'skill_id'}:
                     raise ValueError('invalid explicit skill selection')
                 selected_id = arguments['skill_id']
+                if selected_id == NO_SKILL_SENTINEL:
+                    selected_id = None
                 if selected_id is None:
                     selection = {'kind': 'none', 'snapshot_id': snapshot_id}
                     state.update(phase='propose', skill_selection=selection)
@@ -348,9 +352,10 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
         'rpe_discover': {'name': 'rpe_discover', 'description': 'Search real installed skill metadata; grants no authority.',
             'parameters': {'type': 'object', 'additionalProperties': False, 'required': ['q'],
                            'properties': {'q': {'type': 'string', 'minLength': 1, 'maxLength': 4096}}}},
-        'rpe_select': {'name': 'rpe_select', 'description': 'Select a returned skill_id, or null when no skill is needed.',
+        'rpe_select': {'name': 'rpe_select', 'description': 'Select a returned skill_id, or __no_skill__ when no skill is needed.',
             'parameters': {'type': 'object', 'additionalProperties': False, 'required': ['skill_id'],
-                           'properties': {'skill_id': {'type': ['string', 'null']}}}}}
+                           'properties': {'skill_id': {'type': 'string',
+                               'description': 'A returned canonical skill_id, or the fixed __no_skill__ sentinel.'}}}}}
 
     def capture_arguments(tool_name, args, **context):
         if tool_name != 'rpe_propose':

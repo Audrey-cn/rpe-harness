@@ -1,0 +1,20 @@
+{
+  "comparison_ready": false,
+  "current_source_modules_verified": 80,
+  "formal_evidence": {
+    "business_artifacts_verified": 1,
+    "errors": [],
+    "human_confirmation_verified": false,
+    "runtime_proof": "recorded_observations_not_independent_attestation",
+    "schema_version": "rpe.v111-evidence-verification/v1",
+    "source_documents_verified": 5,
+    "verified": true
+  },
+  "human_confirmation_verified": false,
+  "installed_testcases_verified": 147,
+  "postfix_business_artifact_verified": true,
+  "runtime_proof": "recorded_observations_not_independent_attestation",
+  "source_testcases_verified": 1720,
+  "verified": true,
+  "wheel_bytes_verified": true
+}
