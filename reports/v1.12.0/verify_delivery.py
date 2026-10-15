@@ -96,6 +96,9 @@ def verify(require_cleanup=False):
                'final_package': test_record('final-package.xml', 100)}
     if require_cleanup:
         cleanup = read('cleanup.json')
+        preservation = read('validation/preservation-after-cleanup.json')
+        need(preservation['preservation_ok'] is True and preservation['owned_processes']['count'] == 0
+             and preservation['leaked_test_session_ID_count'] == 0, 'post-cleanup preservation failed')
         for key in ('owned_root', 'worktree', 'cli_probe'):
             path = Path(cleanup['owned_root' if key == 'owned_root' else key + '_path'])
             need(path.is_absolute() and cleanup[key + '_removed'] is True and

@@ -1,14 +1,15 @@
 {
   "schema_version": "rpe.v112-retained-files/v1",
   "sha256": {
-    "1.12开发与验收报告.md": "e70924592228e7d41ceacf78d49df513772719d7d3c9727028e09031572cdf36",
+    "1.12开发与验收报告.md": "a93171cedc15c6a3dd05b431402693caf6b1ddf1c98f0e074437aa40196d8a68",
     "agent-audit/bundle.json": "6eebb617b36cf495087b20bc217585292d9059f9482691e644c9b714694052a5",
     "agent-audit/claim.json": "4591e67169ec2a2a79550e4b1ecdf0b9e725584a378b571d190d7dcfbaa5c041",
     "agent-audit/driver.py": "b9b75a5a74ee75b97b5d5f28b383cb4791716dfd33c28351257387954868f026",
     "agent-audit/mapping.json": "3f8e791e7ff121b6566c3e7b9e8db81f420981210cf8e5261df4f7f790e50f84",
     "agent-audit/result.json": "947828fc252ad3dccbf7b9fbc42d3dd043c222b176d6ac8a83f9670c1cdc024d",
     "all-observed-costs.json": "3e762238e4aa13ca6e88f055b791200a3ea0c09a379a2adf8c78e3aa9713c98b",
-    "development-ledger.json": "e1f69b82db50dcffe1ca81aaac15d9939830c30b934404a538acb86fdc9d84ec",
+    "cleanup.json": "f07f8f36d6060d8483414aa97acab9d4179dc3424d829f4aa2a0663aeebc7378",
+    "development-ledger.json": "de08bf770c4f4f447384fb0cf3c1747cc7656f0e78c4992209283862222027af",
     "evidence/artifacts/formal-cold-stock-native/manifest.json": "c6960b2973210daa66c56d39859565ff7fafe19529a71b1a4fecf8d1cba18128",
     "evidence/artifacts/formal-cold-stock-native/output.json": "3fe3c212fe3fb3c42760eff7f00b82261f88df2252d6a40d1076abbbceb73236",
     "evidence/artifacts/formal-cold-stock-review/manifest.json": "e945d2c48005a945eeeaba5baccdb45e1ae8b5108591cdbf3fd894676a7a19ec",
@@ -82,14 +83,15 @@
     "validation/package-smoke-red.xml": "9532e8e4a42de975a48a9465d9f1edfc5e762526f03c7283be51ddb050f57507",
     "validation/package-tests.xml": "39e105622e1683085fb0d924a34459f7d7405bdb6c00484b6ebe0707be380fa1",
     "validation/post-pilot.xml": "9c7fd058f9331daeb611a1076f0637ea058cdb9625cc14b2bdc3c5b40f16d9ee",
+    "validation/preservation-after-cleanup.json": "6b3b27ea61ce0e9b01a38c8f52f63174b38df514049d81e2e0713567cf7d1b0f",
     "validation/preservation-before-cleanup.json": "b3e0748af34f319ada9a79f2ee6aa27d6df00c41e70f6a7df8e9c6c443c2cfbc",
     "validation/preservation-checker-initial.json": "661cf6f7f3d4646b2ff29ca7f6de856ec879120fc2c7150e20c0f50c75d548b6",
-    "validation/retained-secret-scan.json": "cb23d1e0a8ef679b1bff0c2087dcde45a9e771eb38c6cf4e7ede4f3a630ab727",
+    "validation/retained-secret-scan.json": "e16228e784b5c01704f3d2a3cc6e8b76085b0f000f246c9dae5e093f6edd2c36",
     "validation/runner-final.xml": "81b0449ef0d78af7c796cbfd02ba8cc41e07362125733b432e7748e627b55e88",
     "validation/runner-missing-red.xml": "5e593002c42d2fb4f1eba879402d0273cc4decf42f44b9314345d2c4ec8f9e73",
     "validation/runner-red.xml": "3456b846919cb108d2c015014d941abc50175aa32769c3f487ae21a4c31bbcd8",
     "validation/test-coverage.json": "9a59d2039659fbac761ae60bb9bc000a6ea81887a9eec793221a65013560dd15",
     "validation/wheel-proof.json": "c5984555a9aca4980878e687f13fe5f6f368a5cafbde8130fdb03e937cbefc22",
-    "verify_delivery.py": "4d8d35940d25f005086e2136903ecab475984fe583fab306f4cbb04ea0730995"
+    "verify_delivery.py": "53e09d8d7ee0d8868ba7d9a1e9583cedc89e4b0a1b2aae07373a68dcecbb4228"
   }
 }

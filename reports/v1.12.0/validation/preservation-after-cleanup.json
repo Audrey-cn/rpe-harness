@@ -1,0 +1,69 @@
+{
+  "baseline_tables_missing": [],
+  "changed": [],
+  "checked_at": 1792040535.869848,
+  "daily_mutable_state_restored": false,
+  "daily_session_reference_columns_checked": [
+    "sessions.id",
+    "sessions.parent_session_id",
+    "messages.session_id",
+    "session_model_usage.session_id",
+    "compression_locks.session_id",
+    "async_delegations.parent_session_id"
+  ],
+  "daily_table_count_deltas": {
+    "async_delegations": 0,
+    "compression_locks": 0,
+    "conversation_generations": 0,
+    "delivery_obligations": 0,
+    "feishu_card_inbox": 0,
+    "gateway_heartbeats": 0,
+    "gateway_hygiene_state": 0,
+    "gateway_routing": 0,
+    "messages": 0,
+    "messages_fts": 0,
+    "messages_fts_config": 0,
+    "messages_fts_data": 0,
+    "messages_fts_docsize": 0,
+    "messages_fts_idx": 0,
+    "messages_fts_trigram": 0,
+    "messages_fts_trigram_config": 0,
+    "messages_fts_trigram_data": 0,
+    "messages_fts_trigram_docsize": 0,
+    "messages_fts_trigram_idx": 0,
+    "schema_version": 0,
+    "session_model_usage": 0,
+    "session_turn_leases": 0,
+    "sessions": 0,
+    "sqlite_sequence": 0,
+    "state_meta": 0,
+    "system_prompts": 0
+  },
+  "leaked_test_session_ID_count": 0,
+  "missing": [],
+  "old_repositories": {
+    "/Users/audrey/项目/progenitor-protocol": {
+      "head_matches": true,
+      "status_matches": true
+    },
+    "/Users/audrey/项目/progenitor-registry": {
+      "head_matches": true,
+      "status_matches": true
+    }
+  },
+  "owned_paths_removed": true,
+  "owned_processes": {
+    "checker_and_ancestry_excluded": true,
+    "count": 0,
+    "processes": [],
+    "scope": "command-argument path matches plus descendants"
+  },
+  "preservation_ok": true,
+  "remote_push_performed": false,
+  "schema_version": "rpe.v112-post-cleanup-preservation/v1",
+  "session_ID_hashes_checked": 13,
+  "skill_changed": [],
+  "skill_files_checked": 478,
+  "skill_missing": [],
+  "stable_files_checked": 75
+}

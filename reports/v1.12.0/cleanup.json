@@ -1,0 +1,38 @@
+{
+  "cleaned_at": 1792040472.054338,
+  "cli_probe_path": "/Users/audrey/项目/缓存/test/v112-cli-probe.jhtOxh",
+  "cli_probe_removed": true,
+  "daily_history_or_caches_deleted": false,
+  "daily_processes_signalled": false,
+  "daily_state_restored": false,
+  "delivery_commit_before_cleanup": "c7021075d34f6cf756cd90298f2dd0022e028693",
+  "native_archive_attachment_confirmed": true,
+  "native_archive_request": "archived_worktree attachment confirmed; filesystem and Git worktree removal verified",
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378",
+  "owned_root_removed": true,
+  "processes_before_deletion": {
+    "checker_and_ancestry_excluded": true,
+    "count": 0,
+    "processes": [],
+    "scope": "command-argument path matches plus descendants"
+  },
+  "remote_push_performed": false,
+  "removed": [
+    "owned isolated Hermes HOME/history/authentication copies, SQLite databases, provider/session logs",
+    "owned Claude configuration/cache/temp and raw stdout/stderr",
+    "owned virtual environments, pip/pytest/build caches and temporary fixtures",
+    "empty CLI probe and managed worktree"
+  ],
+  "retained": [
+    "local Git commits and branches",
+    "main/dist/1.12.0 wheel",
+    "sanitized evidence, costs, test records and reports"
+  ],
+  "schema_version": "rpe.v112-cleanup/v1",
+  "source_commit_retained": "576ad8f",
+  "temporary_processes_killed": 0,
+  "temporary_processes_remaining": 0,
+  "wheel_sha256": "fa712d5531f00231ccb6c9522f460a36b7e7662ae10902dbab0de0794a578e2c",
+  "worktree_path": "/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness",
+  "worktree_removed": true
+}

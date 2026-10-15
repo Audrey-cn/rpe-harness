@@ -1,0 +1,60 @@
+{
+  "cleanup_required": true,
+  "comparison_ready": false,
+  "current_source_modules_verified": 85,
+  "evidence": {
+    "evidence": {
+      "business_artifacts_verified": 5,
+      "errors": [],
+      "human_confirmation_verified": false,
+      "runtime_proof": "recorded_observations_not_independent_attestation",
+      "schema_version": "rpe.v112-evidence-verification/v1",
+      "source_documents_verified": 5,
+      "verified": true
+    },
+    "pilot-original": {
+      "business_artifacts_verified": 2,
+      "errors": [],
+      "human_confirmation_verified": false,
+      "runtime_proof": "recorded_observations_not_independent_attestation",
+      "schema_version": "rpe.v112-evidence-verification/v1",
+      "source_documents_verified": 5,
+      "verified": true
+    }
+  },
+  "human_confirmation_verified": false,
+  "independent_agent_limit_observations": {
+    "aggregate_output_above_requested_figure": true,
+    "cli_estimated_dollar_limit_adhered": true,
+    "completed_sessions": 1,
+    "num_turns": 3,
+    "output_tokens": 2110,
+    "per_request_output_limit_enforcement": null,
+    "provider_api_requests": null,
+    "requested_turn_limit_adhered": false,
+    "time_limit_adhered": true
+  },
+  "independent_audit_completed": true,
+  "independent_audit_status": "completed",
+  "manifest_files_verified": 92,
+  "runtime_proof": "recorded_observations_not_independent_thirdparty_runtime_attestation",
+  "test_records": {
+    "final_package": {
+      "passed": 100,
+      "skipped": 0,
+      "subtests_passed": 0
+    },
+    "post_pilot": {
+      "passed": 71,
+      "skipped": 1,
+      "subtests_passed": 0
+    },
+    "source_full_suite": {
+      "passed": 1774,
+      "skipped": 6,
+      "subtests_passed": 3
+    }
+  },
+  "verified": true,
+  "wheel_bytes_verified": true
+}

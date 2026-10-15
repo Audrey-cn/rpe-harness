@@ -9,7 +9,10 @@
     "post-pilot affected supplement71passed1skip",
     "final independently installed wheel100passed0skip and85modules match freeze",
     "pilot2 and formal8 original one-shot outcomes retained",
-    "one actual isolated Claude Code/MiMo audit with observed limit nonadherence retained"
+    "one actual isolated Claude Code/MiMo audit with observed limit nonadherence retained",
+    "local source/wheel/release documentation delivery",
+    "delete exact owned test root, CLI probe and worktree after preservation",
+    "offline post-cleanup verification"
   ],
   "formal_and_final_source_commit": "576ad8f",
   "no_additional_model_attempts": true,
@@ -19,15 +22,11 @@
     "structured native helper status evidence rather than shell spelling expansion",
     "actual audit host turn/output-limit semantics and native provider timeout observations"
   ],
-  "pending": [
-    "local source/wheel/release documentation delivery",
-    "delete exact owned test root, CLI probe and worktree after preservation",
-    "offline post-cleanup verification"
-  ],
+  "pending": [],
   "pilot_source_commit": "46921f4",
   "production_source_changes_after_formal_freeze": false,
   "schema_version": "rpe.v112-development/v1",
-  "state": "implementation and bounded validation complete; local delivery and owned cleanup pending",
+  "state": "local 1.12 validation release delivered; all owned cleanup and post-cleanup preservation verified",
   "validation_outcome": {
     "all_pairs": 4,
     "comparable_pairs": 1,
