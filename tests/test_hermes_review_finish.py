@@ -272,15 +272,19 @@ def test_rejected_earlier_discovery_never_becomes_verified_after_later_proposal(
             tool_call_id=call, **ids)
         assert json.loads(response)['error']['code'] == 'review_identity_invalid'
     skill_review['counter'] = 1
-    step(skill_review, 'rpe_discover', {'q': 'watercolor landscape'})
-    step(skill_review, 'rpe_select', {'skill_id': '__no_skill__'})
-    assert step(skill_review, 'rpe_propose', draft())['status'] == 'awaiting_confirmation'
-    agent = native_agent()
-    agent._current_api_request_id = 'api-4'
-    with pytest.raises(skill_review['api'].ReviewIngressBlocked):
-        finish(skill_review, agent=agent, messages=[{'role': 'tool', 'tool_call_id': 'call-4'}])
+    # The rejected response has no authorized recovery receipt. The next
+    # same-phase request must stop before provider/tool/proposal admission.
+    with pytest.raises(skill_review['api'].ReviewIngressBlocked) as blocked:
+        step(skill_review, 'rpe_discover', {'q': 'watercolor landscape'})
+    assert blocked.value.code == 'review_unexpected_phase_repeat'
+    events = skill_review['store'].list('review-session')
+    assert len([event for event in events if event['kind'] == 'pre_api_request']) == 1
+    assert not [event for event in events if event['kind'] in ('pre_tool_call', 'rpe_review_proposed')]
+    with sqlite3.connect(skill_review['db']) as db:
+        state = json.loads(db.execute('SELECT state_json FROM rpe_skill_workflows').fetchone()[0])
+        assert state['phase'] == 'discover' and set(state['policies']) == {'api-1'}
+        assert db.execute("SELECT COUNT(*) FROM sqlite_master WHERE name='rpe_proposals'").fetchone()[0] == 0
     verdict = skill_review['api'].evaluate_review_session(host_result(skill_review), skill_review['db'],
         skill_review['workspace'], catalog_root=skill_review['owned'])
     assert verdict['proposal_verified'] is False
-    assert 'review_model_policy_ignored' in verdict['errors']
     assert not (skill_review['workspace'] / 'out.csv').exists()
