@@ -1,0 +1,86 @@
+{
+  "assessment_role": "read_only_saved_state_and_code_review",
+  "code_basis": [
+    "The shared public contract requires preserving inputs and never overwriting.",
+    "JSON path validation always requires distinct input/output and a new output path.",
+    "The executor reads the source and writes an owned staging output; the preservation flag does not switch this behavior.",
+    "The independent JSON oracle always checks source_unchanged and raw_tokens_preserved.",
+    "The fixture reviewer compares the exact expected constraint membership, which additionally requires preserve_original."
+  ],
+  "code_evidence": [
+    {
+      "path": "json_contract.py",
+      "sha256": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595"
+    },
+    {
+      "path": "json_execution.py",
+      "sha256": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e"
+    },
+    {
+      "path": "json_verification.py",
+      "sha256": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96"
+    },
+    {
+      "path": "integrations/hermes_review.py",
+      "sha256": "4d22d03aafd652d0c552bd15b415d0512aac4a670699d8b8d588bc4e1393b627"
+    },
+    {
+      "path": "experiments/review_comparison.py",
+      "sha256": "aaabeafef975e428ccfb37fc832dbba885ea2e41da361563ffd2d6c9e7cc402d"
+    }
+  ],
+  "diagnostic_code": "REDUNDANT_PRESERVE_ORIGINAL_FLAG_EXACT_SET_REJECTION",
+  "limits": [
+    "This is an independent semantic diagnostic, not a change to recorded draft_faithful, acceptance or business scores.",
+    "No actual human confirmation or deterministic business execution occurred in these recorded observations.",
+    "A future separately labelled trusted-app post-test must not be merged into the original model comparison."
+  ],
+  "no_confirmation_or_execution_invoked": true,
+  "observations": [
+    {
+      "all_quotes_literal_or_displayed_default": true,
+      "candidate_extra_flags": [],
+      "capability_and_execution_match_expected": true,
+      "error_count": 0,
+      "expected_flags_missing_from_candidate": [
+        "preserve_original"
+      ],
+      "missing_count": 0,
+      "only_differing_expected_field": [
+        "constraints"
+      ],
+      "proposal_id": "1ea5938a25e134aa545f83d3fb24126deaf0454b6fbe79e226a2d8de2cef0bce",
+      "saved_confirmations": 0,
+      "saved_executions": 0,
+      "saved_status": "awaiting_confirmation",
+      "source_matches_public_request": true,
+      "trial_id": "pilot-json-lossless-native",
+      "unresolved_count": 0
+    },
+    {
+      "all_quotes_literal_or_displayed_default": true,
+      "candidate_extra_flags": [],
+      "capability_and_execution_match_expected": true,
+      "error_count": 0,
+      "expected_flags_missing_from_candidate": [
+        "preserve_original"
+      ],
+      "missing_count": 0,
+      "only_differing_expected_field": [
+        "constraints"
+      ],
+      "proposal_id": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+      "saved_confirmations": 0,
+      "saved_executions": 0,
+      "saved_status": "awaiting_confirmation",
+      "source_matches_public_request": true,
+      "trial_id": "pilot-json-lossless-review",
+      "unresolved_count": 0
+    }
+  ],
+  "primary_records_and_exports_unchanged": true,
+  "registration_fingerprint": "1c920a6ef234a80659e0d9ced7e02311cb6d593e725ffd71bc309304ca45f829",
+  "schema_version": "rpe.json-smoke-scorer-diagnostic/v1",
+  "semantic_assessment": "For this fixed JSON task, omission of the preserve_original flag does not remove mandatory source preservation or lossless normalization behavior. Both saved drafts are core-confirmable; the fixture reviewer rejects their flag set.",
+  "sha256": "2e7b1f1dced3ed6a176d1319425ea6467fc48e306c6224cd3b0a7b162a4e5f50"
+}

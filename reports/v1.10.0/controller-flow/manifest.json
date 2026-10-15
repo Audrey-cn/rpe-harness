@@ -1,0 +1,15 @@
+{
+  "files": {
+    "confirmation.json": "1691ac5a82e97927addf684b34a703eaaf8a06380596b91a4bde0b3ab5690f47",
+    "controller-flow.md": "ac7aba47af275dd9848574e9c850c847f8940eadca118b94911438d91a6485c6",
+    "durable-proof.json": "2acfbfc7b670a50ed3d4f508f7309d8c468bc2d1afb60008372451eb93b1b0c0",
+    "input.json": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+    "oracle.json": "4db29d0ed400e5dbf08ba0aed44fca072c4ee17d41e42673c83c4fc9fb7f757a",
+    "output.json": "c43543cf0404416ef757a0fc540bb3650a6c305d17f84ff407be2d8b64042d37",
+    "proposal-public.json": "4d5a3d24476e2d647aa9db847a42cd3b0d194cd081d77c747b1bbb3e533c3f95",
+    "receipt.json": "98fcf94b2fd9d3e34c9c05dd03b9c40510a98718b2b07ca77839ad44eeb86678",
+    "verify-controller-flow.py": "4fc4a776fa8ff5d98f07b089814cea0b5e530fa42484dd0fe2c136a5741588af"
+  },
+  "schema_version": "rpe.controller-flow-manifest/v1",
+  "sha256": "752f2b09eb68708ab0b10e02427d4df28985dfe252685020cb37f2c7ea944b82"
+}

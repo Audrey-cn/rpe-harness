@@ -1,0 +1,139 @@
+{
+  "actual_event_sha256": "1db1a569402fab9351e2fd44f5d6cf1367979edc0b063d196ac6f6f5302d976f",
+  "confirmation_id": "57752dde3e0b0b40bc72be662a094e59d4ef04ebee086cb909ab61266675f26b",
+  "durable_contract_sha256": "ae44883670b2f371623bc28e992b7bcff4995aa34a6cf653b9a77e7af8fa6153",
+  "durable_verification": {
+    "checks": {
+      "raw_tokens_preserved": true,
+      "request_bound": true,
+      "requested_style": true,
+      "root_type_preserved": true,
+      "source_unchanged": true,
+      "strict_json": true
+    },
+    "input_bytes": 112,
+    "input_sha256": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+    "output_bytes": 93,
+    "output_sha256": "c43543cf0404416ef757a0fc540bb3650a6c305d17f84ff407be2d8b64042d37",
+    "passed": true,
+    "plan_sha256": "d6ad86dbb84b107eff1c0ce1452a9284aa8a3bd06672ba6222f631dd3ada3340",
+    "root_type": "object"
+  },
+  "event_id": "review-57752dde3e0b0b40bc72be662a094e59d4ef04ebee086cb909ab61266675f26b",
+  "executor_revision": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+  "frozen_plan_document_sha256": "ac9b688d0d7969b09c6d5e3fb50063888e32897b3b99284addf245e19671c398",
+  "new_run_count": 1,
+  "origin_events_sha256": "0b29c1ea0b6d1f5f7e8075e178f8abe8663cb0db755ba863a8142919cc7f1a7d",
+  "origin_session_id": "20261015_095554_056f10",
+  "original_contract_sha256": "ae44883670b2f371623bc28e992b7bcff4995aa34a6cf653b9a77e7af8fa6153",
+  "proposal_id": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+  "public_contract": {
+    "capability": "json.normalize",
+    "constraints": [
+      "preserve_order"
+    ],
+    "contract_version": 1,
+    "execution": {
+      "input_path": "input.json",
+      "output_path": "output.json",
+      "style": "minify"
+    }
+  },
+  "replay_same_result": true,
+  "run_id": "358f91274d8d4673949865f81b87f609",
+  "runtime_attestation": "recorded_runtime_checks_only",
+  "schema_version": "rpe.controller-flow-durable/v1",
+  "selected_origin_receipts": [
+    {
+      "api_request_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10:api:1",
+      "arguments_sha256": "cb5edb0b12f645c82541f56234d06252a28b07f4a409a4a94fdad34bf228c68e",
+      "ingest_event_id": "814c3ed69886492dafa726d85630136c",
+      "kind": "rpe_review_arguments_received",
+      "session_id": "20261015_095554_056f10",
+      "status": "raw_before_coercion",
+      "task_id": "c071e216-998d-45f6-8965-739c5053c842",
+      "tool_call_id": "call_6a9cd1aa97a143ffb285dd5c",
+      "tool_name": "rpe_propose",
+      "turn_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10"
+    },
+    {
+      "api_request_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10:api:1",
+      "arguments_sha256": "cb5edb0b12f645c82541f56234d06252a28b07f4a409a4a94fdad34bf228c68e",
+      "content_sha256": "cb5edb0b12f645c82541f56234d06252a28b07f4a409a4a94fdad34bf228c68e",
+      "ingest_event_id": "e7d1f8cb42664fdfbbb3a7e05f3bdca2",
+      "kind": "rpe_review_arguments_checked",
+      "receipt_id": "814c3ed69886492dafa726d85630136c",
+      "session_id": "20261015_095554_056f10",
+      "status": "identity",
+      "task_id": "c071e216-998d-45f6-8965-739c5053c842",
+      "tool_call_id": "call_6a9cd1aa97a143ffb285dd5c",
+      "tool_name": "rpe_propose",
+      "turn_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10"
+    },
+    {
+      "api_request_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10:api:1",
+      "arguments_sha256": "cb5edb0b12f645c82541f56234d06252a28b07f4a409a4a94fdad34bf228c68e",
+      "ingest_event_id": "c1cec9bcc51347e5b1f61d552ea55cbd",
+      "kind": "rpe_skill_rpc_received",
+      "session_id": "20261015_095554_056f10",
+      "task_id": "c071e216-998d-45f6-8965-739c5053c842",
+      "tool_call_id": "call_6a9cd1aa97a143ffb285dd5c",
+      "tool_name": "rpe_propose",
+      "turn_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10"
+    },
+    {
+      "api_request_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10:api:1",
+      "arguments_sha256": "cb5edb0b12f645c82541f56234d06252a28b07f4a409a4a94fdad34bf228c68e",
+      "content_sha256": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+      "ingest_event_id": "63281231f1544858a3378b81b4c6bbb2",
+      "kind": "rpe_review_proposed",
+      "receipt_id": "c1cec9bcc51347e5b1f61d552ea55cbd",
+      "session_id": "20261015_095554_056f10",
+      "state_id": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+      "status": "awaiting_confirmation",
+      "task_id": "c071e216-998d-45f6-8965-739c5053c842",
+      "tool_call_id": "call_6a9cd1aa97a143ffb285dd5c",
+      "tool_name": "rpe_propose",
+      "turn_id": "20261015_095554_056f10:c071e216-998d-45f6-8965-739c5053c842:d26bbe10"
+    }
+  ],
+  "sha256": "6bcc7f881889f1eb515fa161ebcf25ca2a90eea0a895519524fe54d8f190ac54",
+  "stage_receipts": [
+    {
+      "evidence_sha256": "0d6581c3e0f995604cfe4b5d0bdd59aa5ef47fbb2e6b3b6cb5aa262b5195ed1d",
+      "stage": "plan"
+    },
+    {
+      "evidence_sha256": "9ba58a4c5d9579093cdab315c54c7c6277292120b09496a29b71f3ae068286f9",
+      "stage": "route"
+    },
+    {
+      "evidence_sha256": "33343308242a27bad9a7bbb11b21ea144ac1c737e72c61d7bf68109f2b858dfc",
+      "stage": "execute"
+    },
+    {
+      "evidence_sha256": "cd2487cec10fed252ca7e5d10b42359299b3845d9d57af8340d13d68c343ad2f",
+      "stage": "execute"
+    },
+    {
+      "evidence_sha256": "33343308242a27bad9a7bbb11b21ea144ac1c737e72c61d7bf68109f2b858dfc",
+      "stage": "verify"
+    },
+    {
+      "evidence_sha256": "807340429f7a8ccabf8de7607a996addef990e1c46ff169a30943fdf8425d6bc",
+      "stage": "publish"
+    },
+    {
+      "evidence_sha256": "404a065808c8e10fe5e17a5be84661882a7817852495f43e860adb29b1ca777d",
+      "stage": "complete"
+    }
+  ],
+  "status": "succeeded",
+  "verification_ok": true,
+  "verifier_revision": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+  "worker_cleanup": {
+    "cleanup_complete": true,
+    "errors": [],
+    "remaining_children": []
+  }
+}

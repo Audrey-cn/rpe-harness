@@ -1,0 +1,10 @@
+{
+  "actor": "simulated_semantic_review",
+  "confirmation_id": "57752dde3e0b0b40bc72be662a094e59d4ef04ebee086cb909ab61266675f26b",
+  "proposal_id": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+  "proposal_sha256": "171678088ebf0b7b9b825698663e8eaaa0655eb6c5caa2741aa79a16e2685d02",
+  "schema_version": "rpe.confirmation/v1",
+  "session_id": "20261015_095554_056f10",
+  "sha256": "726cf6cf435db5da89cf9d16e8582b8023d947de941286391d35809d3f7fa823",
+  "status": "confirmed"
+}

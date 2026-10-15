@@ -1,0 +1,94 @@
+{
+  "experiment_role": "post_diagnostic_smoke",
+  "fingerprint": "1c920a6ef234a80659e0d9ced7e02311cb6d593e725ffd71bc309304ca45f829",
+  "human_confirmation_verified": false,
+  "offline_verified": true,
+  "original_formal_outcomes_unchanged": true,
+  "population_limit": "Selected diagnostic pair after observing failures; no population-quality or savings estimate.",
+  "post_diagnostic_smoke_costs": {
+    "api_requests": 5,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 21248,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 94.17588258199248,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 4989,
+    "known_api_requests": 5,
+    "known_cache_read_tokens": 21248,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 94.17588258199248,
+    "known_input_tokens": 4989,
+    "known_output_tokens": 3570,
+    "known_prompt_tokens": 26237,
+    "known_reasoning_tokens": 2182,
+    "known_total_tokens": 29807,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 125.19308376312256,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 3570,
+    "phase_count": 7,
+    "prompt_tokens": 26237,
+    "reasoning_tokens": 2182,
+    "rss_observation_coverage": 0,
+    "total_tokens": 29807,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "public_approved_proposals_verified": 0,
+  "public_business_artifacts_verified": 0,
+  "records": [
+    {
+      "accepted": false,
+      "approved": false,
+      "arm": "native",
+      "business_correct": false,
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": false,
+      "draft_invocation_verified": true,
+      "execution_kind": null,
+      "execution_verified": false,
+      "full_trial_elapsed_seconds": 56.71555941599945,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "product_oracle_passed": false,
+      "status": "failed",
+      "trial_id": "pilot-json-lossless-native"
+    },
+    {
+      "accepted": false,
+      "approved": false,
+      "arm": "review",
+      "business_correct": false,
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": false,
+      "draft_invocation_verified": true,
+      "execution_kind": null,
+      "execution_verified": false,
+      "full_trial_elapsed_seconds": 36.91262329199526,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "product_oracle_passed": false,
+      "status": "failed",
+      "trial_id": "pilot-json-lossless-review"
+    }
+  ],
+  "reviewer_kind": "simulated_fixture_reviewer",
+  "schema_version": "rpe.post-diagnostic-findings/v1",
+  "selected_case_ids": [
+    "json-lossless"
+  ],
+  "sha256": "680368e69bc721fe37e663d9fc13e1767546a6fae62cead4655f01d34defc29d"
+}

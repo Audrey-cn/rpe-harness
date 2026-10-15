@@ -1,0 +1,181 @@
+{
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v110-37f23ae55b694cb3912f32f88684cfe2",
+  "removed": false,
+  "errors": [],
+  "mode": "dry_run",
+  "public_before": {
+    "pilot-original": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "public-evidence": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "contract-check": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "controller-flow": {
+      "controller_api_requests": 0,
+      "human_confirmation": false,
+      "new_Hermes_model_calls": 0,
+      "offline_verification_elapsed_seconds": 0.0012764160055667162,
+      "role": "post_measurement_controller_flow",
+      "run_id": "358f91274d8d4673949865f81b87f609",
+      "runtime_attestation": "recorded_runtime_checks_only",
+      "verified": true
+    }
+  },
+  "preservation_before": {
+    "file_hash_differences": [
+      {
+        "path": "/Users/audrey/.hermes/auth.json",
+        "baseline_sha256": "5bb6f2049997f9f6af9d224a7ecc2277bffb6183448cef8f33366d3fec564485",
+        "current_sha256": "052074bc6549059daa848e165da9b43139ea53fa3e48a50095fd2cbfc58c65f9",
+        "record_only": true
+      },
+      {
+        "path": "/Users/audrey/.hermes/state.db",
+        "baseline_sha256": "a3e893a5fe62e98c3bc1f8885e8e71898227975715885ab28ed50cf5d7cd3398",
+        "current_sha256": "2994c4759678230ba4232e61544786edc70b7c08443f3fcb240c6bddc22bb81b",
+        "record_only": true
+      }
+    ],
+    "old_repositories": {
+      "/Users/audrey/项目/rpe-harness": {
+        "head": "c6a8075066544ad01260d6af2714a00426754baa",
+        "status": "?? reports/design-trace-2026-10-14/\n?? reports/direction-review-2026-10-15/\n",
+        "unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-protocol": {
+        "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+        "status": "",
+        "unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-registry": {
+        "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+        "status": "",
+        "unchanged": true
+      }
+    },
+    "strict_preservation": true
+  },
+  "paid_databases": 16,
+  "paid_session_ids": 16,
+  "owned_session_rows_in_daily_history": 0,
+  "processes_before": {
+    "registry_identities": 407,
+    "live_owned": 0
+  },
+  "processes_after": {
+    "registry_identities": 407,
+    "live_owned": 0
+  },
+  "owned_size": {
+    "files": 90562,
+    "bytes": 1273041229
+  },
+  "public_after": {
+    "pilot-original": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "public-evidence": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "contract-check": {
+      "schema_version": "rpe.review-public-verification/v1",
+      "verified": true,
+      "source_documents_verified": 6,
+      "business_artifacts_verified": 0,
+      "approved_proposals_verified": 0,
+      "reviewer_kind": "simulated_fixture_reviewer",
+      "human_confirmation_verified": false,
+      "runtime_identity_attestation": "recorded_runtime_checks_only",
+      "errors": []
+    },
+    "controller-flow": {
+      "controller_api_requests": 0,
+      "human_confirmation": false,
+      "new_Hermes_model_calls": 0,
+      "offline_verification_elapsed_seconds": 0.0012248749990249053,
+      "role": "post_measurement_controller_flow",
+      "run_id": "358f91274d8d4673949865f81b87f609",
+      "runtime_attestation": "recorded_runtime_checks_only",
+      "verified": true
+    }
+  },
+  "preservation_after": {
+    "file_hash_differences": [
+      {
+        "path": "/Users/audrey/.hermes/auth.json",
+        "baseline_sha256": "5bb6f2049997f9f6af9d224a7ecc2277bffb6183448cef8f33366d3fec564485",
+        "current_sha256": "052074bc6549059daa848e165da9b43139ea53fa3e48a50095fd2cbfc58c65f9",
+        "record_only": true
+      },
+      {
+        "path": "/Users/audrey/.hermes/state.db",
+        "baseline_sha256": "a3e893a5fe62e98c3bc1f8885e8e71898227975715885ab28ed50cf5d7cd3398",
+        "current_sha256": "2994c4759678230ba4232e61544786edc70b7c08443f3fcb240c6bddc22bb81b",
+        "record_only": true
+      }
+    ],
+    "old_repositories": {
+      "/Users/audrey/项目/rpe-harness": {
+        "head": "c6a8075066544ad01260d6af2714a00426754baa",
+        "status": "?? reports/design-trace-2026-10-14/\n?? reports/direction-review-2026-10-15/\n",
+        "unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-protocol": {
+        "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
+        "status": "",
+        "unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-registry": {
+        "head": "721094a37142a7841e3d53afbbc74f0d211b0e83",
+        "status": "",
+        "unchanged": true
+      }
+    },
+    "strict_preservation": true
+  },
+  "daily_rows_after": 0,
+  "verified": true
+}

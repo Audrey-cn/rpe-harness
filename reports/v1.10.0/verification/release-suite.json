@@ -1,0 +1,38 @@
+{
+  "source_commit": "2b525f590e8d61c49f06c15f080bb159fcd259e9",
+  "full_pytest_passed": 1613,
+  "full_pytest_skipped": 5,
+  "skipped_reason": "RPE_HERMES_SOURCE not set for five optional installed-SDK tests in full invocation",
+  "supplement_passed": 5,
+  "supplement_skipped": 0,
+  "supplement_environment": {
+    "RPE_HERMES_SOURCE": "/Users/audrey/.hermes/hermes-agent"
+  },
+  "all_collected_pytest_tests_covered": 1618,
+  "remaining_unvalidated_skips": 0,
+  "full_junit": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "5",
+    "tests": "1621",
+    "time": "355.342",
+    "timestamp": "2026-10-15T09:47:06.929672+08:00",
+    "hostname": "AudreydeMacBook-Pro.local"
+  },
+  "supplement_junit": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "5",
+    "time": "5.518",
+    "timestamp": "2026-10-15T09:50:30.574102+08:00",
+    "hostname": "AudreydeMacBook-Pro.local"
+  },
+  "native_model_calls": 0,
+  "cache_provider": false,
+  "bytecode_disabled": true,
+  "count_policy": "Full run plus only the five environment-gated skipped cases; supplemental cases replace skips, never duplicate the total.",
+  "subtests_passed": 3
+}

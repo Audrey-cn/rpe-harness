@@ -1,0 +1,546 @@
+{
+  "billing_verified_cost": null,
+  "by_arm": {
+    "native": {
+      "formal_full_trial_elapsed_seconds_sum": 772.2725062910031,
+      "formal_trial_costs": {
+        "api_requests": 20,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 771.9594410439895,
+        "failed_phases": 3,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 20,
+        "known_cache_read_tokens": 94976,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 771.9594410439895,
+        "known_input_tokens": 19631,
+        "known_output_tokens": 13266,
+        "known_prompt_tokens": 114607,
+        "known_reasoning_tokens": 9974,
+        "known_total_tokens": 174854,
+        "missing_observations": 3,
+        "observed_makespan_seconds": 1180.5529572963715,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 15,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "whole_costs": {
+        "api_requests": 27,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 890.0509867939836,
+        "failed_phases": 3,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 27,
+        "known_cache_read_tokens": 151424,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 890.0509867939836,
+        "known_input_tokens": 28358,
+        "known_output_tokens": 17288,
+        "known_prompt_tokens": 179782,
+        "known_reasoning_tokens": 12338,
+        "known_total_tokens": 244051,
+        "missing_observations": 3,
+        "observed_makespan_seconds": 2449.092544078827,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 17,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "whole_full_trial_elapsed_seconds_sum": 890.4913519160036
+    },
+    "review": {
+      "formal_full_trial_elapsed_seconds_sum": 401.2961007490012,
+      "formal_trial_costs": {
+        "api_requests": 12,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 3200,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 400.8371035020027,
+        "failed_phases": 1,
+        "incomplete_phases": 0,
+        "input_tokens": 6492,
+        "known_api_requests": 12,
+        "known_cache_read_tokens": 3200,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 400.8371035020027,
+        "known_input_tokens": 6492,
+        "known_output_tokens": 17462,
+        "known_prompt_tokens": 9692,
+        "known_reasoning_tokens": 9632,
+        "known_total_tokens": 27154,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 934.4040861129761,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 17462,
+        "phase_count": 17,
+        "prompt_tokens": 9692,
+        "reasoning_tokens": 9632,
+        "rss_observation_coverage": 0,
+        "total_tokens": 27154,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "whole_costs": {
+        "api_requests": 14,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 3200,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 445.33354604300985,
+        "failed_phases": 1,
+        "incomplete_phases": 0,
+        "input_tokens": 8070,
+        "known_api_requests": 14,
+        "known_cache_read_tokens": 3200,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 445.33354604300985,
+        "known_input_tokens": 8070,
+        "known_output_tokens": 19077,
+        "known_prompt_tokens": 11270,
+        "known_reasoning_tokens": 10163,
+        "known_total_tokens": 30347,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 2186.501617193222,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 19077,
+        "phase_count": 19,
+        "prompt_tokens": 11270,
+        "reasoning_tokens": 10163,
+        "rss_observation_coverage": 0,
+        "total_tokens": 30347,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "whole_full_trial_elapsed_seconds_sum": 445.7963808320055
+    }
+  },
+  "draft_sessions_reserved": 14,
+  "driver_elapsed_seconds_sum": 1346.5445174999986,
+  "driver_invocations": 2,
+  "formal_full_trial_elapsed_seconds_sum": 1173.5686070400043,
+  "formal_registration_costs": {
+    "api_requests": 32,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 1173.8323314629888,
+    "failed_phases": 4,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 32,
+    "known_cache_read_tokens": 98176,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 1173.8323314629888,
+    "known_input_tokens": 26123,
+    "known_output_tokens": 30728,
+    "known_prompt_tokens": 124299,
+    "known_reasoning_tokens": 19606,
+    "known_total_tokens": 202008,
+    "missing_observations": 3,
+    "observed_makespan_seconds": 1456.6364679336548,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 33,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "formal_trial_costs": {
+    "api_requests": 32,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 1172.7965445459922,
+    "failed_phases": 4,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 32,
+    "known_cache_read_tokens": 98176,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 1172.7965445459922,
+    "known_input_tokens": 26123,
+    "known_output_tokens": 30728,
+    "known_prompt_tokens": 124299,
+    "known_reasoning_tokens": 19606,
+    "known_total_tokens": 202008,
+    "missing_observations": 3,
+    "observed_makespan_seconds": 1180.5529572963715,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 32,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "human_review_seconds": null,
+  "ledger_policy": "Original ledgers are unchanged. Only the aggregation view namespaces attempt IDs.",
+  "limits": [
+    "Whole includes original pilot failures, both preregistrations and all formal attempts.",
+    "Formal trial costs exclude separately reported shared preregistration setup.",
+    "Unknown usage remains null; known counts are lower bounds. Tokens are not a billing cost.",
+    "Driver, complete-trial and phase timers overlap and must never be added together.",
+    "Development, tests, export and receipt writes are outside operational timers.",
+    "Original pilot outcomes were preserved and never rerated after observation repairs.",
+    "No savings claim is inferred from these bounded observations."
+  ],
+  "native_execution_sessions_reserved": 0,
+  "original_pilot_registration_costs": {
+    "api_requests": 9,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 56448,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 163.6578085410074,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 10305,
+    "known_api_requests": 9,
+    "known_cache_read_tokens": 56448,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 163.6578085410074,
+    "known_input_tokens": 10305,
+    "known_output_tokens": 5637,
+    "known_prompt_tokens": 66753,
+    "known_reasoning_tokens": 2895,
+    "known_total_tokens": 72390,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 260.8017120361328,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 5637,
+    "phase_count": 5,
+    "prompt_tokens": 66753,
+    "reasoning_tokens": 2895,
+    "rss_observation_coverage": 0,
+    "total_tokens": 72390,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "phase_references": [
+    {
+      "namespaced_attempt_id": "pilot-original--pilot-csv-zh-composite-native-draft",
+      "original_attempt_id": "pilot-csv-zh-composite-native-draft",
+      "original_record_sha256": "08c3aa11864f29d8890e22eeac3a33eb48d017e86a207ad667092106fc3baf69",
+      "registration": "pilot-original"
+    },
+    {
+      "namespaced_attempt_id": "pilot-original--pilot-csv-zh-composite-native-verification",
+      "original_attempt_id": "pilot-csv-zh-composite-native-verification",
+      "original_record_sha256": "8221111b31c5a4b301c84fe33a2096e538483c5b3ec7b98fb1a4415db77e7e10",
+      "registration": "pilot-original"
+    },
+    {
+      "namespaced_attempt_id": "pilot-original--pilot-csv-zh-composite-review-draft",
+      "original_attempt_id": "pilot-csv-zh-composite-review-draft",
+      "original_record_sha256": "2e265ba560144823f32bfd09ba627cd54ea4699486df15bced81279575a5a328",
+      "registration": "pilot-original"
+    },
+    {
+      "namespaced_attempt_id": "pilot-original--pilot-csv-zh-composite-review-verification",
+      "original_attempt_id": "pilot-csv-zh-composite-review-verification",
+      "original_record_sha256": "7d4fb7e41bcb368b3e4dd41dce3846178e8162b544028c54e028d5b3ca46cf8f",
+      "registration": "pilot-original"
+    },
+    {
+      "namespaced_attempt_id": "pilot-original--shared-preregistration",
+      "original_attempt_id": "shared-preregistration",
+      "original_record_sha256": "42530e0f267d4c4b39b1328f1dba655985713a72b198e518f1d93e7b51a6b00c",
+      "registration": "pilot-original"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-native-draft",
+      "original_attempt_id": "formal-csv-zh-composite-native-draft",
+      "original_record_sha256": "63fe994a74b8a501d4b178079691df5a0a3ed207ce1f7e186c75a81abb3b0eac",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-native-review",
+      "original_attempt_id": "formal-csv-zh-composite-native-review",
+      "original_record_sha256": "e0649afa5ac434c12c0a4caad0298ebfbb900e59220180dae6573fa1982fa98f",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-native-verification",
+      "original_attempt_id": "formal-csv-zh-composite-native-verification",
+      "original_record_sha256": "308e889036ab72e1a8f18ca40267dbe94201da00efa54d8d645c0a41419f04dd",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-review-draft",
+      "original_attempt_id": "formal-csv-zh-composite-review-draft",
+      "original_record_sha256": "c41d850e511c712cc243e4ce03efa683d2d0107d430dea2e4d67dfb9b8b81a9d",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-review-review",
+      "original_attempt_id": "formal-csv-zh-composite-review-review",
+      "original_record_sha256": "3d2baba6bda1c669b773d153daacbf321aa43e2045afeaada05781ba1c6461dd",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-csv-zh-composite-review-verification",
+      "original_attempt_id": "formal-csv-zh-composite-review-verification",
+      "original_record_sha256": "f06526fbf2a0f318dcb114af06dde6e9707260648f535eaae6d82b30a603c583",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-native-draft",
+      "original_attempt_id": "formal-json-lossless-native-draft",
+      "original_record_sha256": "eecd6c2b3a8095296a3bcc36287ada5030b1247f90a10f633d5ab55579997365",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-native-review",
+      "original_attempt_id": "formal-json-lossless-native-review",
+      "original_record_sha256": "ad2f49924c2b7fb28a77e91fdc193a39f1a343357c6be8e236f4ea80af7441f1",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-native-verification",
+      "original_attempt_id": "formal-json-lossless-native-verification",
+      "original_record_sha256": "c3b3af126f70706ac08619c4940df5e7d708512bdeb88eddbf09523600051375",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-review-draft",
+      "original_attempt_id": "formal-json-lossless-review-draft",
+      "original_record_sha256": "639d1534815497feb235b8660e9b83d82ad8957183c747643adb050546b46b58",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-review-review",
+      "original_attempt_id": "formal-json-lossless-review-review",
+      "original_record_sha256": "efdb93afcb7be19d67844d49b32269845c80d70943d8fb027d0a882875e1cbe7",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-json-lossless-review-verification",
+      "original_attempt_id": "formal-json-lossless-review-verification",
+      "original_record_sha256": "c4912a99d83a5b363b371a187fff6416325993b2eb902a8538a648f779a713e7",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-native-draft",
+      "original_attempt_id": "formal-missing-keys-native-draft",
+      "original_record_sha256": "518c906e0159d5280f5821f46c9c4248cc578e98a46cfda32223f57c1c15b3d3",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-native-review",
+      "original_attempt_id": "formal-missing-keys-native-review",
+      "original_record_sha256": "5e8b89cc721cd24a7139f6780ec561d5c5d944851d1e5f17981ecfbf2b4bc13a",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-native-verification",
+      "original_attempt_id": "formal-missing-keys-native-verification",
+      "original_record_sha256": "f657c96213e3715a6963e46bef5578c59194070bf095a602bca659c6f47c7072",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-review-draft",
+      "original_attempt_id": "formal-missing-keys-review-draft",
+      "original_record_sha256": "f9bb6d22d655bd71c774230dcd25b4d0abb87df81cd8f9589f83d435179d6bbe",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-review-review",
+      "original_attempt_id": "formal-missing-keys-review-review",
+      "original_record_sha256": "3bd45f3d02536d04b270e67d7bc918f4ccc08128a5ee0efc76defd932c57eea9",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-missing-keys-review-verification",
+      "original_attempt_id": "formal-missing-keys-review-verification",
+      "original_record_sha256": "2cf0ff466b780c55e1b694e4754338a24d98102fb79dd5bb7a07e8a9112972c9",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-tsv-tab-native-draft",
+      "original_attempt_id": "formal-tsv-tab-native-draft",
+      "original_record_sha256": "cf68de37601fbd4f75eb6646d816d5328109009e1736814cb0360de4dba6acd2",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-tsv-tab-native-verification",
+      "original_attempt_id": "formal-tsv-tab-native-verification",
+      "original_record_sha256": "34d17adec1657d91147aa4a1a61c853a35df23c786fad900a1d2d366918dcf59",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-tsv-tab-review-draft",
+      "original_attempt_id": "formal-tsv-tab-review-draft",
+      "original_record_sha256": "af94a5f17c2f56658fa2e50d4dd27ce05a83eaf5cd12f84aa4f00ab0e995818b",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-tsv-tab-review-verification",
+      "original_attempt_id": "formal-tsv-tab-review-verification",
+      "original_record_sha256": "b17726c92347f896727eb5040dc4276b64350a375ad4933b0ad65cd764987101",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-unsupported-sum-native-draft",
+      "original_attempt_id": "formal-unsupported-sum-native-draft",
+      "original_record_sha256": "09a0a97624243efce292963e9513f25ea16c1807e95e0f0032dcb5f77b10708b",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-unsupported-sum-native-verification",
+      "original_attempt_id": "formal-unsupported-sum-native-verification",
+      "original_record_sha256": "b61fc4f53e3783c9236467d4a92c0223a675aba2efac98de71b93ec6b0575f50",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-unsupported-sum-review-draft",
+      "original_attempt_id": "formal-unsupported-sum-review-draft",
+      "original_record_sha256": "5f348f153bd67f15e8e072ed54965d2691c97bb93a9c96292194e08973615481",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-unsupported-sum-review-review",
+      "original_attempt_id": "formal-unsupported-sum-review-review",
+      "original_record_sha256": "88974a7476b74f493d4f49140fa6177a7d5f7cb8e2a8e6aad6a84590b34fa72f",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-unsupported-sum-review-verification",
+      "original_attempt_id": "formal-unsupported-sum-review-verification",
+      "original_record_sha256": "f9f096b6bf156ab7ed83144eec8667ebcb0610dad3efd349320a503e41762c3c",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-xlsx-original-native-draft",
+      "original_attempt_id": "formal-xlsx-original-native-draft",
+      "original_record_sha256": "aea2c1f24cb18618b8b99d88c34cd1a7c3bebb06ce4ebfa25192256db57f23fc",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-xlsx-original-native-verification",
+      "original_attempt_id": "formal-xlsx-original-native-verification",
+      "original_record_sha256": "393fc7dfdbd34d7d2cb2bca2dd9af9ae56a1ec036c096c1d37b014af178efd42",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-xlsx-original-review-draft",
+      "original_attempt_id": "formal-xlsx-original-review-draft",
+      "original_record_sha256": "28fa973e58b90397f00f8242d56a770013795e2c254122dd29b975acd29a2233",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-xlsx-original-review-review",
+      "original_attempt_id": "formal-xlsx-original-review-review",
+      "original_record_sha256": "8b25d87bfe2fc996c39f4b82348cd4e9bada0ee09faaecba41e93017ba3de135",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--formal-xlsx-original-review-verification",
+      "original_attempt_id": "formal-xlsx-original-review-verification",
+      "original_record_sha256": "69c29563087d4bb7e6d6d4face83f03e16a46b517af3101c125f59e29207530c",
+      "registration": "formal-frozen"
+    },
+    {
+      "namespaced_attempt_id": "formal-frozen--shared-preregistration",
+      "original_attempt_id": "shared-preregistration",
+      "original_record_sha256": "e13188218359cf2630418e99254733719ccd6506325a9fd3a3426d143c4d5118",
+      "registration": "formal-frozen"
+    }
+  ],
+  "schema_version": "rpe.review-overall-costs/v1",
+  "sha256": "701ab24faf9bbf34efb54b9c7e00faff31e663ac01564d8edcd4beaddb11e451",
+  "shared_setup_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 2.105607167002745,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 2.105607167002745,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 1090.926430940628,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 2,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "source_registrations": [
+    {
+      "fingerprint": "da795cadba557f39c1baa1153b2106138fa550cb5739c9513c5e6ec4372b8bcf",
+      "registration": "pilot-original",
+      "source_file": "pilot-original/cost-phases.json",
+      "source_file_sha256": "4cd629d675129c43ddef84d7a0af6115756015cfd9cac272e5d11919141313ba"
+    },
+    {
+      "fingerprint": "4401d94dc2ac967720ca3391e1f2e28b58f5cb49662c37a586716ed41919c7f8",
+      "registration": "formal-frozen",
+      "source_file": "public-evidence/cost-phases.json",
+      "source_file_sha256": "9c7c43fa4c9bc3f34e609eb5565608de63c5269be99250076c3bfb8e08e7b513"
+    }
+  ],
+  "whole_costs": {
+    "api_requests": 41,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 1337.4901400039962,
+    "failed_phases": 4,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 41,
+    "known_cache_read_tokens": 154624,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 1337.4901400039962,
+    "known_input_tokens": 36428,
+    "known_output_tokens": 36365,
+    "known_prompt_tokens": 191052,
+    "known_reasoning_tokens": 22501,
+    "known_total_tokens": 274398,
+    "missing_observations": 3,
+    "observed_makespan_seconds": 2546.5280520915985,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 38,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "whole_full_trial_elapsed_seconds_sum": 1336.2877327480091
+}

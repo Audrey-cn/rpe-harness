@@ -119,7 +119,12 @@ def main():
         sys.path.insert(0, str(guard(REPO / 'src')))
         from rpe_harness.experiments.review_comparison import verify_review_evidence
         def verify():
-            return {path.name: verify_review_evidence(guard(path)) for path in EXPORTS}
+            results = {path.name: verify_review_evidence(guard(path)) for path in EXPORTS}
+            script = guard(REPO / 'reports/v1.10.0/controller-flow/verify-controller-flow.py')
+            completed = subprocess.run([sys.executable, '-B', str(script)], check=True,
+                capture_output=True, text=True, timeout=15)
+            results['controller-flow'] = json.loads(completed.stdout)
+            return results
         report.update(mode='delete' if args.delete else 'dry_run', public_before=verify(), preservation_before=preservation(baseline))
         identities, count = session_ids()
         report.update(paid_databases=count, paid_session_ids=len(identities), owned_session_rows_in_daily_history=daily_rows(identities))
@@ -134,7 +139,7 @@ def main():
         if live or report.get('stop_survivors') or report['owned_session_rows_in_daily_history'] or not report['preservation_before']['strict_preservation']:
             raise ValueError('live_owned_or_history_or_preservation_guard_failed')
         if not all(item['verified'] for item in report['public_before'].values()):
-            raise ValueError('all_three_portable_public_exports_must_verify_before_cleanup')
+            raise ValueError('all_portable_exports_must_verify_before_cleanup')
         entries = [item for path in OWNED.rglob('*') if not stat.S_ISDIR((item := path.lstat()).st_mode)]
         report['owned_size'] = {'files': len(entries), 'bytes': sum(item.st_size for item in entries)}
         if args.delete:

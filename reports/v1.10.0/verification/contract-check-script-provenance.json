@@ -1,0 +1,17 @@
+{
+  "portability": "Original absolute execution paths remain visible in the exact script copies. Public evidence can be verified independently of those original paths.",
+  "schema_version": "rpe.diagnostic-script-provenance/v1",
+  "scope": "Only scripts are retained here; no raw model/provider transcript or private host state.",
+  "scripts": [
+    {
+      "copy_policy": "exact original, not rewritten for portability",
+      "file": "register-contract-check.py",
+      "sha256": "51a4d8a8c05e8df461b6b6ed71c4b8c3cb62ca289f9682f5cb5a2b1d87a5a16c"
+    },
+    {
+      "copy_policy": "exact original, not rewritten for portability",
+      "file": "finalize-contract-check.py",
+      "sha256": "621b1d8587cf24dadc8dce4f73a8a0de40145979d6160215d865f19e3bb015e0"
+    }
+  ]
+}
