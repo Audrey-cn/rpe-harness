@@ -1,0 +1,1 @@
+发现并恢复真实电子表格技能，读取 input.xlsx。模式和工作表按明确附件恢复，草稿注明出处；通过原始 xlsx_read.py 将完整JSON写入 output.json，保留原文件。

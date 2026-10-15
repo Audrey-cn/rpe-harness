@@ -1,0 +1,334 @@
+{
+  "basis": "actual_original_drafts_and_persisted_proposal_rows; no_expected_values_used",
+  "by_arm": {
+    "native": {
+      "drafts_observed": 3,
+      "formal_records": 4,
+      "invocation_verified_drafts": 2,
+      "row_counts": {
+        "both_ref_and_literal": 2,
+        "explicit_null_default": 0,
+        "literal_quote": 14,
+        "original_rows": 27,
+        "quote_ref": 13,
+        "rejected_quote_ref": 0,
+        "resolved_current": 25,
+        "resolved_default": 0,
+        "resolved_quote_ref": 13,
+        "resolved_source": 2,
+        "unresolved_or_rejected": 0
+      }
+    },
+    "review": {
+      "drafts_observed": 4,
+      "formal_records": 4,
+      "invocation_verified_drafts": 3,
+      "row_counts": {
+        "both_ref_and_literal": 8,
+        "explicit_null_default": 0,
+        "literal_quote": 3,
+        "original_rows": 29,
+        "quote_ref": 26,
+        "rejected_quote_ref": 5,
+        "resolved_current": 21,
+        "resolved_default": 0,
+        "resolved_quote_ref": 21,
+        "resolved_source": 3,
+        "unresolved_or_rejected": 5
+      }
+    }
+  },
+  "citation_counts_prove": "exact_address_or_literal_provenance_only_not_semantic_completeness",
+  "formal_records": 8,
+  "formal_registration_sha256": "26d4452e1bf26ab4a21efa21f040ddeeac7d8113cc8149a3f53eb04388d42305",
+  "human_confirmation_verified": false,
+  "schema_version": "rpe.v112-feature-adoption/v1",
+  "trials": [
+    {
+      "accepted": true,
+      "arm": "native",
+      "candidate_sha256": "2b0c397ee90244806506cb9e9723238e938b64a934583c4376ee4de32d16d15c",
+      "case_id": "comma-orders",
+      "delimiter": {
+        "codepoints": [
+          "U+002C"
+        ],
+        "observed": true,
+        "present": true,
+        "repr": "','",
+        "single_character": true,
+        "value": ","
+      },
+      "draft_invocation_verified": true,
+      "draft_observed": true,
+      "observed_quote_ref_mismatch_errors": null,
+      "persisted_proposal_status": null,
+      "record_has_candidate_proof": true,
+      "row_counts": {
+        "both_ref_and_literal": 0,
+        "explicit_null_default": 0,
+        "literal_quote": 0,
+        "original_rows": 10,
+        "quote_ref": 10,
+        "rejected_quote_ref": 0,
+        "resolved_current": 10,
+        "resolved_default": 0,
+        "resolved_quote_ref": 10,
+        "resolved_source": 0,
+        "unresolved_or_rejected": 0
+      },
+      "status": "completed",
+      "trial_id": "formal-comma-orders-native"
+    },
+    {
+      "accepted": true,
+      "arm": "review",
+      "candidate_sha256": "6d0ddc2001b2767df06087ed15918bcc9a4841631de68f72a7a2ac299d946a0a",
+      "case_id": "comma-orders",
+      "delimiter": {
+        "codepoints": [
+          "U+002C"
+        ],
+        "observed": true,
+        "present": true,
+        "repr": "','",
+        "single_character": true,
+        "value": ","
+      },
+      "draft_invocation_verified": true,
+      "draft_observed": true,
+      "observed_quote_ref_mismatch_errors": 0,
+      "persisted_proposal_status": "awaiting_confirmation",
+      "record_has_candidate_proof": true,
+      "row_counts": {
+        "both_ref_and_literal": 0,
+        "explicit_null_default": 0,
+        "literal_quote": 0,
+        "original_rows": 10,
+        "quote_ref": 10,
+        "rejected_quote_ref": 0,
+        "resolved_current": 10,
+        "resolved_default": 0,
+        "resolved_quote_ref": 10,
+        "resolved_source": 0,
+        "unresolved_or_rejected": 0
+      },
+      "status": "completed",
+      "trial_id": "formal-comma-orders-review"
+    },
+    {
+      "accepted": false,
+      "arm": "review",
+      "candidate_sha256": "7e2bfa2399a05ada29135c667cc99558fd0d458500610fc271d6e92b2062e85f",
+      "case_id": "cold-stock",
+      "delimiter": {
+        "codepoints": null,
+        "observed": true,
+        "present": false,
+        "repr": null,
+        "single_character": null,
+        "value": null
+      },
+      "draft_invocation_verified": false,
+      "draft_observed": true,
+      "observed_quote_ref_mismatch_errors": 0,
+      "persisted_proposal_status": "awaiting_confirmation",
+      "record_has_candidate_proof": false,
+      "row_counts": {
+        "both_ref_and_literal": 2,
+        "explicit_null_default": 0,
+        "literal_quote": 3,
+        "original_rows": 5,
+        "quote_ref": 2,
+        "rejected_quote_ref": 0,
+        "resolved_current": 3,
+        "resolved_default": 0,
+        "resolved_quote_ref": 2,
+        "resolved_source": 2,
+        "unresolved_or_rejected": 0
+      },
+      "status": "failed",
+      "trial_id": "formal-cold-stock-review"
+    },
+    {
+      "accepted": false,
+      "arm": "native",
+      "candidate_sha256": "fe62b42ae7c1cd156477d8d114668671664d24b8b9bfaf870737228ce50ec576",
+      "case_id": "cold-stock",
+      "delimiter": {
+        "codepoints": null,
+        "observed": true,
+        "present": false,
+        "repr": null,
+        "single_character": null,
+        "value": null
+      },
+      "draft_invocation_verified": true,
+      "draft_observed": true,
+      "observed_quote_ref_mismatch_errors": null,
+      "persisted_proposal_status": null,
+      "record_has_candidate_proof": true,
+      "row_counts": {
+        "both_ref_and_literal": 2,
+        "explicit_null_default": 0,
+        "literal_quote": 8,
+        "original_rows": 10,
+        "quote_ref": 2,
+        "rejected_quote_ref": 0,
+        "resolved_current": 8,
+        "resolved_default": 0,
+        "resolved_quote_ref": 2,
+        "resolved_source": 2,
+        "unresolved_or_rejected": 0
+      },
+      "status": "failed",
+      "trial_id": "formal-cold-stock-native"
+    },
+    {
+      "accepted": false,
+      "arm": "native",
+      "case_id": "source-tabs",
+      "delimiter": {
+        "observed": false
+      },
+      "draft_invocation_verified": false,
+      "draft_observed": false,
+      "persisted_proposal_status": null,
+      "record_has_candidate_proof": false,
+      "row_counts": null,
+      "status": "failed",
+      "trial_id": "formal-source-tabs-native"
+    },
+    {
+      "accepted": false,
+      "arm": "review",
+      "candidate_sha256": "0e0ac92cf18e5928da4e8924ca4b7ceb75db9cb7492949abdc04754f2c6a2c4f",
+      "case_id": "source-tabs",
+      "delimiter": {
+        "codepoints": [
+          "U+0009"
+        ],
+        "observed": true,
+        "present": true,
+        "repr": "'\\t'",
+        "single_character": true,
+        "value": "\t"
+      },
+      "draft_invocation_verified": true,
+      "draft_observed": true,
+      "observed_quote_ref_mismatch_errors": 5,
+      "persisted_proposal_status": "needs_context",
+      "record_has_candidate_proof": true,
+      "row_counts": {
+        "both_ref_and_literal": 6,
+        "explicit_null_default": 0,
+        "literal_quote": 0,
+        "original_rows": 7,
+        "quote_ref": 7,
+        "rejected_quote_ref": 5,
+        "resolved_current": 1,
+        "resolved_default": 0,
+        "resolved_quote_ref": 2,
+        "resolved_source": 1,
+        "unresolved_or_rejected": 5
+      },
+      "status": "failed",
+      "trial_id": "formal-source-tabs-review"
+    },
+    {
+      "accepted": true,
+      "arm": "review",
+      "candidate_sha256": "674f1f834b845c7bdf9e32c0a8e7959318b871d706905e3e079179b939480edb",
+      "case_id": "missing-identity",
+      "delimiter": {
+        "codepoints": [
+          "U+002C"
+        ],
+        "observed": true,
+        "present": true,
+        "repr": "','",
+        "single_character": true,
+        "value": ","
+      },
+      "draft_invocation_verified": true,
+      "draft_observed": true,
+      "missing_key_probe": {
+        "approved": false,
+        "business_key_field_present": false,
+        "business_key_value": null,
+        "execution_verified": false,
+        "no_business_key_proposed": true,
+        "record_no_business_output": true,
+        "record_probe_correct": true,
+        "unresolved_count": 2,
+        "workspace_output_absent": true
+      },
+      "observed_quote_ref_mismatch_errors": 0,
+      "persisted_proposal_status": "needs_context",
+      "record_has_candidate_proof": true,
+      "row_counts": {
+        "both_ref_and_literal": 0,
+        "explicit_null_default": 0,
+        "literal_quote": 0,
+        "original_rows": 7,
+        "quote_ref": 7,
+        "rejected_quote_ref": 0,
+        "resolved_current": 7,
+        "resolved_default": 0,
+        "resolved_quote_ref": 7,
+        "resolved_source": 0,
+        "unresolved_or_rejected": 0
+      },
+      "status": "completed",
+      "trial_id": "formal-missing-identity-review"
+    },
+    {
+      "accepted": false,
+      "arm": "native",
+      "candidate_sha256": "66892bf1afeb64494d22ce2dbf59ec6c8ff875165c79a914db2b77d0be8b34e6",
+      "case_id": "missing-identity",
+      "delimiter": {
+        "codepoints": [
+          "U+002C"
+        ],
+        "observed": true,
+        "present": true,
+        "repr": "','",
+        "single_character": true,
+        "value": ","
+      },
+      "draft_invocation_verified": false,
+      "draft_observed": true,
+      "missing_key_probe": {
+        "approved": false,
+        "business_key_field_present": false,
+        "business_key_value": null,
+        "execution_verified": false,
+        "no_business_key_proposed": true,
+        "record_no_business_output": true,
+        "record_probe_correct": null,
+        "unresolved_count": 1,
+        "workspace_output_absent": true
+      },
+      "observed_quote_ref_mismatch_errors": null,
+      "persisted_proposal_status": null,
+      "record_has_candidate_proof": false,
+      "row_counts": {
+        "both_ref_and_literal": 0,
+        "explicit_null_default": 0,
+        "literal_quote": 6,
+        "original_rows": 7,
+        "quote_ref": 1,
+        "rejected_quote_ref": 0,
+        "resolved_current": 7,
+        "resolved_default": 0,
+        "resolved_quote_ref": 1,
+        "resolved_source": 0,
+        "unresolved_or_rejected": 0
+      },
+      "status": "failed",
+      "trial_id": "formal-missing-identity-native"
+    }
+  ],
+  "unverified_persisted_drafts_included_as_observations": true
+}

@@ -1,0 +1,1 @@
+{"exit_code": 0, "stdout": "{\"provider_calls\": 0, \"read\": true, \"file_write\": true, \"terminal_write\": true, \"cold_restore\": true, \"native_skill_view\": true, \"receipt_events\": 9}\n", "stderr": ""}

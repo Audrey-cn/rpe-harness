@@ -1,0 +1,20 @@
+{
+  "purpose": "read-only evaluation of retained pilot command under proposed 1.12 gate; not rescoring",
+  "provider_calls": 0,
+  "pilot_record_sha256_before": "c1650e6373fda89843bc52d82cd2d574e38be46f7d322895add8701507dcd5b8",
+  "pilot_record_sha256_after": "c1650e6373fda89843bc52d82cd2d574e38be46f7d322895add8701507dcd5b8",
+  "pilot_record_unchanged": true,
+  "proposed_gate": {
+    "verified": true,
+    "status": "accepted",
+    "errors": [],
+    "proof_kind": "native_exact_helper_readonly_diagnostic",
+    "skill_id": "productivity/xlsx",
+    "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30",
+    "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+    "helper_call_id": "call_ccbbeecb31824e23acf413ef",
+    "arguments_sha256": "e04a02939b6ee54ed3204c106d7152082c741b457d662493b28ef69591503736",
+    "python_startup_flags": [],
+    "diagnostic_suffix": "echo_exit_and_count_output"
+  }
+}

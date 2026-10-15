@@ -1,0 +1,12 @@
+{
+  "reviewer": "independent Codex subagent",
+  "scope": "final report, denominators, evidence, cost accounting and claims; not third-party runtime attestation",
+  "material_claim_errors_found": false,
+  "source_changed_after_formal": false,
+  "notes": [
+    "production denominators3 distinct from total4 including probe",
+    "47 logical APIs include pilot once; two missing usage observations remain unknown",
+    "audit actual3turns and unverified bill retained",
+    "formal pre-experiment code review wording corrected"
+  ]
+}

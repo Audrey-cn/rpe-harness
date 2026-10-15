@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="0.114" timestamp="2026-10-15T12:16:34.899816+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[env-True]" time="0.047" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[cd_env-True]" time="0.006"><failure message="AssertionError: {'verified': False, 'restore_calls': 0, 'native_view_calls': 1, 'errors': ['native_unique_cold_restore_and_view_missing']}&#10;assert False is True">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-wrapper-red/test_cold_proof_exact_workspac1')
+wrapper = 'cd_env', expected = True
+
+    @pytest.mark.parametrize('wrapper,expected', [('env', True), ('cd_env', True),
+        ('wrong_cwd', False), ('wrong_env', False), ('shell_tail', False)])
+    def test_cold_proof_exact_workspace_wrapper_precedes_exact_env(tmp_path, wrapper, expected):
+        """Synthetic durable protocol fixture for parsing only; never runtime evidence."""
+        import hashlib
+        import shlex
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        from rpe_harness.skill_catalog import XLSX_SKILL_ID
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+        workspace, hermes_root = tmp_path/'workspace', tmp_path/'hermes'
+        workspace.mkdir()
+        command = shlex.join(['env', 'PYTHONPATH='+str(hermes_root), sys.executable,
+            '-B', '-m', 'hermes_cli.main', 'curator', 'restore', 'xlsx'])
+        if wrapper in {'cd_env', 'wrong_cwd'}:
+            cwd = workspace if wrapper == 'cd_env' else tmp_path
+            command = 'cd '+shlex.quote(str(cwd))+' &amp;&amp; '+command
+        if wrapper == 'wrong_env':
+            command = command.replace('PYTHONPATH='+str(hermes_root), 'PYTHONPATH=/unapproved')
+        if wrapper == 'shell_tail':
+            command += ' ; true'
+        restore_args, view_args = {'command': command}, {'name': 'xlsx'}
+        store = HostEventStore(tmp_path/'events.sqlite')
+        ids = {'session_id': 'unit-session', 'task_id': 'task', 'turn_id': 'turn', 'api_request_id': 'api'}
+        restore = {**ids, 'tool_call_id': 'restore', 'tool_name': 'terminal',
+                   'arguments_sha256': digest_json(restore_args)}
+        view = {**ids, 'tool_call_id': 'view', 'tool_name': 'skill_view',
+                'arguments_sha256': digest_json(view_args)}
+        skill = {'skill_id': XLSX_SKILL_ID, 'snapshot_id': 'snapshot', 'skill_sha256': 'a'*64,
+                 'script_sha256': 'b'*64}
+        store.record('pre_api_request', ids)
+        store.record('post_api_request', {**ids, 'response': {'assistant_message': {'tool_calls': [
+            {'id': 'restore', 'name': 'terminal'}, {'id': 'view', 'name': 'skill_view'}]}}})
+        store.record('pre_tool_call', restore)
+        store.record('post_tool_call', {**restore, 'status': 'succeeded', 'tool_exit_code': 0})
+        store.record('native_cold_observation', {**restore, **skill, 'status': 'restored', 'verified': True})
+        store.record('pre_tool_call', view)
+        store.record('post_tool_call', {**view, **skill, 'status': 'loaded', 'content_sha256': 'a'*64})
+        result = {'session_id': ids['session_id'], 'events': store.list(ids['session_id']),
+                  'stream_tool_calls': [{'name': 'terminal', 'input': restore_args},
+                                        {'name': 'skill_view', 'input': view_args}]}
+        plan = {'hermes_root': str(hermes_root), 'skill_snapshot_id': 'snapshot',
+            'skill_sha256': 'a'*64, 'script_sha256': 'b'*64, 'environment': {'host_runtime': {
+                'selected_python': {'executable_path_sha256': hashlib.sha256(sys.executable.encode()).hexdigest()}}}}
+        proof = module.native_cold_proof(result, plan, {'db': str(store.path), 'workspace': str(workspace)})
+&gt;       assert proof['verified'] is expected, proof
+E       AssertionError: {'verified': False, 'restore_calls': 0, 'native_view_calls': 1, 'errors': ['native_unique_cold_restore_and_view_missing']}
+E       assert False is True
+
+tests/test_review_native_evidence.py:161: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_cwd-False]" time="0.005" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_env-False]" time="0.004" /><testcase classname="tests.test_review_native_evidence" name="test_cold_proof_exact_workspace_wrapper_precedes_exact_env[shell_tail-False]" time="0.004" /></testsuite></testsuites>

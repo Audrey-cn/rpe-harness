@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.359" timestamp="2026-10-15T12:14:33.131671+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_v112_comparison" name="test_failed_native_input_deletion_still_records_trial_and_continues_pairs" time="0.224"><failure message="FileNotFoundError: [Errno 2] No such file or directory: 'input.xlsx'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/runner-missing-red/test_failed_native_inp...sent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/venv/bin/python', ...}
+
+    def test_failed_native_input_deletion_still_records_trial_and_continues_pairs(plan):
+        native_calls = []
+        def fail_native(prompt, workspace, *args, **kwargs):
+            native_calls.append(str(workspace))
+            for path in Path(workspace).glob('input.*'):
+                path.unlink()
+            raise RuntimeError('private')
+        def fail_public(*args):
+            raise RuntimeError('private')
+&gt;       summary = shared.run_v111_comparison(plan['root'], native_runner=fail_native, public_runner=fail_public)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v112_comparison.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/rpe_harness/experiments/review_v111_comparison.py:687: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:610: in _observe
+    record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:367: in _local_phase
+    value = function()
+            ^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:610: in &lt;lambda&gt;
+    record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:659: in _verify_trial
+    preserved = _sha(read_regular_file(workspace/case['input_name'], max_bytes=MAX_ARTIFACT_BYTES)) == trial['input_sha256']
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/runner-missing-red/test_failed_native_input_delet0/owned/workspaces/pilot-pilot-cold-context-native/input.xlsx')
+max_bytes = 16777216
+
+    def read_regular_file(path, *, max_bytes):
+        """Bound a nofollow file read without interpreting it as the broker source."""
+        parent = _directory(Path(path).parent)
+        try:
+&gt;           fd = os.open(Path(path).name, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW, dir_fd=parent)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           FileNotFoundError: [Errno 2] No such file or directory: 'input.xlsx'
+
+src/rpe_harness/path_binding.py:231: FileNotFoundError</failure></testcase></testsuite></testsuites>

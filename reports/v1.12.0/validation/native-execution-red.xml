@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="7" time="2.434" timestamp="2026-10-15T12:32:15.222554+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[None]" time="0.426"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = None
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[other_output]" time="0.317"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'other_output'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[extra_code]" time="0.320"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'extra_code'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[substitution]" time="0.328"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'substitution'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[wrong_sheet]" time="0.307"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'wrong_sheet'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[stream_tamper]" time="0.318"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'stream_tamper'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase><testcase classname="tests.test_review_native_evidence" name="test_native_execution_accepts_only_exact_readonly_diagnostic_suffix[view_after_execute]" time="0.322"><failure message="AssertionError: assert False&#10; +  where False = callable(None)&#10; +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)">helper_execution_protocol = ({'root': '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/native-execution-red/test_native_executi...ity/xlsx/scripts/xlsx_read.py\' input.xlsx --json --sheet \'明细\' &gt; output.json &amp;&amp; echo "EXIT=$?" &amp;&amp; wc -c output.json')
+fault = 'view_after_execute'
+
+    @pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+        'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+    def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+        import copy
+        from rpe_harness.integrations.hermes import HostEventStore
+        from rpe_harness.integrations.hermes_gate import digest_json
+        module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+&gt;       assert callable(getattr(module, 'evaluate_native_review_execution', None))
+E       AssertionError: assert False
+E        +  where False = callable(None)
+E        +    where None = getattr(&lt;module 'rpe_harness.experiments.review_native_evidence' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src/rpe_harness/experiments/review_native_evidence.py'&gt;, 'evaluate_native_review_execution', None)
+
+tests/test_review_native_evidence.py:245: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,399 @@
+{
+  "source_full_suite": {
+    "passed": 1774,
+    "skipped": 6,
+    "subtests_passed": 3,
+    "seconds": 377.721,
+    "junit": "full-suite.xml"
+  },
+  "installed_package_distinct_passed": 93,
+  "installed_package_remaining_failures": 0,
+  "installed_package_cases": {
+    "test_review_quote_contract::test_review_delimiter_schema_uses_public_character_contract": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[,-True]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[\\t-True]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[comma-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[TAB-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[\\\\t-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[\\n-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_delimiter_values_are_validated_without_rewriting_draft[\\x00-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_request_anchors_are_exact_bounded_and_bound_to_whole_source": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_addressed_request_is_rendered_without_rewriting_model_draft": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_quote_addresses_reject_unknown_stale_and_mismatched_claims[unknown]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_quote_addresses_reject_unknown_stale_and_mismatched_claims[paraphrase]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_quote_addresses_reject_unknown_stale_and_mismatched_claims[null]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_quote_addresses_reject_unknown_stale_and_mismatched_claims[source_ref]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_quote_addresses_reject_unknown_stale_and_mismatched_claims[raw_change]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_preserves_fact_gate_and_live_revalidation": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_never_bypasses_source_or_fact_checks[field]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_never_bypasses_source_or_fact_checks[source_ref]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_never_bypasses_source_or_fact_checks[session]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_never_bypasses_source_or_fact_checks[ref]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_attachment_address_never_bypasses_source_or_fact_checks[projection_ref]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_literal_paraphrase_remains_blocked_without_an_address": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_legacy_context_projection_remains_revalidatable": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_quote_contract::test_model_payload_publishes_exact_anchors_and_both_citation_forms": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_receipt_requires_actual_new_regular_bytes": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_receipt_rejects_concurrent_writes_and_symlinks": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_receipt_records_rewrite_even_when_bytes_are_identical": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_receipt_does_not_call_failed_tool_io_verified": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_config_rejects_arbitrary_paths": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_configuration_cannot_expand_to_arbitrary_snapshot_paths": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_prompt_publishes_original_anchors_and_support_boundary": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_native_trace_resolves_explicit_anchor_but_never_support_text": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_missing_observations_has_explicit_diagnostic": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_exact_workspace_wrapper_precedes_exact_env[env-True]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_exact_workspace_wrapper_precedes_exact_env[cd_env-True]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_cwd-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_exact_workspace_wrapper_precedes_exact_env[wrong_env-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_cold_proof_exact_workspace_wrapper_precedes_exact_env[shell_tail-False]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_strict_gate_accepts_actual_native_io_and_detects_final_tamper": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_strict_gate_rejects_mention_only_and_duplicate_writes[commands0]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_strict_gate_rejects_mention_only_and_duplicate_writes[commands1]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_native_evidence::test_installed_native_file_terminal_and_cold_restore_under_real_sandbox": {
+      "passed": true,
+      "evidence": "package-smoke-green.xml"
+    },
+    "test_review_v112_comparison::test_versioned_registration_has_fresh_comma_tab_source_cold_and_missing_cases": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_v112_comparison::test_versioned_failure_attempts_are_finite_and_unknown_usage_is_not_zero": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_v112_comparison::test_versioned_export_is_offline_and_keeps_old_verifier_boundary": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_review_v112_comparison::test_failed_native_input_deletion_still_records_trial_and_continues_pairs": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_fake_cli_receives_isolated_request_and_actual_receipt": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_failed_attempt_keeps_usage_redacts_public_data_and_cannot_retry": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_successful_verdict_and_model_receipt_cannot_publish_secrets": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_settings_cannot_override_the_owned_runtime_directories": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_timeout_kills_the_owned_process_group": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_invalid_verdict_is_never_accepted[not JSON]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_invalid_verdict_is_never_accepted[{\"type\": \"result\", \"subtype\": \"success\", \"is_error\": false, \"structured_output\": null, \"usage\": {\"input_tokens\": 73, \"output_tokens\": 19}, \"modelUsage\": {\"mimo-v2.6-flash\": {\"inputTokens\": 73, \"outputTokens\": 19}}, \"num_turns\": 1, \"total_cost_usd\": 0.001}]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_invalid_verdict_is_never_accepted[{\"type\": \"result\", \"subtype\": \"success\", \"is_error\": false, \"structured_output\": {\"cases\": [{\"evidence_id\": \"case-1\", \"faithful\": \"yes\", \"artifact_correct\": null, \"reason\": \"bad type\"}], \"unsupported_claims\": []}, \"usage\": {\"input_tokens\": 73, \"output_tokens\": 19}, \"modelUsage\": {\"mimo-v2.6-flash\": {\"inputTokens\": 73, \"outputTokens\": 19}}, \"num_turns\": 1, \"total_cost_usd\": 0.001}]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_unavailable_executable_still_consumes_the_claim": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_oversized_input_and_symlink_owner_fail_before_launch": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_incomplete_or_wrong_evidence_population_retains_receipt[ids0]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_incomplete_or_wrong_evidence_population_retains_receipt[ids1]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_incomplete_or_wrong_evidence_population_retains_receipt[ids2]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_agent_audit::test_incomplete_or_wrong_evidence_population_retains_receipt[ids3]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_cli_integration::test_public_draft_accepts_actual_gate_and_wrapper": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_quote_is_bound_and_reviewed_without_full_history_or_raw_rewrite": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_verified_source_proposal_executes_and_replays_one_durable_result": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[unknown_ref]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[quote]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[field]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[conflict]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[session]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_untrusted_or_conflicting_context_drafts_remain_nonconfirmable[extra]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_missing_business_key_is_not_filled_from_prose_or_repaired_in_draft": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_explicit_source_does_not_repair_a_model_omission": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_constraint_conflict_is_not_silently_dropped": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[None]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_explicit_optional_source_fact_cannot_be_omitted_or_overridden[,]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_constraint_membership_does_not_depend_on_flag_order": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_discovery_only_selected_skill_cannot_authorize_a_registered_capability": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_invalid_execution_with_context_capability_citation_is_a_blocked_draft": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_two_explicit_sources_disagreeing_on_key_cannot_be_confirmed": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_selected_canonical_source_is_rechecked_when_using_proposal[confirm]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_selected_canonical_source_is_rechecked_when_using_proposal[resolve]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_selected_canonical_source_is_rechecked_when_using_proposal[execute]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[delete-confirm]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[delete-resolve]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[delete-execute]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[hash-confirm]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[hash-resolve]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[hash-execute]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[session-confirm]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[session-resolve]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[session-execute]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[future-confirm]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[future-resolve]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    },
+    "test_proposal_context::test_source_is_revalidated_before_accepting_or_using_authority[future-execute]": {
+      "passed": true,
+      "evidence": "package-tests.xml"
+    }
+  },
+  "installed_smoke_portability_fix": "test import root now follows imported wheel path; original module-not-found RED retained, test-only fix",
+  "final_installed_package": {
+    "passed": 100,
+    "skipped": 0,
+    "junit": "final-package.xml",
+    "same_modules_as_formal_freeze": true
+  },
+  "post_pilot_focused": {
+    "passed": 71,
+    "skipped": 1,
+    "junit": "post-pilot.xml",
+    "scope": "observer grammar and versioned runner; core runtime unchanged since full suite"
+  },
+  "note": "One full source suite before narrow post-pilot observer fix; affected source supplements and final wheel tested separately. No claim of a second complete final-source run."
+}

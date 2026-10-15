@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.470" timestamp="2026-10-15T12:21:00.448976+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="package-tests.test_review_native_evidence" name="test_installed_native_file_terminal_and_cold_restore_under_real_sandbox" time="0.416"><failure message="AssertionError: Your settings file (/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Fix the file permissions or move it aside first. Details: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml'&#10;  ⚠️  hermes config: Your settings file (/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Fix the file permissions or move it aside first.&#10;      Details: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml'&#10;  Skipping unreadable plugin directory /Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/plugins: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/plugins'&#10;  Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 7, in &lt;module&gt;&#10;      from rpe_harness.integrations.hermes import register,HostEventStore&#10;  ModuleNotFoundError: No module named 'rpe_harness'&#10;  &#10;  &#10;assert 1 == 0&#10; +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc...pe_harness.integrations.hermes import register,HostEventStore\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0')
+
+    @pytest.mark.skipif(os.environ.get('RPE_RUN_INSTALLED_NATIVE_SMOKE') != '1',
+                        reason='explicit provider-free installed Hermes smoke')
+    def test_installed_native_file_terminal_and_cold_restore_under_real_sandbox(tmp_path):
+        """Invoke installed tools directly; this establishes IO readiness, never model success."""
+        from rpe_harness.integrations.hermes_session import _installed_python, prepare_home, sandbox_profile
+        from rpe_harness.integrations.hermes_native import native_evidence_config
+        from rpe_harness.integrations.review_skills import prepare_review_skills
+        from rpe_harness.skill_catalog import SkillCatalog, XLSX_SKILL_ID
+        hermes_root = Path.home()/'.hermes/hermes-agent'
+        host_python = _installed_python(hermes_root)
+        workspace, session = tmp_path/'workspace', tmp_path/'session'
+        workspace.mkdir()
+        (workspace/'input.csv').write_text('id,value\n001,first\n')
+        home = prepare_home(session, workspace, tmp_path/'events.sqlite', tool_enabled=False,
+            settings={'provider': 'xiaomi', 'model': 'provider-free-smoke',
+                      'base_url': 'https://example.invalid', 'api_key': 'unused-provider-free'},
+            public_contract='review', preserve_native_tool_search=True)
+        for name in ('tmp', 'runtime', 'terminal-tmp'):
+            (session/name).mkdir()
+        skills = tmp_path/'source-skills'
+        shutil.copytree(Path(__file__).parent/'fixtures/skills/productivity/xlsx', skills/'productivity/xlsx')
+        catalog = SkillCatalog(tmp_path/'catalog.sqlite', tmp_path/'catalog')
+        snapshot = catalog.sync(skills)['snapshot_id']
+        catalog.set_temperature(XLSX_SKILL_ID, 'cold')
+        materialized = prepare_review_skills(catalog.materialize(home/'skills', snapshot_id=snapshot))
+        (home/'.no-bundled-skills').touch()
+        config = session/'native-evidence.json'
+        config.write_text(json.dumps(native_evidence_config(workspace,
+            {'draft_name': 'draft.json', 'cold_skill_id': XLSX_SKILL_ID}, materialized)))
+        source = Path(__file__).resolve().parents[1]/'src'
+        profile = session/'native.sb'
+        profile.write_text(sandbox_profile([session, workspace], Path.home()/'.hermes', hermes_root,
+            tmp_path/'events.sqlite', [host_python.parent.parent, Path.home()/'.hermes/tools'], native_import_root=source,
+            protected_write_roots=[config]))
+        program = '''import json,sys,shlex
+    from pathlib import Path
+    sys.path[:0]=[sys.argv[1],sys.argv[2]]
+    from tools.file_tools import read_file_tool,write_file_tool
+    from tools.terminal_tool import terminal_tool
+    from tools.skills_tool import skill_view
+    from rpe_harness.integrations.hermes import register,HostEventStore
+    class Context:
+     def __init__(self): self.hooks={}
+     def register_hook(self,n,c): self.hooks[n]=c
+    c=Context();register(c)
+    serial=0
+    def invoke(name,args,function):
+     global serial
+     serial+=1
+     ids=dict(session_id='installed-smoke',task_id='smoke',turn_id='turn',api_request_id='api',tool_call_id=str(serial),tool_name=name,args=args)
+     c.hooks['pre_tool_call'](**ids)
+     raw=function();out=json.loads(raw)
+     c.hooks['post_tool_call'](**ids,status='ok',result=raw)
+     return out
+    read=read_file_tool('input.csv',task_id='smoke')
+    assert '001,first' in read,read
+    file=invoke('write_file',dict(path='draft.json',content='{}'),lambda:write_file_tool('draft.json','{}',task_id='smoke'))
+    assert file.get('verified') is True,file
+    Path('draft.json').unlink()
+    command=shlex.join([sys.executable,'-B','-c',"from pathlib import Path; Path('draft.json').write_text('{}')"])
+    terminal=invoke('terminal',dict(command=command),lambda:terminal_tool(command,task_id='smoke',timeout=20))
+    assert terminal.get('exit_code')==0,terminal
+    command=shlex.join(['env','PYTHONPATH='+sys.argv[2],sys.executable,'-B','-m','hermes_cli.main','curator','restore','xlsx'])
+    restore=invoke('terminal',dict(command=command),lambda:terminal_tool(command,task_id='smoke',timeout=20))
+    assert restore.get('exit_code')==0,restore
+    view=json.loads(skill_view('xlsx',preprocess=False,task_id='smoke'))
+    assert view.get('success') is True and view.get('_source_path')==str(Path(sys.argv[3])/'skills/xlsx/SKILL.md'),view
+    events=HostEventStore(sys.argv[4]).list('installed-smoke')
+    assert len([e for e in events if e['kind']=='native_artifact_observation' and e.get('verified')])==2,events
+    assert len([e for e in events if e['kind']=='native_cold_observation' and e.get('verified')])==1,events
+    assert 'rpe_harness.controller' not in sys.modules
+    print(json.dumps(dict(provider_calls=0,read=True,file_write=True,terminal_write=True,cold_restore=True,native_skill_view=True,receipt_events=len(events))))
+    '''
+        env = {**os.environ, 'HERMES_HOME': str(home), 'HERMES_RUNTIME_DIR': str(session/'runtime'),
+            'PYTHONDONTWRITEBYTECODE': '1', 'HERMES_DISABLE_LAZY_INSTALLS': '1',
+            'HERMES_ENABLE_PROJECT_PLUGINS': '0', 'TMPDIR': str(session/'tmp'),
+            'PYTHONPATH': str(hermes_root), 'RPE_HARNESS_IMPORT_ROOT': str(source),
+            'RPE_HERMES_TOOL_ENABLED': '0', 'RPE_HERMES_WORKSPACE': str(workspace),
+            'RPE_HERMES_DB': str(tmp_path/'events.sqlite'), 'RPE_HERMES_NATIVE_EVIDENCE_CONFIG': str(config)}
+        child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(host_python), '-B', '-c', program,
+            str(source), str(hermes_root), str(home), str(tmp_path/'events.sqlite')],
+            cwd=workspace, env=env, capture_output=True, text=True, timeout=55)
+        (tmp_path/'installed-smoke-result.json').write_text(json.dumps({
+            'exit_code': child.returncode, 'stdout': child.stdout, 'stderr': child.stderr}, ensure_ascii=False))
+&gt;       assert child.returncode == 0, child.stderr+'\n'+child.stdout
+E       AssertionError: Your settings file (/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Fix the file permissions or move it aside first. Details: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml'
+E         ⚠️  hermes config: Your settings file (/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Fix the file permissions or move it aside first.
+E             Details: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/config.yaml'
+E         Skipping unreadable plugin directory /Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/plugins: [Errno 1] Operation not permitted: '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/package-smoke-red/test_installed_native_file_ter0/session/home/plugins'
+E         Traceback (most recent call last):
+E           File "&lt;string&gt;", line 7, in &lt;module&gt;
+E             from rpe_harness.integrations.hermes import register,HostEventStore
+E         ModuleNotFoundError: No module named 'rpe_harness'
+E         
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc...pe_harness.integrations.hermes import register,HostEventStore\nModuleNotFoundError: No module named \'rpe_harness\'\n').returncode
+
+package-tests/test_review_native_evidence.py:298: AssertionError</failure></testcase></testsuite></testsuites>

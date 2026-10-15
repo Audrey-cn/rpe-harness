@@ -1,0 +1,203 @@
+{
+  "records": [
+    {
+      "api_expected": true,
+      "arm": "native",
+      "attempt_id": "pilot-pilot-cold-context-native-draft",
+      "elapsed_seconds": 155.28952474999824,
+      "finished_at": 1792038449.7965178,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "7c1faf8bfaf372bcdc5b1755c14d13cb361c6aef74489b36b65fb4c327eddc5b",
+      "reservation_sha256": "6840ea1a135b0052aa673c45d869536ee3f7fc9abf8182c61010fe3ef3aa07f3",
+      "reserved_at": 1792038294.507133,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 4,
+        "cache_read_tokens": 47232,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 13739,
+        "known_total_tokens": 68585,
+        "missing_observations": 0,
+        "output_tokens": 7614,
+        "prompt_tokens": 60971,
+        "reasoning_tokens": 6306,
+        "requests_with_usage": 4,
+        "total_tokens": 68585
+      }
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "attempt_id": "pilot-pilot-cold-context-native-execute",
+      "elapsed_seconds": 36.17257420900569,
+      "finished_at": 1792038486.009938,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "execute",
+      "record_sha256": "2ad4db54d375f1fa9d20fa9b808bfe2a6f4d42dfdc7c1e3fe4493b0a09f5a62e",
+      "reservation_sha256": "3c57a7ec32b131d636a1ba0553dc393fdff68a2c89f541ecef1d288fc20d4657",
+      "reserved_at": 1792038449.8367932,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 39552,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 11640,
+        "known_total_tokens": 52365,
+        "missing_observations": 0,
+        "output_tokens": 1173,
+        "prompt_tokens": 51192,
+        "reasoning_tokens": 480,
+        "requests_with_usage": 5,
+        "total_tokens": 52365
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "native",
+      "attempt_id": "pilot-pilot-cold-context-native-review",
+      "elapsed_seconds": 3.2042007660493255e-05,
+      "finished_at": 1792038449.8364758,
+      "phase": "review",
+      "record_sha256": "ec1f289a2b6d53a2c5b266e091703bdc84396f0993a3cb19c2af84ff0a1c5fa2",
+      "reservation_sha256": "090953b9422a01bac03cca94d9cd4da65ff8bc3579cd52a9d10bec2c782241a3",
+      "reserved_at": 1792038449.835884,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "native",
+      "attempt_id": "pilot-pilot-cold-context-native-verification",
+      "elapsed_seconds": 0.05001170901232399,
+      "finished_at": 1792038486.1371598,
+      "phase": "verification",
+      "record_sha256": "5b957a019dc4c00f3195e442a3e35edd3e03265bcec9453e3aac8a5a9768e197",
+      "reservation_sha256": "b5c3c45c39d02db9d56729dd51ea6c497019f54a71bd221df9f7c9ced6678e2a",
+      "reserved_at": 1792038486.086329,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": true,
+      "arm": "review",
+      "attempt_id": "pilot-pilot-cold-context-review-draft",
+      "elapsed_seconds": 105.87449658400146,
+      "finished_at": 1792038592.0152209,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "af4e4c506ab981c9af2f114e1f5144c534bbab0d3fa6d783f9a1396e6aa927f0",
+      "reservation_sha256": "ead127252b1852f0745a628e989ad43a8db2fe39b8803fdc5eee67be432db32b",
+      "reserved_at": 1792038486.138308,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 640,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 8929,
+        "known_total_tokens": 14645,
+        "missing_observations": 0,
+        "output_tokens": 5076,
+        "prompt_tokens": 9569,
+        "reasoning_tokens": 3787,
+        "requests_with_usage": 5,
+        "total_tokens": 14645
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "pilot-pilot-cold-context-review-execute",
+      "elapsed_seconds": 0.9034875420038588,
+      "finished_at": 1792038593.3635771,
+      "phase": "execute",
+      "record_sha256": "56aab97e55321746f8341cf54ce47aa03e2b69917358202afe3d1cb9aa88b3d1",
+      "reservation_sha256": "c32a24ef7aef23c496cd178155cf0022de23474ef91a190ad02a115e6d23bb31",
+      "reserved_at": 1792038592.459362,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "pilot-pilot-cold-context-review-review",
+      "elapsed_seconds": 0.4423329580022255,
+      "finished_at": 1792038592.458925,
+      "phase": "review",
+      "record_sha256": "1fe6ca747078a40b92e8e56328041dcf3c99cbd4df799645254bbcd7a862d370",
+      "reservation_sha256": "5d7d817f44ef2ae83c33a52f82e2bc8f98e09df8689da288e7722f3f03a1e431",
+      "reserved_at": 1792038592.015914,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "pilot-pilot-cold-context-review-verification",
+      "elapsed_seconds": 0.007985249991179444,
+      "finished_at": 1792038593.375624,
+      "phase": "verification",
+      "record_sha256": "7ab4053cc9a4b9a9f921e00d700dedd6f3cdb4ad6ad44f030558b045359e33b9",
+      "reservation_sha256": "4d2070471c6be30a84b4f8883eff345009ddef8047c1393163a382b25f6dbe72",
+      "reserved_at": 1792038593.367213,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "shared",
+      "attempt_id": "shared-preregistration",
+      "elapsed_seconds": 0.9033041249931557,
+      "finished_at": 1792038279.308288,
+      "phase": "preregistration",
+      "record_sha256": "c8bfda0e761b710c9176bae220ae1aaf3f788571c38c307da6a02d4ad14292fb",
+      "reservation_sha256": "3baa5ec1e9984dce4f7d9b98dad809fa5111a1f748d29ebadab38c28bf26c055",
+      "reserved_at": 1792038278.406284,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    }
+  ],
+  "sha256": "9ddd9476862419ffc0e12aab4e0bce88a65888ff0380a6c288b4700785701b9a"
+}

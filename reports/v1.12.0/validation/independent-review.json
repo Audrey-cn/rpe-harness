@@ -1,0 +1,10 @@
+{
+  "decision": "no remaining P1/P2 in reviewed scope after fixes",
+  "actual_findings_fixed": [
+    "lost trial record on deleted input",
+    "exact cd wrapper must precede exact env prefix stripping"
+  ],
+  "source_preservation_regression": "runner-missing-red.xml -> runner-final.xml",
+  "wrapper_regression": "native-wrapper-red.xml -> native-wrapper-green.xml",
+  "provider_calls": 0
+}

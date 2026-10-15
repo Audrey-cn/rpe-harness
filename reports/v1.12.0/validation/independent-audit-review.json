@@ -1,0 +1,151 @@
+{
+  "schema_version": "rpe.v112-independent-audit-review/v1",
+  "diagnostic_mode": "read_only_completed_audit_receipts_and_blind_bundle",
+  "provider_calls_by_this_review": 0,
+  "rerun_performed": false,
+  "official_audit_record_modified": false,
+  "audit_host": "claude-code",
+  "requested_model": "mimo-v2.6-flash",
+  "reported_model_usage_keys": [
+    "mimo-v2.6-flash"
+  ],
+  "claude_model_validation_claimed": false,
+  "completed_cli_processes": 1,
+  "cli_exit_code": 0,
+  "cli_record_status": "completed",
+  "evidence_binding": {
+    "unique_expected_evidence_ids": [
+      "A01",
+      "A02",
+      "A03",
+      "A04",
+      "A05",
+      "A06",
+      "A07",
+      "A08"
+    ],
+    "expected_case_count": 8,
+    "returned_case_count": 8,
+    "complete_exact_id_coverage": true,
+    "bundle_claim_result_input_sha256_match": true,
+    "actual_input_file_sha256_matches": true
+  },
+  "requested_limits": {
+    "max_turns": 1,
+    "max_output_tokens": 1200,
+    "timeout_seconds": 180,
+    "cli_estimated_budget_usd": 0.25
+  },
+  "reported_actual": {
+    "num_turns": 3,
+    "aggregate_output_tokens": 2110,
+    "input_tokens": 13317,
+    "cache_read_input_tokens": 12672,
+    "elapsed_seconds": 43.522150374992634,
+    "cli_estimated_cost_usd": 0.125671,
+    "verified_bill_usd": null,
+    "physical_provider_api_call_count": null
+  },
+  "limit_assessment": {
+    "requested_turn_limit_adhered": false,
+    "elapsed_within_deadline": true,
+    "cli_estimate_within_declared_estimated_budget": true,
+    "per_request_output_limit_enforcement_verified": false,
+    "note": "Host reports 3 turns despite requested 1 turn. Aggregate output 2110 exceeds the requested figure 1200; whether that output setting was intended or enforced per request is unknown. This does not prove a provider hard-cap violation. No physical provider API count is inferred from the host turn count. CLI cost estimate is not a verified bill or hard provider spending cap.",
+    "reported_aggregate_output_within_requested_figure": false,
+    "aggregate_output_exceeds_requested_figure": true
+  },
+  "verdict_summary": {
+    "model_faithful_true": 8,
+    "model_artifact_correct_true": 2,
+    "model_artifact_correct_null": 6,
+    "model_artifact_correct_true_ids": [
+      "A04",
+      "A07"
+    ],
+    "per_case": [
+      {
+        "evidence_id": "A01",
+        "trial_id": "formal-cold-stock-review",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": false,
+        "actual_output_supplied": false
+      },
+      {
+        "evidence_id": "A02",
+        "trial_id": "formal-missing-identity-native",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": false,
+        "actual_output_supplied": false
+      },
+      {
+        "evidence_id": "A03",
+        "trial_id": "formal-cold-stock-native",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": true,
+        "actual_output_supplied": true
+      },
+      {
+        "evidence_id": "A04",
+        "trial_id": "formal-comma-orders-review",
+        "model_faithful": true,
+        "model_artifact_correct": true,
+        "candidate_proof_supplied": true,
+        "actual_output_supplied": true
+      },
+      {
+        "evidence_id": "A05",
+        "trial_id": "formal-missing-identity-review",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": true,
+        "actual_output_supplied": false
+      },
+      {
+        "evidence_id": "A06",
+        "trial_id": "formal-source-tabs-review",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": true,
+        "actual_output_supplied": false
+      },
+      {
+        "evidence_id": "A07",
+        "trial_id": "formal-comma-orders-native",
+        "model_faithful": true,
+        "model_artifact_correct": true,
+        "candidate_proof_supplied": true,
+        "actual_output_supplied": true
+      },
+      {
+        "evidence_id": "A08",
+        "trial_id": "formal-source-tabs-native",
+        "model_faithful": true,
+        "model_artifact_correct": null,
+        "candidate_proof_supplied": false,
+        "actual_output_supplied": false
+      }
+    ],
+    "unsupported_claims": [
+      "A03: original helper xlsx_read.py was actually invoked",
+      "A03: output.json matches original helper's complete JSON structure",
+      "A06/A08: any successful execution; both lack verified output"
+    ]
+  },
+  "interpretation_limits": [
+    "The eight faithful=true values are model judgments, including cases with no supplied candidate proof; they are not eight verified successful interpretations or runtime chains.",
+    "Only the two comma-case artifacts were judged true; six artifact results remain null. This audit does not establish independent runtime invocation, complete provenance acceptance, or real human confirmation.",
+    "Formal frozen trial scores and deterministic oracle results remain authoritative within their stated scope. No failed result is rescored from this audit.",
+    "This is one Claude Code host process using the reported MiMo model route, not a Claude model validation."
+  ],
+  "source_artifact_sha256": {
+    "result": "947828fc252ad3dccbf7b9fbc42d3dd043c222b176d6ac8a83f9670c1cdc024d",
+    "claim": "4591e67169ec2a2a79550e4b1ecdf0b9e725584a378b571d190d7dcfbaa5c041",
+    "bundle": "6eebb617b36cf495087b20bc217585292d9059f9482691e644c9b714694052a5",
+    "mapping": "3f8e791e7ff121b6566c3e7b9e8db81f420981210cf8e5261df4f7f790e50f84"
+  },
+  "source_artifact_hashes_unchanged": true
+}

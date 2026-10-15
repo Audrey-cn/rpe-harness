@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="3" failures="0" skipped="0" tests="3" time="0.095" timestamp="2026-10-15T12:08:52.317486+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_v112_comparison" name="test_versioned_registration_has_fresh_comma_tab_source_cold_and_missing_cases" time="0.002"><error message="failed on setup with &quot;TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'&quot;">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/runner-red/test_versioned_registration_ha0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10927daf0&gt;
+
+    @pytest.fixture
+    def plan(tmp_path, monkeypatch):
+        skills = tmp_path / 'skills'
+        shutil.copytree(Path(__file__).parent / 'fixtures/skills/productivity/xlsx', skills / 'productivity/xlsx')
+        monkeypatch.setattr(shared, '_environment', lambda *a: {'source_sha256': {'fixture': 'frozen'}})
+&gt;       return shared.preregister_v111_comparison(tmp_path / 'owned', skill_root=skills,
+            hermes_root=tmp_path / 'absent-host', helper_python=sys.executable, profile='review-v112')
+E       TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'
+
+tests/test_review_v112_comparison.py:17: TypeError</error></testcase><testcase classname="tests.test_review_v112_comparison" name="test_versioned_failure_attempts_are_finite_and_unknown_usage_is_not_zero" time="0.002"><error message="failed on setup with &quot;TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'&quot;">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/runner-red/test_versioned_failure_attempt0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109258f20&gt;
+
+    @pytest.fixture
+    def plan(tmp_path, monkeypatch):
+        skills = tmp_path / 'skills'
+        shutil.copytree(Path(__file__).parent / 'fixtures/skills/productivity/xlsx', skills / 'productivity/xlsx')
+        monkeypatch.setattr(shared, '_environment', lambda *a: {'source_sha256': {'fixture': 'frozen'}})
+&gt;       return shared.preregister_v111_comparison(tmp_path / 'owned', skill_root=skills,
+            hermes_root=tmp_path / 'absent-host', helper_python=sys.executable, profile='review-v112')
+E       TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'
+
+tests/test_review_v112_comparison.py:17: TypeError</error></testcase><testcase classname="tests.test_review_v112_comparison" name="test_versioned_export_is_offline_and_keeps_old_verifier_boundary" time="0.002"><error message="failed on setup with &quot;TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'&quot;">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/runner-red/test_versioned_export_is_offli0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1092593a0&gt;
+
+    @pytest.fixture
+    def plan(tmp_path, monkeypatch):
+        skills = tmp_path / 'skills'
+        shutil.copytree(Path(__file__).parent / 'fixtures/skills/productivity/xlsx', skills / 'productivity/xlsx')
+        monkeypatch.setattr(shared, '_environment', lambda *a: {'source_sha256': {'fixture': 'frozen'}})
+&gt;       return shared.preregister_v111_comparison(tmp_path / 'owned', skill_root=skills,
+            hermes_root=tmp_path / 'absent-host', helper_python=sys.executable, profile='review-v112')
+E       TypeError: preregister_v111_comparison() got an unexpected keyword argument 'profile'
+
+tests/test_review_v112_comparison.py:17: TypeError</error></testcase></testsuite></testsuites>

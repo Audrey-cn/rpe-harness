@@ -1,0 +1,71 @@
+{
+  "schema_version": "rpe.v112-readonly-diagnosis/v1",
+  "trial_id": "formal-cold-stock-native",
+  "source_frozen_commit": "576ad8f",
+  "diagnostic_mode": "read_only_existing_durable_events_private_logs_and_frozen_bytes",
+  "provider_calls_by_diagnosis": 0,
+  "official_record_modified": false,
+  "rescored": false,
+  "official_record_file_sha256": "479d0e374c26cfabeab8a0850ae5ec15158af01cc3539e25696c816b610b4daf",
+  "official_status": "failed",
+  "official_accepted": false,
+  "official_execution_verified": false,
+  "classification": {
+    "primary": "unsupported_shell_diagnostic_syntax_in_frozen_narrow_execution_proof",
+    "business_result_wrong": false,
+    "wrong_helper": false,
+    "wrong_interpreter": false,
+    "limitation": "The fixed gate accepts only the exact && echo uppercase EXIT and && wc suffix. Observed command used semicolons and lowercase exit. The official proof remains unverified despite correct independently checked business bytes."
+  },
+  "sanitized_observed_command": "<frozen-python> <session-original-helper>/xlsx_read.py input.xlsx --json --sheet 盘点 > output.json; echo \"exit=$?\"; wc -c output.json",
+  "frozen_supported_suffix": "&& echo \"EXIT=$?\" && wc -c output.json",
+  "exact_evidence": {
+    "expected_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+    "observed_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+    "skill_bytes_match": true,
+    "expected_helper_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+    "observed_helper_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+    "helper_bytes_match": true,
+    "interpreter_argument_matches_frozen_path": true,
+    "interpreter_metadata_matches_frozen": true,
+    "helper_argument_matches_original_session_copy": true,
+    "workdir_matches_trial_workspace": true,
+    "original_full_arguments_sha256": "55245aa4fc1c0d8824f7f77e8e633d4d39c53f5db0390b73b1a2a87b2c0ca0ae",
+    "durable_matching_terminal_post_calls": 1,
+    "durable_terminal_succeeded": true,
+    "private_terminal_diagnostic_exit_value": 0,
+    "private_terminal_diagnostic_output_bytes": 102
+  },
+  "proof_limit": {
+    "semicolon_status_mask": "With semicolons, final terminal exit status comes from wc and alone does not prove helper success. The private echo reported helper exit=0; the frozen gate does not consume that stdout diagnostic as helper-status proof.",
+    "no_reinterpretation_as_official_pass": true
+  },
+  "draft_evidence": {
+    "cold_recall_proof": {
+      "errors": [],
+      "native_view_calls": 1,
+      "restore_calls": 1,
+      "verified": true
+    },
+    "trace_verified": true,
+    "quote_ref_requirement_rows": 2,
+    "attachment_quote_ref_fields": [
+      [
+        "/execution/mode"
+      ],
+      [
+        "/execution/sheet"
+      ]
+    ]
+  },
+  "business_evidence": {
+    "business_correct": true,
+    "product_oracle_passed": true,
+    "source_preserved": true,
+    "artifact_sha256": "3fe3c212fe3fb3c42760eff7f00b82261f88df2252d6a40d1076abbbceb73236"
+  },
+  "scope_note": "This diagnosis preserves the frozen formal failure. It records an observer grammar limitation and correct business artifacts; it is not rescoring, runtime acceptance, human confirmation, or a new model attempt.",
+  "official_record_file_sha256_before": "479d0e374c26cfabeab8a0850ae5ec15158af01cc3539e25696c816b610b4daf",
+  "official_record_file_sha256_after": "479d0e374c26cfabeab8a0850ae5ec15158af01cc3539e25696c816b610b4daf",
+  "official_record_sha256_unchanged": true
+}

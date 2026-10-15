@@ -1,0 +1,672 @@
+{
+  "by_arm": {
+    "native": {
+      "complete_chain": 0,
+      "costs": {
+        "api_requests": 9,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 86784,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 191.5121427100239,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 25379,
+        "known_api_requests": 9,
+        "known_cache_read_tokens": 86784,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 191.5121427100239,
+        "known_input_tokens": 25379,
+        "known_output_tokens": 8787,
+        "known_prompt_tokens": 112163,
+        "known_reasoning_tokens": 6786,
+        "known_total_tokens": 120950,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 191.63002681732178,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 8787,
+        "phase_count": 4,
+        "prompt_tokens": 112163,
+        "reasoning_tokens": 6786,
+        "rss_observation_coverage": 0,
+        "total_tokens": 120950,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "formal_attempts": 0,
+      "formal_costs": {
+        "api_requests": 0,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "elapsed_seconds_sum": 0,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 0,
+        "known_api_requests": 0,
+        "known_cache_read_tokens": 0,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 0,
+        "known_input_tokens": 0,
+        "known_output_tokens": 0,
+        "known_prompt_tokens": 0,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 0,
+        "missing_observations": 0,
+        "observed_makespan_seconds": null,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 0,
+        "phase_count": 0,
+        "prompt_tokens": 0,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 0,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 0
+    },
+    "review": {
+      "complete_chain": 0,
+      "costs": {
+        "api_requests": 5,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 640,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 107.22830233399873,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 8929,
+        "known_api_requests": 5,
+        "known_cache_read_tokens": 640,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 107.22830233399873,
+        "known_input_tokens": 8929,
+        "known_output_tokens": 5076,
+        "known_prompt_tokens": 9569,
+        "known_reasoning_tokens": 3787,
+        "known_total_tokens": 14645,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 107.23731589317322,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 5076,
+        "phase_count": 4,
+        "prompt_tokens": 9569,
+        "reasoning_tokens": 3787,
+        "rss_observation_coverage": 0,
+        "total_tokens": 14645,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "formal_attempts": 0,
+      "formal_costs": {
+        "api_requests": 0,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "elapsed_seconds_sum": 0,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 0,
+        "known_api_requests": 0,
+        "known_cache_read_tokens": 0,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 0,
+        "known_input_tokens": 0,
+        "known_output_tokens": 0,
+        "known_prompt_tokens": 0,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 0,
+        "missing_observations": 0,
+        "observed_makespan_seconds": null,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 0,
+        "phase_count": 0,
+        "prompt_tokens": 0,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 0,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 0
+    }
+  },
+  "comparison_ready": false,
+  "costs": {
+    "api_requests": 14,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 87424,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 299.6437491690158,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 34308,
+    "known_api_requests": 14,
+    "known_cache_read_tokens": 87424,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 299.6437491690158,
+    "known_input_tokens": 34308,
+    "known_output_tokens": 13863,
+    "known_prompt_tokens": 121732,
+    "known_reasoning_tokens": 10573,
+    "known_total_tokens": 135595,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 314.9693398475647,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 13863,
+    "phase_count": 9,
+    "prompt_tokens": 121732,
+    "reasoning_tokens": 10573,
+    "rss_observation_coverage": 0,
+    "total_tokens": 135595,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "coverage_limits": [
+    "finite directed engineering sample, not a population estimate",
+    "simulated semantic review and automated acceptance are not real human confirmation",
+    "all model identities and observations are local runtime checks, not third-party attestation",
+    "native tools remain free within the same task, source facts, skills, model and budgets",
+    "only the cold skill case supplies the real skill catalog to either arm",
+    "native source facts are explicitly projected into its prompt; the raw current request is retained separately",
+    "native execution uses the exact accepted candidate and native tools, never the RPE controller",
+    "driver and full-trial timers overlap phase timers; never add overlapping timers"
+  ],
+  "driver_elapsed_seconds_sum": 299.48826595800347,
+  "fingerprint": "26d4452e1bf26ab4a21efa21f040ddeeac7d8113cc8149a3f53eb04388d42305",
+  "formal_attempts": 0,
+  "formal_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 0,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 0,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": null,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 0,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "human_confirmation_verified": false,
+  "human_review_seconds": null,
+  "native_execution_sessions": 1,
+  "pairs": [
+    {
+      "case_id": "comma-orders",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    },
+    {
+      "case_id": "cold-stock",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    },
+    {
+      "case_id": "source-tabs",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    },
+    {
+      "case_id": "missing-identity",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    }
+  ],
+  "pilot_attempts": 2,
+  "pilot_costs": {
+    "api_requests": 14,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 87424,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 298.74044504402264,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 34308,
+    "known_api_requests": 14,
+    "known_cache_read_tokens": 87424,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 298.74044504402264,
+    "known_input_tokens": 34308,
+    "known_output_tokens": 13863,
+    "known_prompt_tokens": 121732,
+    "known_reasoning_tokens": 10573,
+    "known_total_tokens": 135595,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 298.86849093437195,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 13863,
+    "phase_count": 8,
+    "prompt_tokens": 121732,
+    "reasoning_tokens": 10573,
+    "rss_observation_coverage": 0,
+    "total_tokens": 135595,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "profile": "review-v112",
+  "records": [
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "644545c58280bbd7ab75dbea41fa7a8a74d5d8628f9bb606eb7b3e9c9599f633",
+      "approval": {
+        "actor": "simulated_semantic_reviewer",
+        "candidate_sha256": "f3a95d89b8be8276f4db37c1a098e02cd95731aeec489889c3b2f5e13fcddb31",
+        "status": "confirmed",
+        "strategy": "native"
+      },
+      "approved": true,
+      "arm": "native",
+      "artifact_sha256": "3fe3c212fe3fb3c42760eff7f00b82261f88df2252d6a40d1076abbbceb73236",
+      "business_correct": true,
+      "candidate_proof": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "盘点"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "发现并恢复真实电子表格技能",
+            "text": "使用恢复后的真实电子表格技能（xlsx.inspect）读取现有 xlsx 工作簿，不以其他能力替代。"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "通过原始 xlsx_read.py",
+            "text": "通过原始 xlsx_read.py 辅助程序执行读取，保留其原始输出 JSON 结构。"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "完整JSON",
+            "text": "输出为完整 JSON，不做裁剪或改写。"
+          },
+          {
+            "fields": [
+              "/execution/input_path"
+            ],
+            "quote": "读取 input.xlsx",
+            "text": "输入文件为工作区根目录的 input.xlsx。"
+          },
+          {
+            "fields": [
+              "/execution/output_path"
+            ],
+            "quote": "将完整JSON写入 output.json",
+            "text": "完整 JSON 写入 output.json。"
+          },
+          {
+            "fields": [
+              "/execution/mode"
+            ],
+            "quote": "rows",
+            "quote_ref": "q:42e8e04d5f0dd7b814069182f88f4cb591510ca84a5d5ce5e903be0d016becc1",
+            "source_ref": {
+              "event_id": "review:0b644ada417d05e02c497b79c84fc0fdf2fe20bbe5fb9aac4d3f94084c8aa513",
+              "sha256": "07c8429db5b7d85c7d88fa70d5e0994ab4161c1ecdfac97e321ab13df95311e8",
+              "source": "user-stock-decision"
+            },
+            "text": "读取模式按明确附件恢复为 rows。"
+          },
+          {
+            "fields": [
+              "/execution/sheet"
+            ],
+            "quote": "盘点",
+            "quote_ref": "q:aa403083e8d4c055538f8237832a1225d8f681b4192bc7d88eaef987ea8bbf6f",
+            "source_ref": {
+              "event_id": "review:0b644ada417d05e02c497b79c84fc0fdf2fe20bbe5fb9aac4d3f94084c8aa513",
+              "sha256": "07c8429db5b7d85c7d88fa70d5e0994ab4161c1ecdfac97e321ab13df95311e8",
+              "source": "user-stock-decision"
+            },
+            "text": "工作表按明确附件恢复为 盘点。"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "保留原文件",
+            "text": "保留原文件，不修改、不覆盖 input.xlsx。"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "pilot-cold-context",
+      "category": "production",
+      "cold_recall_proof": {
+        "errors": [],
+        "native_view_calls": 1,
+        "restore_calls": 1,
+        "verified": true
+      },
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "arguments_sha256": "c85dc3d14b4cdf24eb1e6f20d8fd7cf4397d805a0ca172ce25cefb47316a5c07",
+        "bytes_written": 2241,
+        "content_sha256": "beea094eab0ecfec5933458d336d04094d454345f4f36dcf2da9c03b311679dc",
+        "errors": [],
+        "proof_kind": "native_io_receipt",
+        "status": "verified_native_draft",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_gate": {
+        "error_codes": [
+          "native_original_helper_execution_missing"
+        ],
+        "error_count": 1,
+        "proof_kind": null,
+        "status": null,
+        "verified": false
+      },
+      "execution_kind": "approved_native",
+      "execution_verified": false,
+      "fingerprint": "26d4452e1bf26ab4a21efa21f040ddeeac7d8113cc8149a3f53eb04388d42305",
+      "full_trial_elapsed_seconds": 191.63169387500966,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": false,
+      "no_business_output_before_approval": true,
+      "phase": "pilot",
+      "probe_correct": false,
+      "product_oracle_passed": true,
+      "raw_source_sha256": "60619d6831fa984010b0d7df7652c6724888f2b5f092b7e1d06fd90190da1bed",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_122456_3bbca6",
+      "sha256": "471ecb1490018d8ef512f75b898938df73f94cf7268c9143cfa7f70f42d3128a",
+      "source_bindings": [
+        {
+          "facts": {
+            "mode": "rows",
+            "sheet": "盘点"
+          },
+          "quote_refs": {
+            "mode": "q:42e8e04d5f0dd7b814069182f88f4cb591510ca84a5d5ce5e903be0d016becc1",
+            "sheet": "q:aa403083e8d4c055538f8237832a1225d8f681b4192bc7d88eaef987ea8bbf6f"
+          },
+          "quote_spans": {
+            "mode": [
+              10,
+              14
+            ],
+            "sheet": [
+              21,
+              23
+            ]
+          },
+          "quotes": {
+            "mode": "rows",
+            "sheet": "盘点"
+          },
+          "source_ref": {
+            "event_id": "review:0b644ada417d05e02c497b79c84fc0fdf2fe20bbe5fb9aac4d3f94084c8aa513",
+            "sha256": "07c8429db5b7d85c7d88fa70d5e0994ab4161c1ecdfac97e321ab13df95311e8",
+            "source": "user-stock-decision"
+          }
+        }
+      ],
+      "source_preserved": true,
+      "status": "failed",
+      "structured_terminal": null,
+      "trace_verified": true,
+      "trial_id": "pilot-pilot-cold-context-native"
+    },
+    {
+      "accepted": true,
+      "actual_host_prompt_sha256": "60619d6831fa984010b0d7df7652c6724888f2b5f092b7e1d06fd90190da1bed",
+      "approval": {
+        "actor": "simulated_semantic_reviewer",
+        "confirmation_id": "2a0ebda58ff3eaced7eab8e0e78319f623c6ec7bb738f075b6caa009ec64647a",
+        "proposal_id": "dd7bc8451d25f79e16806a0a660f15710bb7a1e4207ad49df0bb77a1b28cdb13",
+        "proposal_sha256": "dd7bc8451d25f79e16806a0a660f15710bb7a1e4207ad49df0bb77a1b28cdb13",
+        "session_id": "20261015_122808_c88b59",
+        "status": "confirmed"
+      },
+      "approved": true,
+      "arm": "review",
+      "artifact_sha256": "3fe3c212fe3fb3c42760eff7f00b82261f88df2252d6a40d1076abbbceb73236",
+      "business_correct": true,
+      "candidate_proof": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "盘点"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "发现并恢复真实电子表格技能",
+            "text": "Use the discovered real spreadsheet skill (trusted productivity/xlsx with its original helper) as the basis of this task; capability is xlsx.inspect."
+          },
+          {
+            "fields": [
+              "/execution/input_path"
+            ],
+            "quote": "读取 input.xlsx",
+            "text": "Read the workbook from the workspace-relative input path input.xlsx."
+          },
+          {
+            "fields": [
+              "/capability",
+              "/execution/output_path"
+            ],
+            "quote": "通过原始 xlsx_read.py 将完整JSON写入 output.json",
+            "text": "Run the original xlsx_read.py helper (xlsx.inspect) and write its complete JSON output to the workspace-relative output path output.json."
+          },
+          {
+            "fields": [
+              "/capability",
+              "/execution/mode"
+            ],
+            "quote": "完整JSON",
+            "text": "Emit the helper's complete JSON with the original helper JSON structure preserved unchanged (no reformatting, trimming, or retyping of the helper output)."
+          },
+          {
+            "fields": [
+              "/execution/mode"
+            ],
+            "quote": "rows",
+            "quote_ref": "q:eda111c1c2406ca15f875e0790ee77846b4f3da0d219fe878cedc26ee6ffc475",
+            "source_ref": {
+              "event_id": "review:5ee70d1d9a89a87ddd3ec4ec19554c8a142087b817d7c01cd4cfa2038653dfe4",
+              "sha256": "25234fb06f66a66c5492881539542510420e5f4de21dafca11256f3f2c1054b1",
+              "source": "user-stock-decision"
+            },
+            "text": "Restore the read mode as rows, taken from the explicit attachment (user-stock-decision)."
+          },
+          {
+            "fields": [
+              "/execution/sheet"
+            ],
+            "quote": "盘点",
+            "quote_ref": "q:113ce3585c36837de753dbd025e3f1f6a53e835914bc567c2baa5bd70a751cd2",
+            "source_ref": {
+              "event_id": "review:5ee70d1d9a89a87ddd3ec4ec19554c8a142087b817d7c01cd4cfa2038653dfe4",
+              "sha256": "25234fb06f66a66c5492881539542510420e5f4de21dafca11256f3f2c1054b1",
+              "source": "user-stock-decision"
+            },
+            "text": "Restore the target worksheet as 盘点, taken from the explicit attachment (user-stock-decision)."
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "保留原文件",
+            "text": "Keep the original input.xlsx untouched: the read is non-destructive and the source workbook must be preserved (preserve_original)."
+          },
+          {
+            "fields": [
+              "/execution/mode",
+              "/execution/sheet"
+            ],
+            "quote": "草稿注明出处",
+            "text": "The draft must state the provenance of the restored mode and sheet values; this is met by the source-anchored requirement rows citing the explicit attachment."
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "pilot-cold-context",
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "arguments_transform": "identity",
+        "cold_skill_restores": 1,
+        "errors": [],
+        "native_discovery_calls": 1,
+        "native_proposal_calls": 1,
+        "native_selection_calls": 1,
+        "native_skill_view_calls": 1,
+        "post_arguments_phase": "raw_before_coercion",
+        "proposal_api_requests": 1,
+        "proposal_digest": "dd7bc8451d25f79e16806a0a660f15710bb7a1e4207ad49df0bb77a1b28cdb13",
+        "proposal_executions": 0,
+        "proposal_id": "dd7bc8451d25f79e16806a0a660f15710bb7a1e4207ad49df0bb77a1b28cdb13",
+        "proposal_sha256": "dd7bc8451d25f79e16806a0a660f15710bb7a1e4207ad49df0bb77a1b28cdb13",
+        "proposal_verified": true,
+        "reporting_api_requests": 1,
+        "selected_script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+        "selected_skill_id": "productivity/xlsx",
+        "selected_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "selection_kind": "selected",
+        "skill_selection_verified": true,
+        "skill_snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30",
+        "source_ref": "user_prompt:60619d6831fa984010b0d7df7652c6724888f2b5f092b7e1d06fd90190da1bed",
+        "source_sha256": "60619d6831fa984010b0d7df7652c6724888f2b5f092b7e1d06fd90190da1bed",
+        "status": "verified_proposal",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_kind": "approved_public_controller",
+      "execution_run_id": "7e5123cd0e574de08b5f5f168057f412",
+      "execution_verified": true,
+      "fingerprint": "26d4452e1bf26ab4a21efa21f040ddeeac7d8113cc8149a3f53eb04388d42305",
+      "full_trial_elapsed_seconds": 107.23594349999621,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": false,
+      "no_business_output_before_approval": true,
+      "phase": "pilot",
+      "probe_correct": false,
+      "product_oracle_passed": true,
+      "raw_source_sha256": "60619d6831fa984010b0d7df7652c6724888f2b5f092b7e1d06fd90190da1bed",
+      "review_phase_proof": {
+        "cold_skill_restores": 1,
+        "native_discovery_calls": 1,
+        "native_selection_calls": 1,
+        "native_skill_view_calls": 1,
+        "selected_script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+        "selected_skill_id": "productivity/xlsx",
+        "selected_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "selection_kind": "selected",
+        "skill_selection_verified": true,
+        "skill_snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+      },
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_122808_c88b59",
+      "sha256": "43792694a24f010919e9b297025f227af5b376e55a4f3b350c2adadca7e84e88",
+      "skill_selection": {
+        "kind": "selected",
+        "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+        "skill_id": "productivity/xlsx",
+        "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "snapshot_id": "5d5bca09efd81460cc06a724eb50d901332e3dac571dc5240e23dea4c58e2a30"
+      },
+      "source_preserved": true,
+      "status": "completed",
+      "structured_terminal": null,
+      "trial_id": "pilot-pilot-cold-context-review"
+    }
+  ],
+  "reviewer_kind": "simulated_semantic_reviewer",
+  "schema_version": "rpe.v112-summary/v1",
+  "sha256": "016b78f6731273bc092ea61e0033c7528ba5310faca41718f76a9a847b4a92b9",
+  "shared_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 0.9033041249931557,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 0.9033041249931557,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 0.9020040035247803,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 1,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  }
+}

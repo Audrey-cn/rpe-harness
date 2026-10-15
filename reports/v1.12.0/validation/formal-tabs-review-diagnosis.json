@@ -1,0 +1,199 @@
+{
+  "schema_version": "rpe.v112-readonly-diagnosis/v1",
+  "source_frozen_commit": "576ad8f",
+  "diagnostic_mode": "read_only_existing_records_durable_proposal_and_host_events",
+  "provider_calls_by_diagnosis": 0,
+  "source_modified": false,
+  "official_records_modified": false,
+  "rescored": false,
+  "review": {
+    "trial_id": "formal-source-tabs-review",
+    "official_status": "failed",
+    "official_accepted": false,
+    "classification": "model_supplied_substring_quote_conflicts_with_exact_whole_request_quote_ref",
+    "business_semantics_faithful": true,
+    "draft_invocation_verified": true,
+    "delimiter": {
+      "code_point": "U+0009",
+      "single_real_tab": true
+    },
+    "proposal_status": "needs_context",
+    "proposal_document_sha256_matches_id": true,
+    "proposal_missing": [
+      "/constraints",
+      "/execution/delimiter",
+      "/execution/encoding",
+      "/execution/keep",
+      "/execution/output_path",
+      "requirements.2.quote_ref",
+      "requirements.3.quote_ref",
+      "requirements.4.quote_ref",
+      "requirements.5.quote_ref",
+      "requirements.6.quote_ref"
+    ],
+    "proposal_errors": [
+      "quote or source_ref differs from the explicitly selected quote_ref",
+      "quote or source_ref differs from the explicitly selected quote_ref",
+      "quote or source_ref differs from the explicitly selected quote_ref",
+      "quote or source_ref differs from the explicitly selected quote_ref",
+      "quote or source_ref differs from the explicitly selected quote_ref"
+    ],
+    "mismatched_rows": [
+      {
+        "requirement_row_1_based": 3,
+        "fields": [
+          "/execution/keep"
+        ],
+        "supplied_quote": "去重保留首条",
+        "supplied_quote_is_literal_substring": true,
+        "addressed_quote_kind": "whole_current_request",
+        "addressed_quote_span": [
+          0,
+          92
+        ],
+        "addressed_quote_character_count": 92,
+        "addressed_quote_sha256": "f7586f79fb08f0fbf154834e53a472feac1b0d0bd5fbf0c3239b9540aec891f0",
+        "quote_equals_selected_address": false
+      },
+      {
+        "requirement_row_1_based": 4,
+        "fields": [
+          "/constraints"
+        ],
+        "supplied_quote": "原行顺序",
+        "supplied_quote_is_literal_substring": true,
+        "addressed_quote_kind": "whole_current_request",
+        "addressed_quote_span": [
+          0,
+          92
+        ],
+        "addressed_quote_character_count": 92,
+        "addressed_quote_sha256": "f7586f79fb08f0fbf154834e53a472feac1b0d0bd5fbf0c3239b9540aec891f0",
+        "quote_equals_selected_address": false
+      },
+      {
+        "requirement_row_1_based": 5,
+        "fields": [
+          "/execution/output_path",
+          "/execution/delimiter"
+        ],
+        "supplied_quote": "用真正的TAB字符分隔",
+        "supplied_quote_is_literal_substring": true,
+        "addressed_quote_kind": "whole_current_request",
+        "addressed_quote_span": [
+          0,
+          92
+        ],
+        "addressed_quote_character_count": 92,
+        "addressed_quote_sha256": "f7586f79fb08f0fbf154834e53a472feac1b0d0bd5fbf0c3239b9540aec891f0",
+        "quote_equals_selected_address": false
+      },
+      {
+        "requirement_row_1_based": 6,
+        "fields": [
+          "/execution/encoding"
+        ],
+        "supplied_quote": "UTF-8编码",
+        "supplied_quote_is_literal_substring": true,
+        "addressed_quote_kind": "whole_current_request",
+        "addressed_quote_span": [
+          0,
+          92
+        ],
+        "addressed_quote_character_count": 92,
+        "addressed_quote_sha256": "f7586f79fb08f0fbf154834e53a472feac1b0d0bd5fbf0c3239b9540aec891f0",
+        "quote_equals_selected_address": false
+      },
+      {
+        "requirement_row_1_based": 7,
+        "fields": [
+          "/constraints"
+        ],
+        "supplied_quote": "保留原文件",
+        "supplied_quote_is_literal_substring": true,
+        "addressed_quote_kind": "whole_current_request",
+        "addressed_quote_span": [
+          0,
+          92
+        ],
+        "addressed_quote_character_count": 92,
+        "addressed_quote_sha256": "f7586f79fb08f0fbf154834e53a472feac1b0d0bd5fbf0c3239b9540aec891f0",
+        "quote_equals_selected_address": false
+      }
+    ],
+    "accepted_quote_rows": {
+      "request_ref_only_row_1": true,
+      "attachment_composite_key_row_2": true
+    },
+    "confirmation_stop": "Public show requires awaiting_confirmation; durable proposal was needs_context, so review stage raised ValueError before confirm.",
+    "confirmation_rows": 0,
+    "execution_rows": 0,
+    "source_preserved": true,
+    "business_output_absent": true,
+    "usage": {
+      "api_errors": 0,
+      "api_requests": 2,
+      "cache_read_tokens": 2304,
+      "cache_write_tokens": null,
+      "coverage_complete": true,
+      "input_tokens": 869,
+      "known_total_tokens": 6196,
+      "missing_observations": 0,
+      "output_tokens": 3023,
+      "prompt_tokens": 3173,
+      "reasoning_tokens": 1490,
+      "requests_with_usage": 2,
+      "total_tokens": 6196
+    },
+    "scope_note": "faithful business fields do not make inconsistent quote provenance confirmable. The exact-match rejection is intentional; no draft repair or retry was performed.",
+    "official_record_file_sha256_before": "2c8c50f7878ee66bdaa8ee5e4dabe73f1077477eb9284166b0fee4c0421282a1",
+    "official_record_file_sha256_after": "2c8c50f7878ee66bdaa8ee5e4dabe73f1077477eb9284166b0fee4c0421282a1",
+    "official_record_sha256_unchanged": true
+  },
+  "native": {
+    "trial_id": "formal-source-tabs-native",
+    "official_status": "failed",
+    "official_accepted": false,
+    "classification": "bounded_host_timeout_with_unknown_provider_outcome",
+    "phase_status": "timed_out",
+    "elapsed_seconds": 202.26015762500174,
+    "configured_draft_timeout_seconds": 180,
+    "host_wrapper_deadline_grace_seconds": 20,
+    "observed_api_request_starts": 1,
+    "observed_api_responses": 0,
+    "observed_api_error_outcomes": 0,
+    "response_models": [],
+    "draft_present": false,
+    "downstream_errors": {
+      "draft_gate": [
+        "native_api_linkage_invalid"
+      ],
+      "record_error_code": "FileNotFoundError"
+    },
+    "business_semantics_assessable": false,
+    "provider_response_or_completion_unknown": true,
+    "provider_billing_unknown": true,
+    "usage": {
+      "api_errors": 0,
+      "api_requests": 1,
+      "cache_read_tokens": null,
+      "cache_write_tokens": null,
+      "coverage_complete": false,
+      "input_tokens": null,
+      "known_total_tokens": 0,
+      "missing_observations": 1,
+      "output_tokens": null,
+      "prompt_tokens": null,
+      "reasoning_tokens": null,
+      "requests_with_usage": 0,
+      "total_tokens": null
+    },
+    "host_cleanup_complete": true,
+    "source_preserved": true,
+    "business_output_absent": true,
+    "scope_note": "native_api_linkage_invalid describes the missing outcome for an observed request start. FileNotFoundError describes absent draft.json. Neither is evidence of wrong business interpretation. known_total_tokens=0 is only the observed lower bound, not actual zero usage or zero billing.",
+    "official_record_file_sha256_before": "b6d0f839d4221c879c3571b8655cc6831ca6bf69e28f2a580bd35dd6d8c82658",
+    "official_record_file_sha256_after": "b6d0f839d4221c879c3571b8655cc6831ca6bf69e28f2a580bd35dd6d8c82658",
+    "official_record_sha256_unchanged": true
+  }
+}

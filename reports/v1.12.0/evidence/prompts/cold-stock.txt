@@ -1,0 +1,1 @@
+请发现、恢复并读取真实表格技能。只读 input.xlsx，检查模式与工作表使用本次附件的决定。调用原始 xlsx_read.py，按原helper的完整JSON结构另存 output.json；保留输入、行顺序和类型，不重写helper。

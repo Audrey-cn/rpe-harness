@@ -1,0 +1,102 @@
+{
+  "schema_version": "rpe.v112-readonly-diagnosis/v1",
+  "trial_id": "formal-cold-stock-review",
+  "source_frozen_commit": "576ad8f",
+  "diagnostic_mode": "read_only_existing_durable_events_and_private_logs",
+  "provider_calls_by_diagnosis": 0,
+  "official_record_modified": false,
+  "rescored": false,
+  "official_record_file_sha256": "9a22feeb5ff376e2021b8167a6ee32e3235d75caabd677e33649826f5350bb2b",
+  "official_status": "failed",
+  "official_accepted": false,
+  "causal_chain": [
+    {
+      "api_sequence": 1,
+      "phase": "discover",
+      "model_emitted_calls": 2,
+      "tool": "rpe_discover",
+      "requested_parallel_tool_calls": false,
+      "result": "both rejected before pre_tool_call",
+      "error_code": "review_identity_invalid",
+      "cause": "actual provider sole-tool call identity differs"
+    },
+    {
+      "api_sequence": 2,
+      "phase": "discover",
+      "model_emitted_calls": 1,
+      "result": "discovered"
+    },
+    {
+      "api_sequence": 3,
+      "phase": "select",
+      "model_emitted_calls": 1,
+      "result": "selected_and_cold_skill_restored"
+    },
+    {
+      "api_sequence": 4,
+      "phase": "view",
+      "model_emitted_calls": 1,
+      "result": "native_original_skill_loaded"
+    },
+    {
+      "api_sequence": 5,
+      "phase": "propose",
+      "model_emitted_calls": 1,
+      "result": "durable_proposal_awaiting_confirmation"
+    },
+    {
+      "api_sequence": 6,
+      "phase": "none",
+      "provider_call_occurred": false,
+      "result": "transport_blocked_before_provider",
+      "cause": "len(policies) reached fixed skill-workflow limit 5",
+      "exception_chain": [
+        "ValueError: review phase or API budget exceeded",
+        "ReviewIngressBlocked: review transport request blocked before provider"
+      ]
+    }
+  ],
+  "classification": {
+    "primary": "model_protocol_noncompliance_followed_by_local_workflow_api_budget_exhaustion",
+    "stop": "local_pre_provider_budget_enforcement",
+    "provider_content_or_security_refusal": false,
+    "input_source_or_quote_rejection": false,
+    "implementation_limit": "terminal summary consumes an API slot; one rejected discovery response exhausted the slot otherwise used by terminal summary",
+    "independent_chain_issue": "even without the terminal block, strict policy verification rejects the first two-call provider response as review_model_policy_ignored"
+  },
+  "durable_state": {
+    "proposal_rows": 1,
+    "proposal_status": "awaiting_confirmation",
+    "confirmation_rows": 0,
+    "execution_rows": 0,
+    "terminal_result_record_present": false,
+    "on_session_end_present": false,
+    "host_cleanup_complete": true,
+    "source_preserved": true,
+    "business_output_absent": true
+  },
+  "usage": {
+    "api_errors": 0,
+    "api_requests": 5,
+    "cache_read_tokens": 2432,
+    "cache_write_tokens": null,
+    "coverage_complete": true,
+    "input_tokens": 7183,
+    "known_total_tokens": 10981,
+    "missing_observations": 0,
+    "output_tokens": 1366,
+    "prompt_tokens": 9615,
+    "reasoning_tokens": 408,
+    "requests_with_usage": 5,
+    "total_tokens": 10981
+  },
+  "scope_note": "Five completed provider API observations include the rejected first response. Sixth request was locally blocked before provider. Total tokens are observed usage, not verified billing. Formal failure is preserved; diagnostic does not authorize proposal execution.",
+  "source_locations": [
+    "src/rpe_harness/integrations/hermes_skills.py:_actual_policy",
+    "src/rpe_harness/integrations/hermes_review.py:policy API budget guard",
+    "src/rpe_harness/integrations/hermes_review.py:_verify_policy"
+  ],
+  "official_record_file_sha256_before": "9a22feeb5ff376e2021b8167a6ee32e3235d75caabd677e33649826f5350bb2b",
+  "official_record_file_sha256_after": "9a22feeb5ff376e2021b8167a6ee32e3235d75caabd677e33649826f5350bb2b",
+  "official_record_sha256_unchanged": true
+}

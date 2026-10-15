@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="0.346" timestamp="2026-10-15T12:07:04.233679+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_quote_contract" name="test_review_delimiter_schema_uses_public_character_contract" time="0.119"><failure message="KeyError: 'minLength'">review = {'api': &lt;module 'rpe_harness.integrations.hermes_review' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src...y/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_review_delimiter_schema_u0/runs.sqlite'), ...}
+
+    def test_review_delimiter_schema_uses_public_character_contract(review):
+        from rpe_harness.contracts import request_schema
+        from rpe_harness.integrations.hermes_review import REVIEW_CONTRACT
+        schema = review['sdk'].tools['rpe_propose']['schema']['parameters']['properties']
+        delimiter = schema['execution']['properties']['delimiter']
+        for key, value in request_schema()['properties']['execution']['properties']['delimiter'].items():
+&gt;           assert delimiter[key] == value
+                   ^^^^^^^^^^^^^^
+E           KeyError: 'minLength'
+
+tests/test_review_quote_contract.py:19: KeyError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_request_anchors_are_exact_bounded_and_bound_to_whole_source" time="0.000"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">def test_request_anchors_are_exact_bounded_and_bound_to_whole_source():
+&gt;       from rpe_harness.review_quotes import request_quote_anchors, resolve_quote_ref
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:25: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_addressed_request_is_rendered_without_rewriting_model_draft" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_addressed_request_is_rend0')
+
+    def test_addressed_request_is_rendered_without_rewriting_model_draft(tmp_path):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:39: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[unknown]" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_quote_addresses_reject_un0')
+fault = 'unknown'
+
+    @pytest.mark.parametrize('fault', ['unknown', 'paraphrase', 'null', 'source_ref', 'raw_change'])
+    def test_quote_addresses_reject_unknown_stale_and_mismatched_claims(tmp_path, fault):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:63: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[paraphrase]" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_quote_addresses_reject_un1')
+fault = 'paraphrase'
+
+    @pytest.mark.parametrize('fault', ['unknown', 'paraphrase', 'null', 'source_ref', 'raw_change'])
+    def test_quote_addresses_reject_unknown_stale_and_mismatched_claims(tmp_path, fault):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:63: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[null]" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_quote_addresses_reject_un2')
+fault = 'null'
+
+    @pytest.mark.parametrize('fault', ['unknown', 'paraphrase', 'null', 'source_ref', 'raw_change'])
+    def test_quote_addresses_reject_unknown_stale_and_mismatched_claims(tmp_path, fault):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:63: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[source_ref]" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_quote_addresses_reject_un3')
+fault = 'source_ref'
+
+    @pytest.mark.parametrize('fault', ['unknown', 'paraphrase', 'null', 'source_ref', 'raw_change'])
+    def test_quote_addresses_reject_unknown_stale_and_mismatched_claims(tmp_path, fault):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:63: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_quote_addresses_reject_unknown_stale_and_mismatched_claims[raw_change]" time="0.001"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_quote_addresses_reject_un4')
+fault = 'raw_change'
+
+    @pytest.mark.parametrize('fault', ['unknown', 'paraphrase', 'null', 'source_ref', 'raw_change'])
+    def test_quote_addresses_reject_unknown_stale_and_mismatched_claims(tmp_path, fault):
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:63: ModuleNotFoundError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_attachment_address_preserves_fact_gate_and_live_revalidation" time="0.005"><failure message="KeyError: 'quote_refs'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_attachment_address_preser0')
+
+    def test_attachment_address_preserves_fact_gate_and_live_revalidation(tmp_path):
+        from rpe_harness.proposal import ProposalStore
+        path, context, candidate = setup(tmp_path)
+        projected = context['model_sources'][0]
+        row = candidate['requirements'][-1]
+        row.pop('quote')
+        row.pop('source_ref')
+&gt;       row['quote_ref'] = projected['quote_refs']['key_columns']
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'quote_refs'
+
+tests/test_review_quote_contract.py:91: KeyError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_legacy_context_projection_remains_revalidatable" time="0.004"><failure message="KeyError: 'quote_refs'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_legacy_context_projection0')
+
+    def test_legacy_context_projection_remains_revalidatable(tmp_path):
+        from rpe_harness.review_context import validate_context
+        path, context, _ = setup(tmp_path)
+        legacy = copy.deepcopy(context)
+        for item in legacy['model_sources']:
+&gt;           item.pop('quote_refs')
+E           KeyError: 'quote_refs'
+
+tests/test_review_quote_contract.py:118: KeyError</failure></testcase><testcase classname="tests.test_review_quote_contract" name="test_model_payload_publishes_exact_anchors_and_both_citation_forms" time="0.053"><failure message="ModuleNotFoundError: No module named 'rpe_harness.review_quotes'">review = {'api': &lt;module 'rpe_harness.integrations.hermes_review' from '/Users/audrey/.codex/worktrees/rpe-v112/rpe-harness/src...y/项目/缓存/test/rpe-v112-779de8be2a164088b1b20e40264fc378/contract-red/test_model_payload_publishes_e0/runs.sqlite'), ...}
+
+    def test_model_payload_publishes_exact_anchors_and_both_citation_forms(review):
+        api = review['api']
+&gt;       from rpe_harness.review_quotes import request_quote_anchors
+E       ModuleNotFoundError: No module named 'rpe_harness.review_quotes'
+
+tests/test_review_quote_contract.py:125: ModuleNotFoundError</failure></testcase></testsuite></testsuites>
