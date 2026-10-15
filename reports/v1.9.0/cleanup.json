@@ -52,5 +52,15 @@
     }
   },
   "credentials_and_raw_history_exported": false,
-  "completed_at_unix": 1792024097.257984
+  "completed_at_unix": 1792024097.257984,
+  "preserved_wheel": "/Users/audrey/项目/rpe-harness/dist/rpe_harness-1.9.0-py3-none-any.whl",
+  "worktree_cleanup": {
+    "status": "archived",
+    "physical_removed": true,
+    "native_attachment_type": "archived_worktree",
+    "native_attachment_id": "01a13cf7-2772-7762-a0b7-857d3a8fd5fd",
+    "source_commit": "1923b05ca564d565c6b21b10dfede89a75320a46",
+    "release_branch": "codex/rpe-v1.9-release",
+    "confirmed_at_unix": 1792024265.297937
+  }
 }
