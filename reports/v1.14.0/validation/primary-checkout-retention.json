@@ -1,0 +1,12 @@
+{
+  "declared_at": 1792051676.92327,
+  "reason": "Native archive_worktree rejected removal of the task primary checkout. Committed source is retained; test runtime state remains entirely in the deleted owned root.",
+  "tool_message": "The task's primary checkout cannot be removed.",
+  "primary_checkout": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness",
+  "primary_source_preserved": true,
+  "initial_baseline_sha256": "ad34dc18b7eb6a660794efb5668f2fd224d6a4fb784b287786dafb0d72523c3c",
+  "changed_baseline_fields": [
+    "deleted_paths"
+  ],
+  "owned_runtime_scope_unchanged": true
+}

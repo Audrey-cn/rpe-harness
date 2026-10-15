@@ -1,0 +1,16 @@
+{
+  "schema_version": "rpe.v114-cleanup/v1",
+  "complete": true,
+  "deleted_paths": [
+    "/Users/audrey/项目/缓存/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b"
+  ],
+  "regular_files_removed": 45257,
+  "regular_bytes_removed": 775865063,
+  "owned_histories_caches_venvs_credentials_keys_removed": true,
+  "global_history_or_cache_deleted": false,
+  "primary_checkout_retained": true,
+  "primary_checkout": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness",
+  "native_archive_result": "The task's primary checkout cannot be removed.",
+  "primary_checkout_contains": "committed source and sanitized delivery evidence; duplicate ignored build wheel removed",
+  "completed_at": 1792051751.136628
+}

@@ -71,8 +71,7 @@
   },
   "daily_root": "/Users/audrey/.hermes",
   "deleted_paths": [
-    "/Users/audrey/项目/缓存/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b",
-    "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness"
+    "/Users/audrey/项目/缓存/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b"
   ],
   "files": {
     "/Users/audrey/.claude.json": "0f95200c8ca84a30adb41e27fe0aeb5a4ed8774e605fc0916bb28fd4c28055b0",
