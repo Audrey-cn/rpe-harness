@@ -19,6 +19,15 @@ RAW = ('Deduplicate orders.csv by id, keep first, save out.csv, preserve origina
        'use utf-8 encoding and comma delimiter.')
 
 
+class ReviewSDK(SDK):
+    def __init__(self):
+        super().__init__()
+        self.hooks = {}
+
+    def register_hook(self, name, callback):
+        self.hooks[name] = callback
+
+
 def draft():
     return {'capability': 'tabular.deduplicate', 'constraints': ['preserve_original'],
         'execution': {'input_path': 'orders.csv', 'output_path': 'out.csv',
@@ -80,7 +89,7 @@ def review(tmp_path, monkeypatch):
         'raw': RAW, 'source_ref': 'current-request:test'}))
     monkeypatch.setenv('RPE_HERMES_REVIEW_CONFIG', str(config))
     monkeypatch.setenv('RPE_HERMES_ENTRY_KEY', 'review-entry')
-    sdk = SDK()
+    sdk = ReviewSDK()
     api.register_review_workflow(sdk, store=store, workspace=workspace, python=sys.executable,
                                  error_path=tmp_path / 'errors')
     extension = api.review_extension(db, workspace, raw=RAW, source_ref='current-request:test')
@@ -93,7 +102,7 @@ def review(tmp_path, monkeypatch):
     assert broker.cleanup['cleanup_complete'] is True
 
 
-def dispatch(env, arguments):
+def dispatch(env, arguments, *, effective_arguments=None):
     ids = {'session_id': 'review-session', 'task_id': 'review-task', 'turn_id': 'review-turn',
            'api_request_id': 'api-1', 'tool_call_id': 'call-1'}
     request = env['sdk'].middleware['llm_request'](request={'tools': [],
@@ -106,7 +115,10 @@ def dispatch(env, arguments):
         {'id': ids['tool_call_id'], 'name': 'rpe_propose'}]}}})
     env['store'].record('pre_tool_call', {**ids, 'tool_name': 'rpe_propose',
         'arguments_sha256': digest_json(arguments)})
-    result = json.loads(env['sdk'].middleware['tool_execution'](tool_name='rpe_propose', args=arguments,
+    if 'pre_tool_call' in env['sdk'].hooks:
+        env['sdk'].hooks['pre_tool_call'](tool_name='rpe_propose', args=arguments, **ids)
+    result = json.loads(env['sdk'].middleware['tool_execution'](tool_name='rpe_propose',
+        args=arguments if effective_arguments is None else effective_arguments,
         next_call=lambda value: env['sdk'].tools['rpe_propose']['handler'](
             value, task_id=ids['task_id'], session_id=ids['session_id']), **ids))
     env['store'].record('post_tool_call', {**ids, 'tool_name': 'rpe_propose', 'status': 'ok',
@@ -172,7 +184,7 @@ def test_model_cannot_call_a_confirmation_tool(review):
     assert json.loads(result)['status'] == 'rejected'
 
 
-@pytest.mark.parametrize('corruption', ['receipt', 'draft', 'source', 'proposal'])
+@pytest.mark.parametrize('corruption', ['receipt', 'draft', 'source', 'proposal', 'raw_receipt', 'actual_receipt'])
 def test_review_gate_rejects_parent_receipt_or_draft_drift(review, corruption):
     proposal = dispatch(review, draft())
     assert proposal['status'] == 'awaiting_confirmation'
@@ -182,6 +194,9 @@ def test_review_gate_rejects_parent_receipt_or_draft_drift(review, corruption):
             metadata = json.loads(row[1])
             metadata['arguments_sha256'] = 'a' * 64
             db.execute('UPDATE hermes_host_events SET metadata_json=? WHERE id=?', (json.dumps(metadata), row[0]))
+        elif corruption in ('raw_receipt', 'actual_receipt'):
+            kind = 'rpe_review_arguments_received' if corruption == 'raw_receipt' else 'rpe_review_arguments_checked'
+            db.execute('DELETE FROM hermes_host_events WHERE kind=?', (kind,))
         elif corruption == 'proposal':
             db.execute('UPDATE rpe_proposals SET document=? WHERE proposal_id=?', (b'{}', proposal['proposal_id']))
         else:
@@ -195,6 +210,16 @@ def test_review_gate_rejects_parent_receipt_or_draft_drift(review, corruption):
     result = host_result(review)
     verdict = review['api'].evaluate_review_session(result, review['db'], review['workspace'])
     assert verdict['proposal_verified'] is False
+
+
+def test_unknown_argument_transform_is_blocked_before_parent_rpc(review):
+    original, actual = draft(), draft()
+    actual['execution']['output_path'] = 'different.csv'
+    result = dispatch(review, original, effective_arguments=actual)
+    assert result['status'] == 'rejected'
+    assert not any(event['kind'] == 'rpe_skill_rpc_received' for event in review['store'].list())
+    assert not (review['workspace'] / 'out.csv').exists()
+    assert not (review['workspace'] / 'different.csv').exists()
 
 
 def test_unresolved_business_clause_is_a_verified_blocked_draft(review):
@@ -263,7 +288,8 @@ def _sdk_home(env, name):
     return interpreter, environment
 
 
-def test_installed_sdk_loads_validates_and_invokes_proposal_without_network(review):
+@pytest.mark.parametrize('malformed', [False, True])
+def test_installed_sdk_loads_validates_and_invokes_proposal_without_network(review, malformed):
     interpreter, environment = _sdk_home(review, 'sdk-session')
     program = '''import json,sys,socket
 from types import SimpleNamespace
@@ -304,7 +330,7 @@ validation=validate_tool_calls(agent,message,'tool_calls',messages=[],conversati
 assert validation.action=='ok',validation.action
 agent.session_id=ids['session_id'];agent._current_turn_id=ids['turn_id'];agent._current_api_request_id=ids['api_request_id']
 result=json.loads(invoke_tool(agent,'rpe_propose',args,ids['task_id'],tool_call_id=ids['tool_call_id'],messages=[]))
-assert result['status']=='awaiting_confirmation',result
+assert result['status']==sys.argv[3],result['status']
 ids={'session_id':'review-session','task_id':'review-task','turn_id':'review-turn','api_request_id':'sdk-api-final'}
 body=apply_llm_request_middleware({'tools':agent.tools,'messages':[{'role':'user','content':'PRIVATE_SDK_HISTORY'}]},**ids).payload
 assert body['tool_choice']=='none' and 'PRIVATE_SDK_HISTORY' not in json.dumps(body)
@@ -313,15 +339,27 @@ run_llm_execution_middleware(body,lambda value:value,**ids)
 manager.invoke_hook('post_api_request',response={'assistant_message':{'tool_calls':[]}},**ids)
 print(json.dumps(result))
 '''
-    child = subprocess.run([str(interpreter), '-B', '-c', program, json.dumps(draft()), RAW],
+    arguments = draft()
+    if malformed:
+        arguments['requirements'] = '[{"text":"malformed" '
+        arguments['unresolved'] = '["malformed" '
+    expected_status = 'needs_context' if malformed else 'awaiting_confirmation'
+    child = subprocess.run([str(interpreter), '-B', '-c', program, json.dumps(arguments), RAW, expected_status],
         cwd=review['workspace'], env=environment, capture_output=True, text=True, timeout=30)
     assert child.returncode == 0, child.stderr[-4000:]
     result = json.loads(child.stdout.strip().splitlines()[-1])
-    assert result['status'] == 'awaiting_confirmation'
+    assert result['status'] == expected_status
     assert not (review['workspace'] / 'out.csv').exists()
     verdict = review['api'].evaluate_review_session(host_result(review), review['db'], review['workspace'])
     assert verdict['proposal_verified'] is True, verdict
     assert verdict['reporting_api_requests'] == 1
+    if malformed:
+        assert result['requirements'] == []
+        assert verdict['arguments_transform'] == 'array_string_wrapped'
+        assert verdict['post_arguments_phase'] == 'effective_after_coercion'
+        assert result['draft']['requirements'] == [arguments['requirements']]
+        with sqlite3.connect(review['db']) as db:
+            assert db.execute('SELECT count(*) FROM rpe_confirmations').fetchone()[0] == 0
 
 
 def test_installed_sdk_final_http_body_and_fail_closed_override_guard(review):

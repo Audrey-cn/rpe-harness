@@ -107,6 +107,39 @@ def _proposal_identity(value):
             if key in value}
 
 
+def _argument_transform(raw, actual):
+    """Recognize only the SDK's scalar-array fallback; never parse or repair text."""
+    if raw == actual:
+        return 'identity'
+    if type(raw) is not dict or type(actual) is not dict or set(raw) != set(actual):
+        raise ValueError('review_argument_transform_unknown')
+    changed = {key for key in raw if raw[key] != actual[key]}
+    if (not changed or not changed <= {'requirements', 'unresolved'} or
+            any(type(raw[key]) is not str or actual[key] != [raw[key]] for key in changed)):
+        raise ValueError('review_argument_transform_unknown')
+    return 'array_string_wrapped'
+
+
+def _argument_provenance(events, state, native, actual):
+    from .skill_gate import _one
+    raw = state['raw_arguments']
+    raw_sha, actual_sha = digest_json(raw), digest_json(actual)
+    received = _one(events, 'rpe_review_arguments_received', native, 'rpe_propose')
+    checked = _one(events, 'rpe_review_arguments_checked', native, 'rpe_propose')
+    pre = _one(events, 'pre_tool_call', native, 'rpe_propose')
+    transform = _argument_transform(raw, actual)
+    if (received['ingest_event_id'] != state['raw_arguments_receipt_id']
+            or received.get('status') != 'raw_before_coercion'
+            or received.get('arguments_sha256') != raw_sha or pre.get('arguments_sha256') != raw_sha
+            or checked['ingest_event_id'] != state['arguments_receipt_id']
+            or checked.get('receipt_id') != received['ingest_event_id']
+            or checked.get('arguments_sha256') != actual_sha or checked.get('content_sha256') != raw_sha
+            or checked.get('status') != transform
+            or any(row.get('entry_key') != state['entry_key'] for row in (received, checked))):
+        raise ValueError('review_argument_provenance_differs')
+    return transform
+
+
 def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, snapshot_id=None):
     """Capture current prose in the parent; model arguments can supply only a draft."""
     from .hermes import HostEventStore
@@ -128,9 +161,12 @@ def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, 
             _raw_policy(events, native, state)
             if state['phase'] != 'propose' or state.get('catalog_sha256') != catalog.snapshot_id:
                 raise ValueError('review phase or catalog differs')
+            transform = _argument_provenance(events.list(native['session_id']), state, native, arguments)
             result = create_proposal(raw, arguments, db_path=db_path, workspace=directory,
                 session_id=native['session_id'], source_ref=source_ref,
                 catalog_root=catalog_root, skill_snapshot_id=snapshot_id)
+            if transform != 'identity' and result.get('status') == 'awaiting_confirmation':
+                raise ValueError('review_coerced_draft_cannot_be_confirmable')
             state.update(phase='none', source_raw=raw, draft=arguments,
                 proposal_native={key: native[key] for key in IDS}, proposal_result=_proposal_identity(result),
                 source_ref=source_ref, snapshot_id=snapshot_id,
@@ -160,6 +196,28 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                     'required': ['text', 'quote', 'fields'], 'properties': {'text': string,
                         'quote': {'type': ['string', 'null']}, 'fields': {'type': 'array', 'items': string}}}},
                 'unresolved': {'type': 'array', 'items': string}}}}
+
+    def capture_arguments(tool_name, args, **context):
+        if tool_name != 'rpe_propose':
+            return None
+        try:
+            native = {**_identity(context, entry_key), 'tool_name': tool_name}
+            raw = json.loads(json.dumps(args, ensure_ascii=False, allow_nan=False))
+            if type(raw) is not dict or _json_bytes(raw) > 65536:
+                raise ValueError('review raw arguments exceed bounds')
+            with lock:
+                state = workflows.get(native)
+                _actual_policy(store, native, tool_name)
+                _raw_policy(store, native, state)
+                if state['phase'] != 'propose' or 'raw_arguments' in state:
+                    raise ValueError('review raw arguments already captured')
+                receipt = store.record('rpe_review_arguments_received', {**native,
+                    'arguments_sha256': digest_json(raw), 'status': 'raw_before_coercion'})
+                state.update(raw_arguments=raw, raw_arguments_receipt_id=receipt['ingest_event_id'])
+                workflows.put(state)
+        except Exception as error:
+            raise ReviewIngressBlocked('review raw argument capture failed') from error
+        return None
 
     def policy(request, **context):
         try:
@@ -230,6 +288,14 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
         if native.get('session_id') != session_id or native.get('task_id') != task_id:
             return json.dumps({'status': 'rejected', 'error': {'code': 'entry_context_missing'}})
         try:
+            with lock:
+                state = workflows.get(native)
+                transform = _argument_transform(state['raw_arguments'], args)
+                receipt = store.record('rpe_review_arguments_checked', {**native,
+                    'receipt_id': state['raw_arguments_receipt_id'], 'arguments_sha256': digest_json(args),
+                    'content_sha256': digest_json(state['raw_arguments']), 'status': transform})
+                state['arguments_receipt_id'] = receipt['ingest_event_id']
+                workflows.put(state)
             result, rpc = _skill_exchange('propose', args, store=store, native=native)
             state = workflows.get(native)
             receipt = store.record('rpe_review_proposed', {**native, 'receipt_id': rpc,
@@ -263,6 +329,7 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
         except (ValueError, TypeError, KeyError, OSError, sqlite3.Error):
             return json.dumps({'status': 'rejected', 'error': {'code': 'review_identity_invalid'}})
     ctx.register_tool(name='rpe_propose', toolset='rpe_harness', handler=handle, schema=schema)
+    ctx.register_hook('pre_tool_call', capture_arguments)
     ctx.register_middleware('llm_request', policy)
     ctx.register_middleware('llm_execution', api_execution)
     ctx.register_middleware('tool_execution', middleware)
@@ -323,7 +390,12 @@ def _verify_policy(events, state, config):
             native = {**{k: pre[k] for k in IDS[:-1]}, **call}
             for kind in ('pre_tool_call', 'post_tool_call'):
                 observed = _one(events, kind, native, 'rpe_propose')
-                if observed.get('arguments_sha256') != digest_json(state['draft']):
+                allowed = {digest_json(state['raw_arguments'])}
+                # Sequential CLI emits original post-call args; invoke_tool's
+                # registry path emits effective args. Both are receipt-bound.
+                if kind == 'post_tool_call':
+                    allowed.add(digest_json(state['draft']))
+                if observed.get('arguments_sha256') not in allowed:
                     raise ValueError('review_native_arguments_changed')
             emitted.append(native)
     if phases not in (['rpe_propose'], ['rpe_propose', 'none']):
@@ -362,12 +434,15 @@ def evaluate_review_session(result, db_path, workspace, *, catalog_root=None):
         config = json.loads(path.read_text())
         config['entries'] = _model_catalog_entries(config['entries'])
         verdict['reporting_api_requests'] = _verify_policy(events, state, config)
+        transform = _argument_provenance(events, state, state['proposal_native'], state['draft'])
         if config['raw'] != state['source_raw'] or config['source_ref'] != state['source_ref']:
             raise ValueError('review_original_source_changed')
         current = _catalog(db_path, catalog_root, state.get('snapshot_id'))
         if current.snapshot_id != state['catalog_sha256'] or current.snapshot_id != config['catalog_sha256']:
             raise ValueError('review_capability_catalog_changed')
         proposal = ProposalStore(db_path).show(state['proposal_result']['proposal_id'], session_id=result['session_id'])
+        if transform != 'identity' and proposal.get('status') == 'awaiting_confirmation':
+            raise ValueError('review_coerced_draft_cannot_be_confirmable')
         if (proposal.get('source', {}).get('raw') != config['raw'] or proposal.get('draft') != state['draft']
                 or proposal.get('source', {}).get('source_ref') != config['source_ref']
                 or proposal.get('workspace') != str(Path(workspace).resolve())
@@ -387,6 +462,10 @@ def evaluate_review_session(result, db_path, workspace, *, catalog_root=None):
         if len(rpc) != 1:
             raise ValueError('review_parent_receipt_missing')
         verdict.update(status='verified_proposal', verified=True, proposal_verified=True,
+            arguments_transform=transform,
+            post_arguments_phase=('raw_before_coercion' if _one(events, 'post_tool_call',
+                state['proposal_native'], 'rpe_propose').get('arguments_sha256') ==
+                digest_json(state['raw_arguments']) else 'effective_after_coercion'),
             native_proposal_calls=1, proposal_api_requests=1, proposal_id=proposal['proposal_id'],
             proposal_sha256=proposal['proposal_sha256'], proposal_digest=proposal['proposal_sha256'],
             source_sha256=proposal['source']['source_sha256'], source_ref=config['source_ref'])
