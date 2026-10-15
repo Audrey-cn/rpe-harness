@@ -28,6 +28,8 @@ from .capability_catalog import _canonical, _definitions, build_catalog
 from .intent import (MAX_INTENT_BYTES, MinimalStateStore, _bounded, _identity,
                      _normal_execution, interpret_intent)
 from .skill_catalog import _absolute
+from .context import ContextStore, SourceRef
+from .review_context import recover_context, validate_context
 from .tasks import contract_from_plan, plan_from_request
 
 _SCHEMA = 'rpe.proposal/v1'
@@ -67,7 +69,7 @@ def _path_facts(request, workspace):
     return result
 
 
-def _rows(raw, draft):
+def _rows(raw, draft, sources=None):
     errors, missing, rows = [], [], []
     if type(draft) is not dict or set(draft) != _DRAFT_FIELDS:
         return rows, ['draft_fields'], ['draft must contain exactly capability, constraints, execution, requirements, unresolved']
@@ -82,7 +84,8 @@ def _rows(raw, draft):
         return rows, [*missing, 'requirements'], ['requirements must contain 1 to 32 rows']
     covered = set()
     for index, row in enumerate(supplied):
-        if (type(row) is not dict or set(row) != {'text', 'quote', 'fields'} or
+        if (type(row) is not dict or set(row) not in ({'text', 'quote', 'fields'},
+                {'text', 'quote', 'fields', 'source_ref'}) or
                 not isinstance(row.get('text'), str) or not row['text'].strip() or
                 type(row.get('fields')) is not list or not row['fields'] or
                 any(not isinstance(field, str) or field not in pointers for field in row['fields']) or
@@ -91,14 +94,40 @@ def _rows(raw, draft):
             errors.append('requirement text and mapped current typed fields are required')
             continue
         quote = row['quote']
-        if quote is not None and (not isinstance(quote, str) or not quote or quote not in raw):
+        quoted_source, origin = raw, 'source_quote' if quote is not None else 'proposed_default'
+        if 'source_ref' in row:
+            try:
+                ref = SourceRef.from_dict(row['source_ref']).to_dict()
+                source = (sources or {})[_canonical(ref)]
+                quoted_source, origin = source['payload']['text'], 'context_source'
+                for field in row['fields']:
+                    name = field.removeprefix('/execution/') if field.startswith('/execution/') else field[1:]
+                    if field == '/constraints':
+                        value = draft['constraints']
+                    elif field.startswith('/execution/') and type(execution) is dict:
+                        value = execution.get(name)
+                    else:
+                        raise ValueError('context facts cannot authorize a capability')
+                    fact = source['facts'].get(name)
+                    same = (set(value) == set(fact) if field == '/constraints'
+                            and type(value) is list and type(fact) is list
+                            and all(type(item) is str for item in value) else value == fact)
+                    if name not in source['facts'] or not same:
+                        raise ValueError('context citation field is missing or conflicts with its explicit fact')
+                if quote is None:
+                    raise ValueError('context citation requires a literal quote')
+            except (ValueError, KeyError, TypeError) as error:
+                missing.append('requirements.' + str(index) + '.source_ref')
+                errors.append(str(error) if isinstance(error, ValueError) else 'context citation is not an authorized source')
+                continue
+        if quote is not None and (not isinstance(quote, str) or not quote or quote not in quoted_source):
             missing.append('requirements.' + str(index) + '.quote')
             errors.append('source quotes must be nonempty literal substrings')
             continue
-        start = raw.find(quote) if quote is not None else None
+        start = quoted_source.find(quote) if quote is not None else None
         rows.append({'requirement_id': 'r' + str(index + 1).zfill(4),
             **copy.deepcopy(row), 'span': [start, start + len(quote)] if quote is not None else None,
-            'origin': 'source_quote' if quote is not None else 'proposed_default'})
+            'origin': origin})
         covered.update(row['fields'])
     missing += sorted(pointers - covered)
     unresolved = draft['unresolved']
@@ -121,7 +150,14 @@ def render_review(document):
     for row in document['requirements']:
         lines.append(row['requirement_id'] + ' ' + terminal_text(row['text']) +
             ' | 字段：' + _shown(row['fields']) + ' | ' + row['origin'] +
-            ' | 引用：' + _shown(row['quote']) + ' | 字符范围：' + _shown(row['span']))
+            ' | 引用：' + _shown(row['quote']) + ' | 字符范围：' + _shown(row['span']) +
+            (' | 来源：' + _shown(row['source_ref']) if 'source_ref' in row else ''))
+    if document.get('review_context') is not None:
+        lines.append('显式附件（仅必要事实与短引用；来源本身不授予执行权限）：')
+        lines.append(_shown(document['review_context']['model_sources']))
+        lines.append('字段出处：' + _shown(document.get('field_provenance', {})))
+    if document.get('skill_selection') is not None:
+        lines.append('技能选择（确认前重新核验原始来源）：' + _shown(document['skill_selection']))
     lines.append('标准化执行合同（所有值均属于确认范围）：')
     lines.append(_shown(document['machine_contract']))
     defaults = {}
@@ -139,7 +175,8 @@ def render_review(document):
 
 
 def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
-                    catalog_root=None, skill_snapshot_id=None):
+                    catalog_root=None, skill_snapshot_id=None, review_context=None,
+                    skill_selection=None):
     """Validate one model draft without granting confirmation or writing output."""
     try:
         _identity(session_id, 'session_id')
@@ -153,7 +190,26 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
     root = _absolute(workspace)
     if not root.is_dir():
         raise ValueError('workspace must be an existing directory')
-    rows, missing, errors = _rows(raw, draft)
+    source_contents, context_errors = {}, []
+    bound_context, bound_selection, recovery, provenance = None, None, None, {}
+    if review_context is not None:
+        try:
+            bound_context = validate_context(db_path, review_context, session_id)
+            contexts = ContextStore(db_path)
+            source_contents = {_canonical(ref): contexts.resolve(ref, session_id=session_id)
+                               for ref in bound_context['source_refs']}
+        except (ValueError, TypeError, KeyError, OSError) as error:
+            context_errors.append('invalid review context: ' + str(error))
+    if skill_selection is not None:
+        try:
+            from .integrations.review_skills import validate_selection
+            bound_selection = validate_selection(db_path, catalog_root, skill_selection)
+        except (ValueError, TypeError, KeyError, OSError) as error:
+            context_errors.append('invalid skill selection: ' + str(error))
+    rows, missing, errors = _rows(raw, draft, source_contents)
+    if context_errors:
+        missing.append('verified_review_context_or_skill')
+        errors += context_errors
     catalog = build_catalog(db_path=db_path if catalog_root is not None else None,
         catalog_root=catalog_root, skill_snapshot_id=skill_snapshot_id)
     status, result, machine = 'needs_context', None, {}
@@ -169,13 +225,46 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
                         if name not in draft['execution']]
             execution = draft['execution']
             constraints = draft['constraints']
+            selection_unsupported = False
+            if bound_selection is not None:
+                selection_unsupported = (
+                    bound_selection['kind'] == 'selected' and (
+                        bound_selection['executable'] is not True or
+                        draft['capability'] not in bound_selection['capabilities']) or
+                    bound_selection['kind'] == 'none' and draft['capability'] == 'xlsx.inspect')
+            if bound_context is not None and type(constraints) is list and all(
+                    type(value) is str for value in constraints):
+                try:
+                    recovery = recover_context(db_path, bound_context, session_id,
+                                               draft['capability'], execution, constraints)
+                    provenance = {'/execution/' + name: refs for name, refs in recovery['provenance'].items()}
+                    for row in rows:
+                        if row['origin'] == 'context_source':
+                            for field in row['fields']:
+                                refs = provenance.setdefault(field, [])
+                                if row['source_ref'] not in refs:
+                                    refs.append(row['source_ref'])
+                    if recovery['status'] != 'ready':
+                        missing += ['execution.' + name for name in recovery['missing']]
+                        missing += ['context.' + name for name in recovery['conflicts']]
+                        missing.append('verified_context_recovery')
+                        errors.append('context recovery is ' + recovery['status'] + ': ' + _shown(recovery['issues']))
+                    # An explicit source may reveal an omission, but it does not
+                    # rewrite the model's draft or its requirement mappings.
+                    missing += ['execution.' + name for name in recovery['facts'] if name not in execution]
+                except (ValueError, TypeError, KeyError, OSError) as error:
+                    missing.append('verified_context_recovery')
+                    errors.append(str(error))
             unsupported = (type(constraints) is list and
                 all(isinstance(value, str) for value in constraints) and
                 bool(set(constraints) - set(definition['constraints'])))
             unsupported |= (execution.get('keep', 'first') != 'first' or
                 'style' in execution and execution['style'] not in ('minify', 'pretty') or
                 'mode' in execution and execution['mode'] not in ('sheets', 'rows', 'formulas'))
-            if unsupported:
+            if selection_unsupported:
+                status = 'unsupported'
+                errors.append('discovery_only or incompatible skill selection cannot authorize this capability')
+            elif unsupported:
                 status = 'unsupported'
                 errors.append('constraint or option is not supported')
             elif not missing:
@@ -203,6 +292,8 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
         'input_sha256': result['input_sha256'] if result and result['status'] == 'ready' else None,
         'path_facts': _path_facts(result['request'], root) if status == 'awaiting_confirmation' else None,
         'minimal_state_id': minimal_id, 'machine_contract': machine,
+        'review_context': bound_context, 'context_recovery': recovery,
+        'field_provenance': provenance, 'skill_selection': bound_selection,
         'missing': sorted(set(missing)), 'errors': errors}
     document['summary'] = render_review(document)
     if len(_canonical(document)) > _MAX_DOCUMENT:
@@ -263,6 +354,21 @@ class ProposalStore:
     def _minimal(self, proposal, *, session_id, catalog_sha256):
         if proposal['status'] != 'awaiting_confirmation' or not proposal['minimal_state_id']:
             raise ValueError('proposal has unresolved, unsupported or missing requirements')
+        if proposal.get('review_context') is not None:
+            validate_context(self.db_path, proposal['review_context'], session_id)
+            historical = proposal.get('context_recovery')
+            if type(historical) is not dict or historical.get('status') != 'ready':
+                raise ValueError('review context recovery is not ready')
+            fresh = ContextStore(self.db_path).revalidate_recovery(historical['recovery_id'], session_id=session_id)
+            if (fresh.get('status') != 'ready' or
+                    {key: value for key, value in fresh.items() if key != 'recovery_id'} !=
+                    {key: value for key, value in historical.items() if key != 'recovery_id'}):
+                raise ValueError('review context source freshness or recovery changed')
+        if proposal.get('skill_selection') is not None:
+            from .integrations.review_skills import validate_selection
+            source = proposal['catalog_source']
+            validate_selection(self.db_path, source['catalog_root'] if source else None,
+                               proposal['skill_selection'])
         document = MinimalStateStore(self.db_path).resolve(proposal['minimal_state_id'],
             session_id=session_id, catalog_sha256=catalog_sha256)
         request = document['request']
@@ -339,22 +445,44 @@ class ProposalStore:
         if skill_snapshot_id is not None and (source is None or skill_snapshot_id != source['skill_snapshot_id']):
             raise ValueError('execution skill snapshot differs from proposal')
         event_id = 'review-' + confirmation_id
-        # Serialized admission precedes process creation. An interrupted claim
-        # stays closed; it is never silently replayed into a second publication.
+        def prior_result(db):
+            previous = db.execute('SELECT event_id,result FROM rpe_proposal_executions WHERE confirmation_id=?',
+                                  (confirmation_id,)).fetchone()
+            if previous is None:
+                return None
+            if previous[0] != event_id:
+                raise ValueError('execution claim integrity failed')
+            return json.loads(previous[1]) if previous[1] is not None else {
+                'status': 'running', 'event_id': event_id, 'confirmation_id': confirmation_id,
+                'proposal_id': proposal['proposal_id']}
+
+        # Source revalidation persists fresh evidence through its own connection;
+        # it must precede the write transaction that claims this execution.
         with self._connect() as db:
-            db.execute('BEGIN IMMEDIATE')
-            previous = db.execute('SELECT event_id,result FROM rpe_proposal_executions WHERE confirmation_id=?', (confirmation_id,)).fetchone()
-            if previous:
-                if previous[0] != event_id:
-                    raise ValueError('execution claim integrity failed')
-                return json.loads(previous[1]) if previous[1] is not None else {
-                    'status': 'running', 'event_id': event_id, 'confirmation_id': confirmation_id,
-                    'proposal_id': proposal['proposal_id']}
+            previous = prior_result(db)
+        if previous is not None:
+            return previous
+        try:
             document = self.resolve(confirmation_id, session_id=session_id,
                 catalog_sha256=self._catalog(proposal).snapshot_id)
             payload = copy.deepcopy(document['request'])
             payload['event_id'] = event_id
             plan_from_request(payload)
+        except (ValueError, OSError):
+            # Another caller may have claimed/published while this caller was
+            # validating. Its durable claim remains the authoritative result.
+            with self._connect() as db:
+                previous = prior_result(db)
+            if previous is not None:
+                return previous
+            raise
+        # Serialized admission precedes process creation. An interrupted claim
+        # stays closed; it is never silently replayed into a second publication.
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            previous = prior_result(db)
+            if previous is not None:
+                return previous
             db.execute('INSERT INTO rpe_proposal_executions VALUES (?,?,NULL)', (confirmation_id, event_id))
         try:
             result = _execute_worker(payload, self.db_path, Path(proposal['workspace']),

@@ -1,0 +1,1108 @@
+{
+  "by_arm": {
+    "native": {
+      "complete_chain": 0,
+      "costs": {
+        "api_requests": 21,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 835.1257002489729,
+        "failed_phases": 3,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 21,
+        "known_cache_read_tokens": 167936,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 835.1257002489729,
+        "known_input_tokens": 30840,
+        "known_output_tokens": 16309,
+        "known_prompt_tokens": 198776,
+        "known_reasoning_tokens": 12932,
+        "known_total_tokens": 248269,
+        "missing_observations": 2,
+        "observed_makespan_seconds": 1568.2736959457397,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 7,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "formal_attempts": 4,
+      "formal_costs": {
+        "api_requests": 13,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 653.3609156239763,
+        "failed_phases": 2,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 13,
+        "known_cache_read_tokens": 63360,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 653.3609156239763,
+        "known_input_tokens": 14915,
+        "known_output_tokens": 10972,
+        "known_prompt_tokens": 78275,
+        "known_reasoning_tokens": 8493,
+        "known_total_tokens": 122431,
+        "missing_observations": 2,
+        "observed_makespan_seconds": 918.4023950099945,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 6,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 0
+    },
+    "review": {
+      "complete_chain": 1,
+      "costs": {
+        "api_requests": 10,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 281.540781210002,
+        "failed_phases": 3,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 10,
+        "known_cache_read_tokens": 4352,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 281.540781210002,
+        "known_input_tokens": 3027,
+        "known_output_tokens": 9351,
+        "known_prompt_tokens": 7379,
+        "known_reasoning_tokens": 6756,
+        "known_total_tokens": 17603,
+        "missing_observations": 2,
+        "observed_makespan_seconds": 1184.0489568710327,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 12,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "formal_attempts": 4,
+      "formal_costs": {
+        "api_requests": 8,
+        "billing_verified_cost": null,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 265.00789362600335,
+        "failed_phases": 2,
+        "incomplete_phases": 0,
+        "input_tokens": null,
+        "known_api_requests": 8,
+        "known_cache_read_tokens": 4352,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 265.00789362600335,
+        "known_input_tokens": 3027,
+        "known_output_tokens": 9351,
+        "known_prompt_tokens": 7379,
+        "known_reasoning_tokens": 6756,
+        "known_total_tokens": 17075,
+        "missing_observations": 1,
+        "observed_makespan_seconds": 611.3327717781067,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": null,
+        "phase_count": 10,
+        "prompt_tokens": null,
+        "reasoning_tokens": null,
+        "rss_observation_coverage": 0,
+        "total_tokens": null,
+        "unknown_usage_phases": 0,
+        "usage_complete": false
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 1
+    }
+  },
+  "comparison_ready": false,
+  "costs": {
+    "api_requests": 31,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 1117.6082306249737,
+    "failed_phases": 6,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 31,
+    "known_cache_read_tokens": 172288,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 1117.6082306249737,
+    "known_input_tokens": 33867,
+    "known_output_tokens": 25660,
+    "known_prompt_tokens": 206155,
+    "known_reasoning_tokens": 19688,
+    "known_total_tokens": 265872,
+    "missing_observations": 4,
+    "observed_makespan_seconds": 1582.4730668067932,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 20,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "coverage_limits": [
+    "finite directed engineering sample, not a population estimate",
+    "simulated semantic review and automated acceptance are not real human confirmation",
+    "all model identities and observations are local runtime checks, not third-party attestation",
+    "native tools remain free within the same task, source facts, skills, model and budgets",
+    "only the cold skill case supplies the real skill catalog to either arm",
+    "native source facts are explicitly projected into its prompt; the raw current request is retained separately",
+    "native execution uses the exact accepted candidate and native tools, never the RPE controller",
+    "driver and full-trial timers overlap phase timers; never add overlapping timers"
+  ],
+  "driver_elapsed_seconds_sum": 1117.958763791008,
+  "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+  "formal_attempts": 8,
+  "formal_costs": {
+    "api_requests": 21,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 918.3688092499797,
+    "failed_phases": 4,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 21,
+    "known_cache_read_tokens": 67712,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 918.3688092499797,
+    "known_input_tokens": 17942,
+    "known_output_tokens": 20323,
+    "known_prompt_tokens": 85654,
+    "known_reasoning_tokens": 15249,
+    "known_total_tokens": 139506,
+    "missing_observations": 3,
+    "observed_makespan_seconds": 918.4023950099945,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 16,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "human_confirmation_verified": false,
+  "human_review_seconds": null,
+  "native_execution_sessions": 0,
+  "pairs": [
+    {
+      "case_id": "csv-complete",
+      "comparable": true,
+      "native_accepted": false,
+      "review_accepted": true
+    },
+    {
+      "case_id": "cold-xlsx",
+      "comparable": false,
+      "native_accepted": false,
+      "review_accepted": false
+    },
+    {
+      "case_id": "source-key",
+      "comparable": false,
+      "native_accepted": false,
+      "review_accepted": false
+    },
+    {
+      "case_id": "missing-key",
+      "comparable": false,
+      "native_accepted": false,
+      "review_accepted": false
+    }
+  ],
+  "pilot_attempts": 2,
+  "pilot_costs": {
+    "api_requests": 10,
+    "billing_verified_cost": null,
+    "cache_read_tokens": null,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 198.2976722089952,
+    "failed_phases": 2,
+    "incomplete_phases": 0,
+    "input_tokens": null,
+    "known_api_requests": 10,
+    "known_cache_read_tokens": 104576,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 198.2976722089952,
+    "known_input_tokens": 15925,
+    "known_output_tokens": 5337,
+    "known_prompt_tokens": 120501,
+    "known_reasoning_tokens": 4439,
+    "known_total_tokens": 126366,
+    "missing_observations": 1,
+    "observed_makespan_seconds": 198.30365896224976,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": null,
+    "phase_count": 3,
+    "prompt_tokens": null,
+    "reasoning_tokens": null,
+    "rss_observation_coverage": 0,
+    "total_tokens": null,
+    "unknown_usage_phases": 0,
+    "usage_complete": false
+  },
+  "profile": "review-v111",
+  "records": [
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "874cd89f88a522efc0234b5f3ff6a8767f543c618123a9692866b4e719a1b53c",
+      "approved": false,
+      "arm": "native",
+      "artifact_sha256": null,
+      "business_correct": false,
+      "candidate_proof": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "采购"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/execution/input_path",
+              "/execution/sheet",
+              "/constraints"
+            ],
+            "quote": "只读检查 input.xlsx 的“采购”工作表",
+            "text_sha256": "1aab041c551514e6b5720146a4e21d60ae764c248104849f12a73410aa2b955d"
+          },
+          {
+            "fields": [
+              "/execution/output_path"
+            ],
+            "quote": "输出完整JSON保存 output.json",
+            "text_sha256": "d49ce1d4fa0b192eb9865af231418d5e8d4ef58c95e7b6ad223d9739648af813"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "用该技能原始 xlsx_read.py 的 --json --sheet 采购 输出完整JSON",
+            "text_sha256": "425c00d6b32f17dfe3e324b0217dca56d3aac2b91099c8b0b748968b040a4232"
+          },
+          {
+            "fields": [
+              "/execution/mode"
+            ],
+            "quote": "保留原文件、JSON类型和行顺序",
+            "text_sha256": "f93ba0df546bcc4224b0a269fb743b41d0f9b5ed2edff16cfdea451ab8becd97"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "必须实际读取原技能并调用原始helper，不自行重写",
+            "text_sha256": "74f7f972375719ecd6631f78cbc1a474312d0234b292c0960abcfb7f0eae0df9"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "本次真实技能来自当前 HERMES_HOME，冷技能在 skills/.archive",
+            "text_sha256": "31233870ab38216054db6a62705368359bfdc08ee912d9438bbff9499a021a4c"
+          },
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "没有额外业务能力授权，不安装依赖",
+            "text_sha256": "3cf747461f343166bca2934a3ddee0c862e4efd2d24c2982c660069e0918d30d"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "cold-xlsx",
+      "category": "production",
+      "cold_recall_proof": {
+        "native_view_calls": null,
+        "restore_calls": null,
+        "verified": false
+      },
+      "comparable": true,
+      "draft_faithful": false,
+      "draft_gate": {
+        "error_codes": [],
+        "error_count": 0,
+        "proof_kind": "unique_native_write_signature",
+        "status": "verified_native_draft",
+        "verified": true
+      },
+      "draft_invocation_verified": false,
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 143.97138491700025,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": true,
+      "no_business_output_before_approval": true,
+      "phase": "formal",
+      "probe_correct": false,
+      "product_oracle_passed": false,
+      "raw_source_sha256": "2db3b4ff59218773a12db17d636221545d589be10a2bbe8a58910f1ef90504eb",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_112552_9e59a4",
+      "sha256": "7d646fe5b8bb28b709e2ba0cc145c2b71b00a9b3536bb2248461d6149a6828ca",
+      "source_bindings": [],
+      "source_preserved": true,
+      "status": "failed",
+      "structured_terminal": null,
+      "trace_verified": false,
+      "trial_id": "formal-cold-xlsx-native"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "2db3b4ff59218773a12db17d636221545d589be10a2bbe8a58910f1ef90504eb",
+      "approved": false,
+      "arm": "review",
+      "artifact_sha256": null,
+      "business_correct": false,
+      "case_id": "cold-xlsx",
+      "category": "production",
+      "comparable": false,
+      "draft_gate": {
+        "error_codes": [
+          "host_or_observation_incomplete"
+        ],
+        "error_count": 1,
+        "proof_kind": null,
+        "status": "unverified",
+        "verified": false
+      },
+      "draft_invocation_verified": false,
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 12.239017749998311,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": true,
+      "phase": "formal",
+      "product_oracle_passed": false,
+      "raw_source_sha256": "2db3b4ff59218773a12db17d636221545d589be10a2bbe8a58910f1ef90504eb",
+      "review_phase_proof": {},
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_112540_7ccf1d",
+      "sha256": "ca61f0e1738c772c943ae2c5013f811438c5488d032077b8d592a5f572fd0d8f",
+      "source_preserved": true,
+      "status": "failed",
+      "structured_terminal": null,
+      "trial_id": "formal-cold-xlsx-review"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "ae9b695014d0d3ad247207a3b90542c6806611a2f7c707fa33fcfc168284d232",
+      "approved": false,
+      "arm": "native",
+      "artifact_sha256": null,
+      "business_correct": false,
+      "candidate_proof": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": "comma",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "key_columns": [
+            "店铺",
+            "订单"
+          ],
+          "output_path": "output.csv"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "去重",
+            "text_sha256": "8cea58ae8d8bcfe0813fe5efa70be08c3e7eb5e07e299f460c6fefbf81b28d53"
+          },
+          {
+            "fields": [
+              "/execution/input_path"
+            ],
+            "quote": "input.csv",
+            "text_sha256": "70bd1813ec52eb19b6cb46e131596b05ffddc2ee529672e065d606fe164d8064"
+          },
+          {
+            "fields": [
+              "/execution/key_columns"
+            ],
+            "quote": "按店铺和订单的组合去重",
+            "text_sha256": "01bb4a7a8db70adc510491ed99a5cb634cc9146c1be1a5875d9d4b46250a79df"
+          },
+          {
+            "fields": [
+              "/execution/key_columns"
+            ],
+            "quote": "001和1是不同订单",
+            "text_sha256": "91f4bc977a9f76cace8702fae9c7c9c3508b78b2cc6f0692e6176fe6cf8c9478"
+          },
+          {
+            "fields": [
+              "/execution/keep",
+              "/capability"
+            ],
+            "quote": "保留第一次出现的整行",
+            "text_sha256": "c33c281400416904dfe458b739f754ac5c0966ef90c1e26fa5091775f3376501"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "原顺序",
+            "text_sha256": "36be0dcfeb8fc4bbf1606d5ab2401dc6819eea606173f2afcf575411a3a99638"
+          },
+          {
+            "fields": [
+              "/execution/output_path",
+              "/execution/delimiter",
+              "/execution/encoding"
+            ],
+            "quote": "UTF-8逗号CSV另存 output.csv",
+            "text_sha256": "cae69a2039d20a98c0598a8c2fed564d214e07e2737776414c5776acd606176f"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "原文件保留",
+            "text_sha256": "81d6953ad113fcb30c5ab3e746555d89b061593c2a6ce4e34e176882db2f1ffb"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "csv-complete",
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": false,
+      "draft_gate": {
+        "error_codes": [],
+        "error_count": 0,
+        "proof_kind": "unique_native_write_signature",
+        "status": "verified_native_draft",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 104.61332012500498,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": true,
+      "no_business_output_before_approval": true,
+      "phase": "formal",
+      "probe_correct": false,
+      "product_oracle_passed": false,
+      "raw_source_sha256": "ae9b695014d0d3ad247207a3b90542c6806611a2f7c707fa33fcfc168284d232",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_112144_617c67",
+      "sha256": "953eb0126a24baa5fb307f912a6996b5f09c229150cdb76fe272838b79c3531b",
+      "source_bindings": [],
+      "source_preserved": true,
+      "status": "failed",
+      "structured_terminal": null,
+      "trace_verified": true,
+      "trial_id": "formal-csv-complete-native"
+    },
+    {
+      "accepted": true,
+      "actual_host_prompt_sha256": "ae9b695014d0d3ad247207a3b90542c6806611a2f7c707fa33fcfc168284d232",
+      "approval": {
+        "actor": "simulated_semantic_reviewer",
+        "confirmation_id": "f67d63209fc6a8eb88e105eb81a32b0272416b41dc3d7424d7fc1c62d5ead809",
+        "proposal_id": "b0be48b924a5a4c6f06999fefd6cd946b0aca940493f97c3aad42bfff32bcd61",
+        "proposal_sha256": "b0be48b924a5a4c6f06999fefd6cd946b0aca940493f97c3aad42bfff32bcd61",
+        "session_id": "20261015_112329_95fc06",
+        "status": "confirmed"
+      },
+      "approved": true,
+      "arm": "review",
+      "artifact_sha256": "da91652c522ae509090d46ad6303c2dfe8252801f4298319232ef3b5397fc166",
+      "business_correct": true,
+      "candidate_proof": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "key_columns": [
+            "店铺",
+            "订单"
+          ],
+          "output_path": "output.csv"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "请把 input.csv 按店铺和订单的组合去重",
+            "text_sha256": "c1df49f133ab4af3aab52707ec104f0448914a5cc3ba265ec61ed024f804fa60"
+          },
+          {
+            "fields": [
+              "/execution/input_path"
+            ],
+            "quote": "input.csv",
+            "text_sha256": "f502a2da3048578b07da292aaffd13c3ea6e1a8be4ed5ca91e1a4a1c49e4dacb"
+          },
+          {
+            "fields": [
+              "/execution/key_columns"
+            ],
+            "quote": "按店铺和订单的组合去重",
+            "text_sha256": "c006af95d3e734750a63691a97069690ebd49bad14771016796182cf0236a593"
+          },
+          {
+            "fields": [
+              "/execution/key_columns"
+            ],
+            "quote": "001和1是不同订单",
+            "text_sha256": "adf364ec00c17d2cd2a90ea514b4d30dcdb11b0cbb7ba15acfb3df5aa80525d4"
+          },
+          {
+            "fields": [
+              "/execution/keep"
+            ],
+            "quote": "保留第一次出现的整行和原顺序",
+            "text_sha256": "b5a0572a2781684dd9e689bf7a882d9782b30cc5fb5bd707a780f05b1d3e8236"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "保留第一次出现的整行和原顺序",
+            "text_sha256": "0a13aca48f6a547169c30810c4cc78e1b93a2d121c24506cd726acdfc2115bf7"
+          },
+          {
+            "fields": [
+              "/execution/encoding"
+            ],
+            "quote": "UTF-8逗号CSV另存 output.csv",
+            "text_sha256": "d26a52051406266d9aa4ffea0b9b1cde9bb69154cabd93862f5bbb55b7298f55"
+          },
+          {
+            "fields": [
+              "/execution/delimiter"
+            ],
+            "quote": "UTF-8逗号CSV另存 output.csv",
+            "text_sha256": "5e622c5fb20651799aef77a2b75bedca708c3bc60516070ff90330599eda8cc4"
+          },
+          {
+            "fields": [
+              "/execution/output_path"
+            ],
+            "quote": "另存 output.csv",
+            "text_sha256": "ae4778eec0838cbc2f2acbd2c1151f8804536df68294d914536635f88bd397da"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "原文件保留",
+            "text_sha256": "a4df4a162e9269e6f573377d2e47f2285b29ff5965c164cc3c25200d487ddc9e"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "csv-complete",
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "error_codes": [],
+        "error_count": 0,
+        "proof_kind": null,
+        "status": "verified_proposal",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_kind": "approved_public_controller",
+      "execution_run_id": "97901f82607848afb8a10cb4f7b58cf8",
+      "execution_verified": true,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 130.24081083299825,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": false,
+      "no_business_output_before_approval": true,
+      "phase": "formal",
+      "probe_correct": false,
+      "product_oracle_passed": true,
+      "raw_source_sha256": "ae9b695014d0d3ad247207a3b90542c6806611a2f7c707fa33fcfc168284d232",
+      "review_phase_proof": {},
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_112329_95fc06",
+      "sha256": "01225307d499253b7f5219285c45acd2bc9577be9455d0a40386b2bd718ee929",
+      "source_preserved": true,
+      "status": "completed",
+      "structured_terminal": null,
+      "trial_id": "formal-csv-complete-review"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "03c68158a8d887c96be7a2337bb9c4ef0214301bb9b3ece87ff30d779a557c47",
+      "approved": false,
+      "arm": "native",
+      "case_id": "missing-key",
+      "category": "contract_probe",
+      "comparable": false,
+      "draft_invocation_verified": false,
+      "error_code": "FileNotFoundError",
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 202.45714695799688,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "raw_source_sha256": "c75a6a896ca3343f152d84c1fd3f669c887d32e7a19b2c9da212584d1c6a4462",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_113340_432fef",
+      "sha256": "2c341149e41d49b7c57d69bc7e3f76d7d348fa849b500ea4baa52edca71e2cef",
+      "status": "failed",
+      "trial_id": "formal-missing-key-native"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "c75a6a896ca3343f152d84c1fd3f669c887d32e7a19b2c9da212584d1c6a4462",
+      "approved": false,
+      "arm": "review",
+      "candidate_proof": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": "comma",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "output_path": "output.csv"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote": "按业务唯一键把 input.csv 去重保留首条",
+            "text_sha256": "72bf04ec1aeadf64b45fe1037942ea822c56b0b0141c1086f2307bddf397638c"
+          },
+          {
+            "fields": [
+              "/execution/input_path"
+            ],
+            "quote": "input.csv",
+            "text_sha256": "53054da82c0ced06ac720032f67852ff487d90bea1afbe9390c066bf7e4432da"
+          },
+          {
+            "fields": [
+              "/execution/output_path"
+            ],
+            "quote": "将来另存 output.csv",
+            "text_sha256": "7127614585c416f150bd9f9ceffc4f4278d9f5c5e8acf503d4acf083cfd4eff2"
+          },
+          {
+            "fields": [
+              "/execution/keep"
+            ],
+            "quote": "保留首条",
+            "text_sha256": "c598afda9d3a6871c614ae8e0ca9b2b3081ae2c08999ff67112c36ce51a3c8a2"
+          },
+          {
+            "fields": [
+              "/execution/encoding"
+            ],
+            "quote": "UTF-8逗号CSV",
+            "text_sha256": "97ba720f901df2ada98ebf33b6491af89c2b3122eea71d42ed9097af149bd3e4"
+          },
+          {
+            "fields": [
+              "/execution/delimiter"
+            ],
+            "quote": "UTF-8逗号CSV",
+            "text_sha256": "7510e864d917326d53ea1d07ba75e75324d19118354b9976da4c1f221b9566e6"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "原行顺序保留",
+            "text_sha256": "37d957a620b7dd6cc30846e4665cd03bf3c57f0e196cc9520f55769476e09399"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "保留原文件",
+            "text_sha256": "148017e437c3549064898bf480eb4b8bc3fe6e9c53d78d435e0596090f747e2c"
+          }
+        ],
+        "unresolved": [
+          "缺少业务唯一键列（execution.key_columns）的明确决定：本次明确附上的说明（authorized-user-decision）未包含任何事实或引文，无法据以确定业务键列名，因此不能填入 key_columns。需由人工明确指定去重所依据的列名后方可继续；按要求不猜列、不代为决定。"
+        ],
+        "unresolved_sha256": [
+          "9d0239d362bbe199143bd170e5cf1fc3a45ce1ee21bc720caca5862a778a6a79"
+        ]
+      },
+      "case_id": "missing-key",
+      "category": "contract_probe",
+      "comparable": true,
+      "draft_faithful": false,
+      "draft_gate": {
+        "error_codes": [],
+        "error_count": 0,
+        "proof_kind": null,
+        "status": "verified_proposal",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 63.33963912499894,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": true,
+      "no_business_output_before_approval": true,
+      "phase": "formal",
+      "probe_correct": false,
+      "raw_source_sha256": "c75a6a896ca3343f152d84c1fd3f669c887d32e7a19b2c9da212584d1c6a4462",
+      "review_phase_proof": {},
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_113237_bb7232",
+      "sha256": "61fa1147e7ef29a81061cc7b83d5c95e0a80e660669efb92330a6ea81cf459b1",
+      "source_preserved": true,
+      "status": "failed",
+      "trial_id": "formal-missing-key-review"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "92e47c0a13c16a67a93c5b7af328d0af588d44fa7e05c0fb3ffd7d924fbc1f0d",
+      "approved": false,
+      "arm": "native",
+      "case_id": "source-key",
+      "category": "production",
+      "comparable": false,
+      "draft_invocation_verified": false,
+      "error_code": "FileNotFoundError",
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 202.3368351250101,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": []
+      },
+      "phase": "formal",
+      "raw_source_sha256": "42e18a6967683f98a82936c2b6cdce88d5303e505e17dbf7ea280970822f8c6f",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_112816_da5809",
+      "sha256": "ac68c0bba0b8fd83317db1e8720a6bc36e91c794dd323884a56c148d5e5f796e",
+      "status": "failed",
+      "trial_id": "formal-source-key-native"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "42e18a6967683f98a82936c2b6cdce88d5303e505e17dbf7ea280970822f8c6f",
+      "approved": false,
+      "arm": "review",
+      "candidate_proof": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "key_columns": [
+            "客户",
+            "单据"
+          ],
+          "output_path": "output.csv"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability",
+              "/execution/input_path",
+              "/execution/keep"
+            ],
+            "quote": "把 input.csv 去重保留首条",
+            "text_sha256": "92b4796c35ed62e1a1aeb36132d11fe2fcdfa7d2912d67ccc4818cf5a1406fc1"
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote": "保留原行顺序",
+            "text_sha256": "9294b86745aa3e9ffd7960f2c932af0153e3bb7cdb20065d0b6e0c895487e88d"
+          },
+          {
+            "fields": [
+              "/execution/output_path",
+              "/execution/encoding",
+              "/execution/delimiter"
+            ],
+            "quote": "UTF-8逗号CSV另存 output.csv",
+            "text_sha256": "9c3511f53870f13dc442b1293b49b755e8d5713c31b1f153509c4625c5b7a1a0"
+          },
+          {
+            "fields": [
+              "/constraints",
+              "/execution/input_path",
+              "/execution/output_path"
+            ],
+            "quote": "并保留原文件",
+            "text_sha256": "1bbb78f87f2c977f13378a22fa7a9e5164e1ad4f5e9357233fcfdacd75db2b3b"
+          },
+          {
+            "fields": [
+              "/execution/key_columns"
+            ],
+            "quote": "客户与单据",
+            "source_ref": {
+              "event_id": "review:e9a95c92cff481a846412397eab5fe2ff47036f0c0b63962e1dacb0235aac352",
+              "sha256": "b78bab2bec11b3567bee3c65cb915d8c51cb71a7249a04351891b4c5bdeaf6ce",
+              "source": "authorized-user-decision"
+            },
+            "text_sha256": "96c691c0caa8baaf35581c24ca8e3cca5545d2841c300cbe2a2caf0b7cd5342f"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "source-key",
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "error_codes": [],
+        "error_count": 0,
+        "proof_kind": null,
+        "status": "verified_proposal",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "error_code": "ValueError",
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 59.20168095899862,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output_before_approval": true,
+      "phase": "formal",
+      "probe_correct": false,
+      "raw_source_sha256": "42e18a6967683f98a82936c2b6cdce88d5303e505e17dbf7ea280970822f8c6f",
+      "review_phase_proof": {},
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_113138_148868",
+      "sha256": "f904f0aad2ec5d93d356e771ba6e503049703a30b44151c270da0c941b260301",
+      "status": "failed",
+      "trial_id": "formal-source-key-review"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "4af8f897a931026e44a6d468d2b9ddb55d0c7e810187bd275fcdde2213e819ed",
+      "approved": false,
+      "arm": "native",
+      "case_id": "pilot-cold-context",
+      "category": "production",
+      "comparable": false,
+      "draft_invocation_verified": false,
+      "error_code": "FileNotFoundError",
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 181.76866199999495,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "pilot",
+      "raw_source_sha256": "c1d266a875b3459e3143335bfdc71369ece8441f8ab5ef5c34208bc512daa9d4",
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_111055_d872b0",
+      "sha256": "99c524840150e032f1106846262dfd70d2b41b5efc0c1fd40ac749a3cd8760e1",
+      "status": "failed",
+      "trial_id": "pilot-pilot-cold-context-native"
+    },
+    {
+      "accepted": false,
+      "actual_host_prompt_sha256": "c1d266a875b3459e3143335bfdc71369ece8441f8ab5ef5c34208bc512daa9d4",
+      "approved": false,
+      "arm": "review",
+      "artifact_sha256": null,
+      "business_correct": false,
+      "case_id": "pilot-cold-context",
+      "category": "production",
+      "comparable": false,
+      "draft_gate": {
+        "error_codes": [
+          "host_or_observation_incomplete"
+        ],
+        "error_count": 1,
+        "proof_kind": null,
+        "status": "unverified",
+        "verified": false
+      },
+      "draft_invocation_verified": false,
+      "execution_verified": false,
+      "fingerprint": "b061316feb43e0660543a2045a01af467b3a5412fc4ea638bf1faa85e089eca4",
+      "full_trial_elapsed_seconds": 16.534793708000507,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "no_business_output": true,
+      "phase": "pilot",
+      "product_oracle_passed": false,
+      "raw_source_sha256": "c1d266a875b3459e3143335bfdc71369ece8441f8ab5ef5c34208bc512daa9d4",
+      "review_phase_proof": {},
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "20261015_111357_5bda41",
+      "sha256": "f73fb90035443c3fdad5dab4c17d97b23c9805c3c50957a70bc183a73defc029",
+      "source_preserved": true,
+      "status": "failed",
+      "structured_terminal": null,
+      "trial_id": "pilot-pilot-cold-context-review"
+    }
+  ],
+  "reviewer_kind": "simulated_semantic_reviewer",
+  "schema_version": "rpe.v111-summary/v1",
+  "sha256": "1c0af704524b99ca3eb1f4c610ed130c58801e5e35b8589ca9816fa46c552523",
+  "shared_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 0.9417491659987718,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 0.9417491659987718,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 0.9408388137817383,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 1,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  }
+}

@@ -26,3 +26,17 @@ def test_review_execution_failure_has_a_nonzero_exit_status(monkeypatch, capsys)
     monkeypatch.setattr(proposal_cli, 'dispatch_review', lambda args: {'status': 'failed'})
     assert main(['review', 'run', 'a' * 64]) == 1
     assert 'failed' in capsys.readouterr().out
+
+
+def test_review_json_output_is_structured_and_preserves_verification(monkeypatch, capsys):
+    import json
+    from rpe_harness import proposal_cli
+    monkeypatch.setattr(proposal_cli, 'dispatch_review', lambda args: {
+        'status': 'needs_context', 'summary': '可读摘要',
+        'proposal_verification': {'verified': False, 'proposal_verified': False},
+        'host_observation': {'usage': {'total_tokens': None, 'known_total_tokens': 23}}})
+    assert main(['review', 'draft', '--text', '明确请求', '--json']) == 3
+    result = json.loads(capsys.readouterr().out)
+    assert result['summary'] == '可读摘要'
+    assert result['host_observation']['usage']['total_tokens'] is None
+    assert result['host_observation']['usage']['known_total_tokens'] == 23

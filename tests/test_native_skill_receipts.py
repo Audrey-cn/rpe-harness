@@ -21,7 +21,7 @@ def test_native_observer_binds_real_skill_bytes_and_tool_arguments(tmp_path,monk
     args={'name':'xlsx'}
     ctx.hooks['pre_tool_call'](**ids,tool_name='skill_view',args=args)
     ctx.hooks['post_tool_call'](**ids,tool_name='skill_view',args=args,status='ok',
-      result=json.dumps({'_source_path':str(skill),'content':skill.read_text(),'readiness':'ready','setup_needed':False}))
+      result=json.dumps({'success': True, '_source_path':str(skill),'content':skill.read_text(),'readiness':'ready','setup_needed':False}))
     rows=HostEventStore(tmp_path/'state.sqlite').list('s')
     assert rows[0]['arguments_sha256']==_digest_json(args)
     assert rows[1]['status']=='loaded'
@@ -30,7 +30,7 @@ def test_native_observer_binds_real_skill_bytes_and_tool_arguments(tmp_path,monk
     assert rows[1]['skill_id']=='productivity/xlsx'
     bad={**ids,'tool_call_id':'bad'}
     ctx.hooks['post_tool_call'](**bad,tool_name='skill_view',args=args,status='ok',
-      result=json.dumps({'_source_path':str(skill),'content':'forged','readiness':'ready','setup_needed':False}))
+      result=json.dumps({'success': True, '_source_path':str(skill),'content':'forged','readiness':'ready','setup_needed':False}))
     assert HostEventStore(tmp_path/'state.sqlite').list('s')[-1]['status']!='loaded'
 
 def test_native_terminal_receipt_requires_actual_zero_exit_result(tmp_path,monkeypatch):

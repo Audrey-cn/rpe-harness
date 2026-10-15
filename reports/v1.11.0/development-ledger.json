@@ -1,0 +1,31 @@
+{
+  "schema_version": "rpe.v111-development/v1",
+  "started_at": 1792031910,
+  "updated_at": 1792033752.210665,
+  "base_commit": "c9445972ba5a058724fadf39135de3bc6c1e0ee9",
+  "scope": [
+    "public entry",
+    "explicit real skill selection",
+    "native cold recall",
+    "authorized minimal context",
+    "finite native comparison",
+    "local package",
+    "owned cleanup"
+  ],
+  "completed_local_evidence": {
+    "public_contract_red": "actual evaluate_review_session+run_hermes_review returned verified/proposal_verified but CLI returned needs_context",
+    "public_and_session_targeted": "41 passed",
+    "context_proposal_targeted": "133 passed; actual CSV execution and replay",
+    "skills_review_targeted": "44 passed; actual Hermes restore/view/original helper, active/archive source",
+    "catalog_archive_targeted": "16 passed",
+    "independent_review": "55 passed; quoted deps side effect safely reproduced and fixed; forged native refs reproduced and fixed"
+  },
+  "pending": [
+    "full regression",
+    "aggregate verifier extension",
+    "real pilot",
+    "frozen formal comparison",
+    "independent installed wheel",
+    "owned cleanup"
+  ]
+}

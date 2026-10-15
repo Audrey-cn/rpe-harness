@@ -198,11 +198,16 @@ class SkillCatalog:
                 relative = directory.name
             entry = {'skill_id': relative, 'source_path': str(path), 'status': 'available',
                      'name': directory.name, 'description': '', 'tags': [], 'skill_sha256': None}
+            if relative.startswith('.archive/'):
+                entry['archived'] = True
             try:
                 raw = _read(path)
                 entry.update(_metadata(raw, directory.name), skill_sha256=_sha(raw))
                 content[relative + '/SKILL.md'] = raw
-                if relative == XLSX_SKILL_ID:
+                # Hermes restore_skill flattens archive paths. Recognize this
+                # registered implementation by both pinned contents, never its name alone.
+                if relative == XLSX_SKILL_ID or (entry['name'] == 'xlsx' and
+                        (entry.get('archived') or relative == 'xlsx')):
                     helper = directory / 'scripts/xlsx_read.py'
                     try:
                         helper_raw = _read(helper)
@@ -220,6 +225,16 @@ class SkillCatalog:
                 raise ValueError('skill snapshot exceeds 2048 skills')
         if len(entries) > MAX_SKILLS:
             raise ValueError('skill snapshot exceeds 2048 skills')
+        relocated = [row for row in entries if row['skill_id'] != XLSX_SKILL_ID
+            and row.get('status') == 'available' and row.get('skill_sha256') == XLSX_SKILL_SHA256
+            and row.get('script_sha256') == XLSX_SCRIPT_SHA256
+            and (row.get('archived') or row['skill_id'] == 'xlsx')]
+        if len(relocated) == 1 and not any(row['skill_id'] == XLSX_SKILL_ID for row in entries):
+            row = relocated[0]
+            previous = row['skill_id']
+            row['skill_id'] = XLSX_SKILL_ID
+            for suffix in ('/SKILL.md', '/scripts/xlsx_read.py'):
+                content[XLSX_SKILL_ID + suffix] = content.pop(previous + suffix)
         entries.sort(key=lambda row: row['skill_id'])
         names = {}
         for row in entries:
@@ -269,11 +284,11 @@ class SkillCatalog:
         row = dict(rows[0], snapshot_id=snapshot_id)
         row['skill_path'] = str(self.snapshots / snapshot_id / 'skills' / skill_id / 'SKILL.md')
         row['adapter_status'] = 'no_adapter'
-        row['temperature'] = 'warm'
+        row['temperature'] = 'cold' if row.get('archived') else 'warm'
         with self._connect() as db:
             temp = db.execute('SELECT temperature FROM rpe_skill_temperature WHERE skill_id=?', (skill_id,)).fetchone()
             trusted = db.execute('SELECT 1 FROM rpe_skill_trust WHERE snapshot_id=? AND skill_id=?', (snapshot_id, skill_id)).fetchone()
-        if temp:
+        if temp and not row.get('archived'):
             row['temperature'] = temp[0]
         if row['status'] == 'available':
             try:

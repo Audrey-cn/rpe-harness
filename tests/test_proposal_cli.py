@@ -26,7 +26,7 @@ def test_cli_draft_uses_original_prose_and_lazy_real_hermes_wrapper(tmp_path, mo
         called.append((raw, workspace, db_path, kwargs))
         proposal = create_proposal(raw, draft(), db_path=db_path, workspace=workspace,
             session_id='actual-native-session', source_ref='native-current-user')
-        return {'proposal': proposal, 'proposal_verification': {'passed': True}}
+        return {'proposal': proposal, 'proposal_verification': {'verified': True, 'proposal_verified': True}}
     module.run_hermes_review = wrapper
     monkeypatch.setitem(sys.modules, module.__name__, module)
     args = parser().parse_args(['review', 'draft', '--db', str(tmp_path / 'state.sqlite'),
@@ -35,7 +35,7 @@ def test_cli_draft_uses_original_prose_and_lazy_real_hermes_wrapper(tmp_path, mo
     assert called[0][0] == RAW
     assert result['status'] == 'awaiting_confirmation'
     assert result['proposal_id'] in result['summary'] and RAW in result['summary']
-    assert result['proposal_verification']['passed']
+    assert result['proposal_verification']['proposal_verified']
     assert not (tmp_path / 'out.json').exists()
 
 
@@ -107,3 +107,15 @@ def test_cli_run_infers_immutable_workspace_and_session(tmp_path):
 def test_cli_exposes_no_handwritten_json_draft_or_model_confirmation_field():
     with pytest.raises(SystemExit):
         parser().parse_args(['review', 'draft', '--draft', 'task.json'])
+
+
+def test_cli_rejects_legacy_passed_without_verified_proposal(tmp_path, monkeypatch):
+    from rpe_harness.proposal_cli import dispatch_review
+    module = types.ModuleType('rpe_harness.integrations.hermes_review')
+    module.run_hermes_review = lambda *a, **kw: {'proposal': {'status': 'awaiting_confirmation'},
+        'proposal_verification': {'passed': True, 'verified': True, 'proposal_verified': False}}
+    monkeypatch.setitem(sys.modules, module.__name__, module)
+    args = parser().parse_args(['review', 'draft', '--db', str(tmp_path / 'state.sqlite'),
+        '--workspace', str(tmp_path), '--text', RAW])
+    result = dispatch_review(args)
+    assert result['status'] == 'needs_context'

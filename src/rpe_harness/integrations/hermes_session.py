@@ -382,6 +382,9 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     if public_contract == 'review' or entry_mode == 'review':
         from .hermes_review import REVIEW_CONTRACT
         config['agent']['system_prompt'] = REVIEW_CONTRACT
+        # These are caller-authorized isolated review sessions. Native controls
+        # need their normal program tools; the task's confirmation is separate.
+        config['approvals'] = {'single_query_mode': 'approve'}
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
@@ -558,9 +561,17 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
-    if entry_mode in ('clean','review') and (required_request is not None or context_sources not in (None, [])
+    if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
                                   or len(prompt.encode()) > 65536):
         raise ValueError(entry_mode + ' requires only the exact current source, at most 64 KiB; no hidden contract or context')
+    if entry_mode == 'review':
+        if required_request is not None or len(prompt.encode()) > 65536:
+            raise ValueError('review requires the exact current source; no hidden contract')
+        from ..review_context import validate_sources
+        try:
+            context_sources = validate_sources([] if context_sources is None else context_sources)
+        except (TypeError, ValueError) as error:
+            raise ValueError('review context source validation failed: ' + str(error)) from error
     if entry_mode == 'producer' and (tool_enabled or catalog_root is not None or skill_snapshot_id is not None
                                     or context_sources is not None or required_request is not None):
         raise ValueError('producer entry requires no Harness tool, fixed task, or skill catalog context')
@@ -608,6 +619,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         from ..skill_catalog import SkillCatalog
         catalog = SkillCatalog(db_path, catalog_root)
         snapshot = catalog.materialize(home / 'skills', snapshot_id=skill_snapshot_id)
+        if entry_mode == 'review' or public_contract == 'review':
+            from .review_skills import prepare_review_skills
+            snapshot = prepare_review_skills(snapshot)
         (home / '.no-bundled-skills').touch(mode=0o600)
         config = {'catalog_root':str(Path(catalog_root).resolve()),
                   'snapshot_id':snapshot['snapshot_id'],
@@ -615,6 +629,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                   'entries':[{key:entry[key] for key in ('skill_id','load_name','skill_path',
                      'skill_sha256','script_path','script_sha256') if key in entry}
                      for entry in snapshot['entries']]}
+        for projected, entry in zip(config['entries'], snapshot['entries']):
+            if entry.get('native_skill_path'):
+                projected.update(skill_path=entry['native_skill_path'], load_name=entry['native_load_name'])
         skill_config_path = session_root / 'skill-config.json'
         config_text=json.dumps(config,ensure_ascii=False)
         if len(config_text.encode())>8*1_048_576:
@@ -626,6 +643,11 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             native_config = json.loads(settings_path.read_text())
             native_config.setdefault('tools',{}).setdefault('tool_search',{})['enabled'] = 'off'
             settings_path.write_text(json.dumps(native_config,ensure_ascii=False))
+        if entry_mode == 'review':
+            settings_path = home / 'config.yaml'
+            review_settings = json.loads(settings_path.read_text())
+            review_settings['platform_toolsets']['cli'] = ['rpe_harness', 'skills']
+            settings_path.write_text(json.dumps(review_settings, ensure_ascii=False))
     address_config_path = None
     if entry_mode == 'address':
         from .hermes_address import _catalog, _model_catalog_entries
@@ -650,7 +672,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         review_config_path = session_root / 'review-config.json'
         review_config_path.write_text(json.dumps({'catalog_sha256': unified.snapshot_id,
             'entries': _model_catalog_entries(unified.entries()), 'raw': prompt,
-            'source_ref': 'user_prompt:' + original_prompt_sha}, ensure_ascii=False, allow_nan=False))
+            'source_ref': 'user_prompt:' + original_prompt_sha,
+            **({'skills': snapshot} if snapshot else {}),
+            **({'context_sources': context_sources} if context_sources else {})}, ensure_ascii=False, allow_nan=False))
         os.chmod(review_config_path, 0o600)
     fixed_path = None
     if fixed_request is not None:
@@ -677,7 +701,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        owner_read_scope=(read_isolation_root or owner_root, [session_root, workspace, db_path,
                                            import_root, Path(sys.executable).absolute().parent.parent]),
                                        deny_read_roots=deny_read_roots,
-                                       protected_write_roots=[home/'skills',skill_config_path] if snapshot else []))
+                                       protected_write_roots=([skill_config_path] if entry_mode == 'review'
+                                           or public_contract == 'review' else [home/'skills', skill_config_path])
+                                           if snapshot else []))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
@@ -712,10 +738,15 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     session_token = uuid.uuid4().hex
     env['RPE_HERMES_SESSION_TOKEN'] = session_token
     if not tool_enabled:
-        env.pop('PYTHONPATH', None)
-    env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
+        # Child native commands need Hermes' real module/dependency environment,
+        # without exposing the Harness implementation through PYTHONPATH.
+        env['PYTHONPATH'] = str(hermes_root)
+    runtime_paths = [str(Path(sys.executable).parent)]
+    if not tool_enabled:
+        runtime_paths.insert(0, str(host_python.parent))
+    env['PATH'] = os.pathsep.join(runtime_paths)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
     tools = ('rpe_producer_only' if entry_mode=='producer' else
-             'rpe_harness,skills' if entry_mode=='skills' else
+             'rpe_harness,skills' if entry_mode=='skills' or entry_mode=='review' and snapshot else
              'rpe_harness' if entry_mode in ('strict','address','clean','review') else
              'terminal,file'+(',skills' if snapshot else '')+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),
@@ -752,7 +783,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 from .hermes_review import review_extension
                 extension = review_extension(db_path, workspace, raw=prompt,
                     source_ref='user_prompt:' + original_prompt_sha, catalog_root=catalog_root,
-                    snapshot_id=snapshot['snapshot_id'] if snapshot else None)
+                    snapshot_id=snapshot['snapshot_id'] if snapshot else None,
+                    context_sources=context_sources)
             broker_environment = broker_stack.enter_context(execution_broker(
                 db_path=db_path, workspace=workspace, python=sys.executable,extension=extension))
             env.update(broker_environment)

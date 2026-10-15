@@ -93,7 +93,7 @@ def _validated_request(body, database, workspace):
 def _validated_skill_request(body, database):
     """Read-only native policy plus an immutable argument-bound RPC receipt."""
     from .hermes_gate import digest_json
-    operations = {'discover':'rpe_discover', 'context':'rpe_context',
+    operations = {'discover':'rpe_discover', 'select':'rpe_select', 'context':'rpe_context',
                   'lookup':'skill_view', 'revalidate':'rpe_task',
                   'understand':'rpe_understand', 'resolve_address':'rpe_task', 'propose':'rpe_propose'}
     if (not isinstance(body, dict) or set(body) != {'operation','arguments','receipt_id','native'}

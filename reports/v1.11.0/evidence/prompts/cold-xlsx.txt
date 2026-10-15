@@ -1,0 +1,1 @@
+请发现并加载已安装的电子表格技能，只读检查 input.xlsx 的“采购”工作表，用该技能原始 xlsx_read.py 的 --json --sheet 采购 输出完整JSON保存 output.json，保留原文件、JSON类型和行顺序。必须实际读取原技能并调用原始helper，不自行重写。

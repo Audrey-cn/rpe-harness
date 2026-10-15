@@ -254,7 +254,8 @@ def main(argv=None):
                 result = {'state': state.to_dict(), 'level': decision.level.name,
                           'candidates': [s.skill_id for s in decision.candidates],
                           'fallback_to_llm': decision.fallback_to_llm, 'reason': decision.reason}
-        if args.command == 'review' and isinstance(result.get('summary'), str):
+        if (args.command == 'review' and not getattr(args, 'json', False)
+                and isinstance(result.get('summary'), str)):
             print(result['summary'])
         else:
             print(json.dumps(result, ensure_ascii=False, allow_nan=False))

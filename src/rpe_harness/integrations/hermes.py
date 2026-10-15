@@ -738,8 +738,9 @@ def register(ctx) -> None:
                         path = native_result.get('_source_path')
                         args = payload.get('args',{})
                         matching = [row for row in native_config['entries'] if row.get('load_name') == args.get('name')]
-                        if (len(matching)==1 and isinstance(content,str) and path==matching[0]['skill_path']
-                                and native_result.get('setup_needed') is not True
+                        if (len(matching)==1 and native_result.get('success') is True
+                                and isinstance(content,str) and path==matching[0]['skill_path']
+                                and native_result.get('setup_needed') is False
                                 and hashlib.sha256(content.encode()).hexdigest()==matching[0]['skill_sha256']):
                             row=matching[0]
                             payload.update(status='loaded',skill_id=row['skill_id'],
