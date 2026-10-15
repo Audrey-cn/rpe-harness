@@ -1,4 +1,4 @@
-"""JSON-only command line interface for local tasks and saved runs."""
+"""Local tasks and saved runs, with readable natural-language task review."""
 from __future__ import annotations
 
 import argparse
@@ -42,6 +42,8 @@ def main(argv=None):
     register_address(commands)
     from .source_cli import register_source
     register_source(commands)
+    from .proposal_cli import register_review
+    register_review(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -124,7 +126,10 @@ def main(argv=None):
     _configuration(rollback)
     args = parser.parse_args(argv)
     try:
-        if args.command == 'source':
+        if args.command == 'review':
+            from .proposal_cli import dispatch_review
+            result = dispatch_review(args)
+        elif args.command == 'source':
             from .source_cli import dispatch_source
             result = dispatch_source(args)
         elif args.command in ('capabilities', 'intent'):
@@ -249,12 +254,16 @@ def main(argv=None):
                 result = {'state': state.to_dict(), 'level': decision.level.name,
                           'candidates': [s.skill_id for s in decision.candidates],
                           'fallback_to_llm': decision.fallback_to_llm, 'reason': decision.reason}
-        print(json.dumps(result, ensure_ascii=False, allow_nan=False))
+        if args.command == 'review' and isinstance(result.get('summary'), str):
+            print(result['summary'])
+        else:
+            print(json.dumps(result, ensure_ascii=False, allow_nan=False))
         if args.command == 'runs' or (args.command == 'evolution' and
                                      args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
-        if args.command in ('context', 'intent', 'capabilities', 'source'):
+        if args.command in ('context', 'intent', 'capabilities', 'source') or (
+                args.command == 'review' and args.review_command != 'run'):
             if status in ('unsupported', 'rejected', 'conflict'):
                 return 2
             if status in ('needs_context', 'ambiguous'):
