@@ -651,7 +651,11 @@ def _approve_and_execute(plan, trial, ledger, proposal, draft, record, native_ru
                 hermes_root=plan['hermes_root'], max_turns=8, max_task_attempts=1,
                 preserve_native_tool_search=True, public_contract='clean',
                 read_isolation_root=plan['root'], deny_read_roots=_denied(plan, trial), **_skill_kwargs(plan, trial)))
-        gate = evaluate_native_address_session(observation, _gate_plan(plan), trial)
+        if plan['profile'] == 'review-v112':
+            from .review_native_evidence import evaluate_native_review_execution
+            gate = evaluate_native_review_execution(observation, _gate_plan(plan), trial)
+        else:
+            gate = evaluate_native_address_session(observation, _gate_plan(plan), trial)
         record.update(execution_verified=bool(not error and _host_ok(observation) and gate.get('verified') is True
             and observation.get('original_prompt_sha256') == _sha(prompt.encode())
             and observation.get('public_contract_sha256') == _sha(_execution_contract(plan['helper_python']).encode())

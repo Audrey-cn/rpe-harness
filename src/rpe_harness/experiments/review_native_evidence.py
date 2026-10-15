@@ -133,6 +133,87 @@ def evaluate_native_review_draft(result, plan, trial):
     return verdict
 
 
+def evaluate_native_review_execution(result, plan, trial):
+    """1.12-only original helper grammar with one exact, read-only diagnostic suffix.
+
+    Parsing never rewrites model arguments or their hashes. The full original
+    command stays bound to the durable native call and its actual exit status.
+    """
+    from .address_comparison import evaluate_native_address_session, _python_metadata
+    legacy = evaluate_native_address_session(result, plan, trial)
+    if legacy.get('verified') or legacy.get('errors') != ['native_original_helper_execution_missing']:
+        return legacy
+    verdict = {**legacy, 'verified': False, 'errors': ['native_exact_helper_diagnostic_invocation_missing']}
+    try:
+        from ..integrations.hermes_gate import digest_json
+        posts, streams = _native_calls(result, trial['db'])
+        case = next(case for case in plan['cases'] if case['case_id'] == trial['case_id'])
+        if case['capability'] != 'xlsx.inspect' or case['expected_status'] != 'ready':
+            return legacy
+        workspace = Path(trial['workspace']).resolve()
+        helper = Path(result['session_root'])/'home/skills/productivity/xlsx/scripts/xlsx_read.py'
+        source = helper.parent.parent/'SKILL.md'
+        if (_sha(read_regular_file(source, max_bytes=65536)) != plan['skill_sha256']
+                or _sha(read_regular_file(helper, max_bytes=65536)) != plan['script_sha256']
+                or _sha(read_regular_file(workspace/case['input_name'], max_bytes=32*1024*1024)) != trial['input_sha256']):
+            raise ValueError('native_frozen_helper_or_input_changed')
+        if _python_metadata(plan['helper_python']) != plan['environment']['helper_python_identity']:
+            raise ValueError('native_frozen_interpreter_changed')
+        loaded = [post for post in posts if post.get('tool_name') == 'skill_view' and post.get('status') == 'loaded'
+            and post.get('skill_id') == XLSX_SKILL_ID and post.get('snapshot_id') == plan['skill_snapshot_id']
+            and post.get('content_sha256') == plan['skill_sha256'] and post.get('skill_source_path') == str(source)]
+        mode = {'rows': '--json', 'sheets': '--sheets', 'formulas': '--formulas'}[case['parameters']['mode']]
+        mode_args = [mode]+(['--sheet', case['parameters']['sheet']] if case['parameters'].get('sheet') is not None else [])
+        outputs = {case['output_name'], str(workspace/case['output_name'])}
+        inputs = {case['input_name'], str(workspace/case['input_name'])}
+        events = result['events']
+        for stream in streams:
+            args = stream.get('input')
+            if stream.get('name') != 'terminal' or type(args) is not dict:
+                continue
+            command = args.get('command')
+            if type(command) is not str or any(char in command for char in ('`', '\n', '\r')):
+                continue
+            lexer = shlex.shlex(command, posix=True, punctuation_chars=';&|><')
+            lexer.whitespace_split, lexer.commenters = True, ''
+            tokens = list(lexer)
+            if (len(tokens) < 7 or tokens[-7:-1] != ['&&', 'echo', 'EXIT=$?', '&&', 'wc', '-c']
+                    or tokens[-1] not in outputs):
+                continue
+            core = tokens[:-7]
+            if any('$' in token for token in core):
+                continue
+            if core[:1] == ['cd']:
+                if len(core) < 4 or Path(core[1]).resolve() != workspace or core[2] != '&&':
+                    continue
+                core = core[3:]
+            if core[:1] != [plan['helper_python']]:
+                continue
+            core = core[1:]
+            flags = []
+            while core and core[0] in {'-B', '-u', '-Bu', '-uB'} and len(flags) < 4:
+                flags.append(core.pop(0))
+            if (len(core) != len(mode_args)+4 or core[0] != str(helper) or core[1] not in inputs
+                    or core[2:-2] != mode_args or core[-2] != '>' or core[-1] not in outputs):
+                continue
+            matching = [post for post in posts if post.get('tool_name') == 'terminal'
+                and post.get('arguments_sha256') == digest_json(args)
+                and ('tool_call_id' not in stream or post.get('tool_call_id') == stream['tool_call_id'])
+                and post.get('status') == 'succeeded' and post.get('tool_exit_code') == 0]
+            if len(matching) != 1:
+                continue
+            pre = [event for event in events if event.get('kind') == 'pre_tool_call' and _same_call(event, matching[0])]
+            if len(pre) != 1 or not any(events.index(load) < events.index(pre[0]) for load in loaded):
+                continue
+            return {'verified': True, 'status': 'accepted', 'errors': [], 'proof_kind': 'native_exact_helper_readonly_diagnostic',
+                'skill_id': XLSX_SKILL_ID, 'snapshot_id': plan['skill_snapshot_id'], 'script_sha256': plan['script_sha256'],
+                'helper_call_id': matching[0]['tool_call_id'], 'arguments_sha256': digest_json(args),
+                'python_startup_flags': flags, 'diagnostic_suffix': 'echo_exit_and_count_output'}
+    except (ValueError, TypeError, KeyError, OSError, sqlite3.Error) as error:
+        verdict['errors'] = [str(error) if isinstance(error, ValueError) else type(error).__name__]
+    return verdict
+
+
 def native_cold_proof(result, plan, trial):
     """Prove a real exact Hermes CLI restore transition followed by native skill_view."""
     verdict = {'verified': False, 'restore_calls': 0, 'native_view_calls': 0, 'errors': []}

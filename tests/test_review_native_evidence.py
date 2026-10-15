@@ -211,6 +211,71 @@ def test_strict_gate_rejects_mention_only_and_duplicate_writes(tmp_path, monkeyp
     assert module.evaluate_native_review_draft(result, {}, trial)['verified'] is False
 
 
+@pytest.fixture
+def helper_execution_protocol(tmp_path):
+    """Real local original-helper bytes with synthetic, explicitly unit-only API identities."""
+    import shlex
+    from rpe_harness.experiments.address_comparison import preregister_address_comparison
+    from rpe_harness.skill_catalog import SkillCatalog
+    skills = tmp_path/'skills'
+    shutil.copytree(Path(__file__).parent/'fixtures/skills/productivity/xlsx', skills/'productivity/xlsx')
+    plan = preregister_address_comparison(tmp_path/'comparison', skill_root=skills,
+        hermes_root=tmp_path/'absent-host', timeout=60, max_turns=6)
+    trial = next(t for t in plan['sessions'] if t['arm'] == 'native' and t['case_id'] == 'xlsx-original')
+    session = Path(plan['root'])/'sessions/helper-execution-unit'
+    materialized = SkillCatalog(trial['db'], plan['catalog_root']).materialize(
+        session/'home/skills', plan['skill_snapshot_id'])
+    source = Path(materialized['materialized_path'])/'productivity/xlsx/SKILL.md'
+    argv = [plan['helper_python'], str(source.parent/'scripts/xlsx_read.py'),
+            'input.xlsx', '--json', '--sheet', '明细']
+    command = ('cd '+shlex.quote(trial['workspace'])+' && '+shlex.join(argv)+
+               ' > output.json && echo "EXIT=$?" && wc -c output.json')
+    executed = subprocess.run(command, shell=True, cwd=trial['workspace'], capture_output=True, text=True, check=True)
+    assert executed.stdout.startswith('EXIT=0\n')
+    return plan, trial, session, source, command
+
+
+@pytest.mark.parametrize('fault', [None, 'other_output', 'extra_code', 'substitution',
+    'wrong_sheet', 'stream_tamper', 'view_after_execute'])
+def test_native_execution_accepts_only_exact_readonly_diagnostic_suffix(helper_execution_protocol, fault):
+    import copy
+    from rpe_harness.integrations.hermes import HostEventStore
+    from rpe_harness.integrations.hermes_gate import digest_json
+    module = importlib.import_module('rpe_harness.experiments.review_native_evidence')
+    assert callable(getattr(module, 'evaluate_native_review_execution', None))
+    plan, trial, session, source, command = helper_execution_protocol
+    if fault == 'other_output':
+        command = command.removesuffix('wc -c output.json')+'wc -c other.json'
+    elif fault == 'extra_code':
+        command += ' && touch output.json'
+    elif fault == 'substitution':
+        command = command.replace('EXIT=$?', 'EXIT=$(true)')
+    elif fault == 'wrong_sheet':
+        command = command.replace('明细', '错误')
+    load_args, execute_args = {'name': 'xlsx'}, {'command': command}
+    store = HostEventStore(trial['db'])
+    ids = {'session_id': 'helper-unit', 'task_id': 'task', 'turn_id': 'turn', 'api_request_id': 'api'}
+    store.record('pre_api_request', ids)
+    store.record('post_api_request', {**ids, 'response': {'assistant_message': {'tool_calls': [
+        {'id': 'view', 'name': 'skill_view'}, {'id': 'execute', 'name': 'terminal'}]}}})
+    load = {**ids, 'tool_call_id': 'view', 'tool_name': 'skill_view', 'arguments_sha256': digest_json(load_args)}
+    execute = {**ids, 'tool_call_id': 'execute', 'tool_name': 'terminal', 'arguments_sha256': digest_json(execute_args)}
+    calls = [(load, {**load, 'status': 'loaded', 'skill_id': 'productivity/xlsx',
+        'snapshot_id': plan['skill_snapshot_id'], 'skill_source_path': str(source), 'content_sha256': plan['skill_sha256']}),
+        (execute, {**execute, 'status': 'succeeded', 'tool_exit_code': 0})]
+    for pre, post in calls if fault != 'view_after_execute' else reversed(calls):
+        store.record('pre_tool_call', pre)
+        store.record('post_tool_call', post)
+    result = {'session_id': ids['session_id'], 'session_root': str(session), 'events': store.list(ids['session_id']),
+              'stream_tool_calls': [{'name': 'skill_view', 'input': load_args}, {'name': 'terminal', 'input': execute_args}]}
+    if fault == 'stream_tamper':
+        result['stream_tool_calls'][-1]['input'] = {'command': command+' && true'}
+    before = copy.deepcopy(result)
+    gate = module.evaluate_native_review_execution(result, plan, trial)
+    assert gate['verified'] is (fault is None), gate
+    assert result == before  # bind original full command; never rewrite model arguments to fit legacy parser
+
+
 @pytest.mark.skipif(os.environ.get('RPE_RUN_INSTALLED_NATIVE_SMOKE') != '1',
                     reason='explicit provider-free installed Hermes smoke')
 def test_installed_native_file_terminal_and_cold_restore_under_real_sandbox(tmp_path):
