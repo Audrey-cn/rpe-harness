@@ -1,0 +1,38 @@
+{
+  "read_only": true,
+  "state_restored": false,
+  "baseline_files": 1710,
+  "unchanged_files": 1707,
+  "changed_files": [],
+  "mutable_daily_drift": [
+    "/Users/audrey/.claude.json",
+    "/Users/audrey/.hermes/auth.json",
+    "/Users/audrey/.hermes/state.db"
+  ],
+  "errors": [],
+  "skill_changes": [
+    ".curator_ledger.jsonl",
+    ".usage.json",
+    "autonomous-ai-agents/claude-code/SKILL.md"
+  ],
+  "skill_inventory_same": false,
+  "repositories": {
+    "/Users/audrey/项目/rpe-harness": {
+      "head_preserved_or_authorized_release": true,
+      "original_untracked_status_unchanged": true
+    },
+    "/Users/audrey/项目/progenitor-protocol": {
+      "head_preserved_or_authorized_release": true,
+      "original_untracked_status_unchanged": true
+    },
+    "/Users/audrey/项目/progenitor-registry": {
+      "head_preserved_or_authorized_release": true,
+      "original_untracked_status_unchanged": true
+    }
+  },
+  "daily_test_session_leaks": [],
+  "test_session_hash_count": 8,
+  "owned_absent": true,
+  "owned_process_pids": [],
+  "preserved": false
+}

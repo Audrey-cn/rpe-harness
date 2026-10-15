@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="0.469" timestamp="2026-10-15T19:57:05.032556+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_entry" name="test_values_profile_blocks_conflicting_default_before_confirmation" time="0.052" /><testcase classname="tests.test_v115_entry" name="test_values_profile_persists_and_rechecks_valid_literal_values" time="0.292" /><testcase classname="tests.test_v115_entry" name="test_public_profile_forwards_source_without_business_rewrite" time="0.060" /><testcase classname="tests.test_v115_entry" name="test_signed_stdout_metadata_survives_persistence_allowlist" time="0.008" /><testcase classname="tests.test_v115_entry" name="test_staged_runtime_contract_keeps_json_business_request_and_old_default" time="0.001"><failure message="ValueError: provider endpoint must be a plain HTTPS URL">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green3/test_staged_runtime_contract_k0')
+
+    def test_staged_runtime_contract_keeps_json_business_request_and_old_default(tmp_path):
+        import json
+        import sys
+        from rpe_harness.integrations.hermes_clean import CLEAN_SOURCE_CONTRACT
+        from rpe_harness.integrations.hermes_session import native_execution_contract, prepare_home
+        legacy = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', sys.executable)
+        assert native_execution_contract(sys.executable) == legacy
+        contract = native_execution_contract(sys.executable, '.rpe-xlsx-stage.json')
+        assert contract.startswith(legacy) and '.rpe-xlsx-stage.json' in contract
+        settings = {'model': 'mimo-v2.6-pro', 'provider': 'xiaomi', 'base_url': 'http://localhost:9', 'api_key': 'offline-dummy'}
+&gt;       home = prepare_home(tmp_path/'session', tmp_path, tmp_path/'db', tool_enabled=False,
+            settings=settings, public_contract='clean', native_stdout_name='.rpe-xlsx-stage.json')
+
+tests/test_v115_entry.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session_root = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green3/test_staged_runtime_contract_k0/session')
+workspace = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green3/test_staged_runtime_contract_k0')
+db_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green3/test_staged_runtime_contract_k0/db')
+tool_enabled = False
+settings = {'model': 'mimo-v2.6-pro', 'provider': 'xiaomi', 'base_url': 'http://localhost:9', 'api_key': 'offline-dummy'}
+entry_mode = 'optional', preserve_native_tool_search = False
+public_contract = 'clean', request_budget = None
+native_stdout_name = '.rpe-xlsx-stage.json'
+
+    def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional',
+                     preserve_native_tool_search=False, public_contract=None, request_budget=None,
+                     native_stdout_name=None):
+        if entry_mode not in ('optional','strict','skills','address','clean','review','producer') or (entry_mode in ('strict','skills','address','clean','review') and not tool_enabled):
+            raise ValueError('strict entry requires the Harness tool')
+        if public_contract not in (None, 'clean', 'review'):
+            raise ValueError('unknown public contract')
+        if entry_mode == 'producer' and tool_enabled:
+            raise ValueError('producer entry requires the Harness tool disabled')
+        if settings.get('provider') != 'xiaomi':
+            raise ValueError('isolated launcher currently requires xiaomi API-key provider')
+        if not all(isinstance(settings.get(k), str) and settings[k]
+                   for k in ['model', 'base_url', 'api_key']):
+            raise ValueError('missing model, plan endpoint or API key')
+        from urllib.parse import urlsplit
+        url = urlsplit(settings['base_url'])
+        if url.scheme != 'https' or not url.hostname or url.username or url.password or url.query or url.fragment:
+&gt;           raise ValueError('provider endpoint must be a plain HTTPS URL')
+E           ValueError: provider endpoint must be a plain HTTPS URL
+
+src/rpe_harness/integrations/hermes_session.py:371: ValueError</failure></testcase></testsuite></testsuites>

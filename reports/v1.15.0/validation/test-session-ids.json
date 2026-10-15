@@ -1,0 +1,16 @@
+{
+  "schema_version": "rpe.test-session-id-hashes/v1",
+  "scope": "actual corrected-population Hermes model sessions and isolated CLI",
+  "session_id_sha256": [
+    "33afe56d6436f79562544686f639460e33d6f0068e609dc1d91b4fab698b0377",
+    "3b5741112980bf5764297f1ebb47426f4153cfbcc064dc07de9581f5b95b6ead",
+    "483c20682d55bad29ed3ff3b8e4e32b5bcf11abfb7bb97609ad72635df33df3e",
+    "49f9957126b0805eb72a86cb71b30426e139cae64f0706c1f507f2869deb0d2b",
+    "6bc5ca8c9f53172790a352c58025900b4d82712e27f66d01d4f145c5780a122b",
+    "7c9aedd124e2420be20a295393963ee47c512b4f100753e7025edaaada314448",
+    "8da8e2892635be3b3225ca712183174aac26813951c03d40f9768fac8e38fbcd",
+    "d8a1e2e971e66a9ed446d980efc10c619df1c5e975bf3f0b2845127035b7031c"
+  ],
+  "Hermes_count": 7,
+  "CLI_count": 1
+}

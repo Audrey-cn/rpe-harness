@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="0.220" timestamp="2026-10-15T20:19:10.455391+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_host_settings" name="test_host_settings_file_loads_only_four_fields" time="0.012"><failure message="AttributeError: module 'rpe_harness.integrations.hermes_session' has no attribute '_load_host_settings'. Did you mean: '_read_host_settings'?">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-host-settings-red/test_host_settings_file_loads_0')
+
+    def test_host_settings_file_loads_only_four_fields(tmp_path):
+        from rpe_harness.integrations import hermes_session
+        path = tmp_path / 'host-settings.json'
+        path.write_text(json.dumps(settings()))
+&gt;       assert hermes_session._load_host_settings(path) == settings()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rpe_harness.integrations.hermes_session' has no attribute '_load_host_settings'. Did you mean: '_read_host_settings'?
+
+tests/test_v115_host_settings.py:24: AttributeError</failure></testcase><testcase classname="tests.test_v115_host_settings" name="test_session_uses_explicit_settings_or_unchanged_default_reader[False]" time="0.001" /><testcase classname="tests.test_v115_host_settings" name="test_session_uses_explicit_settings_or_unchanged_default_reader[True]" time="0.001"><failure message="TypeError: run_hermes_session() got an unexpected keyword argument 'host_settings'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-host-settings-red/test_session_uses_explicit_set1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106ce1d90&gt;
+explicit = True
+
+    @pytest.mark.parametrize('explicit', [False, True])
+    def test_session_uses_explicit_settings_or_unchanged_default_reader(tmp_path, monkeypatch, explicit):
+        from rpe_harness.integrations import hermes_session
+        class Prepared(Exception):
+            pass
+        default_reads, prepared = [], []
+        def read(*_):
+            default_reads.append(True)
+            return settings(model='daily-test-model')
+        def prepare(*args, **kwargs):
+            prepared.append(kwargs['settings'])
+            raise Prepared()
+        monkeypatch.setattr(hermes_session, '_installed_python', lambda *_: Path(sys.executable))
+        monkeypatch.setattr(hermes_session, '_read_host_settings', read)
+        monkeypatch.setattr(hermes_session, 'prepare_home', prepare)
+        source = settings()
+        with pytest.raises(Prepared):
+&gt;           hermes_session.run_hermes_session('Exact business request.', tmp_path, tmp_path/'s.db',
+                tool_enabled=True, owner_root=tmp_path/'owned',
+                **({'host_settings': source} if explicit else {}))
+E           TypeError: run_hermes_session() got an unexpected keyword argument 'host_settings'
+
+tests/test_v115_host_settings.py:89: TypeError</failure></testcase><testcase classname="tests.test_v115_host_settings" name="test_cli_reads_private_settings_and_denies_original_file_to_host" time="0.120"><failure message="SystemExit: 2">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-host-settings-red/test_cli_reads_private_setting0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106ce2900&gt;
+
+    def test_cli_reads_private_settings_and_denies_original_file_to_host(tmp_path, monkeypatch):
+        from rpe_harness import proposal_cli
+        from rpe_harness.integrations import hermes_review
+        from test_proposal_cli import parser
+        path = tmp_path/'private.json'
+        path.write_text(json.dumps(settings()))
+        denied = tmp_path/'other-private'
+        received = []
+        def review(raw, *args, **kwargs):
+            received.append((raw, kwargs))
+            return {}
+        monkeypatch.setattr(hermes_review, 'run_hermes_review', review)
+&gt;       result = proposal_cli.dispatch_review(parser().parse_args(['review', 'draft',
+            '--workspace', str(tmp_path), '--db', str(tmp_path/'s.db'), '--text', '完整原文',
+            '--host-settings', str(path), '--deny-read-root', str(denied)]))
+
+tests/test_v115_host_settings.py:132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/argparse.py:1908: in parse_args
+    self.error(msg)
+../../../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/argparse.py:2650: in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ArgumentParser(prog='__main__.py', usage=None, description=None, formatter_class=&lt;class 'argparse.HelpFormatter'&gt;, conflict_handler='error', add_help=True)
+status = 2
+message = '__main__.py: error: unrecognized arguments: --host-settings /Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-host-settings-red/test_cli_reads_private_setting0/private.json\n'
+
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, _sys.stderr)
+&gt;       _sys.exit(status)
+E       SystemExit: 2
+
+../../../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/argparse.py:2637: SystemExit</failure></testcase></testsuite></testsuites>

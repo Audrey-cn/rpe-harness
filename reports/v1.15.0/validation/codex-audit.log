@@ -1,0 +1,1 @@
+{"status": "completed", "error_code": null, "exit_code": 0, "elapsed_seconds": 33.13327154199942, "num_turns": 1, "usage": {"input_tokens": 18421, "cached_input_tokens": 0, "cache_write_input_tokens": 0, "output_tokens": 581, "reasoning_output_tokens": 306}, "observed_tool_item_count": 0, "auth_copy_deleted": true}

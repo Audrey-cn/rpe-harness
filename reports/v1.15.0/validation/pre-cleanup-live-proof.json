@@ -1,0 +1,24 @@
+{
+  "environment_matches_final_freeze": true,
+  "native_execution_rechecked": [
+    {
+      "trial_id": "formal-cold-inventory-native",
+      "verdict": {
+        "verified": true,
+        "status": "accepted",
+        "errors": [],
+        "proof_kind": "authenticated_darwin_kernel_process_exit",
+        "receipt_authenticated": true,
+        "artifact_binding": "same_call_final_bytes_equal_observed_stdout_not_exclusive_writer",
+        "process_returncode": 0,
+        "kernel_exit_observed": true,
+        "helper_call_id": "call_cd1f28f9c31f4b87a16f5d01",
+        "arguments_sha256": "442174712d3547b0381e5efa27028e52ef7fc349f398dcf70e788d56d49d2d55",
+        "output_sha256": "48ba37bf2a8452b4725b2b689206b5710621ea759b35d99278681d77b49c823a",
+        "process_argv_sha256": "5eac88150e16cf5c141128023077e6eb3ea4ce5880d8d30f413022b1396d9bf1",
+        "stdout_sha256": "48ba37bf2a8452b4725b2b689206b5710621ea759b35d99278681d77b49c823a"
+      }
+    }
+  ],
+  "initial_metadata_only_recheck": "failed_missing_stream_tool_calls; original observation snapshots unchanged"
+}

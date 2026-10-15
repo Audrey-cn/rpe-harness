@@ -1,0 +1,49 @@
+{
+  "strict_daily_preservation": false,
+  "no_restore_or_deletion_performed": true,
+  "skill_changes": [
+    ".curator_ledger.jsonl",
+    ".usage.json",
+    "autonomous-ai-agents/claude-code/SKILL.md"
+  ],
+  "added_files": [
+    ".locks/28e174396028f226b3bead259d19749205378d9204ce12fd9b1918ab6032a15d.lock",
+    ".locks/a3f14ba80655052604e19a68d427b02db0e472ca0b4789bd80a0273d69412647.lock",
+    "research/grounded-citations/references/benchmark-comparisons.md"
+  ],
+  "removed_files": [],
+  "curator_metadata": [
+    {
+      "ts": "2026-10-15T10:33:50.792899+00:00",
+      "actor": "curator",
+      "action": "patch",
+      "skill": "hermes-agent"
+    },
+    {
+      "ts": "2026-10-15T11:08:57.265947+00:00",
+      "actor": "agent",
+      "action": "patch",
+      "skill": "rule-mounting"
+    },
+    {
+      "ts": "2026-10-15T11:47:47.308667+00:00",
+      "actor": "agent",
+      "action": "patch",
+      "skill": "claude-code"
+    },
+    {
+      "ts": "2026-10-15T11:59:12.623817+00:00",
+      "actor": "agent",
+      "action": "patch",
+      "skill": "claude-code"
+    }
+  ],
+  "new_lock_names_match": [
+    "claude-code",
+    "grounded-citations"
+  ],
+  "registered_business_skill": "xlsx",
+  "actor_attribution_independently_verified": false,
+  "initial_checker_inventory_bug": "counted only SKILL.md against all 478 original files; corrected without changing baseline",
+  "test_isolation_verified": true
+}

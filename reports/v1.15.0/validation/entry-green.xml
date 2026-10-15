@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.477" timestamp="2026-10-15T19:52:31.950160+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_entry" name="test_values_profile_blocks_conflicting_default_before_confirmation" time="0.053" /><testcase classname="tests.test_v115_entry" name="test_values_profile_persists_and_rechecks_valid_literal_values" time="0.327"><failure message="AssertionError: assert b'id,x\r\n001,a\r\n' == b'id,x\n001,a\n'&#10;  &#10;  At index 4 diff: b'\r' != b'\n'&#10;  Use -v to get more diff">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green/test_values_profile_persists_a0')
+
+    def test_values_profile_persists_and_rechecks_valid_literal_values(tmp_path):
+        from rpe_harness.proposal import create_proposal, ProposalStore
+        (tmp_path/'input.csv').write_text('id,x\n001,a\n001,b\n')
+        raw, draft = candidate('utf-8')
+        result = create_proposal(raw, draft, db_path=tmp_path/'s.db', workspace=tmp_path,
+            session_id='s', source_ref='user', value_evidence=True)
+        assert result['status'] == 'awaiting_confirmation', result.get('errors')
+        store = ProposalStore(tmp_path/'s.db')
+        approved = store.confirm(result['proposal_id'], session_id='s',
+            expected_proposal_sha256=result['proposal_sha256'], actor='test-reviewer')
+        executed = store.execute(approved['confirmation_id'], session_id='s', workspace=tmp_path)
+        assert executed['status'] == 'succeeded', executed
+&gt;       assert (tmp_path/'output.csv').read_bytes() == b'id,x\n001,a\n'
+E       AssertionError: assert b'id,x\r\n001,a\r\n' == b'id,x\n001,a\n'
+E         
+E         At index 4 diff: b'\r' != b'\n'
+E         Use -v to get more diff
+
+tests/test_v115_entry.py:42: AssertionError</failure></testcase><testcase classname="tests.test_v115_entry" name="test_public_profile_forwards_source_without_business_rewrite" time="0.049" /><testcase classname="tests.test_v115_entry" name="test_signed_stdout_metadata_survives_persistence_allowlist" time="0.008" /></testsuite></testsuites>

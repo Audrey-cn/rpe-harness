@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.115" timestamp="2026-10-15T19:51:13.744647+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_entry" name="test_values_profile_blocks_conflicting_default_before_confirmation" time="0.047"><failure message="TypeError: create_proposal() got an unexpected keyword argument 'value_evidence'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-red/test_values_profile_blocks_con0')
+
+    def test_values_profile_blocks_conflicting_default_before_confirmation(tmp_path):
+        from rpe_harness.proposal import create_proposal, ProposalStore
+        (tmp_path/'input.csv').write_text('id,x\n001,a\n001,b\n')
+        raw, draft = candidate('utf-8-sig')
+&gt;       result = create_proposal(raw, draft, db_path=tmp_path/'s.db', workspace=tmp_path,
+            session_id='s', source_ref='user', value_evidence=True)
+E       TypeError: create_proposal() got an unexpected keyword argument 'value_evidence'
+
+tests/test_v115_entry.py:19: TypeError</failure></testcase><testcase classname="tests.test_v115_entry" name="test_values_profile_persists_and_rechecks_valid_literal_values" time="0.001"><failure message="TypeError: create_proposal() got an unexpected keyword argument 'value_evidence'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-red/test_values_profile_persists_a0')
+
+    def test_values_profile_persists_and_rechecks_valid_literal_values(tmp_path):
+        from rpe_harness.proposal import create_proposal, ProposalStore
+        (tmp_path/'input.csv').write_text('id,x\n001,a\n001,b\n')
+        raw, draft = candidate('utf-8')
+&gt;       result = create_proposal(raw, draft, db_path=tmp_path/'s.db', workspace=tmp_path,
+            session_id='s', source_ref='user', value_evidence=True)
+E       TypeError: create_proposal() got an unexpected keyword argument 'value_evidence'
+
+tests/test_v115_entry.py:34: TypeError</failure></testcase><testcase classname="tests.test_v115_entry" name="test_public_profile_forwards_source_without_business_rewrite" time="0.015"><failure message="ImportError: cannot import name 'build_parser' from 'rpe_harness.cli' (/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/cli.py)">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-red/test_public_profile_forwards_s0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106cd3fe0&gt;
+
+    def test_public_profile_forwards_source_without_business_rewrite(tmp_path, monkeypatch):
+&gt;       from rpe_harness.cli import build_parser
+E       ImportError: cannot import name 'build_parser' from 'rpe_harness.cli' (/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/cli.py)
+
+tests/test_v115_entry.py:46: ImportError</failure></testcase><testcase classname="tests.test_v115_entry" name="test_signed_stdout_metadata_survives_persistence_allowlist" time="0.009"><failure message="AssertionError: assert {} == {'stdout_sha2...out_size': 12}&#10;  &#10;  Right contains 4 more items:&#10;  {'stdout_identity_sha256': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',&#10;   'stdout_path_sha256': 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',&#10;   'stdout_sha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',&#10;   'stdout_size': 12}&#10;  Use -v to get more diff">def test_signed_stdout_metadata_survives_persistence_allowlist():
+        from rpe_harness.integrations.hermes import _metadata
+        row = {'stdout_sha256': 'a'*64, 'stdout_identity_sha256': 'b'*64,
+               'stdout_path_sha256': 'c'*64, 'stdout_size': 12}
+&gt;       assert _metadata(row) == row
+E       AssertionError: assert {} == {'stdout_sha2...out_size': 12}
+E         
+E         Right contains 4 more items:
+E         {'stdout_identity_sha256': 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+E          'stdout_path_sha256': 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+E          'stdout_sha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+E          'stdout_size': 12}
+E         Use -v to get more diff
+
+tests/test_v115_entry.py:63: AssertionError</failure></testcase></testsuite></testsuites>

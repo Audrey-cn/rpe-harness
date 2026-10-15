@@ -1,0 +1,20 @@
+{
+  "changes": [
+    {
+      "path": "/Users/audrey/.claude.json",
+      "baseline_sha256": "0f95200c8ca84a30adb41e27fe0aeb5a4ed8774e605fc0916bb28fd4c28055b0",
+      "current_sha256": "fd3a19d3d21ef021058d5c79ca3ca525135fff045962a6f1f84ea5552e880d1f"
+    },
+    {
+      "path": "/Users/audrey/.hermes/auth.json",
+      "baseline_sha256": "a887387c616df601f1b6c724e6e26e772423e69774a7722fd6d7737bd8f92849",
+      "current_sha256": "196b025c5cccfdf6abe76556fc0d28961422eeec61b285932f976ece7dd72e7d"
+    },
+    {
+      "path": "/Users/audrey/.hermes/state.db",
+      "baseline_sha256": "e2a786c28af11321e83fb46ebc2936272b539012ee0af02929a864cd04eae150",
+      "current_sha256": "9663e9954d8b95bf227d4a5d2a64f13d891a8c284f95b95222a58285e09db2ff"
+    }
+  ],
+  "no_restoration_performed": true
+}

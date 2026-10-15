@@ -1,0 +1,129 @@
+{
+  "scope": "provider-free real subprocess and kernel metadata; synthetic API and tool identities",
+  "original_package_failure_receipt_retained": false,
+  "original_failure_source": "reports/v1.15.0/validation/package-preflight.log",
+  "natural_single_case_replay": {
+    "passed": true,
+    "receipt": {
+      "kind": "native_helper_process_observation",
+      "verified": true,
+      "proof_kind": "darwin_kernel_process_exit",
+      "errors": [],
+      "process_config_sha256": "ca3ed67238f4bd14e88faf213e7276da3746acc6120663386c898170a5d27348",
+      "skill_id": "productivity/xlsx",
+      "snapshot_id": "snapshot",
+      "skill_sha256": "93b22a197a293a70540cfb5a3900f40ac53bb4ed27d2bda72a7041cdc78d0ca5",
+      "script_sha256": "b4fa4d070af96706a405d8add9536855e88fd6959e9d8fda150dcd245cf93358",
+      "input_sha256": "eafb8cc48189fbb651c71fde66233adad49525f64700ab8a66398a192c73c0f7",
+      "helper_python_sha256": "7a314947596fc484d4ec36ffc28e843b78d6d749c68736f8b5c24e7333f418eb",
+      "pid": 64239,
+      "parent_pid": 64238,
+      "process_argv_sha256": "86caf63a198cbad43ecf3f4d509cdaee8676726837a86211998a26fb9978825f",
+      "startup_environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "process_returncode": 0,
+      "kernel_exit_observed": true,
+      "process_start_identity_sha256": "f0fc83072ed2938107f21f026a0227f2e7c9f2094350b7f3e9615109a008c562",
+      "output_sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "output_size": 19,
+      "output_identity_sha256": "216710698cf731fbc16a4d1f4a61e8f79d22328d4a963f2ff0b195f03f409716",
+      "output_path_sha256": "9680dc0da89c3ebb6936775c635d5a52c87a5cb6153e9f1cbedd4e14283ebb4b",
+      "overlap": false,
+      "observer_joined": true,
+      "artifact_binding": "same_call_final_bytes_equal_observed_stdout_not_exclusive_writer",
+      "stdout_sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "stdout_size": 19,
+      "stdout_identity_sha256": "28f8a1007ca7daffbecff04269d7b0016fef6c3dbffff5c52d18f0fac25dcaa0",
+      "stdout_path_sha256": "1ea4c0d884c04da37a2237b1a4e53571efd08582b2fb8f0bc69ea26ff01b5e2f"
+    }
+  },
+  "deterministic_candidate_disappearance_probe": {
+    "module": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/installed/rpe_harness/integrations/hermes_native_process.py",
+    "returncode": 0,
+    "receipt": {
+      "kind": "native_helper_process_observation",
+      "verified": false,
+      "proof_kind": "darwin_kernel_process_exit",
+      "process_config_sha256": "873554d8e36a9c41e679aa633411ac36306d7ef07404bdca121781623fd0f914",
+      "skill_id": "productivity/xlsx",
+      "snapshot_id": "snapshot",
+      "skill_sha256": "93b22a197a293a70540cfb5a3900f40ac53bb4ed27d2bda72a7041cdc78d0ca5",
+      "script_sha256": "b4fa4d070af96706a405d8add9536855e88fd6959e9d8fda150dcd245cf93358",
+      "input_sha256": "eafb8cc48189fbb651c71fde66233adad49525f64700ab8a66398a192c73c0f7",
+      "helper_python_sha256": "7a314947596fc484d4ec36ffc28e843b78d6d749c68736f8b5c24e7333f418eb",
+      "pid": 64685,
+      "parent_pid": 64684,
+      "process_argv_sha256": "886ebf01857f23a1deb92fead3f749610986d34ef1e43290d72eeca2025c1359",
+      "startup_environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "process_returncode": 0,
+      "kernel_exit_observed": true,
+      "process_start_identity_sha256": "c14b3ec189acc33ef85f5645fe9d4a879fb0121bc09755ffee5d1667ca91dbe9",
+      "output_sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "output_size": 19,
+      "output_identity_sha256": "bc39008513f91056916061671efa65197bd9fd0c5949c501ae497978e6c7310e",
+      "output_path_sha256": "aa43e0773bba52781c3206db7a9814ed9cc34ac3c75c88f21e61e81b4cb10a32",
+      "overlap": false,
+      "observer_joined": true,
+      "artifact_binding": "same_call_final_bytes_equal_observed_stdout_not_exclusive_writer",
+      "stdout_sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "stdout_size": 19,
+      "stdout_identity_sha256": "4e87f44b892faa5491c5e85a3c298bdb1292e1fb1ce75d772ce719c5a64f89a9",
+      "stdout_path_sha256": "e1d6227b88f471d7cf07eb5ede109b938ea822079f22fe9d7e26893e17da0a7b",
+      "session_id": "staged-unit",
+      "task_id": "task",
+      "turn_id": "turn",
+      "api_request_id": "api",
+      "tool_call_id": "execute",
+      "tool_name": "terminal",
+      "arguments_sha256": "f7317c82c21f814580379e1070e7770374c6d83624b7a8ee632ab0a553c3431f",
+      "tool_status": "succeeded",
+      "process_observation_error": "native_process_probe_failed,native_process_staged_output_binding_failed",
+      "process_receipt_hmac_sha256": "2b5df53400496088c4f0ddc70b8bf068d2002128b4bbaabcc3df280f2d87f4ef"
+    },
+    "trace": [
+      {
+        "phase": "info_then_candidate_exited",
+        "pid": 64686,
+        "argv": [
+          "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python",
+          "-I",
+          "-c",
+          "import shutil;shutil.copyfile(\"helper-stdout.json\",\"output.json\")"
+        ]
+      },
+      {
+        "phase": "arguments_error",
+        "pid": 64686,
+        "error": "OSError",
+        "detail": "native process arguments unavailable"
+      }
+    ],
+    "final": {
+      "state": "regular",
+      "sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "size": 19,
+      "identity": [
+        16777234,
+        16055184,
+        19,
+        1792066030504382685,
+        1792066030504400977
+      ]
+    },
+    "stdout": {
+      "state": "regular",
+      "sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+      "size": 19,
+      "identity": [
+        16777234,
+        16055177,
+        19,
+        1792066030479642079,
+        1792066030479642079
+      ]
+    }
+  },
+  "root_cause": "An unrelated Python copier disappears between successful proc info and argv sysctl. Generic OSError contaminates an otherwise successful helper receipt.",
+  "correction": "On sysctl failure recheck actual process info: vanished PID takes existing ProcessLookupError no-proof path; live PID remains OSError.",
+  "deterministic_red": "reports/v1.15.0/validation/process-disappearance-red.xml",
+  "final_related_regression": "reports/v1.15.0/validation/process-disappearance-green.xml"
+}

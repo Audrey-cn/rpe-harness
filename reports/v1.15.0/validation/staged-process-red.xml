@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="0" tests="29" time="1.051" timestamp="2026-10-15T19:49:28.938050+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command[cp helper-stdout.json output.json]" time="0.017"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_accepts_sam0/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+copy = 'cp helper-stdout.json output.json'
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108c21d00&gt;
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('copy', ['cp helper-stdout.json output.json',
+        shlex.join([sys.executable, '-I', '-c',
+            'import shutil;shutil.copyfile("helper-stdout.json","output.json")'])])
+    def test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command(staged_case, copy, monkeypatch):
+        config, argv = staged_case
+        monkeypatch.setattr(native, '_SIGNING_KEY', b's'*32)
+&gt;       child, row = invoke(config, shlex.join(argv)+' &gt; helper-stdout.json; '+copy)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command['/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python' -I -c 'import shutil;shutil.copyfile(&quot;helper-stdout.json&quot;,&quot;output.json&quot;)']" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_accepts_sam1/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+copy = '\'/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python\' -I -c \'import shutil;shutil.copyfile("helper-stdout.json","output.json")\''
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108c22cc0&gt;
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('copy', ['cp helper-stdout.json output.json',
+        shlex.join([sys.executable, '-I', '-c',
+            'import shutil;shutil.copyfile("helper-stdout.json","output.json")'])])
+    def test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command(staged_case, copy, monkeypatch):
+        config, argv = staged_case
+        monkeypatch.setattr(native, '_SIGNING_KEY', b's'*32)
+&gt;       child, row = invoke(config, shlex.join(argv)+' &gt; helper-stdout.json; '+copy)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[existing_stage]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis0/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'existing_stage'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[existing_final]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis1/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'existing_final'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[wrong_stdout]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis2/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'wrong_stdout'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[stage_symlink]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis3/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'stage_symlink'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[final_symlink]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis4/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'final_symlink'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[final_hardlink]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis5/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'final_hardlink'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[missing_copy]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis6/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'missing_copy'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[changed_final]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis7/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'changed_final'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[deleted_stage]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis8/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'deleted_stage'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[renamed_stage]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_rejects_mis9/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'renamed_stage'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[changed_stage_after_exit]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...t-staged-red-imported/test_staged_stdout_rejects_mis10/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'changed_stage_after_exit'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[replaced_stage_after_exit]" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...t-staged-red-imported/test_staged_stdout_rejects_mis11/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'replaced_stage_after_exit'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding[failed_helper]" time="0.012"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...t-staged-red-imported/test_staged_stdout_rejects_mis12/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+fault = 'failed_helper'
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('fault', ['existing_stage', 'existing_final', 'wrong_stdout', 'stage_symlink',
+        'final_symlink', 'final_hardlink', 'missing_copy', 'changed_final', 'deleted_stage', 'renamed_stage',
+        'changed_stage_after_exit', 'replaced_stage_after_exit', 'failed_helper'])
+    def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_case, fault):
+        config, argv = staged_case
+        workspace = Path(config['workspace'])
+        stage, final = workspace/'helper-stdout.json', workspace/'output.json'
+        stdout, suffix = 'helper-stdout.json', '; cp helper-stdout.json output.json'
+        if fault == 'existing_stage':
+            stage.write_text('old')
+        elif fault == 'existing_final':
+            final.write_text('old')
+        elif fault == 'wrong_stdout':
+            stdout = 'other.json'; suffix = '; cp other.json output.json'
+        elif fault == 'stage_symlink':
+            (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        elif fault == 'final_symlink':
+            (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        elif fault == 'final_hardlink':
+            suffix = '; ln helper-stdout.json output.json'
+        elif fault == 'missing_copy':
+            suffix = ''
+        elif fault == 'changed_final':
+            suffix += '; printf wrong &gt; output.json'
+        elif fault == 'deleted_stage':
+            suffix += '; rm helper-stdout.json'
+        elif fault == 'renamed_stage':
+            suffix = '; mv helper-stdout.json output.json'
+        elif fault == 'changed_stage_after_exit':
+            suffix = '; sleep .1; printf changed &gt; helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'replaced_stage_after_exit':
+            suffix = '; sleep .1; cp helper-stdout.json other.json; mv other.json helper-stdout.json; cp helper-stdout.json output.json'
+        elif fault == 'failed_helper':
+            config['parameters']['sheet'] = argv[-1] = 'fail'
+&gt;       _child, row = invoke(config, shlex.join(argv)+' &gt; '+stdout+suffix)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[input.xlsx]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[output.json]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[../outside.json]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[/tmp/out.json]" time="0.012" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[sub/out.json]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[]" time="0.012" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[.]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[..]" time="0.012" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[None]" time="0.012" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[2]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_configuration_requires_distinct_fixed_workspace_filename[bad\x00name]" time="0.013" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_option_materializes_without_changing_legacy_configuration" time="0.012"><failure message="ValueError: invalid native execution evidence options">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_option_mate0/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+
+    def test_staged_stdout_option_materializes_without_changing_legacy_configuration(staged_case):
+        config, _argv = staged_case
+        options = {key: value for key, value in config.items()
+            if key not in {'workspace', 'helper_path', 'skill_path', 'snapshot_id'}}
+        snapshot = {'snapshot_id': 'snapshot', 'materialized_path': str(Path(config['skill_path']).parent.parent),
+            'entries': [{'skill_id': config['skill_id'], 'skill_path': config['skill_path'],
+                'skill_sha256': config['skill_sha256'], 'script_sha256': config['script_sha256']}]}
+&gt;       assert native.native_execution_evidence_config(config['workspace'], options, snapshot) == config
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+workspace = '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_staged_stdout_option_mate0/workspace'
+options = {'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', 'helper_python...kill_id': 'productivity/xlsx', 'skill_sha256': '93b22a197a293a70540cfb5a3900f40ac53bb4ed27d2bda72a7041cdc78d0ca5', ...}
+snapshot = {'snapshot_id': 'snapshot', 'materialized_path': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/p...3bb4ed27d2bda72a7041cdc78d0ca5', 'script_sha256': 'b4fa4d070af96706a405d8add9536855e88fd6959e9d8fda150dcd245cf93358'}]}
+
+    def native_execution_evidence_config(workspace, options, snapshot):
+        """Resolve fixed original helper paths from the owned materialized skill copy."""
+        if type(options) is not dict or set(options) != _OPTION_KEYS or type(snapshot) is not dict:
+&gt;           raise ValueError('invalid native execution evidence options')
+E           ValueError: invalid native execution evidence options
+
+src/rpe_harness/integrations/hermes_native_process.py:110: ValueError</failure></testcase><testcase classname="tests.test_native_staged_process_evidence" name="test_legacy_configuration_keeps_direct_inode_binding_and_receipt_fields" time="0.413" /><testcase classname="tests.test_native_staged_process_evidence" name="test_staged_stdout_does_not_reuse_process_exit_across_terminal_calls" time="0.013"><failure message="ValueError: invalid native execution evidence configuration">staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_sta...st-staged-red-imported/test_staged_stdout_does_not_re0/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    def test_staged_stdout_does_not_reuse_process_exit_across_terminal_calls(staged_case):
+        config, argv = staged_case
+&gt;       _child, helper = invoke(config, shlex.join(argv)+' &gt; helper-stdout.json')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_native_staged_process_evidence.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_native_staged_process_evidence.py:43: in invoke
+    observer = native.NativeExecutionObserver(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/integrations/hermes_native_process.py:436: in __init__
+    _validate_config(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-staged-red-imported/test_stag.../SKILL.md', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python', ...}
+
+    def _validate_config(config):
+        if type(config) is not dict or set(config) != _CONFIG_KEYS:
+&gt;           raise ValueError('invalid native execution evidence configuration')
+E           ValueError: invalid native execution evidence configuration
+
+src/rpe_harness/integrations/hermes_native_process.py:130: ValueError</failure></testcase></testsuite></testsuites>

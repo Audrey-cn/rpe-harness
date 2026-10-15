@@ -1,0 +1,163 @@
+{
+  "trial_id": "formal-pending-account-key-native",
+  "phase": "formal",
+  "arm": "native",
+  "case_id": "pending-account-key",
+  "category": "contract_probe",
+  "fingerprint": "f685c8ca7a959aaf2964e8cc708f3e75a38552a5bb1860486b133763c629df47",
+  "status": "failed",
+  "approved": false,
+  "accepted": false,
+  "draft_invocation_verified": false,
+  "execution_verified": false,
+  "comparable": true,
+  "reviewer_kind": "simulated_semantic_reviewer",
+  "human_confirmation_verified": false,
+  "session_id": "20261015_202507_7a8ef3",
+  "model_identity": {
+    "provider": "xiaomi",
+    "requested_model": "mimo-v2.6-pro",
+    "response_models": [
+      "mimo-v2.6-pro"
+    ]
+  },
+  "raw_source_sha256": "cbe6bcc884569f1872a6929085fab0c80f487b42223b1486124999cdc13a6f79",
+  "actual_host_prompt_sha256": "b6ed8c7e8e75db4cffe40648c0886f3e62220b7b0babd660bdd8324b1aa12991",
+  "host_cleanup_complete": true,
+  "draft_gate": {
+    "verified": false,
+    "status": "unverified",
+    "errors": [
+      "native_stream_linkage_invalid"
+    ],
+    "proof_kind": "native_io_receipt"
+  },
+  "draft_faithful": false,
+  "trace_verified": false,
+  "probe_correct": false,
+  "no_business_output_before_approval": true,
+  "native_chain_diagnostics": {
+    "draft": {
+      "verified": false,
+      "error_code": "native_stream_linkage_invalid",
+      "durable_observations_match": true,
+      "api_requests": 1,
+      "api_outcomes": 1,
+      "api_errors": 0,
+      "api_unmatched_requests": 0,
+      "api_unmatched_outcomes": 0,
+      "api_duplicate_requests": 0,
+      "api_duplicate_outcomes": 0,
+      "tool_pre_calls": 1,
+      "tool_post_calls": 1,
+      "model_tool_calls": 1,
+      "tool_missing_posts": 0,
+      "tool_unmatched_posts": 0,
+      "tool_unemitted_calls": 0,
+      "tool_unobserved_calls": 0,
+      "stream_calls": 0,
+      "stream_unmatched_calls": 1
+    }
+  },
+  "request_budget_observations": {
+    "draft": {
+      "api_requests": 1,
+      "requests": [
+        {
+          "max_completion_tokens": 2400,
+          "thinking_type": "disabled"
+        }
+      ],
+      "truncated": false,
+      "durable_observations_match": true,
+      "conformant": true
+    }
+  },
+  "error_code": "invalid_native_draft_unresolved_item_type",
+  "original_invalid_candidate": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "execution": {
+      "input_path": "input.csv",
+      "output_path": "output.csv",
+      "keep": "first",
+      "encoding": "utf-8",
+      "delimiter": ","
+    },
+    "requirements": [
+      {
+        "text": "对 input.csv 执行去重，输入文件为 input.csv。",
+        "fields": [
+          "/execution/input_path"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "将来另存为 output.csv，输出路径为 output.csv。",
+        "fields": [
+          "/execution/output_path"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "保留首条整行：重复组中保留第一行，keep=first。",
+        "fields": [
+          "/execution/keep"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "保留原行顺序：输出保持输入的原始行顺序，约束 preserve_order。",
+        "fields": [
+          "/constraints"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "保留输入文件，不覆盖或改动输入，约束 preserve_original。",
+        "fields": [
+          "/constraints"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "输出为 UTF-8 编码，encoding=utf-8（来源中的 UTF-8 按登记归一化为 utf-8）。",
+        "fields": [
+          "/execution/encoding"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "输出为逗号分隔 CSV，delimiter 为单字符逗号 \",\"（来源中的 逗号 对应逗号分隔符）。",
+        "fields": [
+          "/execution/delimiter"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      },
+      {
+        "text": "按业务唯一键去重的能力选择：tabular.deduplicate（CSV 输入，保留首行与行序）。",
+        "fields": [
+          "/capability"
+        ],
+        "quote_ref": "q:ac6cf3d138e033b1dd906da28cdbd875763259f9055c19a125aab5364ff77826"
+      }
+    ],
+    "unresolved": [
+      {
+        "action": "tabular.deduplicate",
+        "issue": "缺少业务唯一键：请求要求按业务唯一键去重，但未指定构成唯一键的列，附件中也未提供可用的键列事实。不能猜测 key_columns，也不能用哨兵值替代。",
+        "question": "请确认业务唯一键由哪些列构成（key_columns）？在业务键确定前，不能确认执行或产出 output.csv。"
+      }
+    ]
+  },
+  "original_candidate_sha256": "637296ccfe8458b9b0ec02c49e196737a0efd1afbd84c30ef907ab9a15e86534",
+  "controller_bookkeeping_error": "AttributeError_in_proof_unresolved_sha256",
+  "bookkeeping_recovery_only": true,
+  "model_replayed": false,
+  "full_trial_elapsed_seconds": null,
+  "source_preserved": true,
+  "no_business_output": true
+}

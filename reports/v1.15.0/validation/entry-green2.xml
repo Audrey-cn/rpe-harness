@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="0.480" timestamp="2026-10-15T19:56:55.247688+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_entry" name="test_values_profile_blocks_conflicting_default_before_confirmation" time="0.052" /><testcase classname="tests.test_v115_entry" name="test_values_profile_persists_and_rechecks_valid_literal_values" time="0.314" /><testcase classname="tests.test_v115_entry" name="test_public_profile_forwards_source_without_business_rewrite" time="0.049" /><testcase classname="tests.test_v115_entry" name="test_signed_stdout_metadata_survives_persistence_allowlist" time="0.008" /><testcase classname="tests.test_v115_entry" name="test_staged_runtime_contract_keeps_json_business_request_and_old_default" time="0.001"><failure message="NameError: name 're' is not defined. Did you forget to import 're'">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-entry-green2/test_staged_runtime_contract_k0')
+
+    def test_staged_runtime_contract_keeps_json_business_request_and_old_default(tmp_path):
+        import json
+        import sys
+        from rpe_harness.integrations.hermes_clean import CLEAN_SOURCE_CONTRACT
+        from rpe_harness.integrations.hermes_session import native_execution_contract, prepare_home
+        legacy = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', sys.executable)
+        assert native_execution_contract(sys.executable) == legacy
+&gt;       contract = native_execution_contract(sys.executable, '.rpe-xlsx-stage.json')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_v115_entry.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+helper_python = '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python'
+stdout_name = '.rpe-xlsx-stage.json'
+
+    def native_execution_contract(helper_python, stdout_name=None):
+        """A runtime delivery protocol, separate from the approved JSON business task."""
+        from .hermes_clean import CLEAN_SOURCE_CONTRACT
+        contract = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', str(helper_python))
+        if stdout_name is None:
+            return contract
+&gt;       if (type(stdout_name) is not str or not re.fullmatch(r'[A-Za-z0-9_.-]{1,120}', stdout_name)
+                                                ^^
+                or stdout_name in ('.', '..')):
+E               NameError: name 're' is not defined. Did you forget to import 're'
+
+src/rpe_harness/integrations/hermes_session.py:338: NameError</failure></testcase></testsuite></testsuites>

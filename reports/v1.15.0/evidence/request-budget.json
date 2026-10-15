@@ -1,0 +1,9 @@
+{
+  "max_completion_tokens": 2400,
+  "model": "mimo-v2.6-pro",
+  "provider": "xiaomi",
+  "request_timeout_seconds": 90,
+  "schema_version": "rpe.hermes-request-budget/v1",
+  "stale_timeout_seconds": 90,
+  "thinking_type": "disabled"
+}

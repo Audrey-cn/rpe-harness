@@ -1,0 +1,58 @@
+{
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead",
+  "removed_regular_files": 49895,
+  "removed_regular_bytes": 737762078,
+  "removed_symlinks": 1651,
+  "owned_processes_before_removal": 0,
+  "removed_at": 1792067777.352534,
+  "scope": "only fresh OWNED root; source checkouts and durable evidence retained",
+  "daily_state_restored": false,
+  "owned_removed": true,
+  "preservation": {
+    "read_only": true,
+    "state_restored": false,
+    "baseline_files": 1710,
+    "unchanged_files": 1707,
+    "changed_files": [],
+    "mutable_daily_drift": [
+      "/Users/audrey/.claude.json",
+      "/Users/audrey/.hermes/auth.json",
+      "/Users/audrey/.hermes/state.db"
+    ],
+    "errors": [],
+    "skill_changes": [
+      ".curator_ledger.jsonl",
+      ".usage.json",
+      "autonomous-ai-agents/claude-code/SKILL.md"
+    ],
+    "skill_inventory_same": false,
+    "skill_added_files": [
+      ".locks/28e174396028f226b3bead259d19749205378d9204ce12fd9b1918ab6032a15d.lock",
+      ".locks/a3f14ba80655052604e19a68d427b02db0e472ca0b4789bd80a0273d69412647.lock",
+      "research/grounded-citations/references/benchmark-comparisons.md"
+    ],
+    "skill_removed_files": [],
+    "repositories": {
+      "/Users/audrey/项目/rpe-harness": {
+        "head_preserved_or_authorized_release": true,
+        "original_untracked_status_unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-protocol": {
+        "head_preserved_or_authorized_release": true,
+        "original_untracked_status_unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-registry": {
+        "head_preserved_or_authorized_release": true,
+        "original_untracked_status_unchanged": true
+      }
+    },
+    "daily_test_session_leaks": [],
+    "test_session_hash_count": 8,
+    "owned_absent": true,
+    "owned_process_pids": [],
+    "preserved": false,
+    "owned_cleanup_and_test_isolation_verified": true,
+    "daily_skill_drift_observed": true
+  },
+  "strict_daily_preservation_passed": false
+}

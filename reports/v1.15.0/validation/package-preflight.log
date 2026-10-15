@@ -1,0 +1,25 @@
+..............F...........................................               [100%]
+=================================== FAILURES ===================================
+_ test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command['/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python' -I -c 'import shutil;shutil.copyfile("helper-stdout.json","output.json")'] _
+
+staged_case = ({'workspace': '/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-wheel/test_staged_stdout_acc...7668c4ead/pytest-wheel/test_staged_stdout_accepts_sam1/skills/xlsx/scripts/xlsx_read.py', 'input.xlsx', '--json', ...])
+copy = '\'/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python\' -I -c \'import shutil;shutil.copyfile("helper-stdout.json","output.json")\''
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10986ea20>
+
+    @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')
+    @pytest.mark.parametrize('copy', ['cp helper-stdout.json output.json',
+        shlex.join([sys.executable, '-I', '-c',
+            'import shutil;shutil.copyfile("helper-stdout.json","output.json")'])])
+    def test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command(staged_case, copy, monkeypatch):
+        config, argv = staged_case
+        monkeypatch.setattr(native, '_SIGNING_KEY', b's'*32)
+        child, row = invoke(config, shlex.join(argv)+' > helper-stdout.json; '+copy)
+        assert child.returncode == 0
+>       assert row['verified'] is True, row
+E       AssertionError: {'kind': 'native_helper_process_observation', 'verified': False, 'proof_kind': 'darwin_kernel_process_exit', 'process_config_sha256': '31f1562589017aa8c6ecf0ad67d3b3e0bb05a25235f8d06c79ea66e3bf8eef06', ...}
+E       assert False is True
+
+package-tests/test_native_staged_process_evidence.py:62: AssertionError
+=========================== short test summary info ============================
+FAILED package-tests/test_native_staged_process_evidence.py::test_staged_stdout_accepts_same_call_copy_without_parsing_copy_command['/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/venv/bin/python' -I -c 'import shutil;shutil.copyfile("helper-stdout.json","output.json")']
+1 failed, 57 passed in 31.31s

@@ -1,0 +1,56 @@
+[
+  {
+    "source": "f698cbe",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release 49e36be] fix(review): bound pre-dispatch tool protocol recovery\n Date: Thu Oct 15 17:57:34 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 5 files changed, 370 insertions(+), 10 deletions(-)\n create mode 100644 tests/test_hermes_review_recovery.py\n",
+    "stderr": ""
+  },
+  {
+    "source": "5ec25e5",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release d81cf5c] fix(hermes): retain review diagnostics and support MiMo auto policy\n Date: Thu Oct 15 18:37:47 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 17 files changed, 723 insertions(+), 61 deletions(-)\n create mode 100644 src/rpe_harness/integrations/review_diagnostics.py\n create mode 100644 tests/test_hermes_review_diagnostics.py\n",
+    "stderr": ""
+  },
+  {
+    "source": "fa7d732",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release e78ad6a] fix(hermes): block pre-intake continuation and retain rejection evidence\n Date: Thu Oct 15 18:49:32 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 8 files changed, 218 insertions(+), 10 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "source": "5e69b97",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release 312f20c] fix(hermes): reject implicit phase retries and invalid recovery arguments\n Date: Thu Oct 15 19:03:35 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 5 files changed, 320 insertions(+), 8 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "source": "7453a5e",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release ac7e19b] test(hermes): expect rejected phase repeats to stop before provider\n Date: Thu Oct 15 19:24:08 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 1 file changed, 12 insertions(+), 8 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "source": "3099b8e",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release 5160c88] test(review): expect auto wire for scalar selection\n Date: Thu Oct 15 19:42:31 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 1 file changed, 6 insertions(+), 3 deletions(-)\n",
+    "stderr": ""
+  },
+  {
+    "source": "83462c8",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release afe72d6] feat: verify literal parameters and staged native delivery for 1.15\n Date: Thu Oct 15 20:03:14 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 24 files changed, 1777 insertions(+), 67 deletions(-)\n create mode 100644 docs/superpowers/plans/2026-10-15-rpe-v115.md\n create mode 100644 src/rpe_harness/experiments/review_v115_comparison.py\n create mode 100644 src/rpe_harness/review_values.py\n create mode 100644 tests/test_native_staged_process_evidence.py\n create mode 100644 tests/test_native_staged_review_evidence.py\n create mode 100644 tests/test_review_v115_comparison.py\n create mode 100644 tests/test_review_values.py\n create mode 100644 tests/test_v115_entry.py\n create mode 100644 tests/test_v115_native_finish.py\n create mode 100644 tests/test_v115_profile_wire.py\n",
+    "stderr": ""
+  },
+  {
+    "source": "38b0aff",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release 02edef2] fix: distinguish disappeared scan candidates from live probe errors\n Date: Thu Oct 15 20:11:22 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 2 files changed, 36 insertions(+)\n create mode 100644 tests/test_native_process_disappearance.py\n",
+    "stderr": ""
+  },
+  {
+    "source": "0cd3caa",
+    "returncode": 0,
+    "stdout": "[codex/rpe-v1.15-release 7cc2f70] feat: allow explicit isolated host settings without changing daily provider\n Date: Thu Oct 15 20:22:01 2026 +0800\n Committer: Audrey <audrey@AudreydeMacBook-Pro.local>\nYour name and email address were configured automatically based\non your username and hostname. Please check that they are accurate.\nYou can suppress this message by setting them explicitly:\n\n    git config --global user.name \"Your Name\"\n    git config --global user.email you@example.com\n\nAfter doing this, you may fix the identity used for this commit with:\n\n    git commit --amend --reset-author\n\n 4 files changed, 202 insertions(+), 21 deletions(-)\n create mode 100644 tests/test_v115_host_settings.py\n",
+    "stderr": ""
+  }
+]

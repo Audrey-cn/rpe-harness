@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.066" timestamp="2026-10-15T19:56:16.871055+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_v115_entry" name="test_staged_runtime_contract_keeps_json_business_request_and_old_default" time="0.029"><failure message="ImportError: cannot import name 'native_execution_contract' from 'rpe_harness.integrations.hermes_session' (/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/integrations/hermes_session.py)">tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/pytest-contract-red/test_staged_runtime_contract_k0')
+
+    def test_staged_runtime_contract_keeps_json_business_request_and_old_default(tmp_path):
+        import json
+        import sys
+        from rpe_harness.integrations.hermes_clean import CLEAN_SOURCE_CONTRACT
+&gt;       from rpe_harness.integrations.hermes_session import native_execution_contract, prepare_home
+E       ImportError: cannot import name 'native_execution_contract' from 'rpe_harness.integrations.hermes_session' (/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/integrations/hermes_session.py)
+
+tests/test_v115_entry.py:72: ImportError</failure></testcase></testsuite></testsuites>

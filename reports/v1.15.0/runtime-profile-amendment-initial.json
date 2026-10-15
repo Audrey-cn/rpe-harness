@@ -1,0 +1,16 @@
+{
+  "reason": "daily Hermes active provider/runtime changed during preflight; default adapter requires xiaomi",
+  "original_attempted_drafts": 6,
+  "original_model_observations": 0,
+  "original_population_retained": "prelaunch-evidence",
+  "one_runtime_corrected_population": true,
+  "additional_draft_launch_limit": 6,
+  "additional_native_execution_limit": 2,
+  "independent_CLI_total_limit": 1,
+  "business_task_replays_with_prior_model_feedback": false,
+  "private_settings_sha256": "43d9c90bb77671e16863b2348ea7764a28b29d85ccf975528ab23160ca82ee64",
+  "provider": "xiaomi",
+  "model": "mimo-v2.6-pro",
+  "daily_settings_changed_by_this_task": false,
+  "physical_provider_requests_verified": false
+}

@@ -1,0 +1,31 @@
+{
+  "error_type": "ValueError",
+  "error": "isolated launcher currently requires xiaomi API-key provider",
+  "frames": [
+    {
+      "file": "<stdin>",
+      "line": 15,
+      "name": "<module>"
+    },
+    {
+      "file": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/experiments/review_v111_comparison.py",
+      "line": 499,
+      "name": "_native_draft"
+    },
+    {
+      "file": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/integrations/hermes_session.py",
+      "line": 673,
+      "name": "run_hermes_session"
+    },
+    {
+      "file": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harness/integrations/hermes_session.py",
+      "line": 364,
+      "name": "prepare_home"
+    }
+  ],
+  "subprocess_executables": [
+    "/Users/audrey/.hermes/hermes-agent/.venv/bin/python",
+    "/Users/audrey/.hermes/installs/f43c737707a612b3/environments/b21bf64e390a4beb89ae4aadf948a7c2/venv/bin/python"
+  ],
+  "model_host_launch_blocked": true
+}

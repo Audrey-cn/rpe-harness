@@ -1,0 +1,32 @@
+{
+  "A01": {
+    "trial_id": "formal-pending-account-key-native",
+    "arm": "native",
+    "case_id": "pending-account-key"
+  },
+  "A02": {
+    "trial_id": "formal-cold-inventory-native",
+    "arm": "native",
+    "case_id": "cold-inventory"
+  },
+  "A03": {
+    "trial_id": "formal-dispatch-tabs-native",
+    "arm": "native",
+    "case_id": "dispatch-tabs"
+  },
+  "A04": {
+    "trial_id": "formal-dispatch-tabs-review",
+    "arm": "review",
+    "case_id": "dispatch-tabs"
+  },
+  "A05": {
+    "trial_id": "formal-cold-inventory-review",
+    "arm": "review",
+    "case_id": "cold-inventory"
+  },
+  "A06": {
+    "trial_id": "formal-pending-account-key-review",
+    "arm": "review",
+    "case_id": "pending-account-key"
+  }
+}

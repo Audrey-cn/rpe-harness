@@ -1,0 +1,780 @@
+{
+  "catalog_sha256": "4553077823616e3c8c69b6b556db872a0fd34401b9bca5ae963be7848854728f",
+  "catalog_source": null,
+  "context_recovery": {
+    "capability": "tabular.deduplicate",
+    "conflicts": [],
+    "facts": {
+      "input_path": "input.csv",
+      "key_columns": [
+        "配送区",
+        "派车单"
+      ],
+      "output_path": "output.csv"
+    },
+    "issues": [],
+    "missing": [],
+    "provenance": {
+      "key_columns": [
+        {
+          "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+          "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+          "source": "user-dispatch-key"
+        }
+      ]
+    },
+    "recovered_fields": [],
+    "recovery_id": "9d98cbcb2dc0455fa7a4c98b2fabf456",
+    "request_sha256": "b567c277e72a6520f08d1529ef7a5d77a35f393d19631db311f356f84aeaa725",
+    "requirement_version": 1,
+    "session_id": "20261015_202313_985e0a",
+    "source_refs": [
+      {
+        "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+        "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+        "source": "user-dispatch-key"
+      }
+    ],
+    "status": "ready"
+  },
+  "draft": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_original",
+      "preserve_order"
+    ],
+    "execution": {
+      "delimiter": "\t",
+      "encoding": "UTF-8",
+      "input_path": "input.csv",
+      "keep": "first",
+      "key_columns": [
+        "配送区",
+        "派车单"
+      ],
+      "output_path": "output.csv"
+    },
+    "requirements": [
+      {
+        "fields": [
+          "/capability"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Follow the current request: deduplicate input.csv per the composite business key from this attachment, keeping first full row and original row order, saving as output.csv with real TAB delimiter and UTF-8 encoding, preserving input."
+      },
+      {
+        "fields": [
+          "/execution/input_path"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Input file is input.csv (workspace-relative path)."
+      },
+      {
+        "fields": [
+          "/execution/output_path"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Output file is output.csv (workspace-relative path)."
+      },
+      {
+        "fields": [
+          "/execution/delimiter"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Delimiter is a real TAB character, as explicitly requested."
+      },
+      {
+        "fields": [
+          "/execution/encoding"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Output encoding is UTF-8, as explicitly requested."
+      },
+      {
+        "fields": [
+          "/execution/keep"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Keep the first occurrence when duplicates are found (retain the first full row)."
+      },
+      {
+        "fields": [
+          "/execution/key_columns"
+        ],
+        "quote": "配送区与派车单",
+        "source_ref": {
+          "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+          "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+          "source": "user-dispatch-key"
+        },
+        "text": "The composite business key columns are 配送区 and 派车单, per attachment source 'user-dispatch-key' (event review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e, sha256 a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607); the key is not guessed."
+      },
+      {
+        "fields": [
+          "/constraints"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Keep the first full row intact and preserve the original row order (cells and rows preserved)."
+      },
+      {
+        "fields": [
+          "/constraints"
+        ],
+        "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+        "text": "Preserve the input file unchanged; do not overwrite it (output is saved separately)."
+      }
+    ],
+    "unresolved": []
+  },
+  "errors": [],
+  "field_provenance": {
+    "/execution/key_columns": [
+      {
+        "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+        "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+        "source": "user-dispatch-key"
+      }
+    ]
+  },
+  "input_sha256": "b6a342df121a28dc444e1f9f2c7145571fbe646437bbdee91b59592a84125723",
+  "machine_contract": {
+    "capability": "tabular.deduplicate",
+    "constraints": [
+      "preserve_order",
+      "preserve_original"
+    ],
+    "contract_version": 1,
+    "execution": {
+      "delimiter": "\t",
+      "encoding": "UTF-8",
+      "input_path": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/workspaces/formal-dispatch-tabs-review/input.csv",
+      "keep": "first",
+      "key_columns": [
+        "配送区",
+        "派车单"
+      ],
+      "output_path": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/workspaces/formal-dispatch-tabs-review/output.csv",
+      "sheet": null
+    }
+  },
+  "minimal_state_id": "2bd04f620c51c8b7d40324221fb329b2473d0e76605d1ee60671414ddb3f13c4",
+  "missing": [],
+  "parameter_evidence": {
+    "coverage_limits": [
+      "Only literal values in model-mapped registered parameter rows are checked; unmapped instructions and semantic completeness still require human review.",
+      "A proposed default does not prove that the source omitted an explicit value.",
+      "Free prose without a supported enum literal remains unverified."
+    ],
+    "errors": [],
+    "missing": [],
+    "status": "ready",
+    "witnesses": [
+      {
+        "canonical_value": "\t",
+        "field": "/execution/delimiter",
+        "literal_values": [
+          "\t"
+        ],
+        "origin": "source_quote",
+        "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+        "requirement_id": "r0004",
+        "span": [
+          0,
+          98
+        ],
+        "status": "verified_literal"
+      },
+      {
+        "canonical_value": "utf-8",
+        "field": "/execution/encoding",
+        "literal_values": [
+          "utf-8"
+        ],
+        "origin": "source_quote",
+        "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+        "requirement_id": "r0005",
+        "span": [
+          0,
+          98
+        ],
+        "status": "verified_literal"
+      },
+      {
+        "canonical_value": "first",
+        "field": "/execution/keep",
+        "literal_values": [],
+        "origin": "source_quote",
+        "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+        "requirement_id": "r0006",
+        "span": [
+          0,
+          98
+        ],
+        "status": "unverified_prose"
+      }
+    ]
+  },
+  "path_facts": {
+    "input_parent": [
+      16777234,
+      16255965
+    ],
+    "output_parent": [
+      16777234,
+      16255965
+    ],
+    "workspace": [
+      16777234,
+      16255965
+    ]
+  },
+  "requirements": [
+    {
+      "fields": [
+        "/capability"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0001",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Follow the current request: deduplicate input.csv per the composite business key from this attachment, keeping first full row and original row order, saving as output.csv with real TAB delimiter and UTF-8 encoding, preserving input."
+    },
+    {
+      "fields": [
+        "/execution/input_path"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0002",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Input file is input.csv (workspace-relative path)."
+    },
+    {
+      "fields": [
+        "/execution/output_path"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0003",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Output file is output.csv (workspace-relative path)."
+    },
+    {
+      "fields": [
+        "/execution/delimiter"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0004",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Delimiter is a real TAB character, as explicitly requested."
+    },
+    {
+      "fields": [
+        "/execution/encoding"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0005",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Output encoding is UTF-8, as explicitly requested."
+    },
+    {
+      "fields": [
+        "/execution/keep"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0006",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Keep the first occurrence when duplicates are found (retain the first full row)."
+    },
+    {
+      "fields": [
+        "/execution/key_columns"
+      ],
+      "origin": "context_source",
+      "quote": "配送区与派车单",
+      "requirement_id": "r0007",
+      "source_ref": {
+        "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+        "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+        "source": "user-dispatch-key"
+      },
+      "span": [
+        9,
+        16
+      ],
+      "text": "The composite business key columns are 配送区 and 派车单, per attachment source 'user-dispatch-key' (event review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e, sha256 a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607); the key is not guessed."
+    },
+    {
+      "fields": [
+        "/constraints"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0008",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Keep the first full row intact and preserve the original row order (cells and rows preserved)."
+    },
+    {
+      "fields": [
+        "/constraints"
+      ],
+      "origin": "source_quote",
+      "quote": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+      "quote_ref": "q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6",
+      "requirement_id": "r0009",
+      "span": [
+        0,
+        98
+      ],
+      "text": "Preserve the input file unchanged; do not overwrite it (output is saved separately)."
+    }
+  ],
+  "review_context": {
+    "model_sources": [
+      {
+        "facts": {
+          "key_columns": [
+            "配送区",
+            "派车单"
+          ]
+        },
+        "quote_refs": {
+          "key_columns": "q:c4a774bf06a896a82b0bd0ab25f64a4295dc38d45ce53d2300ce84631c535dec"
+        },
+        "quote_spans": {
+          "key_columns": [
+            9,
+            16
+          ]
+        },
+        "quotes": {
+          "key_columns": "配送区与派车单"
+        },
+        "source_ref": {
+          "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+          "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+          "source": "user-dispatch-key"
+        }
+      }
+    ],
+    "schema_version": "rpe.review-context/v1",
+    "session_id": "20261015_202313_985e0a",
+    "source_refs": [
+      {
+        "event_id": "review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e",
+        "sha256": "a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607",
+        "source": "user-dispatch-key"
+      }
+    ]
+  },
+  "schema_version": "rpe.proposal/v1",
+  "skill_selection": null,
+  "source": {
+    "raw": "按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。",
+    "session_id": "20261015_202313_985e0a",
+    "source_ref": "user_prompt:f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943",
+    "source_sha256": "f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943"
+  },
+  "status": "awaiting_confirmation",
+  "summary": "任务要求审阅\n状态：awaiting_confirmation\n原始请求（完整保留；控制字符以转义形式显示）：\n  | 按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\n逐项要求与来源：\nr0001 Follow the current request: deduplicate input.csv per the composite business key from this attachment, keeping first full row and original row order, saving as output.csv with real TAB delimiter and UTF-8 encoding, preserving input. | 字段：[\"/capability\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0002 Input file is input.csv (workspace-relative path). | 字段：[\"/execution/input_path\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0003 Output file is output.csv (workspace-relative path). | 字段：[\"/execution/output_path\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0004 Delimiter is a real TAB character, as explicitly requested. | 字段：[\"/execution/delimiter\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0005 Output encoding is UTF-8, as explicitly requested. | 字段：[\"/execution/encoding\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0006 Keep the first occurrence when duplicates are found (retain the first full row). | 字段：[\"/execution/keep\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0007 The composite business key columns are 配送区 and 派车单, per attachment source 'user-dispatch-key' (event review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e, sha256 a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607); the key is not guessed. | 字段：[\"/execution/key_columns\"] | context_source | 引用：\"配送区与派车单\" | 字符范围：[9, 16] | 来源：{\"event_id\": \"review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e\", \"sha256\": \"a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607\", \"source\": \"user-dispatch-key\"}\nr0008 Keep the first full row intact and preserve the original row order (cells and rows preserved). | 字段：[\"/constraints\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\nr0009 Preserve the input file unchanged; do not overwrite it (output is saved separately). | 字段：[\"/constraints\"] | source_quote | 引用：\"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\" | 字符范围：[0, 98] | 引用地址：\"q:caebdf74d35b18e1a8ce95ac32676e59c7081979688fcc11dd1bac9f9ea193b6\"\n显式附件（仅必要事实与短引用；来源本身不授予执行权限）：\n[{\"facts\": {\"key_columns\": [\"配送区\", \"派车单\"]}, \"quote_refs\": {\"key_columns\": \"q:c4a774bf06a896a82b0bd0ab25f64a4295dc38d45ce53d2300ce84631c535dec\"}, \"quote_spans\": {\"key_columns\": [9, 16]}, \"quotes\": {\"key_columns\": \"配送区与派车单\"}, \"source_ref\": {\"event_id\": \"review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e\", \"sha256\": \"a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607\", \"source\": \"user-dispatch-key\"}}]\n字段出处：{\"/execution/key_columns\": [{\"event_id\": \"review:16a8d387705e50eff9bddd428be363da53e8d6f55f96141a01e593b42c92ff4e\", \"sha256\": \"a4a746aa8898b5391f869422443c0d574334033d2586b8dc453f72a434059607\", \"source\": \"user-dispatch-key\"}]}\n标准化执行合同（所有值均属于确认范围）：\n{\"capability\": \"tabular.deduplicate\", \"constraints\": [\"preserve_order\", \"preserve_original\"], \"contract_version\": 1, \"execution\": {\"delimiter\": \"\\t\", \"encoding\": \"UTF-8\", \"input_path\": \"/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/workspaces/formal-dispatch-tabs-review/input.csv\", \"keep\": \"first\", \"key_columns\": [\"配送区\", \"派车单\"], \"output_path\": \"/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/workspaces/formal-dispatch-tabs-review/output.csv\", \"sheet\": null}}\n执行默认值（同样需要确认）：{\"sheet\": null}\n原文字面参数核验（不证明要求没有遗漏）：{\"coverage_limits\": [\"Only literal values in model-mapped registered parameter rows are checked; unmapped instructions and semantic completeness still require human review.\", \"A proposed default does not prove that the source omitted an explicit value.\", \"Free prose without a supported enum literal remains unverified.\"], \"errors\": [], \"missing\": [], \"status\": \"ready\", \"witnesses\": [{\"canonical_value\": \"\\t\", \"field\": \"/execution/delimiter\", \"literal_values\": [\"\\t\"], \"origin\": \"source_quote\", \"quote\": \"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\", \"requirement_id\": \"r0004\", \"span\": [0, 98], \"status\": \"verified_literal\"}, {\"canonical_value\": \"utf-8\", \"field\": \"/execution/encoding\", \"literal_values\": [\"utf-8\"], \"origin\": \"source_quote\", \"quote\": \"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\", \"requirement_id\": \"r0005\", \"span\": [0, 98], \"status\": \"verified_literal\"}, {\"canonical_value\": \"first\", \"field\": \"/execution/keep\", \"literal_values\": [], \"origin\": \"source_quote\", \"quote\": \"按本次明确附件的复合业务键，对 input.csv 去重，保留首条整行和原行顺序。使用真正的TAB字符分隔、UTF-8编码另存 output.csv，保留输入。不要猜业务键，要求清单注明附件来源。\", \"requirement_id\": \"r0006\", \"span\": [0, 98], \"status\": \"unverified_prose\"}]}\n待澄清：[]\n缺少字段：[]\n问题：[]\n来源引用只证明原文位置，不证明自然语言语义完整。请对照完整原文检查遗漏、误解和默认值。\n确认表示信任的审阅者接受以上完整执行范围；模型输出、引用覆盖和草稿状态本身均不授予执行权限。\n草稿 ID：e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a\n完整审阅 SHA256：e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+  "workspace": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/workspaces/formal-dispatch-tabs-review",
+  "proposal_id": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+  "proposal_sha256": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+  "proposal_verification": {
+    "status": "verified_proposal",
+    "verified": true,
+    "proposal_verified": true,
+    "errors": [],
+    "native_proposal_calls": 1,
+    "proposal_executions": 0,
+    "reporting_api_requests": 0,
+    "protocol_recoveries": 0,
+    "arguments_transform": "identity",
+    "post_arguments_phase": "raw_before_coercion",
+    "proposal_api_requests": 1,
+    "proposal_id": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+    "proposal_sha256": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+    "proposal_digest": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+    "source_sha256": "f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943",
+    "source_ref": "user_prompt:f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943"
+  },
+  "host_observation": {
+    "session_id": "20261015_202313_985e0a",
+    "usage": {
+      "api_requests": 1,
+      "missing_observations": 0,
+      "requests_with_usage": 1,
+      "api_errors": 0,
+      "coverage_complete": true,
+      "known_total_tokens": 4083,
+      "prompt_tokens": 2912,
+      "output_tokens": 1171,
+      "input_tokens": 992,
+      "total_tokens": 4083,
+      "cache_read_tokens": 1920,
+      "cache_write_tokens": null,
+      "reasoning_tokens": 0
+    },
+    "elapsed_seconds": 27.617,
+    "model_identity": {
+      "provider": "xiaomi",
+      "requested_model": "mimo-v2.6-pro",
+      "base_url": "https://token-plan-cn.xiaomimimo.com/v1",
+      "response_models": [
+        "mimo-v2.6-pro"
+      ]
+    },
+    "process_cleanup": {
+      "tracked_descendants": 21,
+      "signaled_descendants": 3,
+      "remaining_descendants": [],
+      "cleanup_complete": true,
+      "external_executor_cleanup_complete": true,
+      "external_executor_tracked_children": 0,
+      "external_executor_remaining_children": [],
+      "errors": []
+    },
+    "events": [
+      {
+        "ingest_event_id": "ef262d323c83467e90a012390b5b1591",
+        "source_event_id": null,
+        "kind": "on_session_start",
+        "received_at": 1792067000.113835,
+        "session_id": "20261015_202313_985e0a",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "9c7feab8596c4e55aede741413df58c9",
+        "source_event_id": null,
+        "kind": "pre_llm_call",
+        "received_at": 1792067000.115702,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "parent_session_id": "",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "is_first_turn": true
+      },
+      {
+        "ingest_event_id": "0c6a30421a014d118ef521d7ce380464",
+        "source_event_id": null,
+        "kind": "pre_api_request",
+        "received_at": 1792067000.131234,
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "session_id": "20261015_202313_985e0a",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "message_count": 2,
+        "started_at": 1792067000.118468,
+        "request_tool_choice": "auto",
+        "request_thinking_type": "disabled",
+        "request_max_completion_tokens": 2400,
+        "request_tool_names": [
+          "rpe_propose"
+        ],
+        "request_tools_sha256": "886dfd8e952d6aa63527d235b5926429fa1475bde39def7e400e97bb02a666c2"
+      },
+      {
+        "ingest_event_id": "cdd38f9854cc41c2a5be346515027d9b",
+        "source_event_id": null,
+        "kind": "rpe_skill_api_checked",
+        "received_at": 1792067000.134184,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "entry_key": "cad8711d99a84960987cbe0fafc970f2",
+        "arguments_sha256": "886dfd8e952d6aa63527d235b5926429fa1475bde39def7e400e97bb02a666c2",
+        "status": "sdk-default",
+        "workflow_phase": "propose",
+        "request_messages_sha256": "c0301f93a2a345704edecdc4188b1aae49d5a093d90a64f59bdf0b763a2e9961",
+        "request_payload_sha256": "f4e24b9113520fef4fbcc1b9bc88df8528f869f206c7d13d08a9bd1e17aad059",
+        "request_messages_bytes": 9540,
+        "request_tool_choice": "auto",
+        "request_thinking_type": "disabled",
+        "request_max_completion_tokens": 2400,
+        "request_tool_names": [
+          "rpe_propose"
+        ],
+        "request_tools_sha256": "ddae5388b0ebddd2b48d8d90cda7f46e5de2973cc6a8d6e870b89493981b5984"
+      },
+      {
+        "ingest_event_id": "b79716d2441643e5b2c07d3bcc241dee",
+        "source_event_id": null,
+        "kind": "post_api_request",
+        "received_at": 1792067018.245806,
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "session_id": "20261015_202313_985e0a",
+        "platform": "cli",
+        "model": "mimo-v2.6-pro",
+        "provider": "xiaomi",
+        "api_mode": "chat_completions",
+        "finish_reason": "tool_calls",
+        "response_model": "mimo-v2.6-pro",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "api_call_count": 1,
+        "api_duration": 17.91940999031067,
+        "started_at": 1792067000.118468,
+        "ended_at": 1792067018.037878,
+        "first_chunk_at": 1792067004.402563,
+        "message_count": 2,
+        "assistant_content_chars": 0,
+        "assistant_tool_call_count": 1,
+        "usage": {
+          "input_tokens": 992,
+          "output_tokens": 1171,
+          "cache_read_tokens": 1920,
+          "cache_write_tokens": 0,
+          "reasoning_tokens": 0,
+          "request_count": 1,
+          "prompt_tokens": 2912,
+          "total_tokens": 4083,
+          "raw_provider_usage": {
+            "prompt_tokens": 2912,
+            "completion_tokens": 1171,
+            "total_tokens": 4083,
+            "prompt_tokens_details": {
+              "cached_tokens": 1920
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          },
+          "present_fields": [
+            "completion_tokens",
+            "completion_tokens_details.reasoning_tokens",
+            "prompt_tokens",
+            "prompt_tokens_details.cached_tokens",
+            "total_tokens"
+          ],
+          "response_identity": {
+            "id": "59a8327b-013e-4f7f-89fd-a6b07db990c3_5897a6a4dba642a6a92538e3d29ea8c0",
+            "model": "mimo-v2.6-pro"
+          }
+        },
+        "model_tool_calls": [
+          {
+            "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+            "tool_name": "rpe_propose"
+          }
+        ]
+      },
+      {
+        "ingest_event_id": "28eccb851e314c63a821304b2a00c814",
+        "source_event_id": null,
+        "kind": "pre_tool_call",
+        "received_at": 1792067018.259624,
+        "tool_name": "rpe_propose",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "session_id": "20261015_202313_985e0a",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b"
+      },
+      {
+        "ingest_event_id": "3ae3e215e62d4233bfb0a29a6ce0de06",
+        "source_event_id": null,
+        "kind": "rpe_review_arguments_received",
+        "received_at": 1792067018.261295,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "entry_key": "cad8711d99a84960987cbe0fafc970f2",
+        "tool_name": "rpe_propose",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b",
+        "status": "raw_before_coercion"
+      },
+      {
+        "ingest_event_id": "a9b5e24a5ff741618447ae31347f73be",
+        "source_event_id": null,
+        "kind": "rpe_review_arguments_checked",
+        "received_at": 1792067018.26492,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "entry_key": "cad8711d99a84960987cbe0fafc970f2",
+        "tool_name": "rpe_propose",
+        "receipt_id": "3ae3e215e62d4233bfb0a29a6ce0de06",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b",
+        "content_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b",
+        "status": "identity"
+      },
+      {
+        "ingest_event_id": "cafd926cb5ce4f7f8716edfd1e8d4607",
+        "source_event_id": null,
+        "kind": "rpe_skill_rpc_received",
+        "received_at": 1792067018.2659352,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "entry_key": "cad8711d99a84960987cbe0fafc970f2",
+        "tool_name": "rpe_propose",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b"
+      },
+      {
+        "ingest_event_id": "b1e0243885904eb0a5b2ec8c38432358",
+        "source_event_id": null,
+        "kind": "rpe_review_proposed",
+        "received_at": 1792067018.2866309,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "entry_key": "cad8711d99a84960987cbe0fafc970f2",
+        "tool_name": "rpe_propose",
+        "receipt_id": "cafd926cb5ce4f7f8716edfd1e8d4607",
+        "state_id": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b",
+        "content_sha256": "e31ff047faee3c931bcadc0ace58825b128cafdfa42c2c85c1178d9f8b13ca8a",
+        "status": "awaiting_confirmation"
+      },
+      {
+        "ingest_event_id": "e1e452661b8241bc94460559706de2d2",
+        "source_event_id": null,
+        "kind": "post_tool_call",
+        "received_at": 1792067018.28899,
+        "tool_name": "rpe_propose",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "session_id": "20261015_202313_985e0a",
+        "tool_call_id": "call_c6b10d7c58414061afeebdc5",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "status": "ok",
+        "error_type": null,
+        "telemetry_schema_version": "hermes.observer.v1",
+        "arguments_sha256": "fd39e70910bb714ac919bc68f63637babc050cf6c2e7b1f04965baa3fadf234b",
+        "duration_ms": 31
+      },
+      {
+        "ingest_event_id": "2f0131866f09448f8ab4b321f9df3e28",
+        "source_event_id": null,
+        "kind": "post_llm_call",
+        "received_at": 1792067018.309937,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      },
+      {
+        "ingest_event_id": "07cafce24a7b43de994bcd4e9569fb5b",
+        "source_event_id": null,
+        "kind": "on_session_end",
+        "received_at": 1792067018.310844,
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "turn_exit_reason": "rpe_review_proposal_recorded",
+        "model": "mimo-v2.6-pro",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1",
+        "completed": true,
+        "failed": false,
+        "interrupted": false
+      },
+      {
+        "ingest_event_id": "854c129bdf034ae3b3efa9edbe7be4ad",
+        "source_event_id": null,
+        "kind": "on_session_finalize",
+        "received_at": 1792067018.312642,
+        "session_id": "20261015_202313_985e0a",
+        "platform": "cli",
+        "telemetry_schema_version": "hermes.observer.v1"
+      }
+    ],
+    "completed": true,
+    "timed_out": false,
+    "exit_code": 0,
+    "observer_errors": 0,
+    "original_prompt_sha256": "f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943",
+    "prompt_sha256": "f272beccc53f86a23fbdbaec625944873556bfc5613f04617544fe4560c3d943",
+    "catalog_snapshot_id": null,
+    "public_contract_sha256": "319830c51a7f7c9d9fd3a0a179deb394cb5d937a2bde2df1872d2d3a670dcabe"
+  },
+  "review_diagnostics": {
+    "schema_version": 1,
+    "diagnostic_only": true,
+    "coverage": {
+      "complete": true,
+      "reasons": []
+    },
+    "responses": [
+      {
+        "session_id": "20261015_202313_985e0a",
+        "task_id": "35a8ba4c-1350-4d86-b952-403509addb22",
+        "turn_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202",
+        "api_request_id": "20261015_202313_985e0a:35a8ba4c-1350-4d86-b952-403509addb22:ea3e2202:api:1",
+        "stage": "response_guard",
+        "phase": "propose",
+        "expected_tool": "rpe_propose",
+        "intake": "reached",
+        "native_action": "fallthrough",
+        "finish_reason": "tool_calls",
+        "refusal_field_present": false,
+        "tool_call_count": 1,
+        "rpe_action": "accepted",
+        "failure_code": null,
+        "diagnostic_only": true
+      }
+    ],
+    "failures": []
+  },
+  "diagnostics_ref": {
+    "path": "/Users/audrey/项目/缓存/test/rpe-v115-0c69450e782d4a1dacc032e7668c4ead/comparison-runtime/databases/review-diagnostics/319948e26228430eb162494ccee38d27.json",
+    "sha256": "09652b262ba9736e2797e7f458102100cb02284b59fdf3aa0c8edc4a7735e7e7"
+  },
+  "_cli_exit_code": 0
+}
