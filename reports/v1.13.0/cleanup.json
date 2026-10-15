@@ -1,0 +1,35 @@
+{
+  "cleaned_at": 1792046951.916543,
+  "daily_history_or_caches_deleted": false,
+  "daily_processes_signalled": false,
+  "daily_state_restored": false,
+  "delivery_commit_before_cleanup": "b23bef87b96777dbaa60b4807034f2773aac801e",
+  "native_archive_attachment_confirmed": true,
+  "native_archive_request": "archived_worktree attachment confirmed; filesystem and Git checkout removal verified",
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96",
+  "owned_root_removed": true,
+  "processes_before_deletion": {
+    "checker_and_ancestry_excluded": true,
+    "count": 0,
+    "processes": [],
+    "scope": "command-argument path matches plus descendants"
+  },
+  "remote_push_performed": false,
+  "removed": [
+    "owned Hermes and CLI histories, databases, raw provider/session logs and authentication copies",
+    "owned signing keys, virtual environments, pytest/pip/build caches, test fixtures",
+    "managed worktree checkout and own report helper bytecode cache"
+  ],
+  "retained": [
+    "local commits and branches; sanitized source/evidence/cost reports",
+    "main/dist/rpe_harness-1.13.0-py3-none-any.whl",
+    "recoverable native Git worktree archive"
+  ],
+  "schema_version": "rpe.v113-cleanup/v1",
+  "source_commit_retained": "967c28f6631f482d3daabc383df47a68b04ee676",
+  "temporary_processes_killed": 0,
+  "temporary_processes_remaining": 0,
+  "wheel_sha256": "31455a98ee8a8b5d8a1fa0adfa7f2d9e581c8038d6fb9a4a033f679c54e652f8",
+  "worktree_path": "/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness",
+  "worktree_removed": true
+}

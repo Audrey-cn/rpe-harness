@@ -21,7 +21,9 @@
     "semantically equivalent parameter spellings in fixed comparison gate",
     "broader real unattended cross-host evidence"
   ],
-  "pending": [],
+  "pending": [
+    "final post-cleanup checker correction and verification"
+  ],
   "production_source_changes_after_final_formal_freeze": [
     "integrations/hermes_bootstrap.py"
   ],

@@ -19,6 +19,7 @@
     "be33dab24e966926b395b0e45f851dfcecf38fe38da483809561bcfff19262d2",
     "c27e179170fd5298a739432f436784c0297d34aec16c84ce63199933f73df2ff"
   ],
+  "baseline_observation_started_at": 1792042403,
   "daily_directories": {
     "cache": {
       "exists": true,
@@ -1714,6 +1715,53 @@
     "/Users/audrey/项目/缓存/test/rpe-v113-dccde01f9c6a405298e2b9d06f306f96",
     "/Users/audrey/.codex/worktrees/rpe-v113/rpe-harness"
   ],
+  "preexisting_skill_links": {
+    "uaek-agent-enhancement/SKILL.md": {
+      "birthtime": 1791602336.3939314,
+      "ctime_ns": 1791602336393960527,
+      "mtime_ns": 1791602336393931444,
+      "target": "/Users/audrey/项目/universal-agent-embedding-kit/skills/agent-enhancement.md",
+      "target_resolved": "/Users/audrey/项目/universal-agent-embedding-kit/skills/agent-enhancement.md",
+      "target_sha256": "587ae0805881c6b6144cef41ffe710e66a1b9d9d4f403bf745d6c8d74fd89011",
+      "target_size": 6784
+    },
+    "uaek-effort-control/SKILL.md": {
+      "birthtime": 1791602336.3950393,
+      "ctime_ns": 1791602336395055793,
+      "mtime_ns": 1791602336395039294,
+      "target": "/Users/audrey/项目/universal-agent-embedding-kit/skills/effort-control.md",
+      "target_resolved": "/Users/audrey/项目/universal-agent-embedding-kit/skills/effort-control.md",
+      "target_sha256": "aab838616cb01679206e36679151b30016193854683ffd0d733e8334bc7b758f",
+      "target_size": 3592
+    },
+    "uaek-memory-management/SKILL.md": {
+      "birthtime": 1791602336.3951614,
+      "ctime_ns": 1791602336395175832,
+      "mtime_ns": 1791602336395161291,
+      "target": "/Users/audrey/项目/universal-agent-embedding-kit/skills/memory-management.md",
+      "target_resolved": "/Users/audrey/项目/universal-agent-embedding-kit/skills/memory-management.md",
+      "target_sha256": "7c2653332f2c4b76ea44d12e2599c3055654f57d6ecc25f202db2e8dc7f154ba",
+      "target_size": 4841
+    },
+    "uaek-verification-framework/SKILL.md": {
+      "birthtime": 1791602336.3952637,
+      "ctime_ns": 1791602336395278997,
+      "mtime_ns": 1791602336395263663,
+      "target": "/Users/audrey/项目/universal-agent-embedding-kit/skills/verification-framework.md",
+      "target_resolved": "/Users/audrey/项目/universal-agent-embedding-kit/skills/verification-framework.md",
+      "target_sha256": "153d779a44fd3ab04ddd2c37c3a0c797cab1e44ac0d749d4a03d9e035d455b69",
+      "target_size": 3153
+    },
+    "uaek-workflow-guidance/SKILL.md": {
+      "birthtime": 1791602336.395355,
+      "ctime_ns": 1791602336395367703,
+      "mtime_ns": 1791602336395355078,
+      "target": "/Users/audrey/项目/universal-agent-embedding-kit/skills/workflow-guidance.md",
+      "target_resolved": "/Users/audrey/项目/universal-agent-embedding-kit/skills/workflow-guidance.md",
+      "target_sha256": "aa3e23be6280cc2af12b1fa02c1c1c4d746cdf1985abec2618a80579d81065de",
+      "target_size": 6775
+    }
+  },
   "repositories": {
     "/Users/audrey/项目/progenitor-protocol": {
       "head": "84bc86e121aac5c71a53abc23189cc07e562b256",

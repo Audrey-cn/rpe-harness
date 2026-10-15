@@ -1,0 +1,10 @@
+{
+  "correction": "Postcleanup checker previously required no symlinks, whereas original skill baseline fingerprinted their targets. Five existing links have observed ctime/mtime/birthtime before this goal and unchanged initial target hashes. New metadata is a postcleanup observation, not an initial topology snapshot.",
+  "daily_links_or_targets_changed": false,
+  "existing_links_count": 5,
+  "goal_started_at": 1792042403,
+  "metadata_field": "preexisting_skill_links",
+  "observed_at": 1792047087.4090612,
+  "original_baseline_sha256": "b5bdd3399cbc4f3b8a2834bf5baea68fbade69030e85e716baad4fa04b812f32",
+  "original_immutable_hash_maps_changed": false
+}
