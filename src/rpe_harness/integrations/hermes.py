@@ -714,6 +714,18 @@ def register(ctx) -> None:
             raise ValueError('invalid native skill observation config')
         native_config = json.loads(config_path.read_text())
     producer = None
+    native_evidence = None
+    if os.environ.get('RPE_HERMES_NATIVE_EVIDENCE_CONFIG'):
+        if os.environ.get('RPE_HERMES_TOOL_ENABLED') != '0':
+            raise ValueError('native evidence requires native tools only')
+        from .hermes_native import NativeEvidenceObserver
+        evidence_path = Path(os.environ['RPE_HERMES_NATIVE_EVIDENCE_CONFIG'])
+        if evidence_path.is_symlink() or evidence_path.stat().st_size > 65536:
+            raise ValueError('invalid native evidence configuration file')
+        evidence_config = json.loads(evidence_path.read_text())
+        if evidence_config.get('workspace') != str(workspace):
+            raise ValueError('native evidence workspace differs')
+        native_evidence = NativeEvidenceObserver(evidence_config)
     if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'producer':
         if os.environ.get('RPE_HERMES_TOOL_ENABLED', '0') != '0' or native_config_path:
             raise ValueError('producer entry requires no Harness tool or skill catalog')
@@ -724,6 +736,8 @@ def register(ctx) -> None:
             producer_write = None
             if kind in ('pre_tool_call','post_tool_call') and isinstance(payload.get('args'),dict):
                 payload['arguments_sha256'] = _digest_json(payload['args'])
+            if native_evidence is not None and kind == 'pre_tool_call':
+                native_evidence.before(payload)
             if kind == 'post_tool_call' and os.environ.get('RPE_HERMES_TOOL_ENABLED') == '0':
                 try:
                     native_result = json.loads(payload.get('result',''))
@@ -759,6 +773,10 @@ def register(ctx) -> None:
                 producer_write = producer.observe_write(payload)
             try:
                 store.record(kind, payload)
+                if native_evidence is not None and kind == 'post_tool_call':
+                    for receipt in native_evidence.after(payload):
+                        receipt_kind = receipt.pop('kind')
+                        store.record(receipt_kind, receipt)
             except (sqlite3.Error, OSError, ValueError):
                 logger.error('Hermes observer persistence failed for %s', kind)
                 try:

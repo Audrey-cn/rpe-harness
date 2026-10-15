@@ -241,7 +241,8 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
         repository = import_root.parent if import_root.name == 'src' else package
         minimal = [import_root, package, package / 'integrations',
                    package / '__init__.py', package / 'integrations/__init__.py',
-                   package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py']
+                   package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py',
+                   package / 'integrations/hermes_native.py']
         allowed = ' '.join('(literal '+quote(p)+')' for p in minimal)
         native_scope = ('(deny file-read-data (require-all (subpath '+quote(repository)+') '
                         '(require-not (require-any '+allowed+'))))\n')
@@ -548,7 +549,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        required_request=None, max_task_attempts=3, catalog_root=None,
                        skill_snapshot_id=None, context_sources=None,
                        read_isolation_root=None, deny_read_roots=(), max_turns=12,
-                       preserve_native_tool_search=False, public_contract=None):
+                       preserve_native_tool_search=False, public_contract=None, native_evidence=None):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -561,6 +562,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
+    if native_evidence is not None and (tool_enabled or public_contract != 'review'):
+        raise ValueError('native evidence requires a native review session')
     if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
                                   or len(prompt.encode()) > 65536):
         raise ValueError(entry_mode + ' requires only the exact current source, at most 64 KiB; no hidden contract or context')
@@ -677,6 +680,13 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             **({'context_sources': context_sources} if context_sources else {})}, ensure_ascii=False, allow_nan=False))
         os.chmod(review_config_path, 0o600)
     fixed_path = None
+    native_evidence_path = None
+    if native_evidence is not None:
+        from .hermes_native import native_evidence_config
+        native_evidence_path = session_root/'native-evidence-config.json'
+        native_evidence_path.write_text(json.dumps(native_evidence_config(
+            workspace, native_evidence, snapshot), ensure_ascii=False, allow_nan=False), encoding='utf-8')
+        os.chmod(native_evidence_path, 0o600)
     if fixed_request is not None:
         fixed_path = session_root/'fixed-request.json'
         descriptor = os.open(fixed_path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
@@ -701,9 +711,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        owner_read_scope=(read_isolation_root or owner_root, [session_root, workspace, db_path,
                                            import_root, Path(sys.executable).absolute().parent.parent]),
                                        deny_read_roots=deny_read_roots,
-                                       protected_write_roots=([skill_config_path] if entry_mode == 'review'
+                                       protected_write_roots=(([skill_config_path] if entry_mode == 'review'
                                            or public_contract == 'review' else [home/'skills', skill_config_path])
-                                           if snapshot else []))
+                                           if snapshot else []) + ([native_evidence_path] if native_evidence_path else [])))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'REQUESTS_CA_BUNDLE',
@@ -729,6 +739,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         env['RPE_HERMES_INPUT_SHA256'] = fixed_input_sha
     if skill_config_path is not None:
         env['RPE_HERMES_SKILL_CONFIG'] = str(skill_config_path)
+    if native_evidence_path is not None:
+        env['RPE_HERMES_NATIVE_EVIDENCE_CONFIG'] = str(native_evidence_path)
     if address_config_path is not None:
         env['RPE_HERMES_ADDRESS_CONFIG'] = str(address_config_path)
     if clean_config_path is not None:

@@ -104,7 +104,10 @@ def _fixtures(directory):
 
 
 def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
-                                helper_python=None, timeout=180, max_turns=8):
+                                helper_python=None, timeout=180, max_turns=8, profile='review-v111'):
+    if profile not in {'review-v111', 'review-v112'}:
+        raise ValueError('unsupported review profile')
+    version = profile.removeprefix('review-')
     started = time.monotonic()
     root, skill_root = _safe_path(root), _safe_path(skill_root)
     helper_python = str(Path(helper_python or sys.executable).absolute())
@@ -112,7 +115,7 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
     if helper_python != sys.executable or timeout != 180 or max_turns != 8:
         raise ValueError('1.11 freezes launcher Python, 180s and 8 draft turns')
     arguments = {'root': str(root), 'skill_root': str(skill_root), 'hermes_root': str(hermes_root),
-                 'helper_python': helper_python, 'timeout': timeout, 'max_turns': max_turns}
+                 'helper_python': helper_python, 'timeout': timeout, 'max_turns': max_turns, 'profile': profile}
     if (root/'preregistration.json').exists():
         plan = _load(root)
         if any(plan.get(k) != v for k, v in arguments.items()):
@@ -133,7 +136,11 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
     snapshot = catalog.sync(skill_root)['snapshot_id']
     binding = catalog.trust_adapter(XLSX_SKILL_ID, snapshot)
     skill = catalog.lookup(XLSX_SKILL_ID, snapshot)
-    cases = _fixtures(root/'fixtures')
+    if profile == 'review-v112':
+        from .review_v112_comparison import fixtures
+        cases = fixtures(root/'fixtures')
+    else:
+        cases = _fixtures(root/'fixtures')
     pilot_case = copy.deepcopy(cases[1])
     pilot_case.update(case_id='pilot-cold-context',
         task='请发现并加载已安装的电子表格技能，只读检查 input.xlsx。模式与工作表按本次明确附上的决定恢复，草稿注明出处；通过原技能 xlsx_read.py 保存原始JSON结构为 output.json，保留原文件、类型和行顺序，不自行重写helper。',
@@ -143,6 +150,9 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
     pilot_source = root/'fixtures'/'pilot-cold-context.xlsx'
     pilot_source.write_bytes(read_regular_file(Path(pilot_case['source_path']), max_bytes=MAX_ARTIFACT_BYTES))
     pilot_case['source_path'] = str(pilot_source)
+    if profile == 'review-v112':
+        from .review_v112_comparison import pilot_fixture
+        pilot_case = pilot_fixture(root/'fixtures', cases)
     sessions, pilots = [], []
     for index, case in enumerate(cases):
         for arm in _ARMS if index % 2 == 0 else tuple(reversed(_ARMS)):
@@ -153,9 +163,9 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
         trial['db'] = str(root/'databases'/(trial['trial_id']+'.sqlite'))
         with sqlite3.connect(database) as source, sqlite3.connect(trial['db']) as target:
             source.backup(target)
-        if trial['case_id'] in {'cold-xlsx', 'pilot-cold-context'}:
+        if trial['case_id'] in {c['case_id'] for c in cases+[pilot_case] if c['use_skills']}:
             SkillCatalog(trial['db'], root/'catalog').set_temperature(XLSX_SKILL_ID, 'cold')
-    plan = {**arguments, 'schema_version': 'rpe.v111-comparison/v1', 'profile': 'review-v111',
+    plan = {**arguments, 'schema_version': f'rpe.{version}-comparison/v1', 'profile': profile,
         'db': str(database), 'catalog_root': str(root/'catalog'), 'skill_snapshot_id': snapshot,
         'skill_sha256': skill['skill_sha256'], 'script_sha256': skill['script_sha256'],
         'environment': _environment(helper_python, hermes_root), 'cases': cases, 'pilot_case': pilot_case,
@@ -175,6 +185,8 @@ def preregister_v111_comparison(root, *, skill_root, hermes_root=None,
             'native source facts are explicitly projected into its prompt; the raw current request is retained separately',
             'native execution uses the exact accepted candidate and native tools, never the RPE controller',
             'driver and full-trial timers overlap phase timers; never add overlapping timers']}
+    if profile == 'review-v112':
+        plan['independent_audit_budget'] = {'sessions': 1, 'max_turns': 1, 'timeout': 180, 'cli_estimated_usd': .25}
     ledger.finish('shared-preregistration', {'status': 'completed', 'elapsed_seconds': time.monotonic()-started})
     return _save(root/'preregistration.json', plan)
 
@@ -192,7 +204,7 @@ def _load(root):
     if _read(root/_MARKER).get('root') != str(root):
         raise ValueError('owned root marker differs')
     plan = _read(root/'preregistration.json')
-    if plan.get('profile') != 'review-v111' or plan['root'] != str(root):
+    if plan.get('profile') not in {'review-v111', 'review-v112'} or plan['root'] != str(root):
         raise ValueError('not a 1.11 comparison')
     return plan
 
@@ -293,6 +305,13 @@ def _native_context(plan, trial):
 
 def _native_prompt(plan, trial):
     case = _case(plan, trial)
+    if plan['profile'] == 'review-v112':
+        from .review_native_evidence import native_review_prompt
+        bindings = _native_context(plan, trial)['model_sources'] if case['sources'] else []
+        from ..integrations.hermes_session import _installed_python
+        host_python = str(_installed_python(Path(plan['hermes_root']))) if case['use_skills'] else None
+        return native_review_prompt(case['task'], bindings, cold_skill=case['use_skills'],
+            host_python=host_python, hermes_root=str(plan['hermes_root']))
     raw = case['task']
     if case['sources']:
         context = _native_context(plan, trial)
@@ -381,7 +400,10 @@ def _native_draft(plan, trial, runner):
         tool_enabled=False, preserve_native_tool_search=True, max_task_attempts=1,
         public_contract='review', timeout=plan['timeout'], max_turns=plan['max_turns'],
         hermes_root=plan['hermes_root'], read_isolation_root=plan['root'],
-        deny_read_roots=_denied(plan, trial), **_skill_kwargs(plan, trial))
+        deny_read_roots=_denied(plan, trial),
+        **({'native_evidence': {'draft_name': 'draft.json',
+             **({'cold_skill_id': XLSX_SKILL_ID} if _case(plan, trial)['use_skills'] else {})}}
+            if plan['profile'] == 'review-v112' else {}), **_skill_kwargs(plan, trial))
 
 
 def _public_candidate(proposal):
@@ -389,11 +411,12 @@ def _public_candidate(proposal):
     return {key: copy.deepcopy(draft[key]) for key in ('capability', 'constraints', 'execution', 'requirements', 'unresolved')}
 
 
-def _proof(candidate):
+def _proof(candidate, *, keep_text=False):
     value = copy.deepcopy(candidate)
     for row in value.get('requirements', []):
         if type(row) is dict and isinstance(row.get('text'), str):
-            row['text_sha256'] = _sha(row.pop('text').encode())
+            if not keep_text:
+                row['text_sha256'] = _sha(row.pop('text').encode())
     value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
     return value
 
@@ -505,6 +528,7 @@ def _controller_execution_verified(trial, result, proposal, confirmation):
 
 def _observe(plan, trial, ledger, native_runner, public_runner):
     started, case = time.monotonic(), _case(plan, trial)
+    strict = plan['profile'] == 'review-v112'
     record = {k: trial[k] for k in ('trial_id', 'phase', 'arm', 'case_id', 'category')}
     record.update(fingerprint=plan['sha256'], status='failed', approved=False, accepted=False,
         draft_invocation_verified=False, execution_verified=False, comparable=False,
@@ -529,10 +553,15 @@ def _observe(plan, trial, ledger, native_runner, public_runner):
             record['draft_invocation_verified'] = bool(gate.get('verified') is True and gate.get('proposal_verified') is True)
             proposal = result
         else:
-            gate = evaluate_native_review_draft(observation, _gate_plan(plan), trial)
+            if strict:
+                from .review_native_evidence import evaluate_native_review_draft as strict_gate
+                gate = strict_gate(observation, _gate_plan(plan), trial)
+            else:
+                gate = evaluate_native_review_draft(observation, _gate_plan(plan), trial)
             record['draft_invocation_verified'] = gate.get('verified') is True
+            record['draft_gate'] = gate if strict else _compact_draft_gate(gate)
             proposal = json.loads(read_regular_file(Path(trial['workspace'])/'draft.json', max_bytes=65536), object_pairs_hook=_unique_pairs)
-        record['draft_gate'] = _compact_draft_gate(gate)
+        record['draft_gate'] = gate if strict else _compact_draft_gate(gate)
         if trial['arm'] == 'review':
             record['review_phase_proof'] = {key: gate[key] for key in (
                 'skill_selection_verified', 'selection_kind', 'selected_skill_id',
@@ -541,16 +570,24 @@ def _observe(plan, trial, ledger, native_runner, public_runner):
                 'cold_skill_restores') if key in gate}
         if record['draft_invocation_verified']:
             draft = _public_candidate(proposal)
-            record['candidate_proof'] = _proof(draft)
+            record['candidate_proof'] = _proof(draft, keep_text=strict)
             decision = semantic_decision(case, draft)
             if trial['arm'] == 'native':
                 bindings = _native_context(plan, trial)['model_sources'] if case['sources'] else []
                 record['source_bindings'] = bindings
-                record['trace_verified'] = native_draft_trace(case, draft, bindings)
+                if strict:
+                    from .review_native_evidence import native_draft_trace as strict_trace
+                    record['trace_verified'] = strict_trace(case['task'], draft, bindings)
+                else:
+                    record['trace_verified'] = native_draft_trace(case, draft, bindings)
                 if not record['trace_verified']:
                     decision = {'faithful': False, 'probe_correct': False, 'approve': False}
             if case['use_skills'] and trial['arm'] == 'native':
-                record['cold_recall_proof'] = _native_cold_proof(observation, trial, plan)
+                if strict:
+                    from .review_native_evidence import native_cold_proof
+                    record['cold_recall_proof'] = native_cold_proof(observation, plan, trial)
+                else:
+                    record['cold_recall_proof'] = _native_cold_proof(observation, trial, plan)
                 record['draft_invocation_verified'] &= record['cold_recall_proof']['verified']
             if case['use_skills'] and trial['arm'] == 'review':
                 cold = record.get('review_phase_proof', {})
@@ -566,9 +603,16 @@ def _observe(plan, trial, ledger, native_runner, public_runner):
             record['no_business_output_before_approval'] = not premature
             if decision['approve'] and record['comparable'] and record['draft_invocation_verified'] and not premature:
                 _approve_and_execute(plan, trial, ledger, proposal, draft, record, native_runner)
-        record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
+        if not strict:
+            record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
     except (OSError, ValueError, TypeError, KeyError, sqlite3.Error, subprocess.SubprocessError) as failure:
         record['error_code'] = type(failure).__name__
+    if strict:
+        try:
+            record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
+        except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as failure:
+            record.update(source_preserved=False, no_business_output=False, accepted=False,
+                          verification_error_code=type(failure).__name__)
     record['status'] = 'completed' if record['accepted'] else 'failed'
     record['full_trial_elapsed_seconds'] = time.monotonic()-started
     return record
@@ -617,8 +661,12 @@ def _approve_and_execute(plan, trial, ledger, proposal, draft, record, native_ru
 
 def _verify_trial(plan, trial, record):
     workspace, case = Path(trial['workspace']), _case(plan, trial)
-    preserved = _sha(read_regular_file(workspace/case['input_name'], max_bytes=MAX_ARTIFACT_BYTES)) == trial['input_sha256']
-    output_absent = not any(p.name.startswith('output') for p in workspace.iterdir())
+    try:
+        preserved = _sha(read_regular_file(workspace/case['input_name'], max_bytes=MAX_ARTIFACT_BYTES)) == trial['input_sha256']
+        output_absent = not any(p.name.startswith('output') for p in workspace.iterdir())
+    except (OSError, ValueError):
+        return {'source_preserved': False, 'no_business_output': False, 'accepted': False,
+                'verification_error_code': 'source_unavailable'}
     score = score_address_artifact(_gate_plan(plan), trial) if case['category'] == 'production' else {}
     accepted = bool(record['comparable'] and record['draft_invocation_verified'] and preserved and
         (record.get('probe_correct') and output_absent if case['category'] == 'contract_probe' else
@@ -688,7 +736,7 @@ def summarize_v111_comparison(root):
             and rows['native'].get('model_identity') == rows['review'].get('model_identity'))
         pairs.append({'case_id': case['case_id'], 'comparable': comparable,
             **{arm+'_accepted': rows[arm].get('accepted') if arm in rows else None for arm in _ARMS}})
-    return {'schema_version': 'rpe.v111-summary/v1', 'profile': 'review-v111', 'fingerprint': plan['sha256'],
+    return {'schema_version': 'rpe.'+plan['profile'].removeprefix('review-')+'-summary/v1', 'profile': plan['profile'], 'fingerprint': plan['sha256'],
         'formal_attempts': len(formal), 'pilot_attempts': len(records)-len(formal), 'by_arm': by_arm,
         'pairs': pairs, 'comparison_ready': len(formal) == 8 and all(p['comparable'] for p in pairs),
         'native_execution_sessions': sum(p['phase'] == 'execute' and p['arm'] == 'native' for p in phases),
@@ -744,15 +792,19 @@ def export_v111_evidence(root, destination):
 
 
 def verify_v111_evidence(destination):
+    return verify_review_evidence(destination, profile='review-v111')
+
+
+def verify_review_evidence(destination, *, profile):
     """Offline source/cost/business recomputation; runtime proofs stay observed."""
-    result = {'schema_version': 'rpe.v111-evidence-verification/v1', 'verified': False,
+    result = {'schema_version': 'rpe.'+profile.removeprefix('review-')+'-evidence-verification/v1', 'verified': False,
         'source_documents_verified': 0, 'business_artifacts_verified': 0,
         'human_confirmation_verified': False, 'runtime_proof': 'recorded_observations_not_independent_attestation', 'errors': []}
     try:
         root = _safe_path(destination)
         plan, summary = _read(root/'preregistration.json'), _read(root/'summary.json')
         phases = _read(root/'cost-phases.json')['records']
-        if (plan['profile'] != 'review-v111' or summary['profile'] != 'review-v111' or
+        if (profile not in {'review-v111', 'review-v112'} or plan['profile'] != profile or summary['profile'] != profile or
             summary['fingerprint'] != plan['controller_registration_sha256'] or
             summary['reviewer_kind'] != _REVIEWER or summary['human_confirmation_verified'] is not False):
             raise ValueError('registration_identity_changed')
@@ -786,6 +838,10 @@ def verify_v111_evidence(destination):
                 if [_sha(v.encode()) for v in candidate['unresolved']] != unresolved_hashes:
                     raise ValueError('unresolved_proof_changed')
                 decision = semantic_decision(case, candidate)
+                if profile == 'review-v112' and record['arm'] == 'native':
+                    from .review_native_evidence import native_draft_trace as strict_trace
+                    if strict_trace(case['task'], candidate, record.get('source_bindings', [])) != record.get('trace_verified'):
+                        raise ValueError('native_trace_changed')
                 if record['arm'] == 'native' and record.get('trace_verified') is not True:
                     decision = {'faithful': False, 'probe_correct': False, 'approve': False}
                 if decision['faithful'] != record.get('draft_faithful') or decision['probe_correct'] != record.get('probe_correct'):

@@ -30,6 +30,7 @@ from .intent import (MAX_INTENT_BYTES, MinimalStateStore, _bounded, _identity,
 from .skill_catalog import _absolute
 from .context import ContextStore, SourceRef
 from .review_context import recover_context, validate_context
+from .review_quotes import resolve_quote_ref, source_quote_anchors
 from .tasks import contract_from_plan, plan_from_request
 
 _SCHEMA = 'rpe.proposal/v1'
@@ -83,9 +84,14 @@ def _rows(raw, draft, sources=None):
     if type(supplied) is not list or not 1 <= len(supplied) <= 32:
         return rows, [*missing, 'requirements'], ['requirements must contain 1 to 32 rows']
     covered = set()
+    source_anchors = [anchor for content in (sources or {}).values()
+        for anchor in source_quote_anchors(
+            {key: content[key] for key in ('source', 'event_id', 'sha256')},
+            content['payload']['text'], content['facts']).values()]
     for index, row in enumerate(supplied):
-        if (type(row) is not dict or set(row) not in ({'text', 'quote', 'fields'},
-                {'text', 'quote', 'fields', 'source_ref'}) or
+        if (type(row) is not dict or not {'text', 'fields'} <= set(row) or
+                set(row) - {'text', 'quote', 'quote_ref', 'fields', 'source_ref'} or
+                not ({'quote', 'quote_ref'} & set(row)) or
                 not isinstance(row.get('text'), str) or not row['text'].strip() or
                 type(row.get('fields')) is not list or not row['fields'] or
                 any(not isinstance(field, str) or field not in pointers for field in row['fields']) or
@@ -93,11 +99,25 @@ def _rows(raw, draft, sources=None):
             missing.append('requirements.' + str(index))
             errors.append('requirement text and mapped current typed fields are required')
             continue
-        quote = row['quote']
-        quoted_source, origin = raw, 'source_quote' if quote is not None else 'proposed_default'
-        if 'source_ref' in row:
+        resolved, addressed_span = copy.deepcopy(row), None
+        if 'quote_ref' in row:
             try:
-                ref = SourceRef.from_dict(row['source_ref']).to_dict()
+                anchor = resolve_quote_ref(raw, row['quote_ref'], source_anchors)
+                if ('quote' in row and row['quote'] != anchor['quote'] or
+                        'source_ref' in row and row['source_ref'] != anchor.get('source_ref')):
+                    raise ValueError('quote or source_ref differs from the explicitly selected quote_ref')
+                resolved['quote'], addressed_span = anchor['quote'], anchor['span']
+                if 'source_ref' in anchor:
+                    resolved['source_ref'] = anchor['source_ref']
+            except ValueError as error:
+                missing.append('requirements.' + str(index) + '.quote_ref')
+                errors.append(str(error))
+                continue
+        quote = resolved['quote']
+        quoted_source, origin = raw, 'source_quote' if quote is not None else 'proposed_default'
+        if 'source_ref' in resolved:
+            try:
+                ref = SourceRef.from_dict(resolved['source_ref']).to_dict()
                 source = (sources or {})[_canonical(ref)]
                 quoted_source, origin = source['payload']['text'], 'context_source'
                 for field in row['fields']:
@@ -126,7 +146,8 @@ def _rows(raw, draft, sources=None):
             continue
         start = quoted_source.find(quote) if quote is not None else None
         rows.append({'requirement_id': 'r' + str(index + 1).zfill(4),
-            **copy.deepcopy(row), 'span': [start, start + len(quote)] if quote is not None else None,
+            **resolved, 'span': addressed_span if addressed_span is not None else
+                [start, start + len(quote)] if quote is not None else None,
             'origin': origin})
         covered.update(row['fields'])
     missing += sorted(pointers - covered)
@@ -151,6 +172,7 @@ def render_review(document):
         lines.append(row['requirement_id'] + ' ' + terminal_text(row['text']) +
             ' | 字段：' + _shown(row['fields']) + ' | ' + row['origin'] +
             ' | 引用：' + _shown(row['quote']) + ' | 字符范围：' + _shown(row['span']) +
+            (' | 引用地址：' + _shown(row['quote_ref']) if 'quote_ref' in row else '') +
             (' | 来源：' + _shown(row['source_ref']) if 'source_ref' in row else ''))
     if document.get('review_context') is not None:
         lines.append('显式附件（仅必要事实与短引用；来源本身不授予执行权限）：')
@@ -354,8 +376,12 @@ class ProposalStore:
     def _minimal(self, proposal, *, session_id, catalog_sha256):
         if proposal['status'] != 'awaiting_confirmation' or not proposal['minimal_state_id']:
             raise ValueError('proposal has unresolved, unsupported or missing requirements')
+        source_contents = {}
         if proposal.get('review_context') is not None:
-            validate_context(self.db_path, proposal['review_context'], session_id)
+            bundle = validate_context(self.db_path, proposal['review_context'], session_id)
+            contexts = ContextStore(self.db_path)
+            source_contents = {_canonical(ref): contexts.resolve(ref, session_id=session_id)
+                               for ref in bundle['source_refs']}
             historical = proposal.get('context_recovery')
             if type(historical) is not dict or historical.get('status') != 'ready':
                 raise ValueError('review context recovery is not ready')
@@ -364,6 +390,9 @@ class ProposalStore:
                     {key: value for key, value in fresh.items() if key != 'recovery_id'} !=
                     {key: value for key, value in historical.items() if key != 'recovery_id'}):
                 raise ValueError('review context source freshness or recovery changed')
+        rows, missing, errors = _rows(proposal['source']['raw'], proposal['draft'], source_contents)
+        if rows != proposal['requirements'] or missing or errors:
+            raise ValueError('proposal requirement quote addresses or source mappings differ')
         if proposal.get('skill_selection') is not None:
             from .integrations.review_skills import validate_selection
             source = proposal['catalog_source']

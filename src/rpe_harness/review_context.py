@@ -8,6 +8,7 @@ import time
 
 from .capability_catalog import _definitions
 from .context import ContextStore, SourceRef, _json, _text, requirements_for
+from .review_quotes import source_quote_anchors
 
 _SCHEMA = 'rpe.review-context/v1'
 _FACT_FIELDS = frozenset({'constraints', *(field for definition in _definitions()
@@ -51,21 +52,13 @@ def validate_sources(value):
     return owned
 
 
-def _excerpt(text, value):
-    """Return only a short literal span containing the explicitly supplied value."""
-    parts = value if type(value) is list else [value]
-    positions = [(text.find(part), len(part)) for part in parts if type(part) is str]
-    if not positions or any(start < 0 for start, _ in positions):
-        return None
-    first, last = min(start for start, _ in positions), max(start + size for start, size in positions)
-    return text[first:last] if last - first <= 256 else None
-
-
 def _projection(ref, content):
     facts = copy.deepcopy(content['facts'])
+    anchors = source_quote_anchors(ref, content['payload']['text'], facts)
     return {'source_ref': copy.deepcopy(ref), 'facts': facts,
-            'quotes': {field: quote for field, value in facts.items()
-                       if (quote := _excerpt(content['payload']['text'], value)) is not None}}
+            'quotes': {field: row['quote'] for field, row in anchors.items()},
+            'quote_refs': {field: row['quote_ref'] for field, row in anchors.items()},
+            'quote_spans': {field: row['span'] for field, row in anchors.items()}}
 
 
 def prepare_context(db_path, sources, session_id):
@@ -112,7 +105,9 @@ def validate_context(db_path, bundle, session_id):
         validate_sources([{'source': ref.source, 'event_id': content['payload']['original_event_id'],
             'payload': content['payload']['event'], 'facts': content['facts']}])
         projected.append(_projection(value, content))
-    if projected != owned['model_sources']:
+    legacy = [{key: value for key, value in row.items() if key not in {'quote_refs', 'quote_spans'}}
+              for row in projected]
+    if projected != owned['model_sources'] and legacy != owned['model_sources']:
         raise ValueError('review context model projection differs from verified sources')
     return owned
 
