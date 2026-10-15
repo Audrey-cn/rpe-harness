@@ -1,8 +1,34 @@
 {
-  "schema_version": "rpe.v111-development/v1",
-  "started_at": 1792031910,
-  "updated_at": 1792036505.744954,
   "base_commit": "c9445972ba5a058724fadf39135de3bc6c1e0ee9",
+  "completed_local_evidence": {
+    "catalog_archive_targeted": "16 passed",
+    "context_proposal_targeted": "133 passed; actual CSV execution and replay",
+    "independent_review": "55 passed; quoted deps side effect safely reproduced and fixed; forged native refs reproduced and fixed",
+    "public_and_session_targeted": "41 passed",
+    "public_contract_red": "actual evaluate_review_session+run_hermes_review returned verified/proposal_verified but CLI returned needs_context",
+    "skills_review_targeted": "44 passed; actual Hermes restore/view/original helper, active/archive source"
+  },
+  "completed_validation": {
+    "current_source_cases": 1720,
+    "formal_complete_chain": {
+      "comparison_ready": false,
+      "native": "0/4",
+      "review": "1/4"
+    },
+    "installed_package_cases": 147,
+    "owned_root_removed": true,
+    "postfix_single_model_acceptance": true,
+    "subtests": 3
+  },
+  "nonblocking_limitations": [
+    "formal comparison_ready=false; no established general quality/cost gain",
+    "semantic reviewer simulated; not human acceptance",
+    "native app worktree attachment stale after safe Git cleanup"
+  ],
+  "pending": [],
+  "release_branch": "codex/rpe-v1.11-release",
+  "release_tag": "v1.11.0",
+  "schema_version": "rpe.v111-development/v1",
   "scope": [
     "public entry",
     "explicit real skill selection",
@@ -12,29 +38,7 @@
     "local package",
     "owned cleanup"
   ],
-  "completed_local_evidence": {
-    "public_contract_red": "actual evaluate_review_session+run_hermes_review returned verified/proposal_verified but CLI returned needs_context",
-    "public_and_session_targeted": "41 passed",
-    "context_proposal_targeted": "133 passed; actual CSV execution and replay",
-    "skills_review_targeted": "44 passed; actual Hermes restore/view/original helper, active/archive source",
-    "catalog_archive_targeted": "16 passed",
-    "independent_review": "55 passed; quoted deps side effect safely reproduced and fixed; forged native refs reproduced and fixed"
-  },
-  "pending": [
-    "managed worktree archive",
-    "local release branch and tag final verification"
-  ],
-  "status": "local_delivery_cleanup_finishing",
-  "completed_validation": {
-    "current_source_cases": 1720,
-    "subtests": 3,
-    "installed_package_cases": 147,
-    "formal_complete_chain": {
-      "review": "1/4",
-      "native": "0/4",
-      "comparison_ready": false
-    },
-    "postfix_single_model_acceptance": true,
-    "owned_root_removed": true
-  }
+  "started_at": 1792031910,
+  "status": "complete_local_1.11",
+  "updated_at": 1792036721.836687
 }

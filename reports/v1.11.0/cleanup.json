@@ -98,9 +98,23 @@
   "daily_state_restored": false,
   "directories_to_remove": 29593,
   "files_to_remove": 37905,
+  "final_process_check": {
+    "checked_at": 1792036721.835587,
+    "remaining_owned_processes": [],
+    "signals_sent": 0
+  },
   "finished_at": 1792036450.9590862,
   "historical_reports_unchanged": true,
-  "managed_worktree_archive": "pending",
+  "managed_worktree_archive": "native_archive_not_confirmed; clean_git_worktree_removed_with_commits_retained",
+  "managed_worktree_path": "/Users/audrey/.codex/worktrees/rpe-v111/rpe-harness",
+  "managed_worktree_removed": true,
+  "native_archive_observation": {
+    "after_git_removal_error": "This worktree is owned by another task.",
+    "attachment_status": "stale active attachment still listed; no application metadata edited",
+    "calls_before_fallback": 2,
+    "recoverability": "All tracked changes committed and present in both source and release branches; wheel retained in main dist.",
+    "responses": "queued; no physical deletion observed"
+  },
   "old_repositories": [
     {
       "head": "84bc86e121aac5c71a53abc23189cc07e562b256",
@@ -179,6 +193,10 @@
       "unchanged": true
     }
   ],
+  "release_branch": "codex/rpe-v1.11-release",
+  "release_tag": "v1.11.0",
+  "retained_source_branch": "codex/rpe-v1.11",
+  "retained_source_commit": "1595a0786a816ed9490127465f669cb7edbd8195",
   "schema_version": "rpe.v111-owned-cleanup/v1",
   "scope": "only this run owned root and its separately managed worktree; retained sanitized reports and installable wheel",
   "signals_sent": 0,
