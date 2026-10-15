@@ -1,5 +1,7 @@
 {
   "business_release_ready": false,
+  "cleanup_complete": true,
+  "delivered_source_commit": "b5abf9c",
   "external_native_entry_verified": {
     "corrected_directed": true,
     "directed": false,
@@ -8,9 +10,10 @@
   "final_model_entry_verified": true,
   "independent_cli_audit_completed": true,
   "manifest": {
-    "1.14开发与验收报告.md": "50a9dbd8c2a5f94a47fa7c4c38e52f490a7d4519a01917e87af03c9443e19fd9",
+    "1.14开发与验收报告.md": "026e3357e44fa09af383c5c926f95777f46d74bf7768e4a153a6478a033a3917",
     "all-observed-costs.json": "265777757e0e20baf2ca129c102f721329888623e2a45eeb86e87e3286518ddf",
     "budget-amendment.json": "311585f5845cc446754047f1e83f5717829a8569dbfbce4cf1c0078751570b73",
+    "cleanup.json": "618bc89649f2da5e4595578a8da2e055d2338e6f4b473b47ee6157a86b9c7a9a",
     "cli-probe-bundle.json": "007f6bbeda4187d5835f0252a9f2930472db3f541cad63b942f72acff6c3ccf7",
     "cli-probe-claim.json": "6ed12a4283c2af23454ce927d694a502e2cb8e95057370a55315692590c44025",
     "cli-probe-result.json": "0a2fe471d88ce67da11b52b6bdf1ab53a9cfc3314509b79dbfcf6d20b7bd2803",
@@ -87,10 +90,13 @@
     "validation/package-final.xml": "0ceeaa1401905f9f91c36792defec43dec144a3fb0ee6a9b2075b2fb9306f4ab",
     "validation/post-cleanup-preservation.py": "b005ebc8829a06355e4243a4f71955424b3c7fc8847819372aff1c546785825b",
     "validation/pre-cleanup-preservation.json": "1bbf643564acf6fff4dd8a4b95d0191fb668f166d0c2e9885a212b4523da50a2",
-    "validation/preservation-baseline.json": "ad34dc18b7eb6a660794efb5668f2fd224d6a4fb784b287786dafb0d72523c3c",
+    "validation/preservation-after-cleanup.json": "f0ca0b6c3a8db2ea9ba39b6172bf9603f1b297018cbf9ba0c359e132172362ab",
+    "validation/preservation-baseline-original.json": "ad34dc18b7eb6a660794efb5668f2fd224d6a4fb784b287786dafb0d72523c3c",
+    "validation/preservation-baseline.json": "fb05aa6652c5465badb6e142a5fff505b0d90ed66c65a5bcf7cea7c54b3aa9b0",
     "validation/preservation-before-cleanup-initial.json": "095cc0eb2fd8cac551f45adda9ee08f842192bee6bccd13f7a399980f8cbf9a9",
     "validation/preservation-before-cleanup.json": "f93ae39abfe245addbcd3d5aba894522bb73446cf323322c4f0f3794959f57a3",
     "validation/preservation-runtime-correction.json": "b572994bd3e02868bff9e17ddd510f6758c38efa77ed90f58e774d4415ab9b3e",
+    "validation/primary-checkout-retention.json": "c8878808b7592acdb8ba785c6481f934c60f0a1b4fdbda20285455acd19f74d7",
     "validation/retained-secrets-final.json": "3391a9c9ef78f982301b082a13f1fa896a5f731c7f044e6f20924fefdd7d0668",
     "validation/retained-secrets-initial.json": "1b0bd96e0827bcf85268342bc474325bd752b6e140d5ca5054721d8f1cee8f35",
     "validation/run-codex-audit.py": "c2133b6c4048c36972197ef5ecc8a33040a24ddba683d0a33a5e14d7147c38f6",
@@ -98,11 +104,13 @@
     "validation/run-directed-native-entry.py": "038c6391c3ca84daa9620546f381eed0fcd0efdcbc5eb8d47144cbe31d76067f",
     "validation/run-final-native-entry.py": "342f0cb4451157aeba11a50967fc186f98b68a536e57a26b4937e6b1465dd5c3",
     "validation/run-independent-audit.py": "51b521756b4f0bfca6543dbc83496aa905f90d5d5678001684822e289803730f",
+    "validation/runtime-removal-inventory.json": "4c83185035fea351201dfc6bc44daec2163766b2beec92870840894d9acfe592",
     "validation/secret-scan-scope-correction.json": "3f388c3716c92f3700c7432478e5eac0da4dbdd6838b52ab78b8b1fadbc415df",
     "validation/test-records.json": "0eb787e0016401070acf58ba078d5d4aaca320853eef7100ff3fa92075c1b95f",
     "validation/test-session-ids.json": "ce7221c4fa0ca482df2b2a868b5b5dcd97747193d665fef410d723b3dda85adb",
     "verify_delivery.py": "8e2e6202b3ae19b9637550d983894eccd5b6db3b3861f424a88193797b3ee4e9"
   },
+  "protected_primary_checkout_retained": true,
   "schema_version": "rpe.v114-delivery/v1",
   "source_commit": "5d8bb85",
   "source_sha256": {

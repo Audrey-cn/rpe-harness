@@ -63,5 +63,5 @@
       "subtests": 0
     }
   },
-  "cleanup_required": false
+  "cleanup_required": true
 }
