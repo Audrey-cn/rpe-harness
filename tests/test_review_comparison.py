@@ -351,3 +351,86 @@ def test_offline_verifier_recomputes_inner_bindings_even_when_outer_hash_is_rewr
     module._save(path, document)
     result = module.verify_review_evidence(destination)
     assert result['verified'] is False and result['errors']==[error]
+
+
+def idless_native_write_snapshot(plan, *, duplicate=False, wrong_result_path=False, wrong_content=False):
+    """Actual installed SDK stream shape: writer use/result have no call IDs.
+
+    Preserve that observed shape while the independent observer DB retains the
+    real API and tool IDs. The second scratch write mirrors the pilot sequence.
+    """
+    from rpe_harness.integrations.hermes import HostEventStore
+    from rpe_harness.integrations.hermes_gate import _persisted_events, digest_json
+    trial = next(t for t in plan['pilots'] if t['arm']=='native')
+    workspace = Path(trial['workspace'])
+    session = Path(plan['root'])/'sessions'/(trial['trial_id']+'-draft')/'session-fixture'
+    session.mkdir(parents=True)
+    content = json.dumps(csv_draft(), ensure_ascii=False)
+    (workspace/'draft.json').write_text(content if not wrong_content else '{}')
+    arguments = [{'path':'draft.json','content':content},
+                 {'path':str(session/'scratch.py'),'content':'pass\n'}]
+    if duplicate:
+        arguments.append(arguments[0].copy())
+    records = []
+    store = HostEventStore(trial['db'])
+    identity = {'session_id':'fixture-session','task_id':'fixture-task','turn_id':'fixture-turn',
+                'api_request_id':'fixture-api'}
+    store.record('pre_api_request', identity)
+    store.record('post_api_request', {**identity, 'response':{'assistant_message':{'tool_calls':[
+        {'id':'native-call-'+str(index),'name':'write_file'}
+        for index in range(len(arguments))]}}})
+    for index, args in enumerate(arguments):
+        native = {**identity,'tool_call_id':'native-call-'+str(index), 'tool_name':'write_file',
+                  'arguments_sha256':digest_json(args)}
+        store.record('pre_tool_call', native)
+        store.record('post_tool_call', {**native,'status':'ok'})
+        records.append({'type':'tool_use','name':'write_file','input':args})
+        path = Path(args['path']) if Path(args['path']).is_absolute() else workspace/args['path']
+        if wrong_result_path and index==0:
+            path = workspace/'different.json'
+        records.append({'type':'tool_result','name':'write_file','is_error':False,
+            'output':json.dumps({'bytes_written':len(args['content'].encode()),'dirs_created':True,
+                'verified':True,'lint':{'status':'ok','output':''},'resolved_path':str(path),
+                'files_modified':[str(path)]})})
+    (session/'stdout.jsonl').write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in records))
+    result = complete_host_result(plan, (workspace/'prompt.txt').read_text())
+    result.update(session_root=str(session),events=_persisted_events(trial['db'],'fixture-session'),
+        stream_tool_calls=[r for r in records if r['type']=='tool_use'],file_write_observations=[])
+    return trial, result
+
+
+def test_idless_native_writer_proof_requires_real_durable_links_and_exact_unique_publication(review_plan):
+    module = api()
+    trial, result = idless_native_write_snapshot(review_plan)
+    verdict = module.evaluate_native_review_draft(result, review_plan, trial)
+    assert verdict['verified'] is True, verdict
+    assert verdict['proof_kind']=='unique_native_write_signature'
+    assert 'tool_call_id' not in verdict
+    assert len(verdict['arguments_sha256'])==64 and len(verdict['content_sha256'])==64
+
+
+@pytest.mark.parametrize('alter', ['duplicate','wrong_result_path','wrong_content','durable_link'])
+def test_idless_native_writer_rejects_ambiguous_or_unbound_publication(review_plan, alter):
+    module = api()
+    trial, result = idless_native_write_snapshot(review_plan,
+        **({alter:True} if alter!='durable_link' else {}))
+    if alter=='durable_link':
+        result['stream_tool_calls'][0]['input']['content'] = 'changed outside the durable call'
+    verdict = module.evaluate_native_review_draft(result, review_plan, trial)
+    assert verdict['verified'] is False
+
+
+def test_unverified_review_gate_retains_structured_errors_and_leaves_quality_ungraded(review_plan, monkeypatch):
+    module = api()
+    from rpe_harness.integrations import hermes_review
+    trial = next(t for t in review_plan['pilots'] if t['arm']=='review')
+    monkeypatch.setattr(hermes_review, 'evaluate_review_session', lambda *a,**k:
+        {'verified':False,'proposal_verified':False,'errors':['review_native_arguments_changed']})
+    from rpe_harness.experiments.cost_ledger import PhaseLedger
+    record = module._observe(review_plan, trial, PhaseLedger(Path(review_plan['root'])/'ledger'),
+        lambda *a,**k:pytest.fail('unexpected native runner'),
+        lambda prompt,*a,**k:complete_host_result(review_plan,prompt))
+    assert record['draft_faithful'] is None
+    assert record['draft_gate']['error_codes']==['review_native_arguments_changed']
+    assert record.get('error_code') is None
+    assert record['approved'] is False

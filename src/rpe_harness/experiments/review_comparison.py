@@ -8,11 +8,13 @@ request. This experiment does not demonstrate real human confirmation.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import copy
 import csv
 import json
 import math
 from pathlib import Path
+import re
 import sqlite3
 import sys
 import time
@@ -20,7 +22,7 @@ import uuid
 
 from .address_comparison import (
     MAX_ARTIFACT_BYTES, _environment, _export_bytes, _fixtures, _json,
-    _observed_identity, _public_business_correct, _read,
+    _native_calls, _observed_identity, _public_business_correct, _read,
     _safe_path, _save, _sha, _trial, _unique_pairs, evaluate_native_address_session,
     score_address_artifact,
 )
@@ -241,7 +243,7 @@ def _observe(plan, trial, ledger, runner, review_runner):
     started = time.monotonic()
     record = {key:trial[key] for key in ('trial_id','phase','arm','case_id','category')}
     record.update(fingerprint=plan['sha256'], status='failed', approved=False,
-        draft_faithful=False, draft_invocation_verified=False, business_correct=False,
+        draft_faithful=None, draft_invocation_verified=False, business_correct=False,
         product_oracle_passed=False, execution_verified=False, accepted=False,
         reviewer_kind=_REVIEWER, human_confirmation_verified=False)
     result, error_code = _session_phase(plan, trial, ledger,
@@ -289,21 +291,24 @@ def _review_and_execute(plan, trial, ledger, result, record, runner):
         from ..integrations.hermes_review import evaluate_review_session
         gate = evaluate_review_session(result, trial['db'], workspace, catalog_root=plan['catalog_root'])
         record['draft_invocation_verified'] = bool(gate.get('verified') and gate.get('proposal_verified'))
+        record['draft_gate'] = _compact_draft_gate(gate)
         proposal_id = gate.get('proposal_id')
+        if not record['draft_invocation_verified'] or not isinstance(proposal_id, str):
+            return
         proposal = ProposalStore(trial['db']).show(proposal_id, session_id=result['session_id'])
     else:
         # Verify a real native publication of these draft bytes, separately from
         # the later business execution (XLSX loading is required only then).
-        draft_case = {**case, 'capability':'review.draft', 'expected_status':'ready', 'output_name':'draft.json'}
-        gate = evaluate_native_address_session(result, {**plan, 'cases':[draft_case]}, trial)
+        gate = evaluate_native_review_draft(result, plan, trial)
         record['draft_invocation_verified'] = gate.get('verified') is True
+        record['draft_gate'] = _compact_draft_gate(gate)
+        if not record['draft_invocation_verified']:
+            return
         draft = json.loads(read_regular_file(workspace/'draft.json', max_bytes=65536),
                            object_pairs_hook=_unique_pairs)
         proposal = create_proposal(case['task'], draft, db_path=trial['db'], workspace=workspace,
             session_id=result['session_id'], source_ref='user_prompt:'+trial['prompt_sha256'],
             catalog_root=plan['catalog_root'], skill_snapshot_id=plan['skill_snapshot_id'])
-    record['draft_gate'] = {'verified':record['draft_invocation_verified'],
-        'error_count':len(gate.get('errors') or []), 'status':gate.get('status')}
     # A finished business file before approval is a workflow violation even if
     # the final bytes happen to be correct. No approval is issued in that case.
     premature = any(p.name.startswith('output') for p in workspace.iterdir())
@@ -357,6 +362,100 @@ def _review_and_execute(plan, trial, ledger, result, record, runner):
             and record['execution_model_identity']==record['model_identity']
             and native_gate.get('verified') is True)
         record['execution_kind'] = 'approved_native'
+
+
+def _compact_draft_gate(gate):
+    def code(value):
+        return value if isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}', value) else 'redacted_diagnostic'
+    return {'verified':gate.get('verified') is True, 'status':code(gate['status']) if gate.get('status') else None,
+        'proof_kind':code(gate['proof_kind']) if gate.get('proof_kind') else None,
+        'error_count':len(gate.get('errors') or []),
+        'error_codes':[code(value) for value in (gate.get('errors') or [])[:16]]}
+
+
+def evaluate_native_review_draft(result, plan, trial):
+    """Review-only native publication proof for ID-less official SDK streams.
+
+    IDs remain mandatory in durable API/tool observations. The supplemental
+    proof names a unique write signature, never invents a stdout tool-call ID.
+    The 1.8/1.9 native gate and business-execution gates are unchanged.
+    """
+    from ..integrations.hermes_gate import digest_json
+    case = next(c for c in plan['cases'] if c['case_id']==trial['case_id'])
+    draft_case = {**case,'capability':'review.draft','expected_status':'ready','output_name':'draft.json'}
+    legacy = evaluate_native_address_session(result, {**plan,'cases':[draft_case]}, trial)
+    if legacy.get('verified') is True:
+        return {**legacy, 'proof_kind':('native_write_id' if result.get('file_write_observations')
+                                       else 'native_terminal_command')}
+    if legacy.get('errors')!=['native_output_invocation_missing']:
+        return legacy
+    verdict = {'verified':False,'status':'unverified','errors':[]}
+    try:
+        posts, streams = _native_calls(result, trial['db'])
+        session = _safe_path(result['session_root'])
+        owner = _safe_path(Path(plan['root'])/'sessions'/(trial['trial_id']+'-draft'))
+        if not session.is_relative_to(owner) or session==owner:
+            raise ValueError('native_write_log_outside_owned_session')
+        raw = read_regular_file(session/'stdout.jsonl', max_bytes=MAX_ARTIFACT_BYTES)
+        records = [json.loads(line,object_pairs_hook=_unique_pairs) for line in raw.decode('utf-8').splitlines()]
+        uses = [row for row in records if type(row) is dict and row.get('type')=='tool_use']
+        signature = lambda row:(row.get('name'), digest_json(row.get('input')))
+        if Counter(map(signature, uses))!=Counter(map(signature, streams)):
+            raise ValueError('native_write_log_stream_changed')
+        workspace, target = _safe_path(trial['workspace']), _safe_path(Path(trial['workspace'])/'draft.json')
+        def target_write(row):
+            args = row.get('input')
+            if row.get('name')!='write_file' or type(args) is not dict or not isinstance(args.get('path'),str):
+                return False
+            path = Path(args['path'])
+            return _safe_path(path if path.is_absolute() else workspace/path)==target
+        matches = [row for row in uses if target_write(row)]
+        if len(matches)!=1:
+            raise ValueError('native_write_signature_ambiguous')
+        selected = matches[0]
+        args = selected['input']
+        final = read_regular_file(target, max_bytes=65536)
+        if not isinstance(args.get('content'),str) or args['content'].encode()!=final:
+            raise ValueError('native_write_final_bytes_changed')
+        digest = digest_json(args)
+        durable = [post for post in posts if post.get('tool_name')=='write_file'
+                   and post.get('arguments_sha256')==digest and post.get('status') in {'ok','succeeded'}]
+        if len(durable)!=1:
+            raise ValueError('native_write_durable_signature_ambiguous')
+        # Official streams omit IDs. Pair only a single outstanding write at a
+        # time; concurrent, duplicate, unmatched or partial records are refused.
+        pending, verified_pairs = None, []
+        for index, row in enumerate(records):
+            if type(row) is not dict or row.get('name')!='write_file':
+                continue
+            if row.get('type')=='tool_use':
+                if pending is not None:
+                    raise ValueError('native_write_result_ambiguous')
+                pending = (index, row)
+            elif row.get('type')=='tool_result':
+                if pending is None:
+                    raise ValueError('native_write_result_ambiguous')
+                use_index, use = pending
+                pending = None
+                if use is not selected:
+                    continue
+                if use.get('tool_call_id') is not None or row.get('tool_call_id') is not None:
+                    raise ValueError('native_write_partial_id_unsupported')
+                output = json.loads(row.get('output',''), object_pairs_hook=_unique_pairs)
+                if (row.get('is_error') is not False or type(output) is not dict
+                    or output.get('verified') is not True or output.get('error')
+                    or type(output.get('bytes_written')) is not int or output['bytes_written']!=len(final)
+                    or output.get('resolved_path')!=str(target)):
+                    raise ValueError('native_write_result_target_or_bytes_changed')
+                verified_pairs.append((use_index,index))
+        if pending is not None or len(verified_pairs)!=1:
+            raise ValueError('native_write_result_ambiguous')
+        verdict.update(verified=True,status='verified_native_draft',proof_kind='unique_native_write_signature',
+            arguments_sha256=digest,content_sha256=_sha(final),target_path_sha256=_sha(str(target).encode()),
+            stdout_record_indices=list(verified_pairs[0]))
+    except (OSError,ValueError,TypeError,KeyError,UnicodeError,RecursionError,sqlite3.Error) as error:
+        verdict['errors'].append(str(error) if isinstance(error,ValueError) else type(error).__name__)
+    return verdict
 
 
 def _expected_candidate(case):
