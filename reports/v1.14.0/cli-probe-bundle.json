@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "actual_output": {
+        "text": "[3,7]\n"
+      },
+      "candidate_proof": {
+        "capability": "json.normalize",
+        "execution": {
+          "input_path": "input.json",
+          "output_path": "output.json",
+          "style": "minify"
+        }
+      },
+      "evidence_id": "PROBE-A",
+      "execution_observations": {
+        "input_preserved": true
+      },
+      "raw_request": "保留原文件，将JSON压成紧凑形式。",
+      "supplied_input": {
+        "json": [
+          3,
+          7
+        ]
+      }
+    },
+    {
+      "actual_output": null,
+      "candidate_proof": {
+        "capability": "tabular.deduplicate",
+        "execution": {},
+        "unresolved": [
+          "缺少已批准的业务唯一键"
+        ]
+      },
+      "evidence_id": "PROBE-B",
+      "execution_observations": {
+        "actual_output_file_present": false
+      },
+      "raw_request": "业务键尚未决定，不得猜列或输出。"
+    }
+  ],
+  "schema_version": "rpe.v114-audit-engineering-probe/v1"
+}

@@ -1,0 +1,82 @@
+{
+  "code_freeze_unchanged_after_tests": true,
+  "current_source_module_count": 91,
+  "current_source_module_hashes_match_freeze": true,
+  "formal_freeze_file_sha256": "96c39f7fc7e31703517f3de34c4ba1268a07471b28839eeab9635c8fc9d586ab",
+  "formal_freeze_sha256": "620523c4789b617402c9e8a6be035044bba512bfcc0c71dc1c138e52205fe6a5",
+  "import_preflight": [
+    {
+      "distribution_version": "1.14.0",
+      "package_file": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b/package-review/wheel-unpacked/rpe_harness/__init__.py",
+      "package_version": "1.14.0",
+      "target": "wheel-unpacked"
+    },
+    {
+      "distribution_version": "1.14.0",
+      "package_file": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b/package-review/install/rpe_harness/__init__.py",
+      "package_version": "1.14.0",
+      "target": "install"
+    }
+  ],
+  "installed_module_count": 91,
+  "installed_module_hashes_match_freeze": true,
+  "module_count": 91,
+  "provider_or_model_requests": 0,
+  "record_verification": {
+    "duplicate_names": 0,
+    "independent_read_only_static_review": "wheel_static agent also found no mismatch",
+    "record_complete": true,
+    "record_hashes_and_sizes_valid": true,
+    "record_rows": 95,
+    "record_verified_files": 94,
+    "symlink_members": 0,
+    "zip_files": 95
+  },
+  "registration_sha256": "de950989bc0d2736c3bb1057b77deafea944fa890053e99b9fbed56a25414fdb",
+  "root_source_used_for_runtime_tests": false,
+  "runtime_imports": {
+    "distribution_version": "1.14.0",
+    "loaded_module_count": 54,
+    "package_file": "/Users/audrey/\u9879\u76ee/\u7f13\u5b58/test/rpe-v114-8581d6e12eab449aaa71bf8af01ce97b/package-review/install/rpe_harness/__init__.py",
+    "package_version": "1.14.0",
+    "pytest_exit_status": 0,
+    "rpe_imports_all_from_install": true
+  },
+  "runtime_tests": {
+    "cwd_owned": true,
+    "errors": 0,
+    "exit_code": 0,
+    "failures": 0,
+    "import_proof": "runtime-import-proof.json",
+    "junit": "package-final.xml",
+    "log": "package-final.log",
+    "pytest_root_is_copied_tests": true,
+    "seconds": 86.579,
+    "selected": [
+      "test_hermes_request_budget.py",
+      "test_native_finish_file_bootstrap.py",
+      "test_hermes_bootstrap.py::test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import",
+      "test_hermes_bootstrap.py::test_file_bootstrap_dispatches_cli_after_patch_without_modifying_installation",
+      "test_v114_entry.py",
+      "test_review_entry_cli.py",
+      "test_proposal_cli.py",
+      "test_proposal_cli_integration.py"
+    ],
+    "skipped": 0,
+    "status": "passed",
+    "tests": 55
+  },
+  "schema_version": "rpe.v114-final-wheel-proof/v1",
+  "scope": "offline wheel integrity and installed-package targeted runtime validation; no real model acceptance",
+  "unpacked_module_count": 91,
+  "unpacked_module_hashes_match_freeze": true,
+  "verified": true,
+  "wheel_metadata_name": "rpe-harness",
+  "wheel_metadata_version": "1.14.0",
+  "wheel_name": "rpe_harness-1.14.0-py3-none-any.whl",
+  "wheel_python_module_set_exact": true,
+  "wheel_sha256": "54399600caed217f240ebbcb719d1a1a67fa4fbfbe53403e84b7758ca57b0f90",
+  "wheel_size": 438357,
+  "wheel_source_module_hashes_match_freeze": true,
+  "wheel_unchanged_after_tests": true
+}

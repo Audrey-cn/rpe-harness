@@ -1,0 +1,28 @@
+{
+  "schema_version": "rpe.v114-development-ledger/v1",
+  "source_commit": "5d8bb85",
+  "full_suite": {
+    "passed": 1971,
+    "skipped": 7,
+    "subtests": 3,
+    "scope": "integration snapshot; two experiment routing/deny improvements landed during run"
+  },
+  "final_entry_targeted_passed": 61,
+  "final_wheel_passed": 55,
+  "production_after_formal_freeze_modified": false,
+  "formal_replays": 0,
+  "model_draft_sessions": 10,
+  "native_execution_sessions": 4,
+  "CLI_processes": 3,
+  "expected_final_source_modules": 91,
+  "goal_quality_improvement_proven": false,
+  "corrections_retained": [
+    "native availability note after engineering pilot",
+    "directed proof skill path",
+    "Codex nonfatal startup error parser",
+    "dummy-key scanner scope",
+    "unsupported default Python preservation checker"
+  ],
+  "auto_advance_next_version": false,
+  "prepared_at": 1792051513.45327
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "rpe.v114-proof-budget-amendment/v1",
+  "declared_at": 1792050543.947737,
+  "original": {
+    "max_draft_sessions": 10,
+    "max_native_execution_sessions": 5,
+    "max_external_entry_sessions": 1,
+    "max_cli_processes": 2
+  },
+  "amended": {
+    "max_draft_sessions": 10,
+    "max_native_execution_sessions": 5,
+    "max_external_entry_sessions": 3,
+    "max_cli_processes": 3
+  },
+  "reason": "Both native calls used legitimate helper stdout staging followed by copy; strong evidence only covers direct final stdout. Retain failures and perform one explicitly directed entry proof, outside paired denominator. Claude eight-ID audit timed out without stdout; use one distinct local CLI fallback over unchanged eight-ID bundle.",
+  "paired_trials_replayed": false,
+  "old_failures_regraded": false,
+  "production_source_changed": false,
+  "claude_timeout_cause": "unknown; no quota classification evidence",
+  "costs_include_all_attempts": true,
+  "additional_engineering_correction": {
+    "declared_at": 1792050841.007817,
+    "reason": "The first directed proof script used skills/xlsx instead of the actual materialized skills/productivity/xlsx path. Retain the failed attempt and correct only this proof helper; production source remains unchanged.",
+    "max_additional_corrected_directed_entries": 1,
+    "total_native_execution_ceiling_unchanged": 5
+  }
+}

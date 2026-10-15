@@ -1,0 +1,67 @@
+{
+  "verified": true,
+  "scope": "offline_record_consistency_not_runtime_replay",
+  "source_modules": 91,
+  "model_validated_final_entry": true,
+  "final_model_entry_verified": true,
+  "external_native_entries": {
+    "entry": {
+      "verified": false,
+      "kernel_gate_verified": false,
+      "api_requests": 6,
+      "tool_calls": 6
+    },
+    "directed": {
+      "verified": false,
+      "kernel_gate_verified": false,
+      "api_requests": 8,
+      "tool_calls": 9
+    },
+    "corrected_directed": {
+      "verified": true,
+      "kernel_gate_verified": true,
+      "api_requests": 2,
+      "tool_calls": 3
+    }
+  },
+  "formal_complete_chain": {
+    "native": 0,
+    "review": 0
+  },
+  "native_execution_sessions": 4,
+  "cli_processes": 3,
+  "final_cli_audit_completed": true,
+  "tests": {
+    "baseline.xml": {
+      "passed": 85,
+      "skipped": 0,
+      "subtests": 0
+    },
+    "cli-profile.xml": {
+      "passed": 36,
+      "skipped": 0,
+      "subtests": 0
+    },
+    "frozen-entry.xml": {
+      "passed": 61,
+      "skipped": 0,
+      "subtests": 0
+    },
+    "full-suite.xml": {
+      "passed": 1971,
+      "skipped": 7,
+      "subtests": 3
+    },
+    "native-evidence.xml": {
+      "passed": 42,
+      "skipped": 0,
+      "subtests": 0
+    },
+    "package-final.xml": {
+      "passed": 55,
+      "skipped": 0,
+      "subtests": 0
+    }
+  },
+  "cleanup_required": false
+}

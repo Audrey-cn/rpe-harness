@@ -1,0 +1,1 @@
+{"reason": "Default macOS python3 was below the project supported Python 3.10 floor and did not support Path.stat(follow_symlinks=False). Initial failed snapshot retained. Re-run uses bundled Python 3.12. No baseline or daily file was modified.", "baseline_changed": false}

@@ -1,0 +1,32 @@
+{
+  "baseline.xml": {
+    "passed": 85,
+    "skipped": 0,
+    "subtests": 0
+  },
+  "cli-profile.xml": {
+    "passed": 36,
+    "skipped": 0,
+    "subtests": 0
+  },
+  "frozen-entry.xml": {
+    "passed": 61,
+    "skipped": 0,
+    "subtests": 0
+  },
+  "full-suite.xml": {
+    "passed": 1971,
+    "skipped": 7,
+    "subtests": 3
+  },
+  "native-evidence.xml": {
+    "passed": 42,
+    "skipped": 0,
+    "subtests": 0
+  },
+  "package-final.xml": {
+    "passed": 55,
+    "skipped": 0,
+    "subtests": 0
+  }
+}
