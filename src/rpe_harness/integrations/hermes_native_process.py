@@ -197,6 +197,7 @@ class _DarwinProcesses:
         size = ctypes.c_size_t(len(buf))
         mib = (ctypes.c_int * 3)(1, 49, pid)
         if self.libc.sysctl(mib, 3, buf, ctypes.byref(size), None, 0):
+            self.info(pid)  # A vanished candidate supplies no proof; live failures stay errors.
             raise OSError('native process arguments unavailable')
         raw = buf.raw[:size.value]
         argc = struct.unpack_from('=i', raw)[0]
