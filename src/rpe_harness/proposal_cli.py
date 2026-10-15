@@ -23,6 +23,7 @@ def register_review(commands):
     draft.add_argument('--hermes-root', type=Path)
     draft.add_argument('--timeout', type=float, default=180)
     draft.add_argument('--request-budget', type=Path, help='显式的隔离宿主请求预算 JSON 文件；不改变业务原文')
+    draft.add_argument('--host-settings', type=Path, help='显式的隔离 Xiaomi 宿主配置 JSON；仅父进程读取')
     draft.add_argument('--review-profile', choices=['values-v1'], help='显式核验原文引用中的参数值；不代替完整人工审阅')
     draft.add_argument('--max-turns', type=int, default=8)
     draft.add_argument('--context-sources', type=Path, help='明确授权导入的来源附件文件；沿用宿主来源格式')
@@ -65,6 +66,12 @@ def dispatch_review(args):
         if args.request_budget is not None:
             from .integrations.hermes_request_budget import _load_profile
             budget_options['request_budget'] = _load_profile(args.request_budget)
+        denied_roots = list(args.deny_read_root)
+        if args.host_settings is not None:
+            from .integrations.hermes_session import _load_host_settings
+            settings_path = args.host_settings.absolute()
+            budget_options['host_settings'] = _load_host_settings(settings_path)
+            denied_roots.append(settings_path)
         database = Path(args.db).absolute()
         database.parent.mkdir(parents=True, exist_ok=True)
         host_scope = (nullcontext(str(args.owner_root.absolute())) if args.owner_root is not None else
@@ -77,7 +84,7 @@ def dispatch_review(args):
                     timeout=args.timeout, hermes_root=args.hermes_root, catalog_root=args.catalog_root,
                     skill_snapshot_id=args.skill_snapshot_id, max_turns=args.max_turns,
                     context_sources=_context_sources(args.context_sources),
-                    read_isolation_root=args.read_isolation_root, deny_read_roots=args.deny_read_root, **budget_options)
+                    read_isolation_root=args.read_isolation_root, deny_read_roots=denied_roots, **budget_options)
             except SessionObservationError as error:
                 result = error.diagnostics
                 result['failure'] = failure(error.code, domain='observation', stage='finalization')

@@ -1192,7 +1192,8 @@ def evaluate_review_session(result, db_path, workspace, *, catalog_root=None):
 
 def run_hermes_review(raw, workspace, db_path, *, owner_root, timeout=180, hermes_root=None,
                       catalog_root=None, skill_snapshot_id=None, max_turns=8, context_sources=None,
-                      read_isolation_root=None, deny_read_roots=(), request_budget=None, review_profile=None):
+                      read_isolation_root=None, deny_read_roots=(), request_budget=None, review_profile=None,
+                      host_settings=None):
     """Run the installed host for a draft and return its parent-persisted proposal."""
     from .hermes_session import run_hermes_session
     from .skill_gate import _state
@@ -1203,7 +1204,8 @@ def run_hermes_review(raw, workspace, db_path, *, owner_root, timeout=180, herme
         context_sources=context_sources,
         read_isolation_root=read_isolation_root, deny_read_roots=deny_read_roots,
         **({'request_budget': request_budget} if request_budget is not None else {}),
-        **({'review_profile': review_profile} if review_profile is not None else {}))
+        **({'review_profile': review_profile} if review_profile is not None else {}),
+        **({'host_settings': host_settings} if host_settings is not None else {}))
     result['proposal_verification'] = evaluate_review_session(result, db_path, workspace, catalog_root=catalog_root)
     result['proposal'] = None
     if result['proposal_verification']['proposal_verified']:

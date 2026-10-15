@@ -330,6 +330,52 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
         raise ValueError('invalid installed Hermes settings') from exc
 
 
+def _validated_host_settings(settings, *, request_budget=None):
+    """Validate the existing isolated Xiaomi profile without exposing its values."""
+    if type(settings) is not dict:
+        raise ValueError('isolated host settings must be an object')
+    if settings.get('provider') != 'xiaomi':
+        raise ValueError('isolated launcher currently requires xiaomi API-key provider')
+    if (set(settings) != {'model', 'provider', 'base_url', 'api_key'}
+            or not all(type(settings.get(key)) is str and settings[key]
+                       for key in ('model', 'provider', 'base_url', 'api_key'))
+            or len(json.dumps(settings, ensure_ascii=False).encode()) > 16384):
+        raise ValueError('host settings require exactly four bounded nonempty string fields')
+    from urllib.parse import urlsplit
+    try:
+        url = urlsplit(settings['base_url'])
+        if (url.scheme != 'https' or not url.hostname or url.username or url.password
+                or url.query or url.fragment):
+            raise ValueError('invalid endpoint')
+    except ValueError:
+        raise ValueError('provider endpoint must be a plain HTTPS URL') from None
+    if any('\n' in settings[key] or '\r' in settings[key] for key in ('api_key', 'base_url')):
+        raise ValueError('invalid credential assignment')
+    if request_budget is not None:
+        from .hermes_request_budget import validate_request_budget_profile
+        request_budget = validate_request_budget_profile(request_budget)
+        if request_budget['model'] != settings['model']:
+            raise ValueError('request budget model differs from installed host settings')
+    return dict(settings)
+
+
+def _load_host_settings(path):
+    """Read a caller-owned private file in the parent only; never log its content."""
+    from ..path_binding import read_regular_file
+    def unique_fields(pairs):
+        value = {}
+        for key, item in pairs:
+            if key in value:
+                raise ValueError('duplicate host settings field')
+            value[key] = item
+        return value
+    try:
+        raw = read_regular_file(Path(path).absolute(), max_bytes=16384)
+        return _validated_host_settings(json.loads(raw, object_pairs_hook=unique_fields))
+    except (OSError, ValueError, TypeError, UnicodeError, RecursionError):
+        raise ValueError('invalid explicit host settings file') from None
+
+
 def native_execution_contract(helper_python, stdout_name=None):
     """A runtime delivery protocol, separate from the approved JSON business task."""
     from .hermes_clean import CLEAN_SOURCE_CONTRACT
@@ -360,22 +406,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         raise ValueError('unknown public contract')
     if entry_mode == 'producer' and tool_enabled:
         raise ValueError('producer entry requires the Harness tool disabled')
-    if settings.get('provider') != 'xiaomi':
-        raise ValueError('isolated launcher currently requires xiaomi API-key provider')
-    if not all(isinstance(settings.get(k), str) and settings[k]
-               for k in ['model', 'base_url', 'api_key']):
-        raise ValueError('missing model, plan endpoint or API key')
-    from urllib.parse import urlsplit
-    url = urlsplit(settings['base_url'])
-    if url.scheme != 'https' or not url.hostname or url.username or url.password or url.query or url.fragment:
-        raise ValueError('provider endpoint must be a plain HTTPS URL')
-    if any('\n' in settings[k] or '\r' in settings[k] for k in ['api_key', 'base_url']):
-        raise ValueError('invalid credential assignment')
-    if request_budget is not None:
-        from .hermes_request_budget import validate_request_budget_profile
-        request_budget = validate_request_budget_profile(request_budget)
-        if request_budget['model'] != settings['model']:
-            raise ValueError('request budget model differs from installed host settings')
+    settings = _validated_host_settings(settings, request_budget=request_budget)
     session_root = Path(session_root)
     session_root.mkdir(parents=True, exist_ok=False, mode=0o700)
     home = session_root / 'home'
@@ -587,7 +618,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        read_isolation_root=None, deny_read_roots=(), max_turns=12,
                        preserve_native_tool_search=False, public_contract=None, native_evidence=None,
                        native_execution_evidence=None, request_budget=None, native_finish_enabled=False,
-                       review_profile=None):
+                       review_profile=None, host_settings=None):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -613,6 +644,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             raise ValueError('producer does not support the frozen request budget')
         from .hermes_request_budget import validate_request_budget_profile
         request_budget = validate_request_budget_profile(request_budget)
+    if host_settings is not None:
+        host_settings = _validated_host_settings(host_settings, request_budget=request_budget)
     if native_execution_evidence is not None and (tool_enabled or public_contract != 'clean'):
         raise ValueError('native execution evidence requires a native clean execution session')
     if native_execution_evidence is not None and type(native_execution_evidence) is not dict:
@@ -668,7 +701,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     owner_root.mkdir(parents=True, exist_ok=True, mode=0o700)
     hermes_root = Path(hermes_root or Path.home() / '.hermes/hermes-agent').resolve()
     host_python = _installed_python(hermes_root)
-    settings = _read_host_settings(hermes_root, host_python)
+    settings = (_read_host_settings(hermes_root, host_python)
+                if host_settings is None else host_settings)
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
                         tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode,
