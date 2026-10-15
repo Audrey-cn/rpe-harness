@@ -158,3 +158,39 @@ def test_public_unverified_exit_is_one_not_business_needs_context(tmp_path, monk
     business_result = json.loads(capsys.readouterr().out)
     assert business_result['status'] == 'needs_context'
     assert 'execution.style' in business_result['missing']
+
+
+@pytest.mark.parametrize('fault', ['symlink', 'value_error'])
+def test_diagnostic_artifact_failure_stays_unverified_with_known_observations(tmp_path, monkeypatch, capsys, fault):
+    import json
+    from rpe_harness.cli import main
+    from rpe_harness.integrations import hermes_review, review_diagnostics
+    homes = []
+    def observed(*args, **kwargs):
+        homes.append(kwargs['owner_root'])
+        return {'completed': False, 'exit_code': 1,
+            'usage': {'known_total_tokens': 14, 'api_requests': 2},
+            'process_cleanup': {'cleanup_complete': True}, 'session_id': 'observed-session',
+            'proposal_verification': {'verified': False, 'proposal_verified': False, 'errors': ['review_unverified']}}
+    monkeypatch.setattr(hermes_review, 'run_hermes_review', observed)
+    target = tmp_path/'outside'
+    target.mkdir()
+    if fault == 'symlink':
+        (tmp_path/'review-diagnostics').symlink_to(target, target_is_directory=True)
+    else:
+        def broken(*args):
+            raise ValueError('PRIVATE_SECRET')
+        monkeypatch.setattr(review_diagnostics, 'persist_diagnostics', broken)
+    assert main(['review', 'draft', '--db', str(tmp_path/'state.sqlite'), '--workspace', str(tmp_path),
+                 '--text', RAW, '--json']) == 1
+    output = capsys.readouterr().out
+    result = json.loads(output)
+    assert result['status'] == 'unverified' and result['diagnostics_ref'] is None
+    assert result['failure'] == {'domain': 'observation', 'code': 'diagnostic_persistence_failed',
+                                 'stage': 'finalization', 'retryable': False}
+    assert result['host_observation']['usage']['known_total_tokens'] == 14
+    assert result['host_observation']['process_cleanup']['cleanup_complete'] is True
+    assert result['review_diagnostics']['coverage']['complete'] is False
+    assert 'diagnostic_persistence_failed' in result['review_diagnostics']['coverage']['reasons']
+    assert 'PRIVATE_SECRET' not in output
+    assert not list(target.iterdir()) and not homes[0].exists()

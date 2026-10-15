@@ -36,11 +36,13 @@ def test_private_journal_permissions_and_missing_observations_are_not_complete(t
     assert collect_diagnostics(journal, no_events)['coverage']['complete'] is False
 
 
-@pytest.mark.parametrize('fault', ['missing', 'empty', 'symlink', 'fifo', 'json', 'oversize', 'rows', 'secret', 'injection'])
+@pytest.mark.parametrize('fault', ['missing', 'empty', 'nested', 'symlink', 'fifo', 'json', 'oversize', 'rows', 'secret', 'injection'])
 def test_unsafe_or_incomplete_diagnostics_remain_bounded_and_content_free(tmp_path, fault):
     journal = tmp_path / 'journal'
     if fault == 'empty':
         journal.write_text('')
+    elif fault == 'nested':
+        journal.write_text('[' * 1000 + ']' * 1000 + '\n')
     elif fault == 'symlink':
         target = tmp_path / 'target'
         target.write_text('PRIVATE_SECRET')
@@ -150,6 +152,9 @@ def test_unexpected_intake_failure_is_fail_closed_without_error_text(tmp_path, m
             raise ValueError('PRIVATE_SECRET')
         return SimpleNamespace(action='fallthrough', assistant_message=object())
     module.normalize_model_response = normalize
+    def check(agent, *, response, api_request_id, effective_task_id):
+        return None
+    module.check_api_response = check
     monkeypatch.setitem(sys.modules, 'agent.conversation_loop', module)
     monkeypatch.setenv('RPE_HERMES_ENTRY_MODE', 'review')
     journal = tmp_path/'journal'

@@ -444,7 +444,12 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                 state.update(raw_arguments=raw, raw_arguments_receipt_id=receipt['ingest_event_id'])
                 workflows.put(state)
         except Exception as error:
-            raise ReviewIngressBlocked('review raw argument capture failed') from error
+            from .review_diagnostics import append_response, response_summary
+            code = ('review_raw_arguments_invalid' if type(error) is ValueError and
+                str(error) == 'review raw arguments exceed bounds' else 'review_argument_capture_failed')
+            append_response(response_summary(context, None, phase='propose', expected_tool='rpe_propose',
+                stage='argument_capture', failure_code=code))
+            raise ReviewIngressBlocked('review raw argument capture failed', code=code) from error
         return None
 
     def policy(request, **context):
@@ -574,7 +579,10 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
             workflows.put(state)
             return json.dumps(result, ensure_ascii=False, allow_nan=False)
         except (ValueError, TypeError, KeyError, OSError, sqlite3.Error):
+            from .review_diagnostics import append_response, response_summary
             state = workflows.get(native)
+            append_response(response_summary(native, None, phase=state.get('phase'), expected_tool=name,
+                stage='argument_admission', failure_code='review_argument_admission_failed'))
             state.update(phase='none', terminal_result={'status': 'rejected',
                 'error': {'code': 'review_validation_failed'}})
             workflows.put(state)

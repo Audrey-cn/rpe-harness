@@ -272,3 +272,80 @@ def test_public_second_missing_tool_diagnostics_outlive_default_home(review, mon
     assert len(result['review_diagnostics']['responses']) == 2
     assert result['review_diagnostics']['responses'][-1]['native_action'] == 'fallthrough'
     assert not [e for e in result['host_observation']['events'] if e['kind'] == 'pre_tool_call']
+
+
+@pytest.mark.parametrize('finish_reason', ['length', 'content_filter'])
+def test_installed_preintake_incomplete_never_continues_or_dispatches(review, finish_reason):
+    from pathlib import Path
+    interpreter, environment = _sdk_home(review, 'preintake-' + finish_reason)
+    program = _NATIVE_TURN_PROGRAM.replace(
+        'install_clean_ingress_guard();install_review_finish_adapter()',
+        'install_clean_ingress_guard();install_review_finish_adapter();'
+        'from rpe_harness.integrations.hermes_review_finish import install_review_response_adapter;'
+        'install_review_response_adapter();'
+        'from rpe_harness.integrations.hermes_bootstrap import install_usage_telemetry;install_usage_telemetry()')
+    program = program.replace('name,args=steps[len(calls)-1]', 'name,args=steps[len(calls)-1]\n'
+        '    if len(calls)==1:\n'
+        "        return ChatCompletion.model_validate({'id':'bad-response','created':0,'model':'test-model',"
+        "'object':'chat.completion','usage':{'prompt_tokens':3,'completion_tokens':4,'total_tokens':7},"
+        "'choices':[{'index':0,'finish_reason':sys.argv[4],"
+        "'message':{'role':'assistant','content':'PRIVATE_TRUNCATED_PROSE','tool_calls':[]}}]})")
+    program = program.replace("result=agent.run_conversation(sys.argv[2],task_id='review-task')",
+        "from rpe_harness.integrations.hermes_review import ReviewIngressBlocked\n"
+        "try:\n    result=agent.run_conversation(sys.argv[2],task_id='review-task')\n"
+        "except ReviewIngressBlocked:\n    print(json.dumps({'blocked':True,'provider_calls':len(calls)}));sys.exit(0)\n"
+        "print(json.dumps({'blocked':False,'provider_calls':len(calls)}));sys.exit(0)")
+    child = subprocess.run([str(interpreter), '-B', '-c', program, json.dumps(draft()), RAW,
+        json.dumps([['rpe_propose', draft()], ['rpe_propose', draft()]]), finish_reason],
+        cwd=review['workspace'], env=environment, capture_output=True, text=True, timeout=45)
+    assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
+    result = json.loads(child.stdout.strip().splitlines()[-1])
+    assert result == {'blocked': True, 'provider_calls': 1}, result
+    events = review['store'].list('review-session')
+    assert len([e for e in events if e['kind'] == 'pre_api_request']) == 1
+    assert not [e for e in events if e['kind'] in ('pre_tool_call', 'rpe_review_protocol_recovery')]
+    outcomes = [e for e in events if e['kind'] in ('post_api_request', 'api_request_error')]
+    assert len(outcomes) == 1 and outcomes[0]['error_type'] == 'RPEReviewResponseCheckBlocked'
+    from rpe_harness.integrations.hermes_session import aggregate_usage
+    usage = aggregate_usage(events)
+    assert usage['known_total_tokens'] == 7 and usage['api_requests'] == 1
+    assert usage['requests_with_usage'] == 1 and usage['api_errors'] == 1
+    journal = Path(environment['RPE_HERMES_REVIEW_DIAGNOSTICS'])
+    rows = [json.loads(line) for line in journal.read_text().splitlines()]
+    assert rows[-1]['stage'] == 'response_check'
+    assert rows[-1]['native_action'] is None and rows[-1]['intake'] == 'not_reached'
+    assert rows[-1]['finish_reason'] == finish_reason and rows[-1]['tool_call_count'] == 0
+    assert rows[-1]['expected_tool'] == 'rpe_propose'
+    assert rows[-1]['failure_code'] == 'review_native_response_before_intake_blocked'
+    assert 'PRIVATE_TRUNCATED_PROSE' not in journal.read_text()
+    assert not (review['workspace']/'out.csv').exists()
+
+
+def test_invalid_raw_argument_capture_retains_specific_content_free_failure(review, monkeypatch):
+    journal = review['config'].parent/'argument-diagnostics.jsonl'
+    monkeypatch.setenv('RPE_HERMES_REVIEW_DIAGNOSTICS', str(journal))
+    response = invalid_response(review, calls=[{'id': 'call-1', 'name': 'rpe_propose', 'arguments': '{}'}])
+    assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+        api_request_id='api-1', response=response, intake_action='fallthrough') is False
+    ids = dict(session_id='review-session', task_id='review-task', turn_id='review-turn',
+               api_request_id='api-1', tool_call_id='call-1')
+    with pytest.raises(review['api'].ReviewIngressBlocked):
+        review['sdk'].hooks['pre_tool_call'](tool_name='rpe_propose', args=['PRIVATE_ARGUMENT'], **ids)
+    rows = [json.loads(line) for line in journal.read_text().splitlines()]
+    assert rows[-1]['stage'] == 'argument_capture'
+    assert rows[-1]['failure_code'] == 'review_raw_arguments_invalid'
+    assert rows[-1]['rpe_action'] == 'blocked'
+    assert 'PRIVATE_ARGUMENT' not in journal.read_text()
+
+
+def test_argument_admission_rejection_is_diagnostic_not_business_context(review, monkeypatch):
+    from test_hermes_review import dispatch
+    journal = review['config'].parent/'argument-diagnostics.jsonl'
+    monkeypatch.setenv('RPE_HERMES_REVIEW_DIAGNOSTICS', str(journal))
+    candidate = draft()
+    altered = {**candidate, 'capability': 'PRIVATE_UNREGISTERED_CAPABILITY'}
+    assert dispatch(review, candidate, effective_arguments=altered)['status'] == 'rejected'
+    rows = [json.loads(line) for line in journal.read_text().splitlines()]
+    assert rows[-1]['stage'] == 'argument_admission'
+    assert rows[-1]['failure_code'] == 'review_argument_admission_failed'
+    assert 'PRIVATE_UNREGISTERED_CAPABILITY' not in journal.read_text()

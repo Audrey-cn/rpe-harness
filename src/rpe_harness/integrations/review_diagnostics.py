@@ -16,11 +16,13 @@ PHASES = {'discover', 'select', 'view', 'propose', 'none'}
 CODES = {'review_protocol_native_API_identity_differs', 'review_protocol_native_response_not_dispatchable',
     'review_protocol_recovery_not_allowed', 'review_protocol_response_observation_missing',
     'review_protocol_response_observation_differs', 'review_protocol_response_invalid',
-    'review_protocol_unexpected_error', 'review_native_normalization_failed',
+    'review_protocol_unexpected_error', 'review_native_response_before_intake_blocked',
+    'review_raw_arguments_invalid', 'review_argument_capture_failed', 'review_argument_admission_failed',
+    'review_native_normalization_failed',
     'review_response_serialization_failed', 'review_plugin_unavailable',
     'api_content_filter', 'api_request_error', 'host_or_observation_incomplete',
     'terminal_session_mismatch', 'credential_in_host_response', 'postlaunch_diagnostics_failed',
-    'review_unverified', 'diagnostic_limit_exceeded', 'diagnostic_invalid', 'diagnostic_missing'}
+    'review_unverified', 'diagnostic_persistence_failed', 'diagnostic_limit_exceeded', 'diagnostic_invalid', 'diagnostic_missing'}
 
 
 def failure(code, *, domain='protocol', stage='response_guard'):
@@ -43,8 +45,9 @@ def response_summary(native, response, *, phase=None, expected_tool=None, native
     calls = response.get('tool_calls')
     return {**{key: _identity(native.get(key)) for key in
                 ('session_id', 'task_id', 'turn_id', 'api_request_id')},
-        'stage': _enum(stage, {'normalization', 'serialization', 'response_guard', 'ingress', 'api'}),
+        'stage': _enum(stage, {'normalization', 'serialization', 'response_guard', 'ingress', 'api', 'response_check', 'argument_capture', 'argument_admission'}),
         'phase': _enum(phase, PHASES), 'expected_tool': _enum(expected_tool, TOOLS),
+        'intake': 'not_reached' if stage in ('response_check', 'api') else 'reached' if stage == 'response_guard' else None,
         'native_action': _enum(native_action, {'fallthrough', 'continue', 'return'}),
         'finish_reason': _enum(response.get('finish_reason'),
                               {'stop', 'tool_calls', 'length', 'content_filter', 'incomplete'}),
@@ -155,16 +158,23 @@ def collect_diagnostics(path, result=None, *, secret=''):
             if len(rows) >= 32:
                 reasons.append('diagnostic_limit_exceeded')
                 break
-            code = 'api_content_filter' if event.get('error_type') == 'ContentPolicyBlocked' else 'api_request_error'
-            rows.append(response_summary(event, None, stage='api', failure_code=code))
+            adapter = (event.get('error_type') == 'RPEReviewResponseCheckBlocked' and
+                       event.get('error_code') == 'review_native_response_before_intake_blocked')
+            code = 'review_native_response_before_intake_blocked' if adapter else (
+                'api_content_filter' if event.get('error_type') == 'ContentPolicyBlocked' else 'api_request_error')
+            if adapter and any(row.get('api_request_id') == event.get('api_request_id') and
+                    row.get('session_id') == event.get('session_id') and row.get('stage') == 'response_check' for row in rows):
+                continue
+            rows.append(response_summary(event, {'finish_reason': event.get('finish_reason')} if adapter else None,
+                stage='response_check' if adapter else 'api', failure_code=code))
     if not rows:
         reasons.append('diagnostic_missing')
-    failures = [failure(row['failure_code'], domain='model' if row['stage'] in ('api', 'normalization') or row['failure_code'] == 'review_protocol_native_response_not_dispatchable' else 'protocol',
+    failures = [failure(row['failure_code'], domain='model' if row['stage'] in ('api', 'normalization', 'response_check') or row['failure_code'] == 'review_protocol_native_response_not_dispatchable' else 'protocol',
                         stage=row['stage']) for row in rows if row.get('failure_code')]
     if result.get('failure'):
         item = result['failure']
         failures.append(failure(item.get('code'), domain=_enum(item.get('domain'), {'protocol','host','observation','model'}) or 'observation',
-            stage=_enum(item.get('stage'), {'response_guard','finalization','session','normalization','serialization','api','ingress'}) or 'finalization'))
+            stage=_enum(item.get('stage'), {'response_guard','finalization','session','normalization','serialization','api','ingress','response_check','argument_capture','argument_admission'}) or 'finalization'))
     if (result.get('completed') is not True or result.get('observer_errors') or result.get('timed_out')
             or (result.get('process_cleanup') or {}).get('cleanup_complete') is not True):
         failures.append(failure('host_or_observation_incomplete', domain='host', stage='session'))

@@ -84,7 +84,21 @@ def dispatch_review(args):
             if diagnostics is None:
                 diagnostics = collect_diagnostics(Path(owned) / 'review-diagnostics.jsonl', result)
             result['review_diagnostics'] = diagnostics
-            result['diagnostics_ref'] = persist_diagnostics(database, diagnostics)
+            try:
+                result['diagnostics_ref'] = persist_diagnostics(database, diagnostics)
+            except (OSError, ValueError, TypeError):
+                # Postlaunch evidence storage is an observation failure, never
+                # invalid user input. Retain all known costs and cleanup facts.
+                storage_failure = failure('diagnostic_persistence_failed', domain='observation', stage='finalization')
+                diagnostics['coverage']['complete'] = False
+                diagnostics['coverage']['reasons'] = sorted(set(
+                    diagnostics['coverage']['reasons'] + ['diagnostic_persistence_failed']))
+                diagnostics['failures'] = (diagnostics['failures'] + [storage_failure])[:32]
+                result['diagnostics_ref'] = None
+                verdict = result.setdefault('proposal_verification', {})
+                verdict.update(verified=False, proposal_verified=False)
+                verdict.setdefault('failure', storage_failure)
+                verdict.setdefault('errors', []).append(storage_failure['code'])
         proposal = result.get('proposal')
         verdict = result.get('proposal_verification', {})
         observation = {key: result[key] for key in ('session_id', 'usage', 'elapsed_seconds',

@@ -14,6 +14,7 @@ def install_review_response_adapter():
     if os.environ.get('RPE_HERMES_ENTRY_MODE') != 'review':
         return
     loop = importlib.import_module('agent.conversation_loop')
+    _install_review_response_check_adapter(loop)
     original = loop.normalize_model_response
     if getattr(original, '_rpe_review_response_adapter', False):
         return
@@ -56,6 +57,59 @@ def install_review_response_adapter():
 
     intake._rpe_review_response_adapter = True
     loop.normalize_model_response = intake
+
+
+def _install_review_response_check_adapter(loop):
+    """Abort incomplete replies before Hermes can arm a length/fallback restart."""
+    original = loop.check_api_response
+    if getattr(original, '_rpe_review_response_check_adapter', False):
+        return
+    if not {'response', 'api_request_id', 'effective_task_id'} <= set(inspect.signature(original).parameters):
+        raise RuntimeError('installed Hermes response-check seam differs')
+
+    @wraps(original)
+    def check(agent, **context):
+        from .hermes_review import ReviewIngressBlocked, ReviewWorkflowStore
+        from .review_diagnostics import append_response, response_summary
+        from .hermes import HostEventStore
+        native = {'session_id': agent.session_id, 'turn_id': context.get('turn_id'),
+            'task_id': context.get('effective_task_id'), 'api_request_id': context.get('api_request_id')}
+        code = 'review_native_response_before_intake_blocked'
+        finish, summary, phase, expected = None, {}, None, None
+        try:
+            # This is the host's actual finish derivation, before its own retry paths.
+            derive = importlib.import_module('agent.turn_response_check')._derive_finish_reason
+            finish = derive(agent, context['response'], context['messages'])
+            if finish in ('stop', 'tool_calls'):
+                return original(agent, **context)
+            normalized = agent._get_transport().normalize_response(context['response'])
+            summary = {'finish_reason': finish, 'tool_calls': normalized.tool_calls or [],
+                       'provider_data': normalized.provider_data}
+            store = HostEventStore(os.environ['RPE_HERMES_DB'])
+            state = ReviewWorkflowStore(store.path).get({**native,
+                'entry_key': os.environ['RPE_HERMES_ENTRY_KEY']}, create=False)
+            planned = state.get('policies', {}).get(native['api_request_id'], {})
+            phase, expected = planned.get('phase'), planned.get('choice')
+            outcomes = [event for event in store.list(native['session_id']) if
+                event['kind'] in ('post_api_request', 'api_request_error') and
+                all(event.get(key) == value for key, value in native.items())]
+            if not outcomes:
+                # An adapter-owned rejection outcome, not a provider transport
+                # error or a forged post/intake verdict. Count the known usage once.
+                usage = agent._usage_summary_for_api_request_hook(context['response'])
+                store.record('api_request_error', {**native, 'finish_reason': finish,
+                    'error_type': 'RPEReviewResponseCheckBlocked', 'error_code': code, 'usage': usage})
+        except ReviewIngressBlocked:
+            raise
+        except Exception:
+            # Unknown response/check/telemetry errors cannot enable native retries.
+            pass
+        append_response(response_summary(native, summary or {'finish_reason': finish}, phase=phase,
+            expected_tool=expected, stage='response_check', failure_code=code))
+        raise ReviewIngressBlocked('review native response blocked before intake', code=code)
+
+    check._rpe_review_response_check_adapter = True
+    loop.check_api_response = check
 
 
 def install_review_finish_adapter():

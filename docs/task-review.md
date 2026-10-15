@@ -38,3 +38,7 @@ C0 公共状态修正：`review draft` 未能核验提案（协议、宿主或�
 固定 MiMo review profile 使用 wire `tool_choice=auto`，省略未获文档保证的 `parallel_tool_calls`。应用另存 `expected_tool`，只公开当前阶段的一个工具，仍要求实际响应恰好一个正确工具，并重验阶段、消息、schema、完整 payload 摘要和全部原生/父进程收据。终态没有可用工具；原生提案收尾不再请求模型。auto 不是服务端强制单调用的证明。
 
 业务字段未知时，模型必须省略整个键及对应指针，并在 unresolved 提问；不允许占位列名。显式“保留首条”应提交真实 `execution.keep=first` 并引用原文。未请求的默认可以省略（不映射不存在的字段），或由模型主动提交真实字段并用 quote=null 标注。省略值仅在待确认机器合同中展开，不回填原始草稿。encoding/delimiter 是 CSV 选项；字段与来源冲突仍阻止确认。
+
+审查补充：若父进程无法安全持久化诊断，仍返回 `unverified`/exit 1，保留已观测用量与清理信息，标记 `diagnostic_persistence_failed` 和 coverage 不完整，`diagnostics_ref=null`；不返回虚构文件引用或任意异常正文。
+
+隔离 review 在 Hermes 的原生 response-check 阶段拦截 length/content_filter/incomplete，防止 intake 前的原生续写或 fallback。此时诊断明确 `stage=response_check`、`intake=not_reached`、`native_action=null`，保留实际 finish reason。已收到的用量通过一次 adapter 自己拥有的 `api_request_error` outcome 记录：`error_type=RPEReviewResponseCheckBlocked`、`error_code=review_native_response_before_intake_blocked`。因此 `usage.api_errors` 包括这种应用层拒绝，不能等同于服务端或网络故障；不会伪造正常 post/intake verdict，也不会重复计费事件。原始参数 capture/admission 的拒绝另有固定诊断码；正文和参数不进入该诊断渠道，真实业务 needs_context 不变。
