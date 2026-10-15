@@ -53,7 +53,7 @@ def check():
         if integration and name == integration['main_repository']:
             source = integration['release_source_commit']
             ancestor = subprocess.run(['git','-C',name,'merge-base','--is-ancestor',source,'HEAD']).returncode == 0
-            changed = git(['diff','--name-only',source,'HEAD']).splitlines()
+            changed = [path for path in git(['diff','--name-only','-z',source,'HEAD']).split('\0') if path]
             allowed = all(path=='README.md' or path.startswith(('docs/','reports/')) for path in changed)
             package = Path(name)/'src/rpe_harness'
             modules = {str(p.relative_to(package)):sha(p.read_bytes()) for p in package.rglob('*.py')}
