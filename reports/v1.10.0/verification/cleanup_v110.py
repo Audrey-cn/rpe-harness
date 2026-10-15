@@ -80,7 +80,7 @@ def processes():
     while current in table and current not in ancestors:
         ancestors.add(current)
         current = table[current][0]
-    for path in OWNED.rglob('child-processes.jsonl'):
+    for path in OWNED.glob('comparison*/sessions/**/child-processes.jsonl'):
         guard(path)
         for line in path.read_text().splitlines():
             row = json.loads(line)
