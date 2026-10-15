@@ -1,0 +1,12 @@
+{
+  "artifacts": [
+    {
+      "name": "output.csv",
+      "raw_exported": false,
+      "reason": "unverified_or_absent_artifact",
+      "sha256": null,
+      "size_bytes": null
+    }
+  ],
+  "sha256": "307756522b459fc09e058a8a44c1bf42d586510b853f3ac23684b3de310a9d09"
+}

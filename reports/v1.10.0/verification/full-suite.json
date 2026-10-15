@@ -1,0 +1,19 @@
+{
+  "source_commit": "e2eb78a6780442cd3c4b0cf583e90f96cf81df99",
+  "pytest_passed": 1605,
+  "unittest_subtests_passed": 3,
+  "junit": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "1608",
+    "time": "359.664",
+    "timestamp": "2026-10-15T08:56:17.825056+08:00",
+    "hostname": "AudreydeMacBook-Pro.local"
+  },
+  "cache_provider": false,
+  "python_bytecode_disabled": true,
+  "native_model_calls": 0,
+  "hermes_source": "/Users/audrey/.hermes/hermes-agent"
+}

@@ -1,0 +1,18 @@
+{
+  "reviewer_kind": "simulated_terminal_operator",
+  "human_confirmation_verified": false,
+  "actual_tty": true,
+  "full_review_before_confirmation": true,
+  "confirmation_did_not_execute": true,
+  "execution_status": "succeeded",
+  "numeric_spelling_and_string_escape_preserved": true,
+  "source_preserved": true,
+  "replay_same_run": true,
+  "durable_runs": 1,
+  "worker_cleanup": {
+    "remaining_children": [],
+    "errors": [],
+    "cleanup_complete": true
+  },
+  "model_calls": 0
+}

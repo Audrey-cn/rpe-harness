@@ -1,0 +1,1 @@
+请只读检查 input.xlsx 的“明细”工作表，把全部行按原始XLSX技能 xlsx_read.py 的 --json --sheet 明细 输出结构保存为 output.json。先用原生技能加载入口阅读已安装xlsx技能，再使用其原始helper（专门任务入口可经其已审核adapter调用），不可自行重写helper。保留JSON类型、字段与行顺序。

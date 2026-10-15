@@ -1,0 +1,122 @@
+{
+  "records": [
+    {
+      "api_expected": true,
+      "arm": "native",
+      "attempt_id": "pilot-csv-zh-composite-native-draft",
+      "elapsed_seconds": 118.09090224999818,
+      "finished_at": 1792026275.76789,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "08c3aa11864f29d8890e22eeac3a33eb48d017e86a207ad667092106fc3baf69",
+      "reservation_sha256": "5285e27bdd41f9a453d5b4cca4eede15e517310817e31072369f906aefe8d641",
+      "reserved_at": 1792026157.67579,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 56448,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 8727,
+        "known_total_tokens": 69197,
+        "missing_observations": 0,
+        "output_tokens": 4022,
+        "prompt_tokens": 65175,
+        "reasoning_tokens": 2364,
+        "requests_with_usage": 7,
+        "total_tokens": 69197
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "native",
+      "attempt_id": "pilot-csv-zh-composite-native-verification",
+      "elapsed_seconds": 0.0006434999959310517,
+      "finished_at": 1792026275.894433,
+      "phase": "verification",
+      "record_sha256": "8221111b31c5a4b301c84fe33a2096e538483c5b3ec7b98fb1a4415db77e7e10",
+      "reservation_sha256": "18b279e86fab2500c2fb4b718a2b6080ece2bf182aac53f4283b76b5e7505f5b",
+      "reserved_at": 1792026275.893225,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": true,
+      "arm": "review",
+      "attempt_id": "pilot-csv-zh-composite-review-draft",
+      "elapsed_seconds": 44.49582941600238,
+      "finished_at": 1792026321.038867,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "2e265ba560144823f32bfd09ba627cd54ea4699486df15bced81279575a5a328",
+      "reservation_sha256": "f7418c4fab6bf1be68b1ad67d702febb9f1a145907a783f2d8b0f5813cece670",
+      "reserved_at": 1792026276.541993,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1578,
+        "known_total_tokens": 3193,
+        "missing_observations": 0,
+        "output_tokens": 1615,
+        "prompt_tokens": 1578,
+        "reasoning_tokens": 531,
+        "requests_with_usage": 2,
+        "total_tokens": 3193
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "pilot-csv-zh-composite-review-verification",
+      "elapsed_seconds": 0.0006131250047474168,
+      "finished_at": 1792026321.041994,
+      "phase": "verification",
+      "record_sha256": "7d4fb7e41bcb368b3e4dd41dce3846178e8162b544028c54e028d5b3ca46cf8f",
+      "reservation_sha256": "9d31bcaa3b562268e598f3e09f965aad084be2cc501d64b0eccd1303ab7f412c",
+      "reserved_at": 1792026321.040854,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "shared",
+      "attempt_id": "shared-preregistration",
+      "elapsed_seconds": 1.0698202500061598,
+      "finished_at": 1792026061.3088691,
+      "phase": "preregistration",
+      "record_sha256": "42530e0f267d4c4b39b1328f1dba655985713a72b198e518f1d93e7b51a6b00c",
+      "reservation_sha256": "bd6d7bf5916a86aa6368c072abed4909a9dc1f4ddc3c1ca2915da4789215d748",
+      "reserved_at": 1792026060.240282,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    }
+  ],
+  "sha256": "5f38f1a959528fb1e34d95e9fb8463a94689cc9ad08ce29c597fca317ec53d77"
+}
