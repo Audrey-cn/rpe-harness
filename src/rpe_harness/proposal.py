@@ -375,7 +375,7 @@ class ProposalStore:
 
 
 def _worker_lock(database, deadline):
-    """Serialize review workers sharing RunStore's startup recovery domain."""
+    """Bound per-database local worker resources through serialization."""
     descriptor = os.open(str(database) + '.review-worker.lock',
         os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
     try:
