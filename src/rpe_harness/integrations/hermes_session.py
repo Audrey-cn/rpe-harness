@@ -243,7 +243,8 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
                    package / '__init__.py', package / 'integrations/__init__.py',
                    package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py',
                    package / 'integrations/hermes_native.py', package / 'integrations/hermes_native_process.py',
-                   package / 'integrations/hermes_review_finish.py']
+                   package / 'integrations/hermes_review_finish.py',
+                   package / 'integrations/hermes_request_budget.py', package / 'integrations/hermes_native_finish.py']
         allowed = ' '.join('(literal '+quote(p)+')' for p in minimal)
         native_scope = ('(deny file-read-data (require-all (subpath '+quote(repository)+') '
                         '(require-not (require-any '+allowed+'))))\n')
@@ -329,7 +330,7 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
 
 
 def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional',
-                 preserve_native_tool_search=False, public_contract=None):
+                 preserve_native_tool_search=False, public_contract=None, request_budget=None):
     if entry_mode not in ('optional','strict','skills','address','clean','review','producer') or (entry_mode in ('strict','skills','address','clean','review') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
@@ -347,6 +348,11 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         raise ValueError('provider endpoint must be a plain HTTPS URL')
     if any('\n' in settings[k] or '\r' in settings[k] for k in ['api_key', 'base_url']):
         raise ValueError('invalid credential assignment')
+    if request_budget is not None:
+        from .hermes_request_budget import validate_request_budget_profile
+        request_budget = validate_request_budget_profile(request_budget)
+        if request_budget['model'] != settings['model']:
+            raise ValueError('request budget model differs from installed host settings')
     session_root = Path(session_root)
     session_root.mkdir(parents=True, exist_ok=False, mode=0o700)
     home = session_root / 'home'
@@ -374,6 +380,9 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'mcp_servers': {}, 'hooks': {}, 'fallback_providers': [], 'fallback_model': [],
         'nous': {'guest': False}, 'telemetry': {'shared_metrics': {'enabled': False}},
     }
+    if request_budget is not None:
+        config['providers'] = {'xiaomi': {key: request_budget[key] for key in
+            ('request_timeout_seconds', 'stale_timeout_seconds')}}
     # Address is a fixed two-tool strategy. Hermes snapshots valid_tool_names
     # before request middleware; its plugin deferral must be disabled here so
     # the native validator admits both registered tools. The native control arm
@@ -553,7 +562,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                        skill_snapshot_id=None, context_sources=None,
                        read_isolation_root=None, deny_read_roots=(), max_turns=12,
                        preserve_native_tool_search=False, public_contract=None, native_evidence=None,
-                       native_execution_evidence=None):
+                       native_execution_evidence=None, request_budget=None, native_finish_enabled=False):
     if type(max_turns) is not int or not 1 <= max_turns <= 12:
         raise ValueError('max_turns must be an integer between 1 and 12')
     if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists():
@@ -566,8 +575,17 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('strict entry requires the Harness tool')
     if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
-    if native_evidence is not None and (tool_enabled or public_contract != 'review'):
-        raise ValueError('native evidence requires a native review session')
+    artifact_mode = type(native_evidence) is dict and 'artifact_name' in native_evidence
+    if native_evidence is not None and (tool_enabled or public_contract != ('clean' if artifact_mode else 'review')):
+        raise ValueError('native evidence requires the corresponding native review or clean session')
+    if type(native_finish_enabled) is not bool or (native_finish_enabled and (tool_enabled
+            or (native_evidence is None and native_execution_evidence is None))):
+        raise ValueError('native finish requires opted-in native observation')
+    if request_budget is not None:
+        if entry_mode == 'producer':
+            raise ValueError('producer does not support the frozen request budget')
+        from .hermes_request_budget import validate_request_budget_profile
+        request_budget = validate_request_budget_profile(request_budget)
     if native_execution_evidence is not None and (tool_enabled or public_contract != 'clean'):
         raise ValueError('native execution evidence requires a native clean execution session')
     if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
@@ -621,7 +639,13 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     session_root = owner_root / ('session-'+uuid.uuid4().hex)
     home = prepare_home(session_root, workspace, Path(db_path).resolve(),
                         tool_enabled=tool_enabled, settings=settings,entry_mode=entry_mode,
-                        preserve_native_tool_search=preserve_native_tool_search, public_contract=public_contract)
+                        preserve_native_tool_search=preserve_native_tool_search, public_contract=public_contract,
+                        request_budget=request_budget)
+    request_budget_path = None
+    if request_budget is not None:
+        request_budget_path = session_root/'request-budget.json'
+        request_budget_path.write_text(json.dumps(request_budget, sort_keys=True, allow_nan=False))
+        os.chmod(request_budget_path, 0o600)
     skill_config_path = None
     snapshot = None
     if catalog_root is not None:
@@ -701,6 +725,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         native_execution_path.write_text(json.dumps(native_execution_evidence_config(
             workspace, native_execution_evidence, snapshot), ensure_ascii=False, allow_nan=False))
         os.chmod(native_execution_path, 0o600)
+    if native_execution_evidence is not None or artifact_mode:
         native_execution_key = os.urandom(32)
         native_execution_key_path = session_root/'native-execution-auth.key'
         descriptor = os.open(native_execution_key_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
@@ -733,7 +758,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                                        protected_write_roots=(([skill_config_path] if entry_mode == 'review'
                                            or public_contract == 'review' else [home/'skills', skill_config_path])
                                            if snapshot else []) + ([native_evidence_path] if native_evidence_path else [])
-                                           + ([native_execution_path, native_execution_key_path] if native_execution_path else []),
+                                           + ([native_execution_path] if native_execution_path else [])
+                                           + ([native_execution_key_path] if native_execution_key_path else [])
+                                           + ([request_budget_path, home/'config.yaml'] if request_budget_path else []),
                                        protected_read_roots=([native_execution_key_path] if native_execution_key_path else [])))
     env = {k: v for k, v in os.environ.items() if k in {
         'HOME', 'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE',
@@ -755,6 +782,10 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 'RPE_HERMES_PROCESS_PATH': str(session_root / 'child-processes.jsonl'),
                 'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HARNESS_IMPORT_ROOT': str(import_root),
                 'PYTHONPATH': str(import_root)})
+    if request_budget_path is not None:
+        env['RPE_HERMES_REQUEST_BUDGET_CONFIG'] = str(request_budget_path)
+    if native_finish_enabled:
+        env['RPE_HERMES_NATIVE_FINISH_ENABLED'] = '1'
     if fixed_path is not None:
         env['RPE_HERMES_REQUIRED_REQUEST_PATH'] = str(fixed_path)
         env['RPE_HERMES_INPUT_SHA256'] = fixed_input_sha

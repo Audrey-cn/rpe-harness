@@ -61,6 +61,14 @@ def receipt_signature(row, key):
     return hmac.new(key, _digest(row).encode(), hashlib.sha256).hexdigest()
 
 
+def sign_native_receipt(row, signature_field):
+    """Sign host-owned primitive metadata with the already consumed private key."""
+    if _SIGNING_KEY is None:
+        return None
+    return receipt_signature({key: value for key, value in row.items()
+                              if key not in {'kind', signature_field}}, _SIGNING_KEY)
+
+
 def file_snapshot(path):
     """Reject links, special files and changes while hashing bounded bytes."""
     path = Path(path)

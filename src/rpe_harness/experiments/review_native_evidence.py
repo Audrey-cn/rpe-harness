@@ -7,7 +7,9 @@ import json
 from pathlib import Path
 import shlex
 import sqlite3
+from collections import Counter
 
+from ..integrations.hermes_native import evaluate_artifact_receipt
 from ..path_binding import read_regular_file
 from ..skill_catalog import XLSX_SKILL_ID
 from .address_comparison import _native_calls
@@ -354,3 +356,101 @@ def evaluate_native_review_execution_v113(result, plan, trial):
     except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
         verdict['errors'].append(str(error) if isinstance(error, ValueError) else type(error).__name__)
     return verdict
+
+
+def evaluate_native_review_execution_v114(result, plan, trial):
+    """Keep the XLSX process gate; authenticate actual IO for other native outputs."""
+    from .address_comparison import score_address_artifact
+    from ..integrations.hermes_native import native_evidence_config
+    case = next(case for case in plan['cases'] if case['case_id'] == trial['case_id'])
+    if case['capability'] == 'xlsx.inspect':
+        return evaluate_native_review_execution_v113(result, plan, trial)
+    verdict = {'verified': False, 'status': 'unverified', 'errors': [],
+        'proof_kind': 'authenticated_native_tool_io', 'receipt_authenticated': False,
+        'artifact_binding': 'new_file_during_single_native_tool_call'}
+    try:
+        posts, _streams = _native_calls(result, trial['db'])
+        if case['expected_status'] != 'ready':
+            raise ValueError('native_business_artifact_contract_missing')
+        session = Path(result['session_root'])
+        if (not session.is_absolute() or session != session.resolve()
+                or not session.is_relative_to(Path(plan['root'])/'sessions')):
+            raise ValueError('native_artifact_session_not_owned')
+        config = json.loads(read_regular_file(session/'native-evidence-config.json', max_bytes=65536))
+        expected = native_evidence_config(trial['workspace'], {'artifact_name': case['output_name']})
+        if not exact_json(config, expected):
+            raise ValueError('native_artifact_configuration_changed')
+        rows = [event for event in result['events'] if event.get('kind') == 'native_artifact_observation']
+        if len(rows) != 1:
+            raise ValueError('native_unique_new_artifact_receipt_missing')
+        receipt = rows[0]
+        key = read_regular_file(session/'native-execution-auth.key', max_bytes=32)
+        checked = evaluate_artifact_receipt(receipt, config, key)
+        verdict['receipt_authenticated'] = checked['receipt_authenticated']
+        if not checked['verified']:
+            raise ValueError(checked['errors'][0])
+        matching = [post for post in posts if _same_call(post, receipt)]
+        if len(matching) != 1 or matching[0].get('status') not in {'ok', 'succeeded'}:
+            raise ValueError('native_artifact_receipt_call_mismatch')
+        if receipt['tool_name'] == 'terminal' and (type(matching[0].get('tool_exit_code')) is not int
+                or matching[0]['tool_exit_code'] != 0):
+            raise ValueError('native_artifact_terminal_not_completed')
+        business = score_address_artifact(plan, trial)
+        if business.get('business_correct') is not True or business.get('product_oracle_passed') is not True:
+            raise ValueError('native_artifact_final_output_business_incorrect')
+        verdict.update(verified=True, status='accepted', output_sha256=checked['output_sha256'],
+            artifact_call_id=receipt['tool_call_id'], arguments_sha256=receipt['arguments_sha256'])
+    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error) as error:
+        verdict['errors'] = [str(error) if isinstance(error, ValueError) else type(error).__name__]
+    return verdict
+
+
+def native_chain_diagnostics(result, db_path):
+    """Keep counts explaining a failed chain, never IDs, arguments or response text."""
+    from ..integrations.hermes_gate import _persisted_events, digest_json
+    events = result.get('events') or []
+    rows = [event for event in events if type(event) is dict]
+    fields = ('session_id', 'task_id', 'turn_id', 'api_request_id')
+    def identity(event, tool=False):
+        names = (*fields, 'tool_call_id', 'tool_name') if tool else fields
+        return tuple(event.get(name) if isinstance(event.get(name), str) else None for name in names)
+    requests = [event for event in rows if event.get('kind') == 'pre_api_request']
+    outcomes = [event for event in rows if event.get('kind') in {'post_api_request', 'api_request_error'}]
+    pres = [event for event in rows if event.get('kind') == 'pre_tool_call']
+    posts = [event for event in rows if event.get('kind') == 'post_tool_call']
+    request_ids, outcome_ids = Counter(map(identity, requests)), Counter(map(identity, outcomes))
+    pre_ids, post_ids = (Counter(identity(event, True) for event in group) for group in (pres, posts))
+    emitted = Counter((*identity(event), call.get('tool_call_id'), call.get('tool_name'))
+        for event in outcomes for call in event.get('model_tool_calls', []) if type(call) is dict
+        and all(isinstance(call.get(key), str) for key in ('tool_call_id', 'tool_name')))
+    streams = result.get('stream_tool_calls') or []
+    observed_signatures = Counter((event.get('tool_name'), event.get('arguments_sha256')) for event in pres
+        if all(isinstance(event.get(key), str) for key in ('tool_name', 'arguments_sha256')))
+    stream_signatures = Counter()
+    for stream in streams:
+        try:
+            if type(stream) is dict and isinstance(stream.get('name'), str):
+                stream_signatures[(stream['name'], digest_json(stream.get('input')))] += 1
+        except (TypeError, ValueError):
+            pass
+    diagnostics = {'verified': False, 'error_code': None, 'durable_observations_match': False,
+        'api_requests': len(requests), 'api_outcomes': len(outcomes),
+        'api_errors': sum(event.get('kind') == 'api_request_error' for event in outcomes),
+        'api_unmatched_requests': sum((request_ids-outcome_ids).values()),
+        'api_unmatched_outcomes': sum((outcome_ids-request_ids).values()),
+        'api_duplicate_requests': sum(count-1 for count in request_ids.values()),
+        'api_duplicate_outcomes': sum(count-1 for count in outcome_ids.values()),
+        'tool_pre_calls': len(pres), 'tool_post_calls': len(posts), 'model_tool_calls': sum(emitted.values()),
+        'tool_missing_posts': sum((pre_ids-post_ids).values()),
+        'tool_unmatched_posts': sum((post_ids-pre_ids).values()),
+        'tool_unemitted_calls': sum((pre_ids-emitted).values()),
+        'tool_unobserved_calls': sum((emitted-pre_ids).values()), 'stream_calls': len(streams),
+        'stream_unmatched_calls': sum((observed_signatures-stream_signatures).values())
+            + sum((stream_signatures-observed_signatures).values())}
+    try:
+        diagnostics['durable_observations_match'] = bool(events) and events == _persisted_events(db_path, result.get('session_id'))
+        _native_calls(result, db_path)
+        diagnostics['verified'] = True
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, sqlite3.Error) as error:
+        diagnostics['error_code'] = str(error) if isinstance(error, ValueError) and str(error).startswith('native_') else type(error).__name__
+    return diagnostics

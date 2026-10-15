@@ -34,7 +34,7 @@ _TEXT_FIELDS = frozenset({
     'proof_kind', 'helper_python_sha256', 'process_argv_sha256', 'startup_environment_sha256',
     'process_start_identity_sha256', 'output_sha256', 'output_identity_sha256', 'output_path_sha256',
     'artifact_binding', 'process_observation_error', 'process_receipt_hmac_sha256', 'tool_status',
-    'process_config_sha256',
+    'process_config_sha256', 'artifact_config_sha256', 'artifact_receipt_hmac_sha256',
 })
 _NUMBER_FIELDS = frozenset({
     'duration_ms', 'api_duration', 'api_call_count', 'started_at', 'ended_at',
@@ -749,6 +749,16 @@ def register(ctx) -> None:
             raise ValueError('producer entry requires no Harness tool or skill catalog')
         producer = _ProducerPolicy(workspace, store, error_path)
 
+    finisher = None
+    if os.environ.get('RPE_HERMES_NATIVE_FINISH_ENABLED') == '1':
+        if os.environ.get('RPE_HERMES_TOOL_ENABLED') != '0':
+            raise ValueError('native finish requires native tools')
+        from . import hermes_native_finish
+        finisher = hermes_native_finish.NativeTurnFinisher(
+            native_evidence.config if native_evidence else None,
+            native_execution.config if native_execution else None)
+        hermes_native_finish._FINISHER = finisher
+
     def observer(kind):
         def observe(**payload):
             producer_write = None
@@ -793,14 +803,20 @@ def register(ctx) -> None:
                 producer_write = producer.observe_write(payload)
             try:
                 store.record(kind, payload)
+                if finisher is not None:
+                    finisher.record(kind, _metadata(payload))
                 if native_evidence is not None and kind == 'post_tool_call':
                     for receipt in native_evidence.after(payload):
                         receipt_kind = receipt.pop('kind')
                         store.record(receipt_kind, receipt)
+                        if finisher is not None:
+                            finisher.record(receipt_kind, _metadata(receipt))
                 if native_execution is not None and kind == 'post_tool_call':
                     for receipt in native_execution.after(payload):
                         receipt_kind = receipt.pop('kind')
                         store.record(receipt_kind, receipt)
+                        if finisher is not None:
+                            finisher.record(receipt_kind, _metadata(receipt))
             except (sqlite3.Error, OSError, ValueError):
                 logger.error('Hermes observer persistence failed for %s', kind)
                 try:

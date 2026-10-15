@@ -22,6 +22,12 @@ def verify_aggregates(plan, summary, phases, formal_freeze=None):
     Driver timing cannot be recomputed without exported driver receipts.
     """
     try:
+        if plan.get('profile') == 'review-v114':
+            from .review_v114_comparison import validate_registration_budget
+            validate_registration_budget(plan)
+            if (sum(phase['phase'] == 'draft' for phase in phases) > 10
+                    or sum(phase['phase'] == 'execute' and phase['arm'] == 'native' for phase in phases) > 4):
+                raise ValueError('v114_finite_budget_exceeded')
         registration = plan['controller_registration_sha256']
         _same(summary['fingerprint'], registration, 'registration')
         trials = plan['sessions'] + plan['pilots']

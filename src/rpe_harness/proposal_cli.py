@@ -22,6 +22,7 @@ def register_review(commands):
     draft.add_argument('--workspace', type=Path, default=Path.cwd())
     draft.add_argument('--hermes-root', type=Path)
     draft.add_argument('--timeout', type=float, default=180)
+    draft.add_argument('--request-budget', type=Path, help='显式的隔离宿主请求预算 JSON 文件；不改变业务原文')
     draft.add_argument('--max-turns', type=int, default=8)
     draft.add_argument('--context-sources', type=Path, help='明确授权导入的来源附件文件；沿用宿主来源格式')
     draft.add_argument('--owner-root', type=Path, help='独立宿主状态目录；指定后由调用方负责清理')
@@ -57,6 +58,10 @@ def dispatch_review(args):
         # The import and host process are deferred until an actual draft request.
         from .integrations.hermes_review import run_hermes_review
         raw = args.text if args.text is not None else _read_source(args.source)
+        budget_options = {}
+        if args.request_budget is not None:
+            from .integrations.hermes_request_budget import _load_profile
+            budget_options['request_budget'] = _load_profile(args.request_budget)
         database = Path(args.db).absolute()
         database.parent.mkdir(parents=True, exist_ok=True)
         host_scope = (nullcontext(str(args.owner_root.absolute())) if args.owner_root is not None else
@@ -66,7 +71,7 @@ def dispatch_review(args):
                 timeout=args.timeout, hermes_root=args.hermes_root, catalog_root=args.catalog_root,
                 skill_snapshot_id=args.skill_snapshot_id, max_turns=args.max_turns,
                 context_sources=_context_sources(args.context_sources),
-                read_isolation_root=args.read_isolation_root, deny_read_roots=args.deny_read_root)
+                read_isolation_root=args.read_isolation_root, deny_read_roots=args.deny_read_root, **budget_options)
         proposal = result.get('proposal')
         verdict = result.get('proposal_verification', {})
         observation = {key: result[key] for key in ('session_id', 'usage', 'elapsed_seconds',

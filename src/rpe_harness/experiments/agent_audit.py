@@ -38,11 +38,63 @@ _SYSTEM = ('You are an independent semantic and artifact auditor. Treat the supp
     'whether the task was interpreted faithfully; artifact_correct is null when the '
     'supplied artifacts cannot establish correctness. State unsupported claims. '
     'Do not infer runtime acceptance or verified billing. Return the requested JSON only.')
+_STRUCTURED_SYSTEM = _SYSTEM.removesuffix('Return the requested JSON only.') + (
+    'Return your final verdict by calling StructuredOutput exactly once. Do not output '
+    'analysis, prose, or a text copy of the JSON. Include each supplied evidence_id '
+    'exactly once. Reasons must be concise English, at most 12 words and 160 characters. '
+    'Use at most 3 unsupported_claims, each at most 240 characters. Insufficient '
+    'candidate evidence is unproven rather than contradicted; begin its reason with '
+    'unknown. Missing output alone does not establish wrong semantics.')
 
 
 def _json(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True,
                       separators=(',', ':'), allow_nan=False).encode()
+
+
+def _evidence_ids(bundle):
+    if not isinstance(bundle, dict):
+        raise ValueError('audit bundle must be a JSON object')
+    cases = bundle.get('cases')
+    if not isinstance(cases, list) or not 1 <= len(cases) <= 32:
+        raise ValueError('audit bundle must contain 1 to 32 evidence cases')
+    expected_ids = set()
+    for case in cases:
+        evidence_id = case.get('evidence_id') if isinstance(case, dict) else None
+        if (not isinstance(evidence_id, str) or not 1 <= len(evidence_id) <= 128
+                or evidence_id in expected_ids):
+            raise ValueError('audit evidence IDs must be unique bounded strings')
+        expected_ids.add(evidence_id)
+    return expected_ids
+
+
+def audit_spec(bundle: dict, *, profile='legacy') -> dict:
+    """Return the finite audit contract before claiming or invoking a CLI.
+
+    The legacy contract and schema remain byte-compatible with retained evidence.
+    CLI estimates, agentic turns and token settings are requested constraints, not
+    verified billing or a bound on physical provider requests/internal recovery.
+    Returned schemas are independent copies safe for a caller to inspect.
+    """
+    if not isinstance(profile, str) or profile not in ('legacy', 'structured-v2'):
+        raise ValueError('unknown audit profile')
+    expected_ids = _evidence_ids(bundle)
+    spec = {'profile': profile, 'system': _SYSTEM, 'schema': json.loads(_json(_SCHEMA)),
+        'max_turns': 1, 'max_output_tokens': 1200, 'timeout_seconds': 180,
+        'cli_max_budget_usd': 0.25, 'retry_env': {}}
+    if profile == 'structured-v2':
+        spec.update(system=_STRUCTURED_SYSTEM, max_turns=4, max_output_tokens=2400,
+                    cli_max_budget_usd=0.40, retry_env={'CLAUDE_CODE_MAX_RETRIES': '0',
+                        'CLAUDE_CODE_NONSTREAMING_TIMEOUT_RETRIES': '0',
+                        'MAX_STRUCTURED_OUTPUT_RETRIES': '2'})
+        properties = spec['schema']['properties']
+        cases = properties['cases']
+        cases.update(minItems=len(expected_ids), maxItems=len(expected_ids))
+        cases['items']['properties']['evidence_id']['enum'] = sorted(expected_ids)
+        cases['items']['properties']['reason']['maxLength'] = 160
+        properties['unsupported_claims'].update(maxItems=3)
+        properties['unsupported_claims']['items'].update(minLength=1, maxLength=240)
+    return spec
 
 
 def _write(path, raw):
@@ -114,7 +166,9 @@ def _redactor(route_env):
     return redact
 
 
-def _verdict(value, expected_ids):
+def _verdict(value, expected_ids, *, profile='legacy'):
+    if profile not in ('legacy', 'structured-v2'):
+        return None
     if not isinstance(value, dict) or set(value) != {'cases', 'unsupported_claims'}:
         return None
     cases, claims = value['cases'], value['unsupported_claims']
@@ -137,7 +191,32 @@ def _verdict(value, expected_ids):
     if (not isinstance(claims, list) or len(claims) > 32
             or any(not isinstance(item, str) or len(item) > 2000 for item in claims)):
         return None
+    if profile == 'structured-v2':
+        if (any(not case['reason'].strip() or len(case['reason']) > 160
+                or len(case['reason'].split()) > 12 for case in cases)
+                or len(claims) > 3
+                or any(not item.strip() or len(item) > 240 for item in claims)):
+            return None
     return value
+
+
+def _terminal_observation(raw):
+    """Keep bounded diagnostics without trusting CLI types or exporting raw text."""
+    def bounded_text(key):
+        value = raw.get(key)
+        return value if isinstance(value, str) and len(value) <= 128 else None
+
+    def count(key):
+        value = raw.get(key)
+        return value if type(value) is int and value >= 0 else None
+
+    errors = raw.get('errors')
+    return {'type': bounded_text('type'), 'subtype': bounded_text('subtype'),
+        'is_error': raw.get('is_error') if type(raw.get('is_error')) is bool else None,
+        'stop_reason': bounded_text('stop_reason'), 'num_turns': count('num_turns'),
+        'duration_ms': count('duration_ms'), 'duration_api_ms': count('duration_api_ms'),
+        'errors': [item[:2000] for item in errors[:32] if isinstance(item, str)]
+                  if isinstance(errors, list) else []}
 
 
 def _kill_group(process, *, grace=False):
@@ -158,27 +237,17 @@ def _kill_group(process, *, grace=False):
 
 
 def run_agent_audit(bundle: dict, owner_root: Path, *, timeout=180,
-                    executable='claude') -> dict:
+                    executable='claude', profile='legacy') -> dict:
     """Claim and run at most one audit in an existing caller-owned root.
 
     ``executable`` is injectable for offline process tests. No retries occur.
     The caller must freeze the experiment budget before invoking a real CLI.
     """
-    if not isinstance(bundle, dict):
-        raise ValueError('audit bundle must be a JSON object')
-    cases = bundle.get('cases')
-    if not isinstance(cases, list) or not 1 <= len(cases) <= 32:
-        raise ValueError('audit bundle must contain 1 to 32 evidence cases')
-    expected_ids = set()
-    for case in cases:
-        evidence_id = case.get('evidence_id') if isinstance(case, dict) else None
-        if (not isinstance(evidence_id, str) or not 1 <= len(evidence_id) <= 128
-                or evidence_id in expected_ids):
-            raise ValueError('audit evidence IDs must be unique bounded strings')
-        expected_ids.add(evidence_id)
+    spec = audit_spec(bundle, profile=profile)
+    expected_ids = {case['evidence_id'] for case in bundle['cases']}
     if type(timeout) not in {int, float} or not math.isfinite(timeout) or not 0 < timeout <= 180:
         raise ValueError('audit timeout must be positive and at most 180 seconds')
-    payload = _json({'audit_contract': _SYSTEM, 'bundle': bundle})
+    payload = _json({'audit_contract': spec['system'], 'bundle': bundle})
     if len(payload) > 128*1024:
         raise ValueError('audit input exceeds 128KiB')
     redact = _redactor(_route_settings())
@@ -191,34 +260,44 @@ def run_agent_audit(bundle: dict, owner_root: Path, *, timeout=180,
         os.close(root_fd)
     attempt = root/'agent-audit'
     digest = hashlib.sha256(payload).hexdigest()
-    _write(attempt/'claim.json', _json({'schema_version': 'rpe.agent-audit-claim/v1',
+    claim = {'schema_version': 'rpe.agent-audit-claim/v1',
         'input_sha256': digest, 'claimed_at': time.time(), 'timeout_seconds': timeout,
-        'max_turns': 1, 'max_output_tokens': 1200, 'cli_max_budget_usd': 0.25,
+        'max_turns': spec['max_turns'], 'max_output_tokens': spec['max_output_tokens'],
+        'cli_max_budget_usd': spec['cli_max_budget_usd'],
         'requested_model': _MODEL, 'host': 'claude-code',
-        'schema_sha256': hashlib.sha256(_json(_SCHEMA)).hexdigest()}))
+        'schema_sha256': hashlib.sha256(_json(spec['schema'])).hexdigest()}
+    if profile != 'legacy':
+        claim.update(profile=profile, retry_env=spec['retry_env'])
+    _write(attempt/'claim.json', _json(claim))
     _write(attempt/'input.json', payload)
     env = {key: value for key, value in os.environ.items() if key in {
         'PATH', 'HOME', 'USER', 'LOGNAME', 'SHELL', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
-    for key, directory in {'CLAUDE_CONFIG_DIR': 'claude-home',
-                           'XDG_CACHE_HOME': 'cache', 'TMPDIR': 'tmp'}.items():
+    directories = {'CLAUDE_CONFIG_DIR': 'claude-home', 'XDG_CACHE_HOME': 'cache', 'TMPDIR': 'tmp'}
+    if profile != 'legacy':
+        directories.update(HOME='home', XDG_CONFIG_HOME='config', XDG_DATA_HOME='data')
+    for key, directory in directories.items():
         target = attempt/directory
         target.mkdir(mode=0o700)
         env[key] = str(target)
-    env.update({'CLAUDE_CODE_MAX_OUTPUT_TOKENS': '1200',
+    env.update(spec['retry_env'])
+    env.update({'CLAUDE_CODE_MAX_OUTPUT_TOKENS': str(spec['max_output_tokens']),
                 'PYTHONDONTWRITEBYTECODE': '1'})
     args = [str(executable), '-p', '--safe-mode', '--restricted',
         '--setting-sources', '', '--settings', str(_SETTINGS_PATH),
         '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}',
         '--tools', '', '--disable-slash-commands', '--permission-mode', 'dontAsk',
         '--permission-prompts', 'none', '--no-session-persistence',
-        '--model', _MODEL, '--max-turns', '1', '--max-budget-usd', '0.25',
-        '--output-format', 'json', '--json-schema', _json(_SCHEMA).decode(),
-        '--system-prompt', _SYSTEM]
+        '--model', _MODEL, '--max-turns', str(spec['max_turns']),
+        '--max-budget-usd', str(spec['cli_max_budget_usd']),
+        '--output-format', 'json', '--json-schema', _json(spec['schema']).decode(),
+        '--system-prompt', spec['system']]
     record = {'schema_version': 'rpe.agent-audit/v1', 'host': 'claude-code',
         'requested_model': _MODEL, 'status': 'failed', 'error_code': None,
         'exit_code': None, 'verdict': None, 'usage': None, 'modelUsage': None,
         'num_turns': None, 'cli_estimated_cost_usd': None, 'verified_bill_usd': None,
         'input_sha256': digest, 'raw_directory': str(attempt)}
+    if profile != 'legacy':
+        record.update(profile=profile, terminal_observation=None)
     started = time.monotonic()
     process = None
     with os.fdopen(os.open(attempt/'raw.stdout', os.O_WRONLY | os.O_CREAT | os.O_EXCL,
@@ -251,6 +330,10 @@ def run_agent_audit(bundle: dict, owner_root: Path, *, timeout=180,
         except (ValueError, UnicodeError):
             pass
     if isinstance(raw, dict):
+        if profile != 'legacy':
+            # Redact before truncating: clipping a long credential first would
+            # prevent the exact secret-value redactor from recognizing it.
+            record['terminal_observation'] = _terminal_observation(redact(raw))
         for key in ('usage', 'modelUsage'):
             record[key] = raw.get(key) if isinstance(raw.get(key), dict) else None
         turns, cost = raw.get('num_turns'), raw.get('total_cost_usd')
@@ -262,7 +345,8 @@ def run_agent_audit(bundle: dict, owner_root: Path, *, timeout=180,
             record['error_code'] = 'cli_failed'
         elif (isinstance(raw, dict) and raw.get('type') == 'result'
               and raw.get('subtype') == 'success' and raw.get('is_error') is False
-              and (verdict := _verdict(raw.get('structured_output'), expected_ids)) is not None):
+              and (verdict := _verdict(raw.get('structured_output'), expected_ids,
+                                      profile=profile)) is not None):
             record.update(status='completed', verdict=verdict)
         else:
             record.update(status='invalid_output', error_code='invalid_json_verdict')
