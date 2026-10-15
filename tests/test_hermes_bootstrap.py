@@ -11,11 +11,11 @@ import sys
 from types import SimpleNamespace
 
 import pytest
+import rpe_harness
 
 
 BOOTSTRAP_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "src/rpe_harness/integrations/hermes_bootstrap.py"
+    Path(rpe_harness.__file__).resolve().parent / "integrations/hermes_bootstrap.py"
 )
 
 
@@ -326,3 +326,104 @@ finally:
     )
     assert completed.returncode == 0, completed.stderr
     assert json.loads(completed.stdout) == {"recorded": True, "identity": True}
+
+
+@pytest.mark.parametrize('entry_mode', [None, 'optional', 'clean'])
+def test_non_review_file_bootstrap_never_imports_review_adapter(tmp_path, monkeypatch, entry_mode):
+    module = bootstrap()
+    install_root = tmp_path / 'installed-hermes'
+    (install_root / 'hermes_cli').mkdir(parents=True)
+    (install_root / 'hermes_cli/main.py').write_text('')
+    monkeypatch.setenv('RPE_HERMES_INSTALL_ROOT', str(install_root))
+    monkeypatch.delenv('RPE_HERMES_NATIVE_EXECUTION_KEY_FD', raising=False)
+    if entry_mode is None:
+        monkeypatch.delenv('RPE_HERMES_ENTRY_MODE', raising=False)
+    else:
+        monkeypatch.setenv('RPE_HERMES_ENTRY_MODE', entry_mode)
+    monkeypatch.setattr(sys, 'path', list(sys.path))
+    for name in ('install_process_telemetry', 'install_producer_toolset',
+                 'install_usage_telemetry', 'install_clean_ingress_guard'):
+        monkeypatch.setattr(module, name, lambda: None)
+    imported = []
+    def native_import(name):
+        imported.append(name)
+        if name == 'hermes_bootstrap':
+            return SimpleNamespace()
+        if name == 'hermes_cli.main':
+            return SimpleNamespace(main=lambda: 17)
+        raise AssertionError('native bootstrap unexpectedly imports ' + name)
+    monkeypatch.setattr(module.importlib, 'import_module', native_import)
+    assert module.main() == 17
+    assert imported == ['hermes_bootstrap', 'hermes_cli.main']
+
+
+@pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+                    reason='actual macOS installed Hermes native-clean startup')
+def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path):
+    from rpe_harness.integrations.hermes_session import prepare_home, sandbox_profile
+    hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
+    interpreter = hermes_root / '.venv/bin/python'
+    if not interpreter.is_file():
+        pytest.skip('installed Hermes runtime unavailable')
+    workspace = tmp_path / 'workspace'
+    workspace.mkdir()
+    home = prepare_home(tmp_path / 'native-session', workspace, tmp_path / 'runs.sqlite',
+        tool_enabled=False, public_contract='review', preserve_native_tool_search=True,
+        settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'provider-free-key',
+                  'base_url': 'https://example.invalid/v1'})
+    (home / '.no-bundled-skills').touch()
+    for name in ('runtime', 'cache', 'tmp'):
+        (home / name).mkdir()
+    environment = {key: value for key, value in os.environ.items() if key in {
+        'USER', 'LOGNAME', 'SHELL', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
+    environment.update(HOME=str(home), HERMES_HOME=str(home), XDG_CACHE_HOME=str(home / 'cache'),
+        HERMES_RUNTIME_DIR=str(home / 'runtime'), TMPDIR=str(home / 'tmp'),
+        HERMES_SAFE_MODE='0', HERMES_ENABLE_PROJECT_PLUGINS='0', HERMES_DISABLE_LAZY_INSTALLS='1',
+        PYTHONDONTWRITEBYTECODE='1', PYTHONPATH=str(hermes_root),
+        RPE_HERMES_INSTALL_ROOT=str(hermes_root), RPE_HERMES_ENTRY_MODE='optional',
+        RPE_HERMES_TOOL_ENABLED='0', RPE_HERMES_DB=str(tmp_path / 'runs.sqlite'),
+        RPE_HERMES_WORKSPACE=str(workspace),
+        RPE_HARNESS_IMPORT_ROOT=str(BOOTSTRAP_PATH.parents[2]),
+        RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'))
+    profile = tmp_path / 'native-clean.sb'
+    profile.write_text(sandbox_profile([tmp_path], Path.home() / '.hermes', hermes_root,
+        tmp_path / 'runs.sqlite', read_roots=[interpreter.parent.parent, Path.home() / '.hermes/tools'],
+        native_import_root=BOOTSTRAP_PATH.parents[2],
+        owner_read_scope=(tmp_path.parent, [tmp_path])))
+    program = r'''import importlib.util,json,socket,sys
+network_attempts=[]
+def deny_network(self,address):
+    network_attempts.append(True)
+    raise AssertionError('network disabled in native-clean constructor smoke')
+socket.socket.connect=deny_network
+assert importlib.util.find_spec('rpe_harness') is None,'Harness unexpectedly importable at native entry'
+spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.argv[1])
+bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
+import hermes_cli.main as cli
+actual_constructor_called=[]
+def constructor_main():
+    from run_agent import AIAgent
+    agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
+        provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
+        quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
+        session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
+    assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
+    assert not {'rpe_propose','rpe_task','rpe_confirm'} & agent.valid_tool_names
+    actual_constructor_called.append(True)
+    return 0
+# Only replace CLI dispatch's final callback; the bootstrap and AIAgent constructor are installed code.
+cli.main=constructor_main
+assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+assert actual_constructor_called==[True] and network_attempts==[]
+print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
+    'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0}))
+'''
+    child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+        '-B', '-c', program, str(BOOTSTRAP_PATH)], cwd=workspace, env=environment,
+        capture_output=True, text=True, timeout=45)
+    (tmp_path / 'native-clean-bootstrap.stderr.log').write_text(child.stderr)
+    assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
+    result = json.loads(child.stdout.strip().splitlines()[-1])
+    assert result == {'actual_file_bootstrap': True, 'installed_constructor': True,
+        'harness_importable_at_entry': False, 'network_attempts': 0, 'provider_requests': 0}
+    (tmp_path / 'native-clean-bootstrap-proof.json').write_text(json.dumps(result, indent=2))

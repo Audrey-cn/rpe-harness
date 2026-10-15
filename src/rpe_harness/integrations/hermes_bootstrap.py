@@ -297,7 +297,8 @@ def main(argv: list[str] | None = None) -> Any:
     install_producer_toolset()
     install_usage_telemetry()
     install_clean_ingress_guard()
-    importlib.import_module('rpe_harness.integrations.hermes_review_finish').install_review_finish_adapter()
+    if os.environ.get('RPE_HERMES_ENTRY_MODE') == 'review':
+        importlib.import_module('rpe_harness.integrations.hermes_review_finish').install_review_finish_adapter()
     return importlib.import_module("hermes_cli.main").main()
 
 
