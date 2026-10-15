@@ -158,3 +158,22 @@ def test_clean_offline_evidence_preserves_interrupted_attempt_as_unknown(clean_p
     assert exported['costs']['total_tokens'] is None
     assert api.verify_clean_evidence(target)['verified'] is True
 
+
+def test_clean_cost_ledger_counts_complete_trial_beyond_host_session(clean_plan, monkeypatch):
+    clock = [100.0]
+    monkeypatch.setattr(api.time,'monotonic',lambda: clock[0])
+    scorer = api.score_address_artifact
+    def checked_artifact(plan, trial):
+        verdict = scorer(plan,trial)
+        clock[0] += 3.0  # Independent controller/oracle work after the host returns.
+        return verdict
+    monkeypatch.setattr(api,'score_address_artifact',checked_artifact)
+    def host(*args, **kwargs):
+        clock[0] += 2.0  # Launcher setup plus the one-second host session.
+        return {'elapsed_seconds':1.0,'session_id':'no-model-session','events':[]}
+    summary = api.run_address_comparison(clean_plan['root'],max_sessions=1,runner=host)
+    record = summary['records'][0]
+    assert record['elapsed_seconds']==5.0
+    assert record['session_elapsed_seconds']==1.0
+    assert summary['costs']['elapsed_seconds_sum']==5.0
+

@@ -324,6 +324,8 @@ def preregister_address_comparison(root, *, skill_root, hermes_root=None,
                 'native and clean tool policies differ; only whole strategies are compared',
                 'source coverage, business correctness and observed execution are separate metrics',
                 'runtime identity chains are recorded checks, not independent third-party cryptographic attestations',
+                'elapsed_seconds and phase-ledger wall totals include complete trial observation: launcher setup plus host session and post-run gate/oracle/source checks; session_elapsed_seconds preserves the narrower host timer',
+                'common preregistration, development and testing are outside trial wall totals and reported separately',
                 'one pilot pair and six formal pairs; all failures and unknown costs retained without replay',
                 'does not replace, rescore or merge any 1.8 observation'])
     return _save(root/'preregistration.json',plan)
@@ -720,12 +722,12 @@ def _observe(plan,trial,runner):
         'usage':None,'model_identity':None,'billed_cost':None,'state_evidence':None,
         'model_visible_handoff_bytes':None,'session_id':None,'elapsed_seconds':None}
     result,observation_failed = {},False
+    clean = plan.get('profile') == 'clean'
     started = time.monotonic()
     try:
         source = read_regular_file(workspace/trial['input_name'],max_bytes=MAX_ARTIFACT_BYTES)
         if _sha(source)!=trial['input_sha256']:
             raise ValueError('frozen_workspace_input_changed')
-        clean = plan.get('profile') == 'clean'
         kwargs = {'tool_enabled':trial['arm']!='native','owner_root':root/'sessions'/trial['trial_id'],
             'timeout':plan['timeout'],'hermes_root':plan['hermes_root'],
             'entry_mode':trial['arm'] if trial['arm']!='native' else 'optional',
@@ -807,7 +809,12 @@ def _observe(plan,trial,runner):
             'completed' if record['accepted'] else 'failed')
     except Exception as error:
         record['error_code'] = type(error).__name__
-    if not isinstance(record['elapsed_seconds'],(int,float)) or not math.isfinite(record['elapsed_seconds']) or record['elapsed_seconds']<0:
+    valid_session_elapsed = (type(record['elapsed_seconds']) in (int,float)
+        and math.isfinite(record['elapsed_seconds']) and record['elapsed_seconds']>=0)
+    if clean:
+        record['session_elapsed_seconds'] = record['elapsed_seconds'] if valid_session_elapsed else None
+        record['elapsed_seconds'] = time.monotonic()-started
+    elif not isinstance(record['elapsed_seconds'],(int,float)) or not math.isfinite(record['elapsed_seconds']) or record['elapsed_seconds']<0:
         record['elapsed_seconds'] = time.monotonic()-started
     # No raw prompt, provider payload, model prose or stream arguments are exported.
     return record
