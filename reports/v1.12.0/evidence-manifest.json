@@ -1,14 +1,14 @@
 {
   "schema_version": "rpe.v112-retained-files/v1",
   "sha256": {
-    "1.12开发与验收报告.md": "a93171cedc15c6a3dd05b431402693caf6b1ddf1c98f0e074437aa40196d8a68",
+    "1.12开发与验收报告.md": "eb9099e5bcebc235c51988033dcc1bf0f912113f62639587de70031ed74429e7",
     "agent-audit/bundle.json": "6eebb617b36cf495087b20bc217585292d9059f9482691e644c9b714694052a5",
     "agent-audit/claim.json": "4591e67169ec2a2a79550e4b1ecdf0b9e725584a378b571d190d7dcfbaa5c041",
     "agent-audit/driver.py": "b9b75a5a74ee75b97b5d5f28b383cb4791716dfd33c28351257387954868f026",
     "agent-audit/mapping.json": "3f8e791e7ff121b6566c3e7b9e8db81f420981210cf8e5261df4f7f790e50f84",
     "agent-audit/result.json": "947828fc252ad3dccbf7b9fbc42d3dd043c222b176d6ac8a83f9670c1cdc024d",
     "all-observed-costs.json": "3e762238e4aa13ca6e88f055b791200a3ea0c09a379a2adf8c78e3aa9713c98b",
-    "cleanup.json": "f07f8f36d6060d8483414aa97acab9d4179dc3424d829f4aa2a0663aeebc7378",
+    "cleanup.json": "4409f9ddb3fa94503ec4061f766d124c27a9af8694823ed37caeae3cdaa62839",
     "development-ledger.json": "de08bf770c4f4f447384fb0cf3c1747cc7656f0e78c4992209283862222027af",
     "evidence/artifacts/formal-cold-stock-native/manifest.json": "c6960b2973210daa66c56d39859565ff7fafe19529a71b1a4fecf8d1cba18128",
     "evidence/artifacts/formal-cold-stock-native/output.json": "3fe3c212fe3fb3c42760eff7f00b82261f88df2252d6a40d1076abbbceb73236",

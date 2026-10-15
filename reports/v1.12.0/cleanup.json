@@ -2,6 +2,10 @@
   "cleaned_at": 1792040472.054338,
   "cli_probe_path": "/Users/audrey/项目/缓存/test/v112-cli-probe.jhtOxh",
   "cli_probe_removed": true,
+  "daily_cache_addition_preserved": {
+    "name": "plugin-catalog.json",
+    "origin": "not fully attributed; not deleted as test-owned"
+  },
   "daily_history_or_caches_deleted": false,
   "daily_processes_signalled": false,
   "daily_state_restored": false,
