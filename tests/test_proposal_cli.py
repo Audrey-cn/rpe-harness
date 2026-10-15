@@ -118,4 +118,43 @@ def test_cli_rejects_legacy_passed_without_verified_proposal(tmp_path, monkeypat
     args = parser().parse_args(['review', 'draft', '--db', str(tmp_path / 'state.sqlite'),
         '--workspace', str(tmp_path), '--text', RAW])
     result = dispatch_review(args)
-    assert result['status'] == 'needs_context'
+    assert result['status'] == 'unverified'
+
+
+def test_public_unverified_exit_is_one_not_business_needs_context(tmp_path, monkeypatch, capsys):
+    from rpe_harness.cli import main
+    from rpe_harness.integrations import hermes_review
+    from rpe_harness.integrations.hermes_session import SessionObservationError
+    from rpe_harness.proposal import create_proposal
+    seen = []
+    def failed(*args, **kwargs):
+        seen.append(kwargs['owner_root'])
+        raise SessionObservationError({'usage': {'known_total_tokens': 14, 'api_requests': 2},
+            'process_cleanup': {'cleanup_complete': True}, 'session_id': 'observed-session'},
+            code='terminal_session_mismatch', error_type='ValueError')
+    monkeypatch.setattr(hermes_review, 'run_hermes_review', failed)
+    argv = ['review', 'draft', '--db', str(tmp_path / 'state.sqlite'), '--workspace', str(tmp_path),
+            '--text', RAW, '--json']
+    assert main(argv) == 1
+    import json
+    failed_result = json.loads(capsys.readouterr().out)
+    assert failed_result['status'] == 'unverified'
+    assert failed_result['failure'] == {'domain': 'observation', 'code': 'terminal_session_mismatch',
+                                       'stage': 'finalization', 'retryable': False}
+    assert failed_result['host_observation']['usage']['known_total_tokens'] == 14
+    assert failed_result['host_observation']['process_cleanup']['cleanup_complete'] is True
+    artifact = __import__('pathlib').Path(failed_result['diagnostics_ref']['path'])
+    assert artifact.is_file() and not seen[0].exists()
+    assert json.loads(artifact.read_text()) == failed_result['review_diagnostics']
+    def business(raw, workspace, db_path, **kwargs):
+        candidate = draft()
+        candidate['execution'].pop('style')
+        candidate['requirements'][0]['fields'] = ['/capability']
+        proposal = create_proposal(raw, candidate, db_path=db_path, workspace=workspace,
+                                   session_id='business', source_ref='current')
+        return {'proposal': proposal, 'proposal_verification': {'verified': True, 'proposal_verified': True}}
+    monkeypatch.setattr(hermes_review, 'run_hermes_review', business)
+    assert main(argv) == 3
+    business_result = json.loads(capsys.readouterr().out)
+    assert business_result['status'] == 'needs_context'
+    assert 'execution.style' in business_result['missing']

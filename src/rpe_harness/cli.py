@@ -265,6 +265,8 @@ def main(argv=None):
         status = result.get('status')
         if args.command in ('context', 'intent', 'capabilities', 'source') or (
                 args.command == 'review' and args.review_command != 'run'):
+            if status == 'unverified':
+                return 1
             if status in ('unsupported', 'rejected', 'conflict'):
                 return 2
             if status in ('needs_context', 'ambiguous'):

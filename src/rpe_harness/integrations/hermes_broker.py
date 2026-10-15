@@ -90,7 +90,7 @@ def _validated_request(body, database, workspace):
     return payload, native
 
 
-def _validated_skill_request(body, database):
+def _validated_skill_request(body, database, *, review_auto=False):
     """Read-only native policy plus an immutable argument-bound RPC receipt."""
     from .hermes_gate import digest_json
     operations = {'discover':'rpe_discover', 'select':'rpe_select', 'context':'rpe_context',
@@ -116,16 +116,17 @@ def _validated_skill_request(body, database):
             "SELECT metadata_json FROM hermes_host_events WHERE kind='pre_api_request' AND session_id=?",
             (native['session_id'],))]
     policies = [p for p in policies if all(p.get(k)==native[k] for k in _IDS[:-1])]
-    if (len(policies)!=1 or policies[0].get('request_tool_choice')!=native['tool_name']
+    if (len(policies)!=1 or policies[0].get('request_tool_choice')!=('auto' if review_auto else native['tool_name'])
             or policies[0].get('request_tool_names')!=[native['tool_name']]
-            or policies[0].get('request_parallel_tool_calls') is not False
+            or (('request_parallel_tool_calls' in policies[0]) if review_auto else
+                policies[0].get('request_parallel_tool_calls') is not False)
             or not policies[0].get('request_tools_sha256')):
         raise PermissionError('actual native API policy does not admit skill RPC')
     return native
 
 
 @contextmanager
-def execution_broker(*, db_path, workspace, python, request_timeout=120, extension=None):
+def execution_broker(*, db_path, workspace, python, request_timeout=120, extension=None, review_auto=False):
     """Yield URL/token env entries; after exit ``env.cleanup`` verifies children."""
     database, directory, interpreter = Path(db_path), Path(workspace), Path(python)
     if (not database.is_absolute() or database != database.resolve()
@@ -230,7 +231,7 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120, extensi
         if not callable(extension):
             return 404, {'error':{'code':'broker_route_invalid'}}
         try:
-            native = _validated_skill_request(body, database)
+            native = _validated_skill_request(body, database, review_auto=review_auto)
             signature = json.dumps(body,sort_keys=True,allow_nan=False,ensure_ascii=False)
             receipt_id = body['receipt_id']
             with execution_lock:

@@ -205,3 +205,70 @@ def test_installed_review_recovers_before_dispatch_and_finishes_with_two_observe
         assert state['protocol_recovery']['response']['content'] == 'Keep this rejected reply.'
         assert db.execute('SELECT COUNT(*) FROM rpe_confirmations').fetchone()[0] == 0
     assert not (review['workspace'] / 'out.csv').exists()
+
+
+def test_second_missing_tool_persists_native_verdict_and_specific_failure(review, monkeypatch):
+    journal = review['config'].parent / 'native-diagnostics.jsonl'
+    monkeypatch.setenv('RPE_HERMES_REVIEW_DIAGNOSTICS', str(journal))
+    first = invalid_response(review)
+    assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+        api_request_id='api-1', response=first, intake_action='fallthrough')
+    second = invalid_response(review, number=2)
+    agent = native_agent()
+    agent._current_api_request_id = 'api-2'
+    with pytest.raises(review['api'].ReviewIngressBlocked):
+        review['api'].recover_review_response(agent, effective_task_id='review-task',
+            api_request_id='api-2', response=second, intake_action='fallthrough')
+    assert journal.is_file(), 'terminal native verdict must survive the abort'
+    rows = [json.loads(line) for line in journal.read_text().splitlines()]
+    assert len(rows) == 2
+    assert rows[-1]['native_action'] == 'fallthrough'
+    assert rows[-1]['finish_reason'] == 'stop'
+    assert rows[-1]['tool_call_count'] == 0
+    assert rows[-1]['expected_tool'] == 'rpe_propose'
+    assert rows[-1]['rpe_action'] == 'blocked'
+    assert rows[-1]['failure_code'] == 'review_protocol_recovery_not_allowed'
+    assert 'Original uncommitted reply.' not in journal.read_text()
+    assert len([e for e in review['store'].list('review-session') if e['kind'] == 'pre_api_request']) == 2
+    assert len([e for e in review['store'].list('review-session') if e['kind'] == 'rpe_review_protocol_recovery']) == 1
+    assert not [e for e in review['store'].list('review-session') if e['kind'] == 'pre_tool_call']
+
+
+def test_public_second_missing_tool_diagnostics_outlive_default_home(review, monkeypatch):
+    from pathlib import Path
+    from rpe_harness.proposal_cli import dispatch_review
+    from test_proposal_cli import parser
+    from rpe_harness.integrations import hermes_session
+    from rpe_harness.integrations.review_diagnostics import collect_diagnostics
+    homes = []
+    def host(raw, workspace, database, **kwargs):
+        home = kwargs['owner_root']
+        homes.append(home)
+        journal = home/'native-diagnostics.jsonl'
+        monkeypatch.setenv('RPE_HERMES_REVIEW_DIAGNOSTICS', str(journal))
+        first = invalid_response(review)
+        assert review['api'].recover_review_response(native_agent(), effective_task_id='review-task',
+            api_request_id='api-1', response=first, intake_action='fallthrough')
+        second = invalid_response(review, number=2)
+        agent = native_agent()
+        agent._current_api_request_id = 'api-2'
+        with pytest.raises(review['api'].ReviewIngressBlocked):
+            review['api'].recover_review_response(agent, effective_task_id='review-task',
+                api_request_id='api-2', response=second, intake_action='fallthrough')
+        result = {**host_result(review), 'completed': False, 'exit_code': 1}
+        result['usage'] = hermes_session.aggregate_usage(result['events'])
+        result['review_diagnostics'] = collect_diagnostics(journal, result)
+        return result
+    monkeypatch.setattr(hermes_session, 'run_hermes_session', host)
+    result = dispatch_review(parser().parse_args(['review', 'draft', '--db', str(review['db']),
+        '--workspace', str(review['workspace']), '--text', RAW]))
+    assert result['status'] == 'unverified'
+    assert result['failure'] == {'domain': 'protocol', 'code': 'review_protocol_recovery_not_allowed',
+                                 'stage': 'response_guard', 'retryable': False}
+    assert result['host_observation']['usage']['known_total_tokens'] == 14
+    assert not homes[0].exists()
+    artifact = Path(result['diagnostics_ref']['path'])
+    assert json.loads(artifact.read_text()) == result['review_diagnostics']
+    assert len(result['review_diagnostics']['responses']) == 2
+    assert result['review_diagnostics']['responses'][-1]['native_action'] == 'fallthrough'
+    assert not [e for e in result['host_observation']['events'] if e['kind'] == 'pre_tool_call']

@@ -213,3 +213,80 @@ def test_legacy_consistent_attachment_dual_quote_row_remains_valid(tmp_path):
     result = propose(tmp_path, path, context, candidate)
     assert result['status'] == 'awaiting_confirmation', result
     assert result['draft'] == original == candidate
+
+
+def test_clean_missing_key_has_no_requirement_pointer_error(tmp_path):
+    from rpe_harness.proposal import create_proposal, ProposalStore
+    from test_hermes_review import draft as csv_draft
+    raw = 'Deduplicate orders.csv, keep first, save out.csv, preserve original.'
+    (tmp_path / 'orders.csv').write_text('id,value\na,1\na,2\n')
+    candidate = csv_draft()
+    candidate['execution'] = {'input_path': 'orders.csv', 'output_path': 'out.csv', 'keep': 'first'}
+    candidate['requirements'] = [row for row in candidate['requirements'] if
+        set(row['fields']) <= {'/capability', '/constraints', '/execution/input_path',
+                              '/execution/output_path', '/execution/keep'}]
+    candidate['unresolved'] = ['Which business columns define duplicate rows?']
+    original = copy.deepcopy(candidate)
+    result = create_proposal(raw, candidate, db_path=tmp_path/'state.sqlite', workspace=tmp_path,
+                             session_id='s', source_ref='current:user')
+    assert result['status'] == 'needs_context'
+    assert set(result['missing']) == {'execution.key_columns', 'unresolved'}
+    assert not any('requirement' in error for error in result['errors'])
+    assert result['draft'] == candidate == original
+    assert result['machine_contract'] == {}
+    with pytest.raises(ValueError):
+        ProposalStore(tmp_path/'state.sqlite').confirm(result['proposal_id'], session_id='s',
+            expected_proposal_sha256=result['proposal_sha256'], actor='trusted-application:test')
+    assert (tmp_path/'orders.csv').read_text() == 'id,value\na,1\na,2\n'
+    assert not (tmp_path/'out.csv').exists()
+
+
+@pytest.mark.parametrize('kind', ['explicit', 'omitted', 'proposed'])
+def test_explicit_omitted_and_proposed_csv_defaults_preserve_draft(tmp_path, kind):
+    from rpe_harness.proposal import create_proposal
+    raw = 'Deduplicate orders.csv by id into out.csv, preserve original.'
+    separator = '\t' if kind == 'explicit' else ','
+    if kind == 'explicit':
+        raw += ' Keep first, use utf-8 and TAB.'
+    (tmp_path/'orders.csv').write_text(f'id{separator}value\na{separator}1\na{separator}2\n')
+    execution = {'input_path': 'orders.csv', 'output_path': 'out.csv', 'key_columns': ['id']}
+    base_fields = ['/capability', '/constraints', '/execution/input_path', '/execution/output_path',
+                   '/execution/key_columns']
+    rows = [{'text': 'Follow the explicit request.', 'quote': raw, 'fields': base_fields}]
+    if kind != 'omitted':
+        execution.update(keep='first', encoding='utf-8', delimiter=separator)
+        rows.append({'text': 'CSV read options and first row.', 'quote': raw if kind == 'explicit' else None,
+            'fields': ['/execution/keep', '/execution/encoding', '/execution/delimiter']})
+    candidate = {'capability': 'tabular.deduplicate', 'constraints': ['preserve_original'],
+                 'execution': execution, 'requirements': rows, 'unresolved': []}
+    original = copy.deepcopy(candidate)
+    result = create_proposal(raw, candidate, db_path=tmp_path/'state.sqlite', workspace=tmp_path,
+                             session_id='s', source_ref='current:user')
+    assert result['status'] == 'awaiting_confirmation', result
+    assert result['draft'] == candidate == original
+    contract = result['machine_contract']['execution']
+    assert contract['keep'] == 'first' and contract['delimiter'] == separator
+    assert contract['encoding'] == ('utf-8-sig' if kind == 'omitted' else 'utf-8')
+    if kind != 'omitted':
+        assert result['requirements'][-1]['origin'] == ('source_quote' if kind == 'explicit' else 'proposed_default')
+    else:
+        assert not {'keep', 'encoding', 'delimiter'} & set(result['draft']['execution'])
+    assert not (tmp_path/'out.csv').exists()
+
+
+@pytest.mark.parametrize('key,value', [('key_columns', ['值']), ('delimiter', ','), ('encoding', 'utf-8-sig')])
+def test_conflicting_explicit_source_values_stay_unmodified_and_nonconfirmable(tmp_path, key, value):
+    path, context, candidate = setup(tmp_path, facts={'key_columns': ['订单号'],
+                                                    'delimiter': '\t', 'encoding': 'utf-8'})
+    candidate['execution'].update(delimiter='\t', encoding='utf-8')
+    candidate['requirements'].append({'text': 'Review CSV options.', 'quote': None,
+        'fields': ['/execution/delimiter', '/execution/encoding']})
+    candidate['execution'][key] = value
+    original = copy.deepcopy(candidate)
+    result = propose(tmp_path, path, context, candidate)
+    assert result['status'] == 'needs_context'
+    expected_error = ('context citation field is missing or conflicts with its explicit fact'
+        if key == 'key_columns' else 'source conflict or missing explicit field: execution.' + key)
+    assert expected_error in result['errors']
+    assert result['draft'] == candidate == original and result['machine_contract'] == {}
+    assert not (tmp_path/'out.csv').exists()

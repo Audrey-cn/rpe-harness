@@ -139,7 +139,8 @@ def provider(**request):
     calls.append(request)
     assert len(calls)<=len(steps),'extra provider request after durable proposal'
     name,args=steps[len(calls)-1]
-    assert request['tool_choice']['function']['name']==name,request['tool_choice']
+    assert request['tool_choice']=='auto',request['tool_choice']
+    assert [tool['function']['name'] for tool in request['tools']]==[name]
     return ChatCompletion.model_validate({'id':'provider-free-response','created':0,
         'model':'test-model','object':'chat.completion','choices':[{'index':0,
         'finish_reason':'tool_calls','message':{'role':'assistant','content':None,

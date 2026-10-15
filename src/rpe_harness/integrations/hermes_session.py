@@ -782,6 +782,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 'RPE_HERMES_PROCESS_PATH': str(session_root / 'child-processes.jsonl'),
                 'RPE_HARNESS_PYTHON': sys.executable, 'RPE_HARNESS_IMPORT_ROOT': str(import_root),
                 'PYTHONPATH': str(import_root)})
+    if entry_mode == 'review':
+        env['RPE_HERMES_REVIEW_DIAGNOSTICS'] = str(session_root / 'review-diagnostics.jsonl')
     if request_budget_path is not None:
         env['RPE_HERMES_REQUEST_BUDGET_CONFIG'] = str(request_budget_path)
     if native_finish_enabled:
@@ -852,7 +854,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                     snapshot_id=snapshot['snapshot_id'] if snapshot else None,
                     context_sources=context_sources)
             broker_environment = broker_stack.enter_context(execution_broker(
-                db_path=db_path, workspace=workspace, python=sys.executable,extension=extension))
+                db_path=db_path, workspace=workspace, python=sys.executable,extension=extension, review_auto=entry_mode == 'review'))
             env.update(broker_environment)
         with stdout_path.open('w') as output, stderr_path.open('w') as errors:
             key_read = None
@@ -1029,8 +1031,16 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         if secret in json.dumps(result, ensure_ascii=False):
             observation_error_code = 'credential_in_host_response'
             raise ValueError('credential appeared in host response; private output redacted')
+        if entry_mode == 'review':
+            from .review_diagnostics import collect_diagnostics
+            result['review_diagnostics'] = collect_diagnostics(session_root / 'review-diagnostics.jsonl', result, secret=secret)
         return result
     except Exception as error:
         partial['elapsed_seconds'] = round(time.monotonic()-started, 3)
-        raise SessionObservationError(partial, secret=settings['api_key'],
-            code=observation_error_code, error_type=type(error).__name__) from None
+        carrier = SessionObservationError(partial, secret=settings['api_key'],
+            code=observation_error_code, error_type=type(error).__name__)
+        if entry_mode == 'review':
+            from .review_diagnostics import collect_diagnostics, failure
+            carrier.diagnostics['failure'] = failure(observation_error_code, domain='observation', stage='finalization')
+            carrier.diagnostics['review_diagnostics'] = collect_diagnostics(session_root / 'review-diagnostics.jsonl', carrier.diagnostics, secret=settings['api_key'])
+        raise carrier from None

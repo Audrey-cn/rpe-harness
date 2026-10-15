@@ -94,7 +94,7 @@ def review(tmp_path, monkeypatch):
                                  error_path=tmp_path / 'errors')
     extension = api.review_extension(db, workspace, raw=RAW, source_ref='current-request:test')
     from rpe_harness.integrations.hermes_broker import execution_broker
-    with execution_broker(db_path=db, workspace=workspace, python=sys.executable, extension=extension) as broker:
+    with execution_broker(db_path=db, workspace=workspace, python=sys.executable, extension=extension, review_auto=True) as broker:
         for key, value in broker.items():
             monkeypatch.setenv(key, value)
         yield {'api': api, 'sdk': sdk, 'workspace': workspace, 'db': db, 'store': store,
@@ -137,7 +137,7 @@ def test_current_prose_yields_persisted_review_without_business_output(review):
     assert result['status'] == 'awaiting_confirmation', result
     assert result['proposal_id']
     assert set(review['sdk'].tools) == {'rpe_propose'}
-    assert review['request']['messages'][0] == {'role': 'system', 'content': review['api'].REVIEW_CONTRACT}
+    assert review['request']['messages'][0]['content'].startswith(review['api'].REVIEW_CONTRACT)
     assert review['request']['messages'][1] == {'role': 'user', 'content': RAW}
     assert 'PRIVATE_HISTORY_MARKER' not in json.dumps(review['request'])
     assert 'FORGED_CURRENT_REQUEST' not in json.dumps(review['request'])
@@ -239,7 +239,8 @@ def test_two_api_budget_blocks_a_third_request(review):
     ids = {'session_id': 'review-session', 'task_id': 'review-task', 'turn_id': 'review-turn',
            'api_request_id': 'api-report'}
     report = review['sdk'].middleware['llm_request'](request={'tools': []}, **ids)['request']
-    assert report['tool_choice'] == 'none'
+    assert report['tool_choice'] == 'auto'
+    assert report['tools'] == []
     with pytest.raises(review['api'].ReviewIngressBlocked):
         review['sdk'].middleware['llm_request'](request={'tools': []}, **{**ids, 'api_request_id': 'api-third'})
 
@@ -285,6 +286,7 @@ def _sdk_home(env, name):
         'RPE_HERMES_WORKSPACE': str(env['workspace']), 'RPE_HARNESS_PYTHON': sys.executable,
         'RPE_HERMES_TOOL_ENABLED': '1', 'RPE_HARNESS_IMPORT_ROOT': package_import_root,
         'RPE_HERMES_ENTRY_MODE': 'review', 'RPE_HERMES_ERROR_PATH': str(home / 'observer-errors'),
+        'RPE_HERMES_REVIEW_DIAGNOSTICS': str(home / 'review-diagnostics.jsonl'),
         'PYTHONPATH': package_import_root + os.pathsep + str(sdk_root)}
     environment.pop('HERMES_IGNORE_USER_CONFIG', None)
     return interpreter, environment
@@ -338,7 +340,7 @@ result=json.loads(invoke_tool(agent,'rpe_propose',args,ids['task_id'],tool_call_
 assert result['status']==sys.argv[3],result['status']
 ids={'session_id':'review-session','task_id':'review-task','turn_id':'review-turn','api_request_id':'sdk-api-final'}
 body=apply_llm_request_middleware({'tools':agent.tools,'messages':[{'role':'user','content':'PRIVATE_SDK_HISTORY'}]},**ids).payload
-assert body['tool_choice']=='none' and 'PRIVATE_SDK_HISTORY' not in json.dumps(body)
+assert body['tool_choice']=='auto' and body['tools']==[] and 'PRIVATE_SDK_HISTORY' not in json.dumps(body)
 manager.invoke_hook('pre_api_request',request=hook._api_request_payload_for_hook(body),**ids)
 run_llm_execution_middleware(body,lambda value:value,**ids)
 manager.invoke_hook('post_api_request',response={'assistant_message':{'tool_calls':[]}},**ids)
@@ -374,7 +376,7 @@ print(json.dumps(result))
             assert db.execute('SELECT count(*) FROM rpe_confirmations').fetchone()[0] == 0
 
 
-def test_installed_sdk_final_http_body_and_fail_closed_override_guard(review):
+def test_mimo_auto_wire_policy_keeps_single_dispatch_guard(review):
     interpreter, environment = _sdk_home(review, 'wire-session')
     program = '''import json,sys,socket,os
 import openai,httpx
@@ -396,6 +398,7 @@ agent=AIAgent(model='mimo-v2.6-pro',provider='xiaomi',api_key='fake-no-provider'
     quiet_mode=True,platform='cli',session_id='wire-agent',skip_context_files=True)
 defaults=agent._build_api_kwargs([{'role':'system','content':'PRIVATE_HOST_HISTORY'}])
 assert network_attempts==[], 'agent construction attempted real network'
+from agent.sdk_transform_bypass import bypass_chat_sdk_request_transform
 seen=[]
 def fake_http(request):
     seen.append(json.loads(request.content))
@@ -407,7 +410,7 @@ def send(index,request,mutate=None):
     ids={'session_id':'wire-'+str(index),'task_id':'wire-task','turn_id':'wire-turn','api_request_id':'wire-api'}
     projected=apply_llm_request_middleware(request,**ids).payload
     if mutate: mutate(projected)
-    return run_llm_execution_middleware(projected,lambda value:client.chat.completions.create(**value),**ids)
+    return run_llm_execution_middleware(projected,lambda value:client.chat.completions.create(**bypass_chat_sdk_request_transform(value,client)),**ids)
 send(0,defaults)
 send(1,{**defaults,'extra_body':{'thinking':{'type':'disabled'}},'stream':False,
     'stream_options':{'include_usage':True},'reasoning_effort':'none','temperature':0.2})
@@ -415,7 +418,8 @@ assert len(seen)==2 and seen[1]['thinking']=={'type':'disabled'}
 for wire in seen:
     assert wire['messages'][1]['content']==sys.argv[1]
     assert 'PRIVATE' not in json.dumps(wire)
-    assert wire['tool_choice']['function']['name']=='rpe_propose'
+    assert wire['tool_choice']=='auto'
+    assert 'parallel_tool_calls' not in wire
     assert [tool['function']['name'] for tool in wire['tools']]==['rpe_propose']
     params=wire['tools'][0]['function']['parameters']['properties']
     assert params['capability']['enum']==['json.normalize','tabular.deduplicate','xlsx.inspect','unsupported']

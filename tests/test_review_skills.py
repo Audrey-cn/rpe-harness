@@ -105,7 +105,7 @@ def skill_review(skill_env, monkeypatch, request):
         context_sources=sources)
     from rpe_harness.integrations.hermes_broker import execution_broker
     with execution_broker(db_path=skill_env['db'], workspace=skill_env['workspace'],
-                         python=sys.executable, extension=extension) as broker:
+                         python=sys.executable, extension=extension, review_auto=True) as broker:
         for key, value in broker.items():
             monkeypatch.setenv(key, value)
         yield {**skill_env, 'sdk': sdk, 'store': store, 'api': api, 'config': config, 'counter': 0}
@@ -120,7 +120,8 @@ def step(env, name, args, *, native=None):
             'properties': {'name': {'type': 'string'}}, 'required': ['name']}}}]
         if name == 'skill_view' else []),
         'messages': [{'role': 'user', 'content': 'PRIVATE_OLD_HISTORY'}]}, **ids)['request']
-    assert request['tool_choice'] == {'type': 'function', 'function': {'name': name}}
+    assert request['tool_choice'] == 'auto'
+    assert [tool['function']['name'] for tool in request['tools']] == [name]
     assert 'PRIVATE_OLD_HISTORY' not in json.dumps(request)
     env['request'] = request
     env['store'].record('pre_api_request', {**ids, 'request': {'body': request}})
@@ -288,7 +289,8 @@ print(json.dumps(result))
     assert proposal['status'] == 'awaiting_confirmation', proposal
     report_ids = dict(session_id='review-session', task_id='review-task', turn_id='review-turn', api_request_id='api-5')
     report = skill_review['sdk'].middleware['llm_request'](request={'tools': []}, **report_ids)['request']
-    assert report['tool_choice'] == 'none'
+    assert report['tool_choice'] == 'auto'
+    assert report['tools'] == []
     skill_review['store'].record('pre_api_request', {**report_ids, 'request': {'body': report}})
     skill_review['sdk'].middleware['llm_execution'](request=report, next_call=lambda value: value, **report_ids)
     skill_review['store'].record('post_api_request', {**report_ids, 'response': {'assistant_message': {'tool_calls': []}}})

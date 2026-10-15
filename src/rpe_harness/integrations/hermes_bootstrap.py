@@ -273,6 +273,9 @@ def install_clean_ingress_guard() -> None:
         manager = importlib.import_module('hermes_cli.plugins').get_plugin_manager()
         plugin = manager._plugins.get('rpe-harness')
         if plugin is None or not plugin.enabled:
+            if mode == 'review':
+                from rpe_harness.integrations.review_diagnostics import append_response, response_summary
+                append_response(response_summary(context, None, stage='ingress', failure_code='review_plugin_unavailable'))
             raise SystemExit(mode + ' plugin registration unavailable; provider call blocked')
         workflow = importlib.import_module('rpe_harness.integrations.hermes_' + mode)
         getattr(workflow, 'guard_' + mode + '_ingress')(request, **context)

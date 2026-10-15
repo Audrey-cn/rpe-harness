@@ -151,12 +151,13 @@ def _identity(context, entry_key, *, api=False):
     return {k: context[k] for k in keys} | {'entry_key': entry_key}
 
 
-def _actual_policy(store, native, name, *, require_pre=True):
+def _actual_policy(store, native, name, *, require_pre=True, review_auto=False):
     events = store.list(native['session_id'])
     requests = [e for e in events if e['kind'] == 'pre_api_request' and
                 all(e.get(k) == native[k] for k in IDS[:-1])]
-    if (len(requests) != 1 or requests[0].get('request_tool_choice') != name or
-            requests[0].get('request_parallel_tool_calls') is not False or
+    if (len(requests) != 1 or requests[0].get('request_tool_choice') != ('auto' if review_auto else name) or
+            (('request_parallel_tool_calls' in requests[0]) if review_auto else
+             requests[0].get('request_parallel_tool_calls') is not False) or
             requests[0].get('request_tool_names') != [name]):
         raise ValueError('actual native sole-tool policy missing')
     pres = [e for e in events if e['kind'] == 'pre_tool_call' and e.get('tool_name') == name
@@ -169,15 +170,17 @@ def _actual_policy(store, native, name, *, require_pre=True):
     return requests[0]
 
 
-def _raw_policy(store, native, state):
+def _raw_policy(store, native, state, *, review_auto=False):
     planned = state['policies'].get(native['api_request_id'])
     rows = [e for e in store.list(native['session_id']) if e['kind'] == 'rpe_skill_api_checked' and
             all(e.get(k) == native[k] for k in IDS[:-1])]
     if (not planned or len(rows) != 1 or rows[0]['ingest_event_id'] != planned.get('raw_receipt_id') or
             rows[0].get('request_tools_sha256') != planned['raw_tools_sha256'] or
             rows[0].get('arguments_sha256') != planned['tools_sha256'] or
-            rows[0].get('request_tool_choice') != planned['choice'] or
-            rows[0].get('request_parallel_tool_calls') is not False or
+            rows[0].get('request_tool_choice') != ('auto' if review_auto else planned['choice']) or
+            (review_auto and (state.get('entry_mode') != 'review' or planned.get('wire_tool_choice') != 'auto' or planned.get('expected_tool') != planned['choice'])) or
+            (('request_parallel_tool_calls' in rows[0]) if review_auto else
+             rows[0].get('request_parallel_tool_calls') is not False) or
             rows[0].get('status') != planned['projection_mode']):
         raise ValueError('official raw API execution proof missing')
 

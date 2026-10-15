@@ -28,3 +28,13 @@
 `run` 以 SQLite 原子声明消费一次确认，调用既有固定 CLI 子进程和文件描述符绑定，再复用正常执行及独立验证流程。相同确认的重复请求返回同一持久结果；进行中的并发请求返回 `running`。不同审阅任务在同一数据库下通过有限等待的工作锁串行进入固定子进程，等待时间计入执行超时。超时和已捕获的启动失败会保存终态，不会自动重新发布。真实父进程崩溃可能留下已消费而没有结果的声明；该声明保持关闭，需要人工诊断，不能把它当成新的执行授权。
 
 这些限制是信任的本地控制器与模型之间的应用边界。具有同一用户任意代码或数据库写权限的进程不属于隔离威胁模型。原来的严格 JSON `source` 入口保持原有语法与验证语义。
+
+C0 公共状态修正：`review draft` 未能核验提案（协议、宿主或观察失败）现在返回 `status=unverified` 和 exit 1，附固定结构 `failure={domain,code,stage,retryable:false}`。这取代旧版把技术缺证据归为 `needs_context`/exit 3 的行为。真实、持久且已核验的业务缺项提案仍为 `needs_context`/exit 3；启动前无效输入仍为 `invalid_request`/exit 2。观察收尾异常保留已知用量与进程清理信息。
+
+`review_diagnostics` 是无授权的结构摘要：`schema_version=1`、`diagnostic_only=true`、`coverage={complete,reasons}`、最多 32 条 `responses` 和最多 32 条 `failures`。响应记录原生身份、阶段、原生 action、finish reason、refusal 字段是否存在、工具数量、应用期待工具和 RPE 判定；缺失值用 null，未知记录不当作正常或零值。它不保存正文、reasoning、工具 arguments、provider_data 内容或任意异常文本。私有 journal 上限 512 KiB，只读取普通文件；公开 envelope 上限 64 KiB。超限、坏记录、缺证据会明确标记 coverage 不完整。
+
+父进程在临时宿主 HOME 删除前将摘要原子保存到状态库旁的 `review-diagnostics` 目录；`diagnostics_ref={path,sha256}` 给出父生成的绝对路径和文件摘要。它仅供诊断，不能替代原始恢复响应、收据、引用校验、完整提案校验或确认授权。
+
+固定 MiMo review profile 使用 wire `tool_choice=auto`，省略未获文档保证的 `parallel_tool_calls`。应用另存 `expected_tool`，只公开当前阶段的一个工具，仍要求实际响应恰好一个正确工具，并重验阶段、消息、schema、完整 payload 摘要和全部原生/父进程收据。终态没有可用工具；原生提案收尾不再请求模型。auto 不是服务端强制单调用的证明。
+
+业务字段未知时，模型必须省略整个键及对应指针，并在 unresolved 提问；不允许占位列名。显式“保留首条”应提交真实 `execution.keep=first` 并引用原文。未请求的默认可以省略（不映射不存在的字段），或由模型主动提交真实字段并用 quote=null 标注。省略值仅在待确认机器合同中展开，不回填原始草稿。encoding/delimiter 是 CSV 选项；字段与来源冲突仍阻止确认。

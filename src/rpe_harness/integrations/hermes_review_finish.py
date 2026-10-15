@@ -24,10 +24,29 @@ def install_review_response_adapter():
     @wraps(original)
     def intake(agent, **context):
         from .hermes_review import ReviewIngressBlocked, recover_review_response
-        verdict = original(agent, **context)
+        from .review_diagnostics import append_response, response_summary
+        native = {'session_id': getattr(agent, 'session_id', None),
+            'turn_id': getattr(agent, '_current_turn_id', None),
+            'task_id': context.get('effective_task_id'), 'api_request_id': context.get('api_request_id')}
+        try:
+            verdict = original(agent, **context)
+        except BaseException as error:
+            append_response(response_summary(native, None, stage='normalization',
+                failure_code='review_native_normalization_failed'))
+            if isinstance(error, Exception):
+                raise ReviewIngressBlocked('review native normalization failed', code='review_native_normalization_failed') from None
+            raise
+        try:
+            response = asdict(verdict.assistant_message)
+        except BaseException as error:
+            append_response(response_summary(native, None, native_action=getattr(verdict, 'action', None),
+                stage='serialization', failure_code='review_response_serialization_failed'))
+            if isinstance(error, Exception):
+                raise ReviewIngressBlocked('review response serialization failed', code='review_response_serialization_failed') from None
+            raise
         try:
             retry = recover_review_response(agent, effective_task_id=context['effective_task_id'],
-                api_request_id=context['api_request_id'], response=asdict(verdict.assistant_message),
+                api_request_id=context['api_request_id'], response=response,
                 intake_action=verdict.action)
         except (TypeError, ValueError, AttributeError) as error:
             raise ReviewIngressBlocked('review protocol response serialization failed') from error

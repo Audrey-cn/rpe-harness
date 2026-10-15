@@ -66,12 +66,25 @@ def dispatch_review(args):
         database.parent.mkdir(parents=True, exist_ok=True)
         host_scope = (nullcontext(str(args.owner_root.absolute())) if args.owner_root is not None else
                       tempfile.TemporaryDirectory(prefix='rpe-review-host-', dir=database.parent))
+        from .integrations.hermes_session import SessionObservationError
+        from .integrations.review_diagnostics import collect_diagnostics, persist_diagnostics, failure
         with host_scope as owned:
-            result = run_hermes_review(raw, args.workspace, database, owner_root=Path(owned),
-                timeout=args.timeout, hermes_root=args.hermes_root, catalog_root=args.catalog_root,
-                skill_snapshot_id=args.skill_snapshot_id, max_turns=args.max_turns,
-                context_sources=_context_sources(args.context_sources),
-                read_isolation_root=args.read_isolation_root, deny_read_roots=args.deny_read_root, **budget_options)
+            try:
+                result = run_hermes_review(raw, args.workspace, database, owner_root=Path(owned),
+                    timeout=args.timeout, hermes_root=args.hermes_root, catalog_root=args.catalog_root,
+                    skill_snapshot_id=args.skill_snapshot_id, max_turns=args.max_turns,
+                    context_sources=_context_sources(args.context_sources),
+                    read_isolation_root=args.read_isolation_root, deny_read_roots=args.deny_read_root, **budget_options)
+            except SessionObservationError as error:
+                result = error.diagnostics
+                result['failure'] = failure(error.code, domain='observation', stage='finalization')
+                result['proposal_verification'] = {'verified': False, 'proposal_verified': False,
+                    'errors': [result['failure']['code']], 'failure': result['failure']}
+            diagnostics = result.get('review_diagnostics')
+            if diagnostics is None:
+                diagnostics = collect_diagnostics(Path(owned) / 'review-diagnostics.jsonl', result)
+            result['review_diagnostics'] = diagnostics
+            result['diagnostics_ref'] = persist_diagnostics(database, diagnostics)
         proposal = result.get('proposal')
         verdict = result.get('proposal_verification', {})
         observation = {key: result[key] for key in ('session_id', 'usage', 'elapsed_seconds',
@@ -80,13 +93,16 @@ def dispatch_review(args):
             'catalog_snapshot_id', 'public_contract_sha256') if key in result}
         if (type(proposal) is not dict or verdict.get('verified') is not True
                 or verdict.get('proposal_verified') is not True):
-            return {'status': 'needs_context', 'missing': ['verified_model_proposal'],
+            return {'status': 'unverified',
+                'failure': verdict.get('failure') or result.get('failure') or failure('review_unverified', domain='host', stage='session'),
+                'review_diagnostics': diagnostics, 'diagnostics_ref': result['diagnostics_ref'],
                 'errors': verdict.get('errors', ['Hermes did not return a verified proposal']),
                 'proposal_verification': verdict,
                 'host_observation': observation,
                 'summary': '尚未形成可核验的要求草稿；没有确认或执行业务任务。\n' + terminal_text(str(verdict))}
         return {**proposal, 'summary': _summary(proposal), 'proposal_verification': verdict,
-                'host_observation': observation}
+                'host_observation': observation, 'review_diagnostics': diagnostics,
+                'diagnostics_ref': result['diagnostics_ref']}
     store = ProposalStore(args.db)
     if args.review_command == 'run':
         confirmation = store._get(args.confirmation_id, confirmation=True)
