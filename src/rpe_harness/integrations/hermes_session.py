@@ -326,9 +326,9 @@ print(json.dumps({'provider':m.get('provider'),'model':m.get('default'),
 
 def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, entry_mode='optional',
                  preserve_native_tool_search=False, public_contract=None):
-    if entry_mode not in ('optional','strict','skills','address','clean','producer') or (entry_mode in ('strict','skills','address','clean') and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills','address','clean','review','producer') or (entry_mode in ('strict','skills','address','clean','review') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
-    if public_contract not in (None, 'clean'):
+    if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
     if entry_mode == 'producer' and tool_enabled:
         raise ValueError('producer entry requires the Harness tool disabled')
@@ -359,7 +359,7 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
         'terminal': {'backend': 'local', 'cwd': str(workspace), 'temp_dir': str(session_root / 'terminal-tmp')},
         'platform_toolsets': {'cli': (['rpe_producer_only'] if entry_mode=='producer' else
                                      ['rpe_harness','skills'] if entry_mode=='skills' else
-                                     ['rpe_harness'] if entry_mode in ('strict','address','clean') else
+                                     ['rpe_harness'] if entry_mode in ('strict','address','clean','review') else
                                      ['terminal','file']+(['rpe_harness'] if tool_enabled else []))},
         'memory': {'memory_enabled': False, 'user_profile_enabled': False, 'provider': ''},
         'skills': {'external_dirs': [], 'project_discovery': False, 'auto_load': []},
@@ -374,11 +374,14 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     # before request middleware; its plugin deferral must be disabled here so
     # the native validator admits both registered tools. The native control arm
     # continues to use its existing search/progressive-disclosure configuration.
-    if entry_mode in ('address','clean') or (entry_mode in ('strict','skills','producer') and not preserve_native_tool_search):
+    if entry_mode in ('address','clean','review') or (entry_mode in ('strict','skills','producer') and not preserve_native_tool_search):
         config['tools'] = {'tool_search':{'enabled':'off'}}
     if public_contract == 'clean' or entry_mode == 'clean':
         from .hermes_clean import CLEAN_SOURCE_CONTRACT
         config['agent']['system_prompt'] = CLEAN_SOURCE_CONTRACT.replace('{helper_python}', sys.executable)
+    if public_contract == 'review' or entry_mode == 'review':
+        from .hermes_review import REVIEW_CONTRACT
+        config['agent']['system_prompt'] = REVIEW_CONTRACT
     (home / 'config.yaml').write_text(json.dumps(config), encoding='utf-8')
     plugin = home / 'plugins/rpe-harness'
     plugin.mkdir(parents=True)
@@ -551,13 +554,13 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         raise ValueError('prompt must be nonempty and at most 1 MiB')
     if not 1 <= timeout <= 1800:
         raise ValueError('timeout must be between 1 and 1800 seconds')
-    if entry_mode not in ('optional','strict','skills','address','clean','producer') or (entry_mode in ('strict','skills','address','clean') and not tool_enabled):
+    if entry_mode not in ('optional','strict','skills','address','clean','review','producer') or (entry_mode in ('strict','skills','address','clean','review') and not tool_enabled):
         raise ValueError('strict entry requires the Harness tool')
-    if public_contract not in (None, 'clean'):
+    if public_contract not in (None, 'clean', 'review'):
         raise ValueError('unknown public contract')
-    if entry_mode == 'clean' and (required_request is not None or context_sources not in (None, [])
+    if entry_mode in ('clean','review') and (required_request is not None or context_sources not in (None, [])
                                   or len(prompt.encode()) > 65536):
-        raise ValueError('clean requires only the exact current source, at most 64 KiB; no hidden contract or context')
+        raise ValueError(entry_mode + ' requires only the exact current source, at most 64 KiB; no hidden contract or context')
     if entry_mode == 'producer' and (tool_enabled or catalog_root is not None or skill_snapshot_id is not None
                                     or context_sources is not None or required_request is not None):
         raise ValueError('producer entry requires no Harness tool, fixed task, or skill catalog context')
@@ -577,6 +580,9 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         from .hermes_clean import CLEAN_SOURCE_CONTRACT
         public_contract_sha = hashlib.sha256(CLEAN_SOURCE_CONTRACT.replace(
             '{helper_python}', sys.executable).encode()).hexdigest()
+    if public_contract == 'review' or entry_mode == 'review':
+        from .hermes_review import REVIEW_CONTRACT
+        public_contract_sha = hashlib.sha256(REVIEW_CONTRACT.encode()).hexdigest()
     fixed_request, fixed_input_sha = None, None
     if required_request is not None:
         from .hermes import _prepare_request
@@ -637,6 +643,15 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             'entries': _model_catalog_entries(unified.entries()), 'raw': prompt,
             'source_ref': 'user_prompt:' + original_prompt_sha}, ensure_ascii=False, allow_nan=False))
         os.chmod(clean_config_path, 0o600)
+    review_config_path = None
+    if entry_mode == 'review':
+        from .hermes_address import _catalog, _model_catalog_entries
+        unified = _catalog(db_path, catalog_root, snapshot['snapshot_id'] if snapshot else None)
+        review_config_path = session_root / 'review-config.json'
+        review_config_path.write_text(json.dumps({'catalog_sha256': unified.snapshot_id,
+            'entries': _model_catalog_entries(unified.entries()), 'raw': prompt,
+            'source_ref': 'user_prompt:' + original_prompt_sha}, ensure_ascii=False, allow_nan=False))
+        os.chmod(review_config_path, 0o600)
     fixed_path = None
     if fixed_request is not None:
         fixed_path = session_root/'fixed-request.json'
@@ -692,6 +707,8 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         env['RPE_HERMES_ADDRESS_CONFIG'] = str(address_config_path)
     if clean_config_path is not None:
         env['RPE_HERMES_CLEAN_CONFIG'] = str(clean_config_path)
+    if review_config_path is not None:
+        env['RPE_HERMES_REVIEW_CONFIG'] = str(review_config_path)
     session_token = uuid.uuid4().hex
     env['RPE_HERMES_SESSION_TOKEN'] = session_token
     if not tool_enabled:
@@ -699,7 +716,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
     env['PATH'] = str(Path(sys.executable).parent)+os.pathsep+env.get('PATH', '/usr/bin:/bin')
     tools = ('rpe_producer_only' if entry_mode=='producer' else
              'rpe_harness,skills' if entry_mode=='skills' else
-             'rpe_harness' if entry_mode in ('strict','address','clean') else
+             'rpe_harness' if entry_mode in ('strict','address','clean','review') else
              'terminal,file'+(',skills' if snapshot else '')+(',rpe_harness' if tool_enabled else ''))
     command = ['/usr/bin/sandbox-exec', '-f', str(profile),
                str(host_python), '-B',
@@ -729,6 +746,11 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
             if entry_mode == 'clean':
                 from .hermes_clean import clean_extension
                 extension = clean_extension(db_path, workspace, raw=prompt,
+                    source_ref='user_prompt:' + original_prompt_sha, catalog_root=catalog_root,
+                    snapshot_id=snapshot['snapshot_id'] if snapshot else None)
+            if entry_mode == 'review':
+                from .hermes_review import review_extension
+                extension = review_extension(db_path, workspace, raw=prompt,
                     source_ref='user_prompt:' + original_prompt_sha, catalog_root=catalog_root,
                     snapshot_id=snapshot['snapshot_id'] if snapshot else None)
             broker_environment = broker_stack.enter_context(execution_broker(

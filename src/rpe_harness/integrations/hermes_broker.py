@@ -95,7 +95,7 @@ def _validated_skill_request(body, database):
     from .hermes_gate import digest_json
     operations = {'discover':'rpe_discover', 'context':'rpe_context',
                   'lookup':'skill_view', 'revalidate':'rpe_task',
-                  'understand':'rpe_understand', 'resolve_address':'rpe_task'}
+                  'understand':'rpe_understand', 'resolve_address':'rpe_task', 'propose':'rpe_propose'}
     if (not isinstance(body, dict) or set(body) != {'operation','arguments','receipt_id','native'}
             or body.get('operation') not in operations or not isinstance(body.get('arguments'),dict)
             or not isinstance(body.get('native'),dict) or not isinstance(body.get('receipt_id'),str)):

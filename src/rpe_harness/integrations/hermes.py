@@ -788,6 +788,10 @@ def register(ctx) -> None:
 
     from .hermes_gate import contract_for, read_run, request_input_sha, _same_call, _verify_run
     entry_mode = os.environ.get('RPE_HERMES_ENTRY_MODE','optional')
+    if entry_mode == 'review':
+        from .hermes_review import register_review_workflow
+        register_review_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)
+        return
     if entry_mode == 'clean':
         from .hermes_clean import register_clean_workflow
         register_clean_workflow(ctx,store=store,workspace=workspace,python=python,error_path=error_path)

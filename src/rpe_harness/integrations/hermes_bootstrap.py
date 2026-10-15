@@ -260,7 +260,8 @@ def install_producer_toolset() -> None:
 
 def install_clean_ingress_guard() -> None:
     """Fail closed even when Hermes disables a plugin after registration failure."""
-    if os.environ.get('RPE_HERMES_ENTRY_MODE') != 'clean':
+    mode = os.environ.get('RPE_HERMES_ENTRY_MODE')
+    if mode not in ('clean', 'review'):
         return
     middleware = importlib.import_module('hermes_cli.middleware')
     original = middleware.run_llm_execution_middleware
@@ -272,9 +273,9 @@ def install_clean_ingress_guard() -> None:
         manager = importlib.import_module('hermes_cli.plugins').get_plugin_manager()
         plugin = manager._plugins.get('rpe-harness')
         if plugin is None or not plugin.enabled:
-            raise SystemExit('clean plugin registration unavailable; provider call blocked')
-        clean = importlib.import_module('rpe_harness.integrations.hermes_clean')
-        clean.guard_clean_ingress(request, **context)
+            raise SystemExit(mode + ' plugin registration unavailable; provider call blocked')
+        workflow = importlib.import_module('rpe_harness.integrations.hermes_' + mode)
+        getattr(workflow, 'guard_' + mode + '_ingress')(request, **context)
         return original(request, next_call, **context)
     guarded._rpe_clean_ingress_guard = True
     middleware.run_llm_execution_middleware = guarded
