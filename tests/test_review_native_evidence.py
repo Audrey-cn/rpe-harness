@@ -496,19 +496,32 @@ def test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal(
     workspace = Path(trial['workspace']); (workspace/'output.json').unlink()
     case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
     original_popen = subprocess.Popen
-    program = r'''import json,os,shlex,sys
+    program = r'''import importlib.util,json,os,shlex,socket,subprocess,sys
 from pathlib import Path
-sys.path[:0]=[os.environ['RPE_HARNESS_IMPORT_ROOT'],os.environ['RPE_HERMES_INSTALL_ROOT']]
-import hermes_bootstrap
-import hermes_cli.main as cli
-from rpe_harness.integrations import hermes_bootstrap as bootstrap
+assert importlib.util.find_spec('rpe_harness') is None,'Harness preloaded at file entry'
+initial_pythonpath=os.environ.get('PYTHONPATH')
+expected_json=json.loads(sys.argv[2])
+key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'])
+def deny_network(self,address): raise AssertionError('network disabled in keyed native smoke')
+socket.socket.connect=deny_network
+spec=importlib.util.spec_from_file_location('actual_keyed_file_bootstrap',sys.argv[1])
+bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
 
 def smoke():
  from rpe_harness.integrations.hermes import register,HostEventStore
  from rpe_harness.integrations import hermes_native_process as process
  from tools.terminal_tool import terminal_tool
  assert process._SIGNING_KEY is not None
+ assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
  assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+ assert os.environ.get('PYTHONPATH')==initial_pythonpath
+ assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+ try: os.fstat(key_fd)
+ except OSError: pass
+ else: raise AssertionError('key descriptor remains open')
+ probe=subprocess.run([sys.executable,'-B','-c',
+  "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],capture_output=True,text=True,timeout=5)
+ assert probe.returncode==0,probe.stderr
  config_path=Path(os.environ['RPE_HERMES_NATIVE_EXECUTION_CONFIG'])
  config=json.loads(config_path.read_text())
  key_path=config_path.parent/'native-execution-auth.key'
@@ -541,32 +554,44 @@ def smoke():
  injected=Path('injected'); injected.mkdir()
  (injected/'sitecustomize.py').write_text('import os\nos._exit(0)\n')
  injection=invoke('PYTHONPATH='+shlex.quote(str(injected.resolve()))+' '+command+'; echo exit=0')
+ Path('output.json').unlink()
+ final=invoke(command)
+ assert final['exit_code']==0,final
+ assert json.loads(Path('output.json').read_text())==expected_json
  events=HostEventStore(os.environ['RPE_HERMES_DB']).list('native-process-installed')
  rows=[event for event in events if event['kind']=='native_helper_process_observation']
- assert len(rows)==4,rows
+ assert len(rows)==5,rows
  assert rows[0]['verified'] is True and rows[0]['process_returncode']==0,rows
  assert rows[1]['verified'] is False and rows[1]['process_returncode']!=0,rows
  assert rows[2]['verified'] is False and rows[2]['process_returncode']!=0,rows
  assert rows[3]['verified'] is False,rows
+ assert rows[4]['verified'] is True and rows[4]['process_returncode']==0,rows
  assert success['exit_code']==0 and failure['exit_code']!=0 and masked['exit_code']==0, [success,failure,masked]
  for row in rows:
   signature=row['process_receipt_hmac_sha256']
   body={k:v for k,v in row.items() if k not in {'kind','received_at','source_event_id','ingest_event_id','process_receipt_hmac_sha256'}}
   assert signature==process.receipt_signature(body,process._SIGNING_KEY),row
  assert 'rpe_harness.controller' not in sys.modules
- summary={'provider_calls':0,'native_success':True,'native_failure':True,'masked_failure_rejected':True,'startup_injection_rejected':True,'key_read_write_denied':True,'key_fd_consumed':True,'signed_receipts':4,'kernel_returncodes':[r.get('process_returncode') for r in rows],'shell_returncodes':[success['exit_code'],failure['exit_code'],masked['exit_code'],injection['exit_code']]}
+ summary={'provider_calls':0,'native_success':True,'native_failure':True,'masked_failure_rejected':True,'startup_injection_rejected':True,'key_read_write_denied':True,'key_fd_consumed':True,'signed_receipts':5,'business_oracle_matched':True,'child_harness_importable':False,'kernel_returncodes':[r.get('process_returncode') for r in rows],'shell_returncodes':[success['exit_code'],failure['exit_code'],masked['exit_code'],injection['exit_code']]}
  Path('native-process-smoke-summary.json').write_text(json.dumps(summary))
  HostEventStore(os.environ['RPE_HERMES_DB']).record('on_session_end',{'session_id':'native-process-installed','completed':True})
  print(json.dumps({'type':'result','session_id':'native-process-installed','text':'provider-free native process smoke'}))
  return 0
-cli.main=smoke
+original_import=bootstrap.importlib.import_module
+def dispatch(name,package=None):
+ module=original_import(name,package=package)
+ if name=='hermes_cli.main':
+  bootstrap.importlib.import_module=original_import
+  module.main=smoke
+ return module
+bootstrap.importlib.import_module=dispatch
 raise SystemExit(bootstrap.main(['--help']))
 '''
     def launch(command, *args, **kwargs):
         if isinstance(command, list) and command[:1] == ['/usr/bin/sandbox-exec']:
             # Preserve the constructor's sandbox, environment, stdout/stderr,
             # process group and inherited key FD. Replace provider entry only.
-            command = command[:5] + ['-c', program]
+            command = command[:5] + ['-c', program, command[5], json.dumps(case['expected'])]
         return original_popen(command, *args, **kwargs)
     monkeypatch.setattr(launcher.subprocess, 'Popen', launch)
     monkeypatch.setattr(launcher, '_read_host_settings', lambda *_: {
@@ -585,5 +610,8 @@ raise SystemExit(bootstrap.main(['--help']))
     (tmp_path/'native-process-constructor-result.json').write_text(json.dumps(result, ensure_ascii=False))
     assert result['completed'] is True, (session/'stderr.log').read_text()+'\n'+(session/'stdout.jsonl').read_text()
     summary = json.loads((workspace/'native-process-smoke-summary.json').read_text())
-    assert summary['provider_calls'] == 0 and summary['signed_receipts'] == 4
+    assert summary['provider_calls'] == 0 and summary['signed_receipts'] == 5
+    assert summary['business_oracle_matched'] is True and summary['child_harness_importable'] is False
+    from rpe_harness.experiments.address_comparison import score_address_artifact
+    assert score_address_artifact(plan, trial)['business_correct'] is True
     assert result['process_cleanup']['cleanup_complete'] is True, result['process_cleanup']

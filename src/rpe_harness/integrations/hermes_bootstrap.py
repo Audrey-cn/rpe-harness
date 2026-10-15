@@ -291,7 +291,12 @@ def main(argv: list[str] | None = None) -> Any:
     if argv is not None:
         sys.argv = [sys.argv[0], *argv]
     if os.environ.get('RPE_HERMES_NATIVE_EXECUTION_KEY_FD'):
-        importlib.import_module('rpe_harness.integrations.hermes_native_process').install_native_execution_signing_key()
+        search_path = list(sys.path)
+        try:
+            sys.path.insert(0, os.environ['RPE_HARNESS_IMPORT_ROOT'])
+            importlib.import_module('rpe_harness.integrations.hermes_native_process').install_native_execution_signing_key()
+        finally:
+            sys.path[:] = search_path
     install_process_telemetry()
     importlib.import_module("hermes_bootstrap")
     install_producer_toolset()

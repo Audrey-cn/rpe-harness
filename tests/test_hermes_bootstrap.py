@@ -359,7 +359,8 @@ def test_non_review_file_bootstrap_never_imports_review_adapter(tmp_path, monkey
 
 @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
                     reason='actual macOS installed Hermes native-clean startup')
-def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path):
+@pytest.mark.parametrize('with_key', [False, True])
+def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harness_import(tmp_path, with_key):
     from rpe_harness.integrations.hermes_session import prepare_home, sandbox_profile
     hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent'))
     interpreter = hermes_root / '.venv/bin/python'
@@ -390,7 +391,7 @@ def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harne
         tmp_path / 'runs.sqlite', read_roots=[interpreter.parent.parent, Path.home() / '.hermes/tools'],
         native_import_root=BOOTSTRAP_PATH.parents[2],
         owner_read_scope=(tmp_path.parent, [tmp_path])))
-    program = r'''import importlib.util,json,socket,sys
+    program = r'''import importlib.util,json,os,socket,subprocess,sys
 network_attempts=[]
 def deny_network(self,address):
     network_attempts.append(True)
@@ -399,9 +400,24 @@ socket.socket.connect=deny_network
 assert importlib.util.find_spec('rpe_harness') is None,'Harness unexpectedly importable at native entry'
 spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.argv[1])
 bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
-import hermes_cli.main as cli
+initial_pythonpath=os.environ.get('PYTHONPATH')
+key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD']) if sys.argv[2]=='key' else None
 actual_constructor_called=[]
 def constructor_main():
+    assert os.environ.get('PYTHONPATH')==initial_pythonpath
+    assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
+    if key_fd is not None:
+        assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
+        try: os.fstat(key_fd)
+        except OSError: pass
+        else: raise AssertionError('key descriptor was not closed')
+        from rpe_harness.integrations import hermes_native_process as process
+        assert process._SIGNING_KEY==b'K'*32
+        assert process is sys.modules['rpe_harness.integrations.hermes_native_process']
+    probe=subprocess.run([sys.executable,'-B','-c',
+        "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],
+        capture_output=True,text=True,timeout=5)
+    assert probe.returncode==0,probe.stderr
     from run_agent import AIAgent
     agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
         provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
@@ -411,19 +427,39 @@ def constructor_main():
     assert not {'rpe_propose','rpe_task','rpe_confirm'} & agent.valid_tool_names
     actual_constructor_called.append(True)
     return 0
-# Only replace CLI dispatch's final callback; the bootstrap and AIAgent constructor are installed code.
-cli.main=constructor_main
+# Replace only final CLI dispatch when bootstrap imports it, after consuming any key FD.
+original_import=bootstrap.importlib.import_module
+def dispatch(name,package=None):
+    module=original_import(name,package=package)
+    if name=='hermes_cli.main':
+        bootstrap.importlib.import_module=original_import
+        module.main=constructor_main
+    return module
+bootstrap.importlib.import_module=dispatch
 assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
 assert actual_constructor_called==[True] and network_attempts==[]
 print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
-    'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0}))
+    'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0,
+    'key_requested':key_fd is not None,'key_fd_consumed':key_fd is not None,'child_harness_importable':False}))
 '''
-    child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
-        '-B', '-c', program, str(BOOTSTRAP_PATH)], cwd=workspace, env=environment,
-        capture_output=True, text=True, timeout=45)
+    key_descriptor = None
+    if with_key:
+        key_descriptor, writer = os.pipe()
+        os.write(writer, b'K' * 32)
+        os.close(writer)
+        environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_descriptor)
+    try:
+        child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+            '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key'],
+            cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
+            pass_fds=(key_descriptor,) if with_key else ())
+    finally:
+        if key_descriptor is not None:
+            os.close(key_descriptor)
     (tmp_path / 'native-clean-bootstrap.stderr.log').write_text(child.stderr)
     assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
     result = json.loads(child.stdout.strip().splitlines()[-1])
     assert result == {'actual_file_bootstrap': True, 'installed_constructor': True,
-        'harness_importable_at_entry': False, 'network_attempts': 0, 'provider_requests': 0}
+        'harness_importable_at_entry': False, 'network_attempts': 0, 'provider_requests': 0,
+        'key_requested': with_key, 'key_fd_consumed': with_key, 'child_harness_importable': False}
     (tmp_path / 'native-clean-bootstrap-proof.json').write_text(json.dumps(result, indent=2))
