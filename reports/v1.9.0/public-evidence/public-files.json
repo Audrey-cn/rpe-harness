@@ -1,0 +1,101 @@
+{
+  "files": [
+    {
+      "kind": "fixture",
+      "name": "csv-zh-composite.csv",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "size_bytes": 75
+    },
+    {
+      "kind": "prompt",
+      "name": "csv-zh-composite.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+      "size_bytes": 323
+    },
+    {
+      "kind": "fixture",
+      "name": "tsv-tab.csv",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "87200046ad42a9545a658fa2f570c1322f1d232144caf52f65d14bc675acac25",
+      "size_bytes": 35
+    },
+    {
+      "kind": "prompt",
+      "name": "tsv-tab.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+      "size_bytes": 306
+    },
+    {
+      "kind": "fixture",
+      "name": "json-lossless.json",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+      "size_bytes": 112
+    },
+    {
+      "kind": "prompt",
+      "name": "json-lossless.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+      "size_bytes": 216
+    },
+    {
+      "kind": "fixture",
+      "name": "xlsx-original.xlsx",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "14f89015157dda74e9653d8b85490bbc66aa74bdcbe4497410bf3fa35167265c",
+      "size_bytes": 5445
+    },
+    {
+      "kind": "prompt",
+      "name": "xlsx-original.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+      "size_bytes": 212
+    },
+    {
+      "kind": "fixture",
+      "name": "missing-keys.csv",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "68e88307653660fcaa3e3efe072f9ddf5e6fb8ebe3a1b1187ac320d979707cbe",
+      "size_bytes": 96
+    },
+    {
+      "kind": "prompt",
+      "name": "missing-keys.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "771246b0828452e65e805c59e7e5cb2c42e8f8195469a0bfcb254d8d5aeff24b",
+      "size_bytes": 242
+    },
+    {
+      "kind": "fixture",
+      "name": "unsupported-sum.csv",
+      "raw_exported": true,
+      "reason": "frozen_public_input",
+      "sha256": "5e669cc6cdf65434098dfdbbce24f16c35d1d1e8c58234e3c4a341cd1c7fbb34",
+      "size_bytes": 35
+    },
+    {
+      "kind": "prompt",
+      "name": "free-text-condition.txt",
+      "raw_exported": true,
+      "reason": "frozen_public_prompt",
+      "sha256": "bcafa542c1e04479bda142e7daf8ea6df8191228522dce64f05e30c7c0b7f0e0",
+      "size_bytes": 92
+    }
+  ],
+  "sha256": "6f0e9e7cb74f9a9eaff3eb6a33eab1963e241e77a5bf730de2a6770f591ad5c6"
+}

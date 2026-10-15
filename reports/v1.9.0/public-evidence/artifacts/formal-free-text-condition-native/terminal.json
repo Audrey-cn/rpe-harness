@@ -1,0 +1,6 @@
+{
+  "status": "needs_context",
+  "missing": [
+    "structured_current_request"
+  ]
+}

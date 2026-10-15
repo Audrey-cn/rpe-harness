@@ -1,0 +1,537 @@
+{
+  "records": [
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": true,
+      "attempt_id": "formal-csv-zh-composite-clean",
+      "elapsed_seconds": 22.374349457997596,
+      "finished_at": 1792023511.3129249,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "ecde1ddd45567304d7475d876e25214961c4ccb0e9b5d4d86e5a7dd21d75f341",
+      "reservation_sha256": "743354c8dab1e0653b3aac4afd50cf19fcf371b4246b7f531a16e06e4924e262",
+      "reserved_at": 1792023488.936231,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 1024,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1100,
+        "known_total_tokens": 2976,
+        "missing_observations": 0,
+        "output_tokens": 852,
+        "prompt_tokens": 2124,
+        "reasoning_tokens": 212,
+        "requests_with_usage": 2,
+        "total_tokens": 2976
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "formal-csv-zh-composite-native",
+      "elapsed_seconds": 19.551428584003588,
+      "finished_at": 1792023488.26752,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "2149f2cdb492a59499b8266afbc2af2e5307728043d97f04463a089706afbb8a",
+      "reservation_sha256": "03b532d33548ef7b8f519be6a3a236a65ff793b18d62a1ea3a2c95471b8bf5c0",
+      "reserved_at": 1792023468.71428,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "failed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 3,
+        "cache_read_tokens": 17024,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 3120,
+        "known_total_tokens": 20662,
+        "missing_observations": 0,
+        "output_tokens": 518,
+        "prompt_tokens": 20144,
+        "reasoning_tokens": 228,
+        "requests_with_usage": 3,
+        "total_tokens": 20662
+      },
+      "workflow_verified": false
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": false,
+      "attempt_id": "formal-free-text-condition-clean",
+      "elapsed_seconds": 34.54109241699916,
+      "finished_at": 1792023820.063193,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "e5906031ae696abdc2a170b9c490ead8f5e7a65b14f846250197d3fb7a72f264",
+      "reservation_sha256": "625dd5701ca71c751ea572f6c4646c84e0c420dd506df8e00452a5557fb4adeb",
+      "reserved_at": 1792023785.520475,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "refused",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 1024,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 406,
+        "known_total_tokens": 2627,
+        "missing_observations": 0,
+        "output_tokens": 1197,
+        "prompt_tokens": 1430,
+        "reasoning_tokens": 527,
+        "requests_with_usage": 2,
+        "total_tokens": 2627
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": false,
+      "attempt_id": "formal-free-text-condition-native",
+      "elapsed_seconds": 23.959117958002025,
+      "finished_at": 1792023844.6898298,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "3701757df1be91298b9cc1cfeb1939bc18e19abed77bb911194f38b852c15ed4",
+      "reservation_sha256": "ff22c8bcf726c795f81cbcce24e7ceeea00db7857aa86009a608b5636d54d88a",
+      "reserved_at": 1792023820.728818,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "failed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 12032,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1532,
+        "known_total_tokens": 14211,
+        "missing_observations": 0,
+        "output_tokens": 647,
+        "prompt_tokens": 13564,
+        "reasoning_tokens": 509,
+        "requests_with_usage": 2,
+        "total_tokens": 14211
+      },
+      "workflow_verified": false
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": true,
+      "attempt_id": "formal-json-lossless-clean",
+      "elapsed_seconds": 21.33250920800492,
+      "finished_at": 1792023651.677153,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "d804fdd66acc47e09f84c9e70cb4c4cbc1ad651dce7807bf40571ab83bf97438",
+      "reservation_sha256": "ebca48c3998c659901c5c69ba965260fe4db11cd6b5c7aaea6bd147fe17a58ab",
+      "reserved_at": 1792023630.3422909,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 2091,
+        "known_total_tokens": 2962,
+        "missing_observations": 0,
+        "output_tokens": 871,
+        "prompt_tokens": 2091,
+        "reasoning_tokens": 92,
+        "requests_with_usage": 2,
+        "total_tokens": 2962
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "formal-json-lossless-native",
+      "elapsed_seconds": 54.323994124999444,
+      "finished_at": 1792023629.678976,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "a1d0c6d0df932f73b8c05e05ccfba8584e9f60da57b0d3253b67985862a601bf",
+      "reservation_sha256": "47616f50921f69e09296d48dd9a65468d2ebd83227ce7dad0834517c3ecd6171",
+      "reserved_at": 1792023575.353506,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 52736,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 5531,
+        "known_total_tokens": 60701,
+        "missing_observations": 0,
+        "output_tokens": 2434,
+        "prompt_tokens": 58267,
+        "reasoning_tokens": 818,
+        "requests_with_usage": 7,
+        "total_tokens": 60701
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": false,
+      "attempt_id": "formal-missing-keys-clean",
+      "elapsed_seconds": 24.698427582996374,
+      "finished_at": 1792023784.786707,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "428b282bc30e4ab2d4a872fae8ba0a19fd3b45f79fbfce5b257e01b2c62762c4",
+      "reservation_sha256": "1a7796f75da3e51e97a713fa9a60de77caaf9632cd7d561735e423d96f01a0a3",
+      "reserved_at": 1792023760.086905,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "refused",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 128,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1424,
+        "known_total_tokens": 2307,
+        "missing_observations": 0,
+        "output_tokens": 755,
+        "prompt_tokens": 1552,
+        "reasoning_tokens": 351,
+        "requests_with_usage": 2,
+        "total_tokens": 2307
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": false,
+      "attempt_id": "formal-missing-keys-native",
+      "elapsed_seconds": 51.67655004099652,
+      "finished_at": 1792023759.41795,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "bf1c9807a39286ad5e144b351588f817208538047303ee399ed859af2377f1ea",
+      "reservation_sha256": "7aa7fddf16f7c8881fa038e50e7986c17e4de6d0cafb078b450b609584b94582",
+      "reserved_at": 1792023707.739573,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "failed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 6,
+        "cache_read_tokens": 43264,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 3529,
+        "known_total_tokens": 48512,
+        "missing_observations": 0,
+        "output_tokens": 1719,
+        "prompt_tokens": 46793,
+        "reasoning_tokens": 781,
+        "requests_with_usage": 6,
+        "total_tokens": 48512
+      },
+      "workflow_verified": false
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": true,
+      "attempt_id": "formal-tsv-tab-clean",
+      "elapsed_seconds": 20.719901291995484,
+      "finished_at": 1792023532.726822,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "9e5d4ab8d86e73c187e314516ae585b94389f99f4ab888dd1cb296b7d0023941",
+      "reservation_sha256": "f42ac286b9536091afb2b8bb619a172256f0f995b2eec23b333892be30eec509",
+      "reserved_at": 1792023512.004724,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 896,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1228,
+        "known_total_tokens": 3049,
+        "missing_observations": 0,
+        "output_tokens": 925,
+        "prompt_tokens": 2124,
+        "reasoning_tokens": 184,
+        "requests_with_usage": 2,
+        "total_tokens": 3049
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "formal-tsv-tab-native",
+      "elapsed_seconds": 41.28294454100251,
+      "finished_at": 1792023574.6801531,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "c1dd47a731744a821865f4b275274f843078494cb74e808b8d52c2914d6d8e6b",
+      "reservation_sha256": "684110e2d3653d64504e4101cf3ddf7b5382a9a38132d50bfeba47a806cc142b",
+      "reserved_at": 1792023533.3957949,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 7,
+        "cache_read_tokens": 45952,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 6348,
+        "known_total_tokens": 53902,
+        "missing_observations": 0,
+        "output_tokens": 1602,
+        "prompt_tokens": 52300,
+        "reasoning_tokens": 386,
+        "requests_with_usage": 7,
+        "total_tokens": 53902
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": true,
+      "attempt_id": "formal-xlsx-original-clean",
+      "elapsed_seconds": 25.167764500001795,
+      "finished_at": 1792023677.539826,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "eafb91765bfbfd8adc1d03fb44dd7491adbda032cde12b029668e61139d79e45",
+      "reservation_sha256": "be5c82208635a2a194112538a693dd7cca874a17f20cde91bedce64e7acd98b7",
+      "reserved_at": 1792023652.370204,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 768,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 1698,
+        "known_total_tokens": 3235,
+        "missing_observations": 0,
+        "output_tokens": 769,
+        "prompt_tokens": 2466,
+        "reasoning_tokens": 114,
+        "requests_with_usage": 2,
+        "total_tokens": 3235
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "formal-xlsx-original-native",
+      "elapsed_seconds": 28.840393124999537,
+      "finished_at": 1792023707.058812,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "formal",
+      "record_sha256": "5c1c8d6073c4de7fa4b1799cd30e2b7fef1256ccd629427c7f0d8cc0bf53345e",
+      "reservation_sha256": "082c0c634b2b9d2f9059b475718fef797161257adeedeee2691d604ec0a5406c",
+      "reserved_at": 1792023678.21582,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "failed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 42368,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 5280,
+        "known_total_tokens": 48622,
+        "missing_observations": 0,
+        "output_tokens": 974,
+        "prompt_tokens": 47648,
+        "reasoning_tokens": 273,
+        "requests_with_usage": 5,
+        "total_tokens": 48622
+      },
+      "workflow_verified": false
+    },
+    {
+      "api_expected": true,
+      "arm": "clean",
+      "artifact_correct": true,
+      "attempt_id": "pilot-csv-zh-composite-clean",
+      "elapsed_seconds": 20.579166916002578,
+      "finished_at": 1792023430.51965,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "pilot",
+      "record_sha256": "b9e09aeb4001e60d2f58ad9fba73feb2039294f2190f295d393e8239a1ea2cc4",
+      "reservation_sha256": "bf87524c2be62f51442970272ba24b3b24fbead196c6ea3b4d00f50759c0b32a",
+      "reserved_at": 1792023409.938174,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 2126,
+        "known_total_tokens": 2796,
+        "missing_observations": 0,
+        "output_tokens": 670,
+        "prompt_tokens": 2126,
+        "reasoning_tokens": 138,
+        "requests_with_usage": 2,
+        "total_tokens": 2796
+      },
+      "workflow_verified": true
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "artifact_correct": true,
+      "attempt_id": "pilot-csv-zh-composite-native",
+      "elapsed_seconds": 37.063166250001814,
+      "finished_at": 1792023409.2912068,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "pilot",
+      "record_sha256": "983dcb57782b654d295dc4979e4ddc83c4211f5ae37804c55e3d54ab1b2a263b",
+      "reservation_sha256": "1a7d10d6180aac0f4f127fc0013588beac388317c5db91358b086522c5a21ed4",
+      "reserved_at": 1792023372.226849,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 5,
+        "cache_read_tokens": 32384,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 4962,
+        "known_total_tokens": 38989,
+        "missing_observations": 0,
+        "output_tokens": 1643,
+        "prompt_tokens": 37346,
+        "reasoning_tokens": 489,
+        "requests_with_usage": 5,
+        "total_tokens": 38989
+      },
+      "workflow_verified": true
+    }
+  ],
+  "sha256": "9e646283282ec09115f94e7d5078f55434b72bfd779c12b7ca01dce3b15d66e7"
+}

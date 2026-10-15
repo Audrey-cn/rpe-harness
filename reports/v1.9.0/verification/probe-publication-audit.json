@@ -1,0 +1,27 @@
+{
+  "scope": "metadata observed before owned cleanup; unverified artifact bytes not exported",
+  "probes": [
+    {
+      "trial_id": "formal-missing-keys-native",
+      "business_output_names": [
+        "output.csv"
+      ],
+      "terminal_file_exists": false
+    },
+    {
+      "trial_id": "formal-missing-keys-clean",
+      "business_output_names": [],
+      "terminal_file_exists": false
+    },
+    {
+      "trial_id": "formal-free-text-condition-clean",
+      "business_output_names": [],
+      "terminal_file_exists": false
+    },
+    {
+      "trial_id": "formal-free-text-condition-native",
+      "business_output_names": [],
+      "terminal_file_exists": true
+    }
+  ]
+}

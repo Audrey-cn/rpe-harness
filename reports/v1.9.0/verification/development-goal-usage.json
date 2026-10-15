@@ -1,0 +1,16 @@
+{
+  "scope": "Codex goal telemetry before owned cleanup; separate from Hermes comparison and not a bill",
+  "snapshot": {
+    "goal": {
+      "threadId": "01a13578-8a7d-76e1-ac0a-e247ba56500c",
+      "objective": "完成 RPE-Harness 1.9：落实干净理解入口、可追溯要求清单和确定性执行；验证节点隔离与业务要求覆盖，完成有界原生对照、可用版本交付及本轮归属数据和临时进程清理。",
+      "status": "active",
+      "tokensUsed": 960442,
+      "timeUsedSeconds": 2711,
+      "createdAt": 1792021347,
+      "updatedAt": 1792024058
+    },
+    "remainingTokens": null,
+    "completionBudgetReport": null
+  }
+}

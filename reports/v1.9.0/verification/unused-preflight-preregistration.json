@@ -1,0 +1,7 @@
+{
+  "schema_version": "rpe.clean-comparison/v1",
+  "sha256": "dcb03126b4bb94058f28cade07bcce8cb6059a27028d6b03f010ac17628c86ab",
+  "public_contract_sha256": "e8879f34b568e10d8afd8f5b0261013a710d0050e6e51ce419de6b56f1fbd7a6",
+  "model_sessions": 0,
+  "disposition": "Superseded before any model call after fake HTTP transport revealed auxiliary-body leakage; original reserved budget remains 14 sessions."
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "rpe.clean-public-verification/v1",
+  "verified": true,
+  "source_documents_verified": 6,
+  "business_artifacts_verified": 10,
+  "runtime_source_proofs_verified": 7,
+  "runtime_identity_attestation": "recorded_runtime_checks_only",
+  "errors": [],
+  "after_owned_root_removal": true
+}

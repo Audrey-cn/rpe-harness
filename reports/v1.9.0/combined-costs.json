@@ -1,0 +1,43 @@
+{
+  "scope": "all 2 pilot plus 12 frozen formal sessions; separate from development; not a verified bill",
+  "costs": {
+    "phase_count": 14,
+    "failed_phases": 4,
+    "incomplete_phases": 0,
+    "total_tokens": 305551,
+    "known_total_tokens": 305551,
+    "api_requests": 49,
+    "known_api_requests": 49,
+    "usage_complete": true,
+    "missing_observations": 0,
+    "unknown_usage_phases": 0,
+    "elapsed_seconds_sum": 426.11080599800334,
+    "known_elapsed_seconds_sum": 426.11080599800334,
+    "observed_makespan_seconds": 472.4629807472229,
+    "observed_peak_rss_bytes": null,
+    "rss_observation_coverage": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 249600,
+    "known_cache_read_tokens": 249600,
+    "cache_write_tokens": null,
+    "known_cache_write_tokens": 0,
+    "input_tokens": 40375,
+    "known_input_tokens": 40375,
+    "prompt_tokens": 289975,
+    "known_prompt_tokens": 289975,
+    "output_tokens": 15576,
+    "known_output_tokens": 15576,
+    "reasoning_tokens": 5102,
+    "known_reasoning_tokens": 5102
+  },
+  "driver_actions": {
+    "pilot": {
+      "elapsed_seconds": 59.571155792000354,
+      "boundary": "driver action entry through comparison summary; includes freeze/setup/launch/verification/ledger, excludes interpreter startup and development"
+    },
+    "formal": {
+      "elapsed_seconds": 377.31892329100083,
+      "boundary": "driver action entry through comparison summary; includes freeze/setup/launch/verification/ledger, excludes interpreter startup and development"
+    }
+  }
+}

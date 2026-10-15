@@ -1,0 +1,480 @@
+{
+  "cases": [
+    {
+      "capability": "tabular.deduplicate",
+      "case_id": "csv-zh-composite",
+      "category": "production",
+      "constraints": [
+        "preserve_original",
+        "preserve_order"
+      ],
+      "expected_rows": [
+        [
+          "地区",
+          "编号",
+          "金额"
+        ],
+        [
+          "华东",
+          "001",
+          "10"
+        ],
+        [
+          "华西",
+          "001",
+          "20"
+        ],
+        [
+          "华东",
+          "1",
+          "30"
+        ]
+      ],
+      "expected_status": "ready",
+      "input_name": "input.csv",
+      "input_sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "output_name": "output.csv",
+      "parameters": {
+        "delimiter": ",",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "地区",
+          "编号"
+        ]
+      },
+      "source_raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"delimiter\": \",\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"key_columns\": [\n      \"地区\",\n      \"编号\"\n    ],\n    \"output_path\": \"output.csv\"\n  }\n}",
+      "source_text": "地区,编号,金额\n华东,001,10\n华西,001,20\n华东,001,99\n华东,1,30\n",
+      "task": "请把 input.csv 里重复的交易清掉：地区和编号合起来才算同一笔。保留第一次出现的整行及原来顺序；编号是原始字符串，001与1不同。输入是UTF-8逗号CSV，结果另存 output.csv。"
+    },
+    {
+      "capability": "tabular.deduplicate",
+      "case_id": "tsv-tab",
+      "category": "production",
+      "constraints": [
+        "preserve_original",
+        "preserve_order"
+      ],
+      "expected_rows": [
+        [
+          "code",
+          "note"
+        ],
+        [
+          "A",
+          "first"
+        ],
+        [
+          "B",
+          "second"
+        ]
+      ],
+      "expected_status": "ready",
+      "input_name": "input.csv",
+      "input_sha256": "87200046ad42a9545a658fa2f570c1322f1d232144caf52f65d14bc675acac25",
+      "output_name": "output.csv",
+      "parameters": {
+        "delimiter": "\t",
+        "encoding": "utf-8",
+        "keep": "first",
+        "key_columns": [
+          "code"
+        ]
+      },
+      "source_raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"delimiter\": \"\\t\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"key_columns\": [\n      \"code\"\n    ],\n    \"output_path\": \"output.csv\"\n  }\n}",
+      "source_text": "code\tnote\nA\tfirst\nB\tsecond\nA\tlater\n",
+      "task": "input.csv 实际是以单个制表符TAB分隔的UTF-8表格，请按code的精确字符串去重，保留首条及原行顺序、表头和所有单元格，仍以真实TAB分隔写入 output.csv；不要把反斜杠加t当分隔符。"
+    },
+    {
+      "capability": "json.normalize",
+      "case_id": "json-lossless",
+      "category": "production",
+      "constraints": [
+        "preserve_original",
+        "preserve_order"
+      ],
+      "expected_status": "ready",
+      "expected_text": "{\"名字\":\"小雨\",\"金额\":1.20e+2,\"flags\":[true,null,false],\"nested\":{\"z\":2,\"a\":\"\\u4e2d\"}}\n",
+      "input_name": "input.json",
+      "input_sha256": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+      "output_name": "output.json",
+      "parameters": {
+        "style": "minify"
+      },
+      "source_raw": "{\n  \"capability\": \"json.normalize\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"input_path\": \"input.json\",\n    \"output_path\": \"output.json\",\n    \"style\": \"minify\"\n  }\n}",
+      "source_text": " { \"名字\" : \"小雨\", \"金额\" : 1.20e+2, \"flags\" : [ true, null, false ], \"nested\" : {\"z\":2,\"a\":\"\\u4e2d\"} } \n",
+      "task": "把 input.json 规范化为紧凑JSON存到 output.json，结尾保留一个换行。只调整结构空白，不排序，不改变键/数组顺序、数值原始写法、字符串转义或任何值。"
+    },
+    {
+      "capability": "xlsx.inspect",
+      "case_id": "xlsx-original",
+      "category": "production",
+      "constraints": [
+        "preserve_original"
+      ],
+      "expected": {
+        "rows": [
+          [
+            "编号",
+            "金额",
+            "确认"
+          ],
+          [
+            "001",
+            7,
+            true
+          ],
+          [
+            "中文",
+            2.5,
+            false
+          ]
+        ],
+        "sheet": "明细"
+      },
+      "expected_status": "ready",
+      "input_name": "input.xlsx",
+      "input_sha256": "14f89015157dda74e9653d8b85490bbc66aa74bdcbe4497410bf3fa35167265c",
+      "output_name": "output.json",
+      "parameters": {
+        "mode": "rows",
+        "sheet": "明细"
+      },
+      "source_raw": "{\n  \"capability\": \"xlsx.inspect\",\n  \"constraints\": [\n    \"preserve_original\"\n  ],\n  \"execution\": {\n    \"input_path\": \"input.xlsx\",\n    \"mode\": \"rows\",\n    \"output_path\": \"output.json\",\n    \"sheet\": \"明细\"\n  }\n}",
+      "task": "请只读检查 input.xlsx 的“明细”工作表，把全部行按原始XLSX技能 xlsx_read.py 的 --json --sheet 明细 输出结构保存为 output.json。先用原生技能加载入口阅读已安装xlsx技能，再使用其原始helper（专门任务入口可经其已审核adapter调用），不可自行重写helper。保留JSON类型、字段与行顺序。"
+    },
+    {
+      "capability": "tabular.deduplicate",
+      "case_id": "missing-keys",
+      "category": "contract_probe",
+      "constraints": [
+        "preserve_original"
+      ],
+      "expected_missing": [
+        "execution.key_columns"
+      ],
+      "expected_status": "needs_context",
+      "input_name": "input.csv",
+      "input_sha256": "68e88307653660fcaa3e3efe072f9ddf5e6fb8ebe3a1b1187ac320d979707cbe",
+      "output_name": "output.csv",
+      "source_raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\"\n  ],\n  \"execution\": {\n    \"delimiter\": \",\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"output_path\": \"output.csv\"\n  }\n}",
+      "source_text": "姓名,手机号,订单号\n小王,13800000001,A01\n小王,13800000002,A02\n小李,13800000001,A03\n",
+      "task": "input.csv 需要按业务唯一标识去重保留首条，结果将来写 output.csv。但我还没有决定唯一标识按哪一列或哪几列组合；请先确认缺什么，不能擅自猜列或产出业务结果。"
+    },
+    {
+      "capability": "tabular.aggregate",
+      "case_id": "free-text-condition",
+      "category": "contract_probe",
+      "constraints": [
+        "preserve_original"
+      ],
+      "expected_missing": [
+        "structured_current_request"
+      ],
+      "expected_status": "needs_context",
+      "input_name": "input.csv",
+      "input_sha256": "5e669cc6cdf65434098dfdbbce24f16c35d1d1e8c58234e3c4a341cd1c7fbb34",
+      "output_name": "output.csv",
+      "source_raw": "请按地区求金额合计到 output.csv，并且必须按税后口径；保留原文件。",
+      "source_text": "地区,金额\n东,10\n西,20\n东,30\n",
+      "task": "请按地区求金额合计到 output.csv，并且必须按税后口径；保留原文件。"
+    }
+  ],
+  "controller_registration_sha256": "bceb4a088223aaa61892914e1df81c7cb25f03f1e0659f11eef6e328e37bcf8d",
+  "cost_policy": "all observed phases summed once; absent usage total null, known lower bound separate; no billing estimate",
+  "coverage_limits": [
+    "six fixed public tasks: four strict structured production sources and two directed source-boundary probes",
+    "strict JSON source v1 only; arbitrary free text cannot authorize clean execution",
+    "same original source, public capability legend, files, model configuration, interpreter and skill snapshot",
+    "native and clean tool policies differ; only whole strategies are compared",
+    "source coverage, business correctness and observed execution are separate metrics",
+    "runtime identity chains are recorded checks, not independent third-party cryptographic attestations",
+    "elapsed_seconds and phase-ledger wall totals include complete trial observation: launcher setup plus host session and post-run gate/oracle/source checks; session_elapsed_seconds preserves the narrower host timer",
+    "common preregistration, development and testing are outside trial wall totals and reported separately",
+    "one pilot pair and six formal pairs; all failures and unknown costs retained without replay",
+    "does not replace, rescore or merge any 1.8 observation"
+  ],
+  "environment": {
+    "dependency_versions": {
+      "openpyxl": "3.1.5",
+      "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]"
+    },
+    "helper_python_identity": {
+      "executable_path_sha256": "1cfaa59401553367e09498883c9feeb15a770c41807e4f9a9aec93a8ae6bd9f4",
+      "executable_sha256": "7a314947596fc484d4ec36ffc28e843b78d6d749c68736f8b5c24e7333f418eb",
+      "implementation": "cpython",
+      "installed_distribution_count": 18,
+      "installed_distributions_sha256": "462016469e0aaf31be2e702aa85f6aaea0d3ae5373fc1d4975f0d7a4ffa940ab",
+      "prefix_sha256": "7d2f3e274b067a79f7ff6439466dbd0b82242e691e91ef0eca3ef84cfc17c519",
+      "version": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]"
+    },
+    "host_config_sha256": "304448f85550e981e5cfb68498f3a14ed2692993e60ffe306c18b2101625cf97",
+    "host_runtime": {
+      "available": true,
+      "bootstrap_python": {
+        "executable_path_sha256": "5703f48a43876f90167bb79d11b92bc6069e5aaa997c08627aefe638654830b2",
+        "executable_sha256": "49007c3e4c161aa9ebf409d10cc35ca666081f809176f0e790a28de6c84800a3",
+        "implementation": "cpython",
+        "installed_distribution_count": 72,
+        "installed_distributions_sha256": "109169a9f9cf9b5e1e2e5bacf2dc16cfdf69236ee014310398e23af654e4ce88",
+        "prefix_sha256": "1709084b757cc5884779ef7797ec8bb9b627b71435c17af80cee714950320ff2",
+        "version": "3.14.7 (main, Aug  7 2026, 02:15:30) [Clang 22.1.3 ]"
+      },
+      "git_head": "e06df9c2eae6901f4c88f464e0ae6e753c0428b8",
+      "selected_python": {
+        "executable_path_sha256": "e83096644ab953147f07a74d0c84b762c613996ef814e58734c839ef04e2a169",
+        "executable_sha256": "7f8be4e253fe8042ad738fbf95a0473f8760dcfc5edc256196ac2f31de6ac46c",
+        "implementation": "cpython",
+        "installed_distribution_count": 114,
+        "installed_distributions_sha256": "2c6473b6292de0224e2a06059409d32a0a14ddca2e52d1701f6ee202ad45f375",
+        "prefix_sha256": "22dc1b77757746400828c85e66e8e233a058b42c684e5a78644dc6d26325d01c",
+        "version": "3.14.7 (main, Sep  1 2026, 14:05:28) [Clang 22.1.3 ]"
+      },
+      "status": "ready",
+      "tracked_diff_bytes": 31265,
+      "tracked_diff_scope": "all tracked repository files except memory, state and credential paths",
+      "tracked_diff_sha256": "1f4b6835d26437a78047bfb691eb81caf699e291b768000e8d600ef526c31bc3",
+      "untracked_runtime_count": 0,
+      "untracked_runtime_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "source_sha256": {
+      "__init__.py": "8161cfd4333bbbb4f62123190012d3e9070fbea71f193c7fda8b382da090a1f2",
+      "__main__.py": "3f9572bb33988df2da2657eb4e9a965459e4fca1465e83cd6f229dc58a4c28bf",
+      "address_cli.py": "1adbf020eb03236f5e5798ef83f0a1a0b6d7d07267f52c5baad9926e02e1c033",
+      "assets/__init__.py": "b85c27f535b940ce2032ed288d4939aeb6ee801f8883e6cc5135a1acbe5bc56c",
+      "assets/catalog.py": "c4546e8a8dd77068f8e383a3c234bec0a843852b071a06cfeafbcfffe4da1968",
+      "assets/cli.py": "eac778dbb67c4a2249895b515e2e722a5744206ca11d24e0e9305a42cd949e43",
+      "assets/identity.py": "f0f112aec3a461ae0dd1720eb33116e5de8d7b9f650abe9ad4f3f3cf57d29109",
+      "assets/lifecycle.py": "14dd5e37daf47d872e05368ca1f2b5e4f144e3387db79a305b64e47301616362",
+      "assets/manifest.py": "810c59b00195041d49db868662d0c6cfb42f1ab9cd62c57e84b17e06b56fea7c",
+      "assets/prepublish.py": "22bbb8eca4d24c372a78f620851aaff063b023387eefa1de6ee726efe09b83b0",
+      "assets/registry.py": "31fe0a1ac1df1441d6e912937befe8c40b608ca4f894268af9a94414462fb4e0",
+      "assets/store.py": "68c6e475b5f14a1002c037d59ce3930f26163af912b407a06f86412cd0b5a54d",
+      "assets/trust.py": "fb9694ef6c2616a737e2d2fda6d836c0b1c5e2a747103b3f0756d526a849c372",
+      "bridge.py": "b9c3b5d54a0e64f011b56af3ada018175792f1f1439064bcf16df927bd436974",
+      "capability.py": "b3f422ca7252e35af03cf4af5858a9c9f02d464c8b456a0411da2bbc972dfdc4",
+      "capability_catalog.py": "df8ddd3d596131fbef136b2a18cd5d815ff1bd4621049ff38840a0022ec2c8bb",
+      "causal_graph.py": "ccc6bf37ab1993ddf0d5024afa5d1cfa68076e613416d011a296a87df33edf0e",
+      "cli.py": "e4541c6608e9752a4eb06702fd395c869f39eb242dc4e525d83c618bd9c8c340",
+      "context.py": "a80fb721a5f9999a909f8f5122be82b6826dd01c7b6a09c8f76c9d6ca71f5302",
+      "contracts.py": "903341125181d0809aca9e2c695c1ff40e14396e9762e8a29a03538c2d37a875",
+      "evolution/__init__.py": "929f6c659c4d40bd5a9ba019c50b61be96f48a7506d7b8212071332053254007",
+      "evolution/candidates.py": "28e6b618022c973e2d245880fb8064b6f737a6a6a5bd17d6df505ebd763ce3e4",
+      "evolution/cycle.py": "7a92e8e4d77076ed190f9693171590f2c93ba6bb7d2c2846ce7c7ccc428cc896",
+      "evolution/json_acceptance.py": "384ec628d7f52dca0a2389f5aa5a4277c6c5f6ae70de0f0c2cadab710a6edf3c",
+      "evolution/maintenance.py": "b90f0edfe400788bece49ffc7672aa1b47b1c1d0c5643ea42213b4a9599fa981",
+      "evolution/sandbox.py": "aaa958b83ca0c6f16a8200ae2b2eb733a9103cafa5e03f38c0bc8bcb8175846c",
+      "evolution/store.py": "6aee6666e7dc2843f54f756fa4fa47e82c0839991b24f8fd292adddc9640223a",
+      "evolution/training_feedback.py": "02c4644d465ad68f1069458dbf359e7bbc2a3ed841cef4631ff0214820abbdca",
+      "evolution/worker.py": "66f961d94ce01f3d2058c1d60c8c5cd1d3611cee621907a6fc0ab2716fe50450",
+      "execution.py": "2d10930cd03616e81e5da93ab95fbd37fa1614c4769c82ef1ff781f29609cd5a",
+      "experiments/__init__.py": "52cf1add9e1dcb21f586704ebba932cf16e79de921468457389b5457b86b3cf8",
+      "experiments/address_comparison.py": "2a1b92174c9ac058b5e20c317129aafe681833fa6dff70404dcb35fccd03645c",
+      "experiments/baseline.py": "9b947e2507f77bf51bedcbd38edd2b1fbe2a14d2d52707c62b475f737407a25b",
+      "experiments/basic_validation.py": "3f967ed6cdd6163a684b3d7736ecd4089c64c38a108435b9d8189228807ce92c",
+      "experiments/cold_skill_test.py": "c81b7e3afa7980ec62d22301e08480a062ccad5b46c65b452974e37b8115dd35",
+      "experiments/cost_ledger.py": "c655dd0c997bee4d86ef0be1df531ce5021f398c4e8e84c3ee791a0b9016075e",
+      "experiments/hermes_native.py": "c4240a44508a4d073c4888e0b1d622e186d73f53a5f6dae26e9abcaf7d0d5340",
+      "experiments/hermes_repeated.py": "51eb49377f1c01048c21bdd71096aff2560408826125c4ce9de6053eaf09cb84",
+      "experiments/learning_comparison.py": "5b607b7a46e49e1352f9f5fd9f4ebf0f21bdb4f642a4549fd265f083199336ad",
+      "experiments/reuse_sequence.py": "fb21135a0f22467f53b0719ea0c577284866e6487a4c49c4198c1319e1de19af",
+      "experiments/skill_comparison.py": "0abe9d9798ff1faaffc3a6f7a46348473ad7ca0c7248c4af66c48893b47fcd9d",
+      "experiments/stress_test.py": "7ab0b8f1a027ec700178571ebea9e910520d2b26d1d28064f65b0a8320339854",
+      "experiments/unattended_sequence.py": "723bae952462034de0139b827e3ef7910c75d348e3287dbe2234526ee1c5c6d8",
+      "integrations/__init__.py": "95ac32b52d9bb4b3aee4a8e466619a39c58d27d0165b9beffa93583a30162288",
+      "integrations/hermes.py": "6dba0d8019b79bcb4b2b462e47c314cc84765a5ff66d0d59ab35f4cd8fbdc78d",
+      "integrations/hermes_address.py": "80f1b10f9d37061aded3f5d8bad25fe42aa672b322c24f9ffb220cf0299dfdc8",
+      "integrations/hermes_bootstrap.py": "04437d20315ef92cbc0b7fdad2eb4442b2c5c13eafcb0391613de7305752dce9",
+      "integrations/hermes_broker.py": "a6a74c5e236b8d11a43f3d21a71343c2799a03f294e971b1f2142c5a5d3e9726",
+      "integrations/hermes_clean.py": "e9aeb16bb68c34566d3981d6570039a89854726e990e98f0f99e6fc94d1e33f9",
+      "integrations/hermes_gate.py": "52f8d8115cd8bc42755d0eca0cbbd5dc7761d1d5c8b5f7eaa47f82257cc694e0",
+      "integrations/hermes_session.py": "58123072aaa45784546903852362353f2c636b0e49c65bc9b5762650a3ad06c6",
+      "integrations/hermes_skills.py": "6b3079a583d5da5e0313328f95d300b84e9370a4cf581a7c3e5ff0cab9802f72",
+      "integrations/skill_gate.py": "7c3564f762ae5cb4b7259d9ddcaf15e89282bf95e49f8da80fb8ff783d677d79",
+      "intent.py": "be33b09f3a6b2a41ac9a77d4c8b75363c6c0dad75447740ab9acc5a411b47608",
+      "json_contract.py": "756ca3a8ec5a277f35fd33ca5062e8bed9540a8155d80ecf182c2d6d3164e595",
+      "json_execution.py": "3e5b69f5f7e82569a23b70b9e1adc5184c8242b26ac3f451566fe985c02b0d6e",
+      "json_verification.py": "4829911d28d7d786d3c17d4ffa4afce5293af64a3345281bceb2c7877a557e96",
+      "mcsi.py": "743125302b851e0a791461e2a76cc2462d498aafe8bd325b52ad4327546411db",
+      "path_binding.py": "c8139154b9096ed0c40cdeb90fdfe0cb27ea5a6936ac18f2394d62a299d14ea7",
+      "recovery.py": "8c950d1fcafc8e01bb932368e470ff7299f38bb2649bab67d0ede51fd6397f1f",
+      "requirements.py": "4ce0f8c5f2830492f7256787cdecb6dac3a89258b31df510dbb5242dd527eaa8",
+      "runtime.py": "92e88fc6a595ca3ce7056af20fc6a2667e13316fd40ae9144a51f0c13edee679",
+      "server.py": "971d3da04ce60feda62612823d5b8821c4d557e8165054b822255cfcc53bc7e3",
+      "skill_catalog.py": "314202a3c37d251f69023b5b7442ec0751e60d1ad313877924a75182affa1dfa",
+      "skill_cli.py": "defcbbddd7bc5fb198780da94e03b3462ce507a0af02d5fe559d220573dfca9f",
+      "skill_inspection.py": "256c0abf2c5053b9d3d31ed4a15a299991ea9dcb4eafff6282ce32423ddd52bf",
+      "skill_verification.py": "0e1fcaf2280584be9983e31761dc59a5d54b9010c24e66f4fe2b4ebe1fb72dc5",
+      "source_cli.py": "8ac5cc4f330751a3a98723cd8c149115dca3d9f4f44c1c6da5c19bd6f5e89de5",
+      "storage.py": "ea78be59db15b93df66de74d315201fc556226b3adbac81a586fb73b8bf0378a",
+      "tasks.py": "d81e775747334362a954b30b95757e34bc1f855b5f61ca265c42b79beb5f5d5b",
+      "verification.py": "ba5f6e05e1ab7571fe2247a18832bf7198134da54f0846b80df7c6b935e75e38",
+      "xlsx_resource.py": "54d0e250c0c91a7cf895a2e7a9847d5c399d9e24ad713291966cf72e49c3575b"
+    }
+  },
+  "failure_policy": "all reservations, failures, unknowns and pilots retained; never replay or replace",
+  "formal_session_limit": 12,
+  "max_turns": 8,
+  "missing_field_aliases": {
+    "key_columns": "execution.key_columns"
+  },
+  "model_policy": "same frozen host configuration and dependencies; record actual identities",
+  "pilot_session_limit": 2,
+  "pilots": [
+    {
+      "arm": "native",
+      "case_id": "csv-zh-composite",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "phase": "pilot",
+      "prompt_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+      "trial_id": "pilot-csv-zh-composite-native"
+    },
+    {
+      "arm": "clean",
+      "case_id": "csv-zh-composite",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "phase": "pilot",
+      "prompt_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+      "trial_id": "pilot-csv-zh-composite-clean"
+    }
+  ],
+  "production_max_task_attempts": 1,
+  "profile": "clean",
+  "prompt_redaction_policy": "public prompts replace the local interpreter path with <frozen-helper-python>; session prompt_sha256 remains the original unredacted hash",
+  "public_contract": "clean",
+  "public_contract_sha256": "e8879f34b568e10d8afd8f5b0261013a710d0050e6e51ce419de6b56f1fbd7a6",
+  "public_contract_template": "Current request authorization v1: Only a strict JSON root with exactly capability, constraints, execution authorizes execution. Do not add missing fields or interpret prose as authorization. Non-JSON/free text: return needs_context with missing [\"structured_current_request\"]. Missing required execution field: return needs_context listing execution.FIELD. When using native terminal/file tools publish refusal as terminal.json; the dedicated understanding entry returns its durable refusal itself. Preserve inputs and never overwrite. Paths are workspace relative. tabular.deduplicate: exact string keys, keep first unless declared otherwise, preserve row order and all cells, declared delimiter/encoding. json.normalize minify/pretty: change structural whitespace only, preserve numeric spelling, escapes, object/array order; end with one LF. xlsx.inspect: native agents read the installed xlsx skill through skill_view, then execute its original scripts/xlsx_read.py with {helper_python}; rows mode uses --json and optional --sheet SHEET, save original helper JSON structure. The dedicated understanding entry selects its reviewed adapter deterministically. Python with openpyxl: {helper_python}. Use terminal/file/native skill tools or the dedicated understanding entry; do not install/train/upgrade or read controller files/databases/other sessions/reports/RPE implementation. No business output on refusal.",
+  "schema_version": "rpe.clean-comparison/v1",
+  "script_sha256": "5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916",
+  "sessions": [
+    {
+      "arm": "native",
+      "case_id": "csv-zh-composite",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "phase": "formal",
+      "prompt_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+      "trial_id": "formal-csv-zh-composite-native"
+    },
+    {
+      "arm": "clean",
+      "case_id": "csv-zh-composite",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "1b229a5c45653cfd7e3995e16776bc916906b91134e5fbc184dbbcbba0de4a7d",
+      "phase": "formal",
+      "prompt_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+      "trial_id": "formal-csv-zh-composite-clean"
+    },
+    {
+      "arm": "clean",
+      "case_id": "tsv-tab",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "87200046ad42a9545a658fa2f570c1322f1d232144caf52f65d14bc675acac25",
+      "phase": "formal",
+      "prompt_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+      "trial_id": "formal-tsv-tab-clean"
+    },
+    {
+      "arm": "native",
+      "case_id": "tsv-tab",
+      "category": "production",
+      "input_name": "input.csv",
+      "input_sha256": "87200046ad42a9545a658fa2f570c1322f1d232144caf52f65d14bc675acac25",
+      "phase": "formal",
+      "prompt_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+      "trial_id": "formal-tsv-tab-native"
+    },
+    {
+      "arm": "native",
+      "case_id": "json-lossless",
+      "category": "production",
+      "input_name": "input.json",
+      "input_sha256": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+      "phase": "formal",
+      "prompt_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+      "trial_id": "formal-json-lossless-native"
+    },
+    {
+      "arm": "clean",
+      "case_id": "json-lossless",
+      "category": "production",
+      "input_name": "input.json",
+      "input_sha256": "7e6a2414c151d908a4b7a61d84a1f2914626836ce92257d15926be53eadd9627",
+      "phase": "formal",
+      "prompt_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+      "trial_id": "formal-json-lossless-clean"
+    },
+    {
+      "arm": "clean",
+      "case_id": "xlsx-original",
+      "category": "production",
+      "input_name": "input.xlsx",
+      "input_sha256": "14f89015157dda74e9653d8b85490bbc66aa74bdcbe4497410bf3fa35167265c",
+      "phase": "formal",
+      "prompt_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+      "trial_id": "formal-xlsx-original-clean"
+    },
+    {
+      "arm": "native",
+      "case_id": "xlsx-original",
+      "category": "production",
+      "input_name": "input.xlsx",
+      "input_sha256": "14f89015157dda74e9653d8b85490bbc66aa74bdcbe4497410bf3fa35167265c",
+      "phase": "formal",
+      "prompt_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+      "trial_id": "formal-xlsx-original-native"
+    },
+    {
+      "arm": "native",
+      "case_id": "missing-keys",
+      "category": "contract_probe",
+      "input_name": "input.csv",
+      "input_sha256": "68e88307653660fcaa3e3efe072f9ddf5e6fb8ebe3a1b1187ac320d979707cbe",
+      "phase": "formal",
+      "prompt_sha256": "771246b0828452e65e805c59e7e5cb2c42e8f8195469a0bfcb254d8d5aeff24b",
+      "trial_id": "formal-missing-keys-native"
+    },
+    {
+      "arm": "clean",
+      "case_id": "missing-keys",
+      "category": "contract_probe",
+      "input_name": "input.csv",
+      "input_sha256": "68e88307653660fcaa3e3efe072f9ddf5e6fb8ebe3a1b1187ac320d979707cbe",
+      "phase": "formal",
+      "prompt_sha256": "771246b0828452e65e805c59e7e5cb2c42e8f8195469a0bfcb254d8d5aeff24b",
+      "trial_id": "formal-missing-keys-clean"
+    },
+    {
+      "arm": "clean",
+      "case_id": "free-text-condition",
+      "category": "contract_probe",
+      "input_name": "input.csv",
+      "input_sha256": "5e669cc6cdf65434098dfdbbce24f16c35d1d1e8c58234e3c4a341cd1c7fbb34",
+      "phase": "formal",
+      "prompt_sha256": "bcafa542c1e04479bda142e7daf8ea6df8191228522dce64f05e30c7c0b7f0e0",
+      "trial_id": "formal-free-text-condition-clean"
+    },
+    {
+      "arm": "native",
+      "case_id": "free-text-condition",
+      "category": "contract_probe",
+      "input_name": "input.csv",
+      "input_sha256": "5e669cc6cdf65434098dfdbbce24f16c35d1d1e8c58234e3c4a341cd1c7fbb34",
+      "phase": "formal",
+      "prompt_sha256": "bcafa542c1e04479bda142e7daf8ea6df8191228522dce64f05e30c7c0b7f0e0",
+      "trial_id": "formal-free-text-condition-native"
+    }
+  ],
+  "sha256": "f7e4a14e04864390ddcf45059e38712c4d3dfacee3bc24697844b80807a52902",
+  "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+  "skill_snapshot_id": "793d678b9ccfdfac36183aa027e225c8029f5b9bcf3b5020986a7588b55bedda",
+  "timeout": 120,
+  "tool_policy": "native terminal/file/skills/tool_search preserved; clean one understanding tool then controller execution"
+}

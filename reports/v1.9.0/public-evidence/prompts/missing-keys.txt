@@ -1,0 +1,13 @@
+{
+  "capability": "tabular.deduplicate",
+  "constraints": [
+    "preserve_original"
+  ],
+  "execution": {
+    "delimiter": ",",
+    "encoding": "utf-8",
+    "input_path": "input.csv",
+    "keep": "first",
+    "output_path": "output.csv"
+  }
+}

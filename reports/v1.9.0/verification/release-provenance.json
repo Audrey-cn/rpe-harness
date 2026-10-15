@@ -1,0 +1,10 @@
+{
+  "production_commit": "aa083c9af5f949a31aff9deabd7d775c6e1e6b6b",
+  "previous_release_commit": "6fd26d8e57ea4a8f44678e9ad995c379affa2463",
+  "public_preregistration_sha256": "bceb4a088223aaa61892914e1df81c7cb25f03f1e0659f11eef6e328e37bcf8d",
+  "new_runtime_dependencies": [],
+  "runtime_dependencies": [
+    "openpyxl>=3.1.5,<3.2"
+  ],
+  "wheel_sha256": "e640ed87f3d527a79d25367b2660bf58718879795bbb53398257142150192bab"
+}

@@ -1,0 +1,18 @@
+{
+  "capability": "tabular.deduplicate",
+  "constraints": [
+    "preserve_original",
+    "preserve_order"
+  ],
+  "execution": {
+    "delimiter": ",",
+    "encoding": "utf-8",
+    "input_path": "input.csv",
+    "keep": "first",
+    "key_columns": [
+      "地区",
+      "编号"
+    ],
+    "output_path": "output.csv"
+  }
+}

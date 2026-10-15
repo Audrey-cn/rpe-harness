@@ -1,0 +1,450 @@
+{
+  "documents": [
+    {
+      "case_id": "csv-zh-composite",
+      "requirements": [
+        {
+          "acceptance_field": "capability",
+          "pointer": "/capability",
+          "requirement_id": "r0001",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "tabular.deduplicate",
+          "value_sha256": "6fe3e7185f15f5355952caaf925ed1373425791778397db0206cd222cbea9297"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints",
+          "requirement_id": "r0002",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": [
+            "preserve_original",
+            "preserve_order"
+          ],
+          "value_sha256": "37d990a9e3f008c9be6bba080f27932f3411c32fc4d0227ac1de6f7640b11235"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/0",
+          "requirement_id": "r0003",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "preserve_original",
+          "value_sha256": "4f443d88d12aba20ddf1f595764e320036cda3b43bfac32fc5d123c4d8e8ac5b"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/1",
+          "requirement_id": "r0004",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "preserve_order",
+          "value_sha256": "335b2f6584a56e4dd5abfe9a8000a68d62bf5eea05633b7c0ab2e3f0ee80aaba"
+        },
+        {
+          "acceptance_field": "execution.delimiter",
+          "pointer": "/execution/delimiter",
+          "requirement_id": "r0005",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": ",",
+          "value_sha256": "08b53b7d666cf717c2136d704d53b965a6557080d27d1ba4c884dee6b2fb8a0a"
+        },
+        {
+          "acceptance_field": "execution.encoding",
+          "pointer": "/execution/encoding",
+          "requirement_id": "r0006",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "utf-8",
+          "value_sha256": "d98383a6cb0943d0f3b771d8bf29de73aac12e12bdcea69140c3cdc493f55b30"
+        },
+        {
+          "acceptance_field": "execution.input_path",
+          "pointer": "/execution/input_path",
+          "requirement_id": "r0007",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "input.csv",
+          "value_sha256": "058d061a4f8a87ddb223d0ba4624c99e5802bd851b74ca771341b52f026245da"
+        },
+        {
+          "acceptance_field": "execution.keep",
+          "pointer": "/execution/keep",
+          "requirement_id": "r0008",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "first",
+          "value_sha256": "de5f2cbf4c10a0d146f2a671aac363e8640fefc469ad42ac25364f19e4bc194f"
+        },
+        {
+          "acceptance_field": "execution.key_columns",
+          "pointer": "/execution/key_columns",
+          "requirement_id": "r0009",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": [
+            "地区",
+            "编号"
+          ],
+          "value_sha256": "854f8bd282e4fa034507d84f0a8ae2cf7edf2b22c53e3354a6b524b9e88d6b6a"
+        },
+        {
+          "acceptance_field": "execution.output_path",
+          "pointer": "/execution/output_path",
+          "requirement_id": "r0010",
+          "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b",
+          "value": "output.csv",
+          "value_sha256": "07a0c98eec31fbc31656b0258cf86011b07b6ce261fd8216a42b56780ce4cb9e"
+        }
+      ],
+      "requirements_sha256": "497fee458ae44b50d3ddd459bdba2ac1eafee433415e2f3fd82019e5e8ed8e9e",
+      "source": {
+        "raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"delimiter\": \",\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"key_columns\": [\n      \"地区\",\n      \"编号\"\n    ],\n    \"output_path\": \"output.csv\"\n  }\n}",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:csv-zh-composite",
+        "source_ref": "public:csv-zh-composite",
+        "source_sha256": "19dfccd58da97ac086961815b2b0d3b6bb702a2f99049c4542242e541bd1695b"
+      },
+      "source_facts": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": ",",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "key_columns": [
+            "地区",
+            "编号"
+          ],
+          "output_path": "output.csv"
+        },
+        "goal": "Execute tabular.deduplicate"
+      },
+      "status": "ready"
+    },
+    {
+      "case_id": "tsv-tab",
+      "requirements": [
+        {
+          "acceptance_field": "capability",
+          "pointer": "/capability",
+          "requirement_id": "r0001",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "tabular.deduplicate",
+          "value_sha256": "6fe3e7185f15f5355952caaf925ed1373425791778397db0206cd222cbea9297"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints",
+          "requirement_id": "r0002",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": [
+            "preserve_original",
+            "preserve_order"
+          ],
+          "value_sha256": "37d990a9e3f008c9be6bba080f27932f3411c32fc4d0227ac1de6f7640b11235"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/0",
+          "requirement_id": "r0003",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "preserve_original",
+          "value_sha256": "4f443d88d12aba20ddf1f595764e320036cda3b43bfac32fc5d123c4d8e8ac5b"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/1",
+          "requirement_id": "r0004",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "preserve_order",
+          "value_sha256": "335b2f6584a56e4dd5abfe9a8000a68d62bf5eea05633b7c0ab2e3f0ee80aaba"
+        },
+        {
+          "acceptance_field": "execution.delimiter",
+          "pointer": "/execution/delimiter",
+          "requirement_id": "r0005",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "\t",
+          "value_sha256": "729e2865c247816a9f99d1f7fe87f8b8fe1e74815fdb5547de30a0e570b275ea"
+        },
+        {
+          "acceptance_field": "execution.encoding",
+          "pointer": "/execution/encoding",
+          "requirement_id": "r0006",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "utf-8",
+          "value_sha256": "d98383a6cb0943d0f3b771d8bf29de73aac12e12bdcea69140c3cdc493f55b30"
+        },
+        {
+          "acceptance_field": "execution.input_path",
+          "pointer": "/execution/input_path",
+          "requirement_id": "r0007",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "input.csv",
+          "value_sha256": "058d061a4f8a87ddb223d0ba4624c99e5802bd851b74ca771341b52f026245da"
+        },
+        {
+          "acceptance_field": "execution.keep",
+          "pointer": "/execution/keep",
+          "requirement_id": "r0008",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "first",
+          "value_sha256": "de5f2cbf4c10a0d146f2a671aac363e8640fefc469ad42ac25364f19e4bc194f"
+        },
+        {
+          "acceptance_field": "execution.key_columns",
+          "pointer": "/execution/key_columns",
+          "requirement_id": "r0009",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": [
+            "code"
+          ],
+          "value_sha256": "cc6c0235e5e4420bbb21a11c2c2c0432c2bed6d0388a9ce622edb5681bbc1ccc"
+        },
+        {
+          "acceptance_field": "execution.output_path",
+          "pointer": "/execution/output_path",
+          "requirement_id": "r0010",
+          "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e",
+          "value": "output.csv",
+          "value_sha256": "07a0c98eec31fbc31656b0258cf86011b07b6ce261fd8216a42b56780ce4cb9e"
+        }
+      ],
+      "requirements_sha256": "2f8fad3c87176b2dfe2b6022962f8eecc6b18ce22ddc6ceb6067940f2210d7ab",
+      "source": {
+        "raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"delimiter\": \"\\t\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"key_columns\": [\n      \"code\"\n    ],\n    \"output_path\": \"output.csv\"\n  }\n}",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:tsv-tab",
+        "source_ref": "public:tsv-tab",
+        "source_sha256": "6a0f0283ebea5721848583ab9d1d385a821c060389e461d6537f3c96ba713d8e"
+      },
+      "source_facts": {
+        "capability": "tabular.deduplicate",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "delimiter": "\t",
+          "encoding": "utf-8",
+          "input_path": "input.csv",
+          "keep": "first",
+          "key_columns": [
+            "code"
+          ],
+          "output_path": "output.csv"
+        },
+        "goal": "Execute tabular.deduplicate"
+      },
+      "status": "ready"
+    },
+    {
+      "case_id": "json-lossless",
+      "requirements": [
+        {
+          "acceptance_field": "capability",
+          "pointer": "/capability",
+          "requirement_id": "r0001",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "json.normalize",
+          "value_sha256": "6b5a16d04f56b33a3de100daece1029f9a3b1594898ea4848b034051780d7172"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints",
+          "requirement_id": "r0002",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": [
+            "preserve_original",
+            "preserve_order"
+          ],
+          "value_sha256": "37d990a9e3f008c9be6bba080f27932f3411c32fc4d0227ac1de6f7640b11235"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/0",
+          "requirement_id": "r0003",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "preserve_original",
+          "value_sha256": "4f443d88d12aba20ddf1f595764e320036cda3b43bfac32fc5d123c4d8e8ac5b"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/1",
+          "requirement_id": "r0004",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "preserve_order",
+          "value_sha256": "335b2f6584a56e4dd5abfe9a8000a68d62bf5eea05633b7c0ab2e3f0ee80aaba"
+        },
+        {
+          "acceptance_field": "execution.input_path",
+          "pointer": "/execution/input_path",
+          "requirement_id": "r0005",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "input.json",
+          "value_sha256": "56e125b84e0bd0dc701e09d6d695a7c493852aff76bc76481f3778a210d25b68"
+        },
+        {
+          "acceptance_field": "execution.output_path",
+          "pointer": "/execution/output_path",
+          "requirement_id": "r0006",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "output.json",
+          "value_sha256": "b1a3a2df9b2a9456d6688034a58ae9f255b1ce84b04f614b0c443b6a2a658e4a"
+        },
+        {
+          "acceptance_field": "execution.style",
+          "pointer": "/execution/style",
+          "requirement_id": "r0007",
+          "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86",
+          "value": "minify",
+          "value_sha256": "4dc8f1c6306cb1c1aaf2e6498834f43e5430f7843cda9949383c61ede70ac59e"
+        }
+      ],
+      "requirements_sha256": "335566c9657cd399c9389734cbe3a5b1a6f2e18fd41ba7577137a8ef174ffbb3",
+      "source": {
+        "raw": "{\n  \"capability\": \"json.normalize\",\n  \"constraints\": [\n    \"preserve_original\",\n    \"preserve_order\"\n  ],\n  \"execution\": {\n    \"input_path\": \"input.json\",\n    \"output_path\": \"output.json\",\n    \"style\": \"minify\"\n  }\n}",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:json-lossless",
+        "source_ref": "public:json-lossless",
+        "source_sha256": "30d318ba2ac75ccc3b51995fafe255127ed83a81032064606b9621e919ca3c86"
+      },
+      "source_facts": {
+        "capability": "json.normalize",
+        "constraints": [
+          "preserve_original",
+          "preserve_order"
+        ],
+        "execution": {
+          "input_path": "input.json",
+          "output_path": "output.json",
+          "style": "minify"
+        },
+        "goal": "Execute json.normalize"
+      },
+      "status": "ready"
+    },
+    {
+      "case_id": "xlsx-original",
+      "requirements": [
+        {
+          "acceptance_field": "capability",
+          "pointer": "/capability",
+          "requirement_id": "r0001",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "xlsx.inspect",
+          "value_sha256": "85fe64610ace8891123aceb8d4d1bb5d7dacb5aea89c4b602ff3056cf79176eb"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints",
+          "requirement_id": "r0002",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": [
+            "preserve_original"
+          ],
+          "value_sha256": "65add75af7e7ee1195920ce35e4b9b4cc6ed81387cc4d5a38337f3d703368380"
+        },
+        {
+          "acceptance_field": "constraints",
+          "pointer": "/constraints/0",
+          "requirement_id": "r0003",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "preserve_original",
+          "value_sha256": "4f443d88d12aba20ddf1f595764e320036cda3b43bfac32fc5d123c4d8e8ac5b"
+        },
+        {
+          "acceptance_field": "execution.input_path",
+          "pointer": "/execution/input_path",
+          "requirement_id": "r0004",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "input.xlsx",
+          "value_sha256": "11e62e320cebfd1e3009ae60441f4cdc29c19f57a13dcff2cf12f21725df8557"
+        },
+        {
+          "acceptance_field": "execution.mode",
+          "pointer": "/execution/mode",
+          "requirement_id": "r0005",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "rows",
+          "value_sha256": "97cdabca76704e463253cf979673e1dd6c6816a88bdcb927e13d5f336468f4e2"
+        },
+        {
+          "acceptance_field": "execution.output_path",
+          "pointer": "/execution/output_path",
+          "requirement_id": "r0006",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "output.json",
+          "value_sha256": "b1a3a2df9b2a9456d6688034a58ae9f255b1ce84b04f614b0c443b6a2a658e4a"
+        },
+        {
+          "acceptance_field": "execution.sheet",
+          "pointer": "/execution/sheet",
+          "requirement_id": "r0007",
+          "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4",
+          "value": "明细",
+          "value_sha256": "8b7f118be38ce68e581e48fac4b5fe525c7314c3fe8bab8a76144353c1c045c2"
+        }
+      ],
+      "requirements_sha256": "39b8bd8b302c8195496993cb2a32d536ff021e3941a0fcfde5ccb3519ced4e05",
+      "source": {
+        "raw": "{\n  \"capability\": \"xlsx.inspect\",\n  \"constraints\": [\n    \"preserve_original\"\n  ],\n  \"execution\": {\n    \"input_path\": \"input.xlsx\",\n    \"mode\": \"rows\",\n    \"output_path\": \"output.json\",\n    \"sheet\": \"明细\"\n  }\n}",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:xlsx-original",
+        "source_ref": "public:xlsx-original",
+        "source_sha256": "b6c5188a643fc9a1f1f3298e447a5aca8d62313faccb9d86e36a6e7891f836a4"
+      },
+      "source_facts": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "明细"
+        },
+        "goal": "Execute xlsx.inspect"
+      },
+      "status": "ready"
+    },
+    {
+      "case_id": "missing-keys",
+      "errors": [],
+      "missing": [
+        "execution.key_columns"
+      ],
+      "requirements": [],
+      "requirements_sha256": "fc0657c91c90a51be47486177d47dce35d6eb1c753d6fd048853b9014eb05cf7",
+      "source": {
+        "raw": "{\n  \"capability\": \"tabular.deduplicate\",\n  \"constraints\": [\n    \"preserve_original\"\n  ],\n  \"execution\": {\n    \"delimiter\": \",\",\n    \"encoding\": \"utf-8\",\n    \"input_path\": \"input.csv\",\n    \"keep\": \"first\",\n    \"output_path\": \"output.csv\"\n  }\n}",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:missing-keys",
+        "source_ref": "public:missing-keys",
+        "source_sha256": "771246b0828452e65e805c59e7e5cb2c42e8f8195469a0bfcb254d8d5aeff24b"
+      },
+      "status": "needs_context"
+    },
+    {
+      "case_id": "free-text-condition",
+      "errors": [
+        "semantic completeness unverified for free text"
+      ],
+      "missing": [
+        "structured_current_request"
+      ],
+      "requirements": [],
+      "requirements_sha256": "1bf9a160086928447c0e6a7b42eba05998b149590f80dbe69ca7b1ba6a975b0e",
+      "source": {
+        "raw": "请按地区求金额合计到 output.csv，并且必须按税后口径；保留原文件。",
+        "schema_version": "rpe.current-source/v1",
+        "session_id": "public:free-text-condition",
+        "source_ref": "public:free-text-condition",
+        "source_sha256": "bcafa542c1e04479bda142e7daf8ea6df8191228522dce64f05e30c7c0b7f0e0"
+      },
+      "status": "needs_context"
+    }
+  ],
+  "runtime_identity_attestation": "recorded_runtime_checks_only",
+  "schema_version": "rpe.clean-public-requirements/v1",
+  "sha256": "5a03374d53c97da30bb74854b2af274bc225e4a6f2497d4564ec0c2775dcf8c2"
+}
