@@ -288,8 +288,11 @@ def _sdk_home(env, name):
     return interpreter, environment
 
 
-@pytest.mark.parametrize('malformed', [False, True])
-def test_installed_sdk_loads_validates_and_invokes_proposal_without_network(review, malformed):
+@pytest.mark.parametrize('argument_case,expected_status', [
+    ('valid', 'awaiting_confirmation'), ('malformed_arrays', 'needs_context'),
+    ('capability_description', 'unsupported'), ('illegal_pointer', 'needs_context'),
+    ('xlsx_wrong_flag', 'unsupported')])
+def test_installed_sdk_loads_validates_and_invokes_proposal_without_network(review, argument_case, expected_status):
     interpreter, environment = _sdk_home(review, 'sdk-session')
     program = '''import json,sys,socket
 from types import SimpleNamespace
@@ -340,10 +343,17 @@ manager.invoke_hook('post_api_request',response={'assistant_message':{'tool_call
 print(json.dumps(result))
 '''
     arguments = draft()
-    if malformed:
+    if argument_case == 'malformed_arrays':
         arguments['requirements'] = '[{"text":"malformed" '
         arguments['unresolved'] = '["malformed" '
-    expected_status = 'needs_context' if malformed else 'awaiting_confirmation'
+    elif argument_case == 'capability_description':
+        arguments['capability'] = 'tabular.deduplicate — deduplicate the source rows'
+    elif argument_case == 'illegal_pointer':
+        arguments['requirements'][0]['fields'] = ['/unresolved']
+    elif argument_case == 'xlsx_wrong_flag':
+        arguments['capability'] = 'xlsx.inspect'
+        arguments['constraints'] = ['preserve_original', 'preserve_order']
+        arguments['execution'] = {'input_path': 'orders.csv', 'output_path': 'out.csv', 'mode': 'rows'}
     child = subprocess.run([str(interpreter), '-B', '-c', program, json.dumps(arguments), RAW, expected_status],
         cwd=review['workspace'], env=environment, capture_output=True, text=True, timeout=30)
     assert child.returncode == 0, child.stderr[-4000:]
@@ -353,7 +363,7 @@ print(json.dumps(result))
     verdict = review['api'].evaluate_review_session(host_result(review), review['db'], review['workspace'])
     assert verdict['proposal_verified'] is True, verdict
     assert verdict['reporting_api_requests'] == 1
-    if malformed:
+    if argument_case == 'malformed_arrays':
         assert result['requirements'] == []
         assert verdict['arguments_transform'] == 'array_string_wrapped'
         assert verdict['post_arguments_phase'] == 'effective_after_coercion'
@@ -405,6 +415,20 @@ for wire in seen:
     assert 'PRIVATE' not in json.dumps(wire)
     assert wire['tool_choice']['function']['name']=='rpe_propose'
     assert [tool['function']['name'] for tool in wire['tools']]==['rpe_propose']
+    params=wire['tools'][0]['function']['parameters']['properties']
+    assert params['capability']['enum']==['json.normalize','tabular.deduplicate','xlsx.inspect','unsupported']
+    assert params['constraints']['items']['enum']==['preserve_formulas','preserve_order','preserve_original']
+    execution=params['execution']['properties']
+    assert execution['keep']['enum']==['first']
+    assert execution['style']['enum']==['minify','pretty']
+    assert execution['mode']['enum']==['formulas','rows','sheets']
+    rows=params['requirements']
+    assert rows['minItems']==1 and rows['maxItems']==32
+    pointers=rows['items']['properties']['fields']['items']['enum']
+    assert pointers==['/capability','/constraints','/execution/delimiter','/execution/encoding',
+        '/execution/input_path','/execution/keep','/execution/key_columns','/execution/mode',
+        '/execution/output_path','/execution/sheet','/execution/style']
+    assert '/unresolved' not in pointers
 blocked=[{'input':'PRIVATE_INPUT'},{'instructions':'PRIVATE_INSTRUCTIONS'},
     {'extra_headers':{'X-History':'PRIVATE_HISTORY'}},{'stop':['PRIVATE_STOP']},
     {'extra_body':{'messages':[{'role':'user','content':'PRIVATE_MESSAGE'}]}},

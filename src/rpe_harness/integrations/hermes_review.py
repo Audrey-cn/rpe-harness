@@ -26,26 +26,47 @@ REVIEW_CONTRACT = (
     'Submit the draft through rpe_propose when available; otherwise save model-generated JSON as draft.json '
     'using the native tools. The human user never has to write JSON. '
     'The draft has exactly capability, constraints, execution, requirements, unresolved. '
-    'capability is a string, constraints is an array of registered contract flags, execution is an object, '
-    'unresolved is an array of strings describing every unsupported, conflicting or missing requirement. '
+    'capability must be the exact machine ID tabular.deduplicate, json.normalize or xlsx.inspect; never '
+    'append an explanation. Put explanations in requirements.text. For a business request outside all '
+    'three capabilities use the non-executable ID unsupported, retain the unsupported action in unresolved, '
+    'and never substitute a nearby supported task. constraints is an array of exact registered flags; '
+    'execution is an object. All arrays and objects must be native JSON values, never JSON-encoded strings. '
+    'unresolved contains genuine missing business decisions, conflicting instructions and unsupported '
+    'requested actions. Use [] when the business request is complete and supported. The normal later '
+    'human confirmation, known executor defaults, and runtime checks owned by the parent are not missing '
+    'business decisions. Do not claim those checks have already passed. '
     'Each requirements row has exactly text, quote, fields. text is a human-readable requirement; '
     'quote is an exact nonempty substring of the original request, or null for an explicitly proposed default. '
-    'The parent labels these source_quote and proposed_default. A quote proves provenance only, never full '
+    'Use 1 to 32 requirement rows. The parent labels them source_quote and proposed_default. '
+    'A quote proves provenance only, never full '
     'semantic coverage. fields is an array of JSON pointers such as /capability, /constraints, '
-    '/execution/input_path. Cover every proposed machine field and retain requirements beyond the available '
+    '/execution/input_path. Use only the enumerated whole-field pointers that are present in this draft; '
+    '/constraints and /execution/key_columns refer to their entire arrays. No array indices, /unresolved, '
+    'or invented pointers. Cover every proposed machine field and retain requirements beyond the available '
     'capability in unresolved. Never claim model extraction proves completeness or human approval. '
     'Paths are workspace relative. Preserve inputs and never overwrite. '
     'Available capabilities: tabular.deduplicate accepts csv or xlsx; it keeps first and preserves row order '
     'and cells. Required execution fields: input_path, output_path, key_columns. Optional execution fields: '
-    'keep (first only), encoding, delimiter, sheet. Allowed constraints: preserve_original, preserve_order, '
-    'preserve_formulas. '
+    'keep (first only), encoding, delimiter, sheet. Executor defaults are keep=first, encoding=utf-8-sig, '
+    'delimiter=comma; explicit user values override these defaults, including a real TAB character. Never '
+    'invent key_columns when the business key is missing. Allowed constraints: preserve_original, '
+    'preserve_order, preserve_formulas; preserve_formulas requires an xlsx input. '
     'json.normalize changes structural whitespace only, preserving number spelling, escapes and object/array '
     'order. Required and only execution fields: input_path, output_path, style (minify or pretty). '
-    'Allowed constraints: preserve_original, preserve_order. Output ends with one LF. '
+    'Allowed constraints: preserve_original, preserve_order. Strict UTF-8 input and exactly one trailing '
+    'LF are fixed executor behavior, not undecided encoding/newline options. Do not add an encoding field. '
     'xlsx.inspect reads an existing xlsx workbook through the trusted installed xlsx adapter. Required '
     'execution fields: input_path, output_path, mode (rows, sheets or formulas). Optional execution field: '
-    'sheet. Allowed constraint: preserve_original. Preserve the original helper JSON structure. '
-    'The parent checks actual capability and adapter availability after drafting. '
+    'sheet. Its only allowed constraint is preserve_original; original helper row order and JSON types '
+    'belong to xlsx.inspect itself, not a new preserve_order flag. Map those requirements to /capability '
+    'or /execution/mode. Preserve the original helper JSON structure. The parent verifies the installed '
+    'skill/helper identity, adapter trust, input and selected sheet, then uses the original helper. '
+    'For all capabilities the parent checks input readability, supported format, output absence, paths '
+    'and runtime availability before confirmation/execution; a failed check blocks the task. Lack of '
+    'model-side file/helper inspection does not create a missing business decision. Do not put these '
+    'routine checks or the fact that execution has not yet occurred in unresolved. '
+    'Proposed optional defaults use quote=null; omitted executor defaults also appear in the parent '
+    'machine contract. The human must review and confirm every resulting value and default. '
     'Do not install, train, upgrade, or read controller files/databases/other sessions/reports/RPE implementation. '
     'Only a later explicit human confirmation of the displayed proposal can authorize execution.')
 
@@ -177,24 +198,40 @@ def review_extension(db_path, workspace, *, raw, source_ref, catalog_root=None, 
 
 
 def register_review_workflow(ctx, *, store, workspace, python, error_path):
+    from ..capability_catalog import _definitions
+    from ..contracts import request_schema
+    from ..skill_inspection import MODES
     config, config_path, config_sha = _configuration()
     entry_key = os.environ.get('RPE_HERMES_ENTRY_KEY')
     if not entry_key:
         raise ValueError('review requires a trusted entry key')
     workflows, lock = ReviewWorkflowStore(store.path), threading.RLock()
     string = {'type': 'string'}
+    definitions = _definitions()
+    capabilities = sorted(row['capability'] for row in definitions) + ['unsupported']
+    flags = sorted({flag for row in definitions for flag in row['constraints']})
+    execution_fields = sorted({field for row in definitions for field in row['execution_fields']})
+    pointers = ['/capability', '/constraints'] + ['/execution/' + field for field in execution_fields]
+    execution = {field: string for field in execution_fields if field != 'key_columns'}
+    execution.update(keep=request_schema()['properties']['execution']['properties']['keep'],
+        style={'type': 'string', 'enum': ['minify', 'pretty']},
+        mode={'type': 'string', 'enum': sorted(MODES)},
+        key_columns={'type': 'array', 'minItems': 1, 'uniqueItems': True,
+                     'items': {'type': 'string', 'minLength': 1}})
     schema = {'name': 'rpe_propose', 'description': 'Draft source-anchored requirements for human review. '
         'This tool never approves or executes the task.', 'parameters': {
             'type': 'object', 'additionalProperties': False,
             'required': ['capability', 'constraints', 'execution', 'requirements', 'unresolved'],
-            'properties': {'capability': string, 'constraints': {'type': 'array', 'items': string},
-                'execution': {'type': 'object', 'additionalProperties': False, 'properties': {
-                    **{key: string for key in ('input_path', 'output_path', 'keep', 'encoding',
-                                               'delimiter', 'style', 'mode', 'sheet')},
-                    'key_columns': {'type': 'array', 'items': string}}},
-                'requirements': {'type': 'array', 'items': {'type': 'object', 'additionalProperties': False,
+            'properties': {'capability': {'type': 'string', 'enum': capabilities},
+                'constraints': {'type': 'array', 'uniqueItems': True,
+                                'items': {'type': 'string', 'enum': flags}},
+                'execution': {'type': 'object', 'additionalProperties': False, 'properties': execution},
+                'requirements': {'type': 'array', 'minItems': 1, 'maxItems': 32,
+                    'items': {'type': 'object', 'additionalProperties': False,
                     'required': ['text', 'quote', 'fields'], 'properties': {'text': string,
-                        'quote': {'type': ['string', 'null']}, 'fields': {'type': 'array', 'items': string}}}},
+                        'quote': {'type': ['string', 'null']},
+                        'fields': {'type': 'array', 'minItems': 1, 'uniqueItems': True,
+                                   'items': {'type': 'string', 'enum': pointers}}}}},
                 'unresolved': {'type': 'array', 'items': string}}}}
 
     def capture_arguments(tool_name, args, **context):
