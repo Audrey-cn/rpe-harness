@@ -1,0 +1,10 @@
+{
+  "path": "/Users/audrey/.hermes/auth.json",
+  "baseline_sha256": "71f59f9d6001bc62d2e94d643551aa78ab54e5a8184516db4f449c5d4a0255d5",
+  "observed_sha256": "fbbdb35644a6c6501122e376ef33bfac00d05ed50fbe091f8f79df5e47a7d08e",
+  "mtime_utc": "2026-10-18T03:08:52.893280+00:00",
+  "observed_at_utc": "2026-10-18T03:12:59.520615+00:00",
+  "attribution": "not independently established",
+  "content_retained": false,
+  "daily_state_restored": false
+}

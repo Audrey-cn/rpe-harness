@@ -1,0 +1,30 @@
+{
+  "code_review": {
+    "agent": "v1151_code_review",
+    "read_only": true,
+    "findings": [
+      "recursive JSON parse/deepcopy could interrupt batch",
+      "removing rejection evidence while retaining invalid_draft_shape error was not rejected"
+    ],
+    "resolution": "3 failing regressions followed by final related 63 passed; no acceptance relaxation"
+  },
+  "evidence_review": {
+    "agent": "v1151_evidence_audit",
+    "read_only": true,
+    "new_pairs": 1,
+    "draft_sessions": 2,
+    "native_executions": 0,
+    "partial_benchmark": true,
+    "rpe_business_artifact_correct": true,
+    "native_business_parameters_correct": true,
+    "native_contract_failures": [
+      "source_ref:null rejected by parameter witnesses",
+      "requirements do not cover /capability"
+    ],
+    "api_requests": 4,
+    "tokens": 25100,
+    "cache_read_tokens_included_in_prompt": 17408,
+    "source_wheel_model_modules_matching": 94,
+    "provider_calls_by_auditors": 0
+  }
+}

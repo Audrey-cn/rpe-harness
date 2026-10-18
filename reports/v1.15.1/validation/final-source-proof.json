@@ -1,0 +1,11 @@
+{
+  "source_modules": 94,
+  "main_source_matches_wheel_and_model_source": true,
+  "full_recorded_environment_equality": false,
+  "final_equality_assertion_failed_before_cleanup": true,
+  "full_final_environment_snapshot_saved": false,
+  "test_environment_corrected_after_models": true,
+  "installed_distribution_set_changed_by_venv_isolation_correction": true,
+  "complete_difference_attribution_verified": false,
+  "model_replayed": false
+}

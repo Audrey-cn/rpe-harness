@@ -1,0 +1,51 @@
+{
+  "verified": false,
+  "errors": [
+    "full-suite_not_green"
+  ],
+  "tests": {
+    "full-suite": {
+      "tests": 2205,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 7
+    },
+    "package": {
+      "tests": 90,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "source_modules": 94,
+  "delivery_record_consistency_verified": true,
+  "full_suite_green": false,
+  "full_model_and_final_test_environment_equivalence_verified": false,
+  "ready_for_unattended_release": false,
+  "new_task_outcomes": [
+    {
+      "arm": "native",
+      "accepted": false,
+      "artifact_correct": null
+    },
+    {
+      "arm": "review",
+      "accepted": true,
+      "artifact_correct": true
+    }
+  ],
+  "portable_records": {
+    "schema_version": "rpe.v115-evidence-verification/v1",
+    "verified": true,
+    "source_documents_verified": 3,
+    "business_artifacts_verified": 1,
+    "human_confirmation_verified": false,
+    "runtime_proof": "recorded_observations_not_independent_attestation",
+    "errors": []
+  },
+  "strict_daily_content_preservation": false,
+  "runtime_replayed": false,
+  "deleted_keys_reauthenticated": false,
+  "verified_billing": null,
+  "human_confirmation_verified": false
+}

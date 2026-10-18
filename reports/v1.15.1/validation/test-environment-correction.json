@@ -1,0 +1,27 @@
+{
+  "reason": [
+    "relative PYTHONPATH loses package under child cwd",
+    "include-system-site-packages=true is rejected by native process observer"
+  ],
+  "venv_cfg_before": "home = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin\ninclude-system-site-packages = true\nversion = 3.12.14\nexecutable = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12\ncommand = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m venv --system-site-packages /Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv\n",
+  "venv_cfg_after": "home = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin\ninclude-system-site-packages = false\nversion = 3.12.14\nexecutable = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12\ncommand = /Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m venv --system-site-packages /Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv\n",
+  "production_source_changed": false,
+  "model_replayed": false,
+  "initial_full_suite": {
+    "passed": 2166,
+    "failed": 6,
+    "errors": 23,
+    "skipped": 7,
+    "subtests_passed": 3
+  },
+  "module_path_after": "/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src",
+  "initial_observer_error_counts": {
+    "native_process_staged_output_binding_failed,native_process_user_site_not_isolated,native_unique_helper_process_exit_missing": 14,
+    "native_process_user_site_not_isolated,native_unique_helper_process_exit_missing": 9
+  },
+  "corrected_original_failure_cases": {
+    "passed": 29,
+    "failed": 0,
+    "errors": 0
+  }
+}

@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="16" skipped="0" tests="16" time="3.170" timestamp="2026-10-18T10:53:29.750491+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[object_item]" time="0.653"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106e30da0&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta0')
+malformation = 'object_item'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+&gt;       summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[mixed_items]" time="0.138"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108047830&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta1')
+malformation = 'mixed_items'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+&gt;       summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[object]" time="0.150"><failure message="KeyError: 'error_code'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108023830&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta2')
+malformation = 'object'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+                                                ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'error_code'
+
+tests/test_review_v115_comparison.py:155: KeyError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[string]" time="0.144"><failure message="KeyError: 'error_code'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108070740&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta3')
+malformation = 'string'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+                                                ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'error_code'
+
+tests/test_review_v115_comparison.py:155: KeyError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[null]" time="0.138"><failure message="AssertionError: assert ('failed' == 'failed'&#10;  &#10;    failed and 'TypeError' == 'invalid_draft_shape'&#10;  &#10;  - invalid_draft_shape&#10;  + TypeError)">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108071610&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta4')
+malformation = 'null'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+E       AssertionError: assert ('failed' == 'failed'
+E         
+E           failed and 'TypeError' == 'invalid_draft_shape'
+E         
+E         - invalid_draft_shape
+E         + TypeError)
+
+tests/test_review_v115_comparison.py:155: AssertionError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[requirements]" time="0.141"><failure message="AssertionError: assert ('failed' == 'failed'&#10;  &#10;    failed and 'TypeError' == 'invalid_draft_shape'&#10;  &#10;  - invalid_draft_shape&#10;  + TypeError)">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108097d70&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta5')
+malformation = 'requirements'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+E       AssertionError: assert ('failed' == 'failed'
+E         
+E           failed and 'TypeError' == 'invalid_draft_shape'
+E         
+E         - invalid_draft_shape
+E         + TypeError)
+
+tests/test_review_v115_comparison.py:155: AssertionError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[constraints]" time="0.138"><failure message="AssertionError: assert ('failed' == 'failed'&#10;  &#10;    failed and 'TypeError' == 'invalid_draft_shape'&#10;  &#10;  - invalid_draft_shape&#10;  + TypeError)">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10805b1d0&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta6')
+malformation = 'constraints'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+E       AssertionError: assert ('failed' == 'failed'
+E         
+E           failed and 'TypeError' == 'invalid_draft_shape'
+E         
+E         - invalid_draft_shape
+E         + TypeError)
+
+tests/test_review_v115_comparison.py:155: AssertionError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[key_columns]" time="0.145"><failure message="KeyError: 'error_code'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108070050&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta7')
+malformation = 'key_columns'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+                                                ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'error_code'
+
+tests/test_review_v115_comparison.py:155: KeyError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[top_level]" time="0.112"><failure message="AttributeError: 'NoneType' object has no attribute 'get'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108072e70&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta8')
+malformation = 'top_level'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+&gt;       summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:686: in _observe
+    draft = _public_candidate(proposal)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+proposal = None
+
+    def _public_candidate(proposal):
+&gt;       draft = proposal.get('draft', proposal)
+                ^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'get'
+
+src/rpe_harness/experiments/review_v111_comparison.py:512: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_invalid_candidate_is_retained_without_interrupting_or_replaying[extra_field]" time="0.147"><failure message="KeyError: 'error_code'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_ret...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10805bb60&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_invalid_candidate_is_reta9')
+malformation = 'extra_field'
+
+    @pytest.mark.parametrize('malformation', [
+        'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+        'constraints', 'key_columns', 'top_level', 'extra_field'])
+    def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+        if malformation in {'mixed_items', 'object', 'string', 'null'}:
+            candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                       'string': '缺业务键', 'null': None}[malformation]
+        elif malformation == 'requirements':
+            candidate.update(unresolved=[], requirements=None)
+        elif malformation == 'constraints':
+            candidate.update(unresolved=[], constraints=[{}])
+        elif malformation == 'key_columns':
+            candidate.update(unresolved=[], execution={'key_columns': [{}]})
+        elif malformation == 'top_level':
+            candidate = None
+        elif malformation == 'extra_field':
+            candidate.update(unresolved=[], extra='must not be projected away')
+        original = copy.deepcopy(candidate)
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+        assert len(calls) == len(set(calls)) == 6
+        assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+        assert summary['costs']['known_total_tokens'] == 17
+        assert summary['costs']['total_tokens'] is None
+&gt;       assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+                                                ^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'error_code'
+
+tests/test_review_v115_comparison.py:155: KeyError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_public_invalid_candidate_uses_same_fail_closed_record" time="0.135"><failure message="KeyError: 'original_invalid_candidate'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_public_invalid_candidate...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1080c7440&gt;
+
+    def test_public_invalid_candidate_uses_same_fail_closed_record(plan, monkeypatch):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': {'key_columns': 'unknown'}}
+        summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate, arm='review')
+        assert len(calls) == 6 and summary['formal_attempts'] == 6
+&gt;       assert record['original_invalid_candidate'] == candidate
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'original_invalid_candidate'
+
+tests/test_review_v115_comparison.py:172: KeyError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_offline_verifier_rejects_changed_invalid_candidate_record[reason]" time="0.109"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1080c2b10&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects_0')
+tamper = 'reason'
+
+    @pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof'])
+    def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+&gt;       _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_offline_verifier_rejects_changed_invalid_candidate_record[candidate]" time="0.108"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108073290&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects_1')
+tamper = 'candidate'
+
+    @pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof'])
+    def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+&gt;       _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_offline_verifier_rejects_changed_invalid_candidate_record[approved]" time="0.106"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x107f88bf0&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects_2')
+tamper = 'approved'
+
+    @pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof'])
+    def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+&gt;       _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_offline_verifier_rejects_changed_invalid_candidate_record[accepted]" time="0.117"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x108072630&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects_3')
+tamper = 'accepted'
+
+    @pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof'])
+    def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+&gt;       _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase><testcase classname="tests.test_review_v115_comparison" name="test_offline_verifier_rejects_changed_invalid_candidate_record[normal_proof]" time="0.107"><failure message="AttributeError: 'dict' object has no attribute 'encode'">plan = {'root': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects...ent-host', 'helper_python': '/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/venv/bin/python', ...}
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10805bb30&gt;
+tmp_path = PosixPath('/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f/pytest-red/test_offline_verifier_rejects_4')
+tamper = 'normal_proof'
+
+    @pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof'])
+    def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+        candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                     'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+&gt;       _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_review_v115_comparison.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_review_v115_comparison.py:123: in _run_invalid_candidate
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+src/rpe_harness/experiments/review_v111_comparison.py:866: in run_v111_comparison
+    record = _observe(plan, trial, ledger, native_runner, public_runner)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/rpe_harness/experiments/review_v111_comparison.py:687: in _observe
+    record['candidate_proof'] = _proof(draft, keep_text=strict)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {}, 'requirements': [], ...}
+keep_text = True
+
+    def _proof(candidate, *, keep_text=False):
+        value = copy.deepcopy(candidate)
+        for row in value.get('requirements', []):
+            if type(row) is dict and isinstance(row.get('text'), str):
+                if not keep_text:
+                    row['text_sha256'] = _sha(row.pop('text').encode())
+&gt;       value['unresolved_sha256'] = [_sha(v.encode()) for v in value.get('unresolved', [])]
+                                           ^^^^^^^^
+E       AttributeError: 'dict' object has no attribute 'encode'
+
+src/rpe_harness/experiments/review_v111_comparison.py:522: AttributeError</failure></testcase></testsuite></testsuites>

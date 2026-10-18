@@ -1,0 +1,39 @@
+{
+  "owned_root": "/Users/audrey/项目/缓存/test/rpe-v1151-5445845ffc8541d4ada7dee0b4540c2f",
+  "removed_regular_files": 65700,
+  "removed_regular_bytes": 897719428,
+  "removed_symlinks": 2513,
+  "removed_at": 1792293563.41972,
+  "preservation": {
+    "daily_files_checked": 4,
+    "daily_files_changed": [
+      "/Users/audrey/.hermes/auth.json"
+    ],
+    "skill_files_checked": 485,
+    "skill_files_changed_or_removed": [],
+    "skill_files_added": [],
+    "errors": [],
+    "repositories": {
+      "/Users/audrey/项目/rpe-harness": {
+        "head_preserved_or_authorized_integration": true,
+        "original_untracked_status_unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-protocol": {
+        "head_preserved_or_authorized_integration": true,
+        "original_untracked_status_unchanged": true
+      },
+      "/Users/audrey/项目/progenitor-registry": {
+        "head_preserved_or_authorized_integration": true,
+        "original_untracked_status_unchanged": true
+      }
+    },
+    "test_session_hashes_checked": 2,
+    "daily_test_session_leaks": [],
+    "session_check_scope": "Hermes database session-ID columns and daily directory entry names; not a full content scan",
+    "owned_absent": true,
+    "owned_process_pids": [],
+    "daily_state_restored": false,
+    "owned_cleanup_and_session_isolation_verified": true,
+    "strict_daily_content_preservation": false
+  }
+}
