@@ -83,6 +83,147 @@ def test_new_profile_never_replays_failed_formal_sessions(plan):
                                     native_runner=fail, public_runner=fail)
 
 
+def _run_invalid_candidate(plan, monkeypatch, candidate, *, arm='native', candidate_raw=None):
+    """Stub only host observations; retain the real finite driver and ledger."""
+    from rpe_harness.experiments import review_native_evidence
+    trial = next(row for row in plan['sessions']
+                 if row['arm'] == arm and row['case_id'] == 'pending-account-key')
+    prompt = shared._native_prompt(plan, trial) if arm == 'native' else shared._case(plan, trial)['task']
+    observation = {'session_id': 'invalid-candidate-fixture', 'completed': True, 'exit_code': 0,
+        'process_cleanup': {'cleanup_complete': True},
+        'model_identity': {'provider': 'xiaomi', 'requested_model': 'mimo-v2.6-pro',
+                           'response_models': ['mimo-v2.6-pro']},
+        'original_prompt_sha256': shared._sha(prompt.encode()), 'prompt_sha256': shared._sha(prompt.encode()),
+        'catalog_snapshot_id': None, 'public_contract_sha256': api().public_contract_sha(plan, arm),
+        'usage': {'api_requests': 1, 'coverage_complete': True, 'total_tokens': 17,
+                  'known_total_tokens': 17, 'missing_observations': 0},
+        'events': [{'kind': 'pre_api_request', 'request_max_completion_tokens': 2400,
+                    'request_thinking_type': 'disabled'}]}
+    monkeypatch.setattr(review_native_evidence, 'native_chain_diagnostics',
+                        lambda *args: {'durable_observations_match': True})
+    monkeypatch.setattr(review_native_evidence, 'evaluate_native_review_draft',
+                        lambda *args: {'verified': True})
+    monkeypatch.setattr(shared, '_approve_and_execute',
+                        lambda *args: pytest.fail('invalid candidate was approved'))
+    calls = []
+    def native(*args, **kwargs):
+        label = Path(kwargs['owner_root']).name
+        calls.append(label)
+        if arm != 'native' or label != trial['trial_id']+'-draft':
+            raise RuntimeError('unavailable host fixture')
+        (Path(trial['workspace'])/'draft.json').write_text(
+            candidate_raw if candidate_raw is not None else json.dumps(candidate, ensure_ascii=False))
+        return observation
+    def public(plan, row):
+        calls.append(row['trial_id']+'-draft')
+        if arm != 'review' or row['trial_id'] != trial['trial_id']:
+            raise RuntimeError('unavailable host fixture')
+        return {'draft': candidate, 'host_observation': observation,
+                'proposal_verification': {'verified': True, 'proposal_verified': True}}
+    shared.freeze_formal(plan['root'])
+    summary = shared.run_v111_comparison(plan['root'], formal=True,
+                                         native_runner=native, public_runner=public)
+    shared.run_v111_comparison(plan['root'], formal=True, native_runner=native, public_runner=public)
+    record = next(row for row in summary['records'] if row['trial_id'] == trial['trial_id'])
+    return summary, record, calls
+
+
+@pytest.mark.parametrize('malformation', [
+    'object_item', 'mixed_items', 'object', 'string', 'null', 'requirements',
+    'constraints', 'key_columns', 'top_level', 'extra_field'])
+def test_invalid_candidate_is_retained_without_interrupting_or_replaying(plan, monkeypatch, tmp_path, malformation):
+    candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                 'requirements': [], 'unresolved': [{'field': 'key_columns', 'reason': '业务键未决定'}]}
+    if malformation in {'mixed_items', 'object', 'string', 'null'}:
+        candidate['unresolved'] = {'mixed_items': ['缺业务键', {}], 'object': {},
+                                   'string': '缺业务键', 'null': None}[malformation]
+    elif malformation == 'requirements':
+        candidate.update(unresolved=[], requirements=None)
+    elif malformation == 'constraints':
+        candidate.update(unresolved=[], constraints=[{}])
+    elif malformation == 'key_columns':
+        candidate.update(unresolved=[], execution={'key_columns': [{}]})
+    elif malformation == 'top_level':
+        candidate = None
+    elif malformation == 'extra_field':
+        candidate.update(unresolved=[], extra='must not be projected away')
+    original = copy.deepcopy(candidate)
+    summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate)
+    assert len(calls) == len(set(calls)) == 6
+    assert summary['formal_attempts'] == 6 and summary['native_execution_sessions'] == 0
+    assert summary['costs']['known_total_tokens'] == 17
+    assert summary['costs']['total_tokens'] is None
+    assert record['status'] == 'failed' and record['error_code'] == 'invalid_draft_shape'
+    assert record['original_invalid_candidate'] == original == candidate
+    assert all(record[key] is False for key in
+               ('approved', 'accepted', 'execution_verified', 'draft_faithful', 'probe_correct'))
+    assert 'candidate_proof' not in record
+    assert record['source_preserved'] is True and record['no_business_output'] is True
+    destination = tmp_path/'public'
+    shared.export_v111_evidence(plan['root'], destination)
+    shutil.rmtree(plan['root'])
+    assert api().verify_v115_evidence(destination)['verified'] is True
+
+
+def test_public_invalid_candidate_uses_same_fail_closed_record(plan, monkeypatch):
+    candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                 'requirements': [], 'unresolved': {'key_columns': 'unknown'}}
+    summary, record, calls = _run_invalid_candidate(plan, monkeypatch, candidate, arm='review')
+    assert len(calls) == 6 and summary['formal_attempts'] == 6
+    assert record['original_invalid_candidate'] == candidate
+    assert record['accepted'] is False and record['approved'] is False
+
+
+@pytest.mark.parametrize('tamper', ['reason', 'candidate', 'approved', 'accepted', 'normal_proof', 'removed_rejection'])
+def test_offline_verifier_rejects_changed_invalid_candidate_record(plan, monkeypatch, tmp_path, tamper):
+    candidate = {'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                 'requirements': [], 'unresolved': [{'field': 'key_columns'}]}
+    _, record, _ = _run_invalid_candidate(plan, monkeypatch, candidate)
+    destination = tmp_path/'public'
+    shared.export_v111_evidence(plan['root'], destination)
+    path = destination/'summary.json'
+    summary = shared._read(path)
+    row = next(row for row in summary['records'] if row['trial_id'] == record['trial_id'])
+    if tamper == 'reason':
+        row['candidate_rejection']['reason'] = 'unrelated'
+    elif tamper == 'candidate':
+        row['original_invalid_candidate']['unresolved'] = ['缺业务键']
+    elif tamper == 'normal_proof':
+        row.pop('candidate_rejection')
+        row.pop('original_invalid_candidate')
+        row['candidate_proof'] = {**candidate, 'unresolved_sha256': []}
+    elif tamper == 'removed_rejection':
+        row.pop('candidate_rejection')
+        row.pop('original_invalid_candidate')
+    else:
+        row[tamper] = True
+    summary.pop('sha256')
+    path.unlink()
+    shared._save(path, summary)
+    assert api().verify_v115_evidence(destination)['verified'] is False
+
+
+@pytest.mark.parametrize('stage', ['parse', 'proof'])
+def test_recursive_native_draft_retains_raw_bytes_and_continues(plan, monkeypatch, tmp_path, stage):
+    import base64
+    if stage == 'parse':
+        raw = '[' * 16000 + '0' + ']' * 16000
+    else:
+        nested = None
+        for _ in range(700):
+            nested = [nested]
+        raw = json.dumps({'capability': 'tabular.deduplicate', 'constraints': [], 'execution': {},
+                          'requirements': [nested], 'unresolved': []})
+    summary, record, calls = _run_invalid_candidate(plan, monkeypatch, None, candidate_raw=raw)
+    assert len(calls) == 6 and summary['formal_attempts'] == 6
+    assert record['error_code'] == 'RecursionError' and record['accepted'] is False
+    assert base64.b64decode(record['original_invalid_candidate_base64']) == raw.encode()
+    destination = tmp_path/'public'
+    shared.export_v111_evidence(plan['root'], destination)
+    shutil.rmtree(plan['root'])
+    assert api().verify_v115_evidence(destination)['verified'] is True
+
+
 def test_native_value_gate_uses_real_prepared_context_and_portable_content_hash(plan):
     trial = next(row for row in plan['sessions'] if row['arm'] == 'native' and row['case_id'] == 'cold-inventory')
     draft = {'capability': 'xlsx.inspect', 'constraints': [], 'execution': {'mode': 'rows'},

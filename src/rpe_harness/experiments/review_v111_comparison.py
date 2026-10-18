@@ -7,6 +7,7 @@ The reviewer is a deterministic business fixture simulation, never a human.
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 import json
 import os
@@ -513,7 +514,24 @@ def _public_candidate(proposal):
     return {key: copy.deepcopy(draft[key]) for key in ('capability', 'constraints', 'execution', 'requirements', 'unresolved')}
 
 
+def _candidate_shape(candidate):
+    """Guard proof/scoring containers; semantics and authorization stay separate."""
+    if (type(candidate) is not dict or set(candidate) != {
+            'capability', 'constraints', 'execution', 'requirements', 'unresolved'}):
+        return False
+    if (type(candidate['capability']) is not str or type(candidate['execution']) is not dict
+            or type(candidate['requirements']) is not list):
+        return False
+    for name in ('constraints', 'unresolved'):
+        if type(candidate[name]) is not list or any(type(item) is not str for item in candidate[name]):
+            return False
+    columns = candidate['execution'].get('key_columns', [])
+    return type(columns) is list and all(type(item) is str for item in columns)
+
+
 def _proof(candidate, *, keep_text=False):
+    if not _candidate_shape(candidate):
+        raise ValueError('invalid_draft_shape')
     value = copy.deepcopy(candidate)
     for row in value.get('requirements', []):
         if type(row) is dict and isinstance(row.get('text'), str):
@@ -683,6 +701,13 @@ def _observe(plan, trial, ledger, native_runner, public_runner):
                 'native_discovery_calls', 'native_selection_calls', 'native_skill_view_calls',
                 'cold_skill_restores') if key in gate}
         if record['draft_invocation_verified']:
+            candidate = proposal.get('draft', proposal) if trial['arm'] == 'review' else proposal
+            if not _candidate_shape(candidate):
+                record.update(original_invalid_candidate=copy.deepcopy(candidate),
+                    candidate_rejection={'reason': 'invalid_draft_shape',
+                        'sha256': _sha(_json(candidate).encode())},
+                    error_code='invalid_draft_shape', draft_faithful=False, probe_correct=False)
+                raise ValueError('invalid_draft_shape')
             draft = _public_candidate(proposal)
             record['candidate_proof'] = _proof(draft, keep_text=strict)
             decision = semantic_decision(case, draft, profile=plan['profile'])
@@ -725,8 +750,19 @@ def _observe(plan, trial, ledger, native_runner, public_runner):
                 _approve_and_execute(plan, trial, ledger, proposal, draft, record, native_runner)
         if not strict:
             record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
-    except (OSError, ValueError, TypeError, KeyError, sqlite3.Error, subprocess.SubprocessError) as failure:
-        record['error_code'] = type(failure).__name__
+    except (OSError, ValueError, TypeError, KeyError, RecursionError,
+            sqlite3.Error, subprocess.SubprocessError) as failure:
+        record.setdefault('error_code', type(failure).__name__)
+        if isinstance(failure, RecursionError) and trial['arm'] == 'native':
+            # Even unparseable/deep-copy-hostile JSON must survive cleanup without
+            # recursively copying it into the summary or retrying the model.
+            try:
+                raw = read_regular_file(Path(trial['workspace'])/'draft.json', max_bytes=65536)
+                record.update(original_invalid_candidate_base64=base64.b64encode(raw).decode('ascii'),
+                    candidate_rejection={'reason': 'recursive_draft_json', 'sha256': _sha(raw)},
+                    draft_faithful=False, probe_correct=False)
+            except (OSError, ValueError):
+                pass
     if strict:
         try:
             record.update(_local_phase(ledger, trial, 'verification', lambda: _verify_trial(plan, trial, record)))
@@ -1032,9 +1068,41 @@ def verify_review_evidence(destination, *, profile):
                 record['fingerprint'] != summary['fingerprint']):
                 raise ValueError('record_population_changed')
             proof = record.get('candidate_proof')
+            if record.get('error_code') == 'invalid_draft_shape' and 'candidate_rejection' not in record:
+                raise ValueError('invalid_candidate_rejection_missing')
+            if 'candidate_rejection' in record:
+                rejection = record['candidate_rejection']
+                if (type(rejection) is not dict or set(rejection) != {'reason', 'sha256'}
+                        or proof is not None
+                        or record.get('status') != 'failed'
+                        or any(record.get(key) is not False for key in (
+                            'approved', 'accepted', 'execution_verified', 'draft_faithful', 'probe_correct'))):
+                    raise ValueError('invalid_candidate_rejection_changed')
+                if rejection['reason'] == 'invalid_draft_shape':
+                    original = record['original_invalid_candidate']
+                    if (rejection['sha256'] != _sha(_json(original).encode())
+                            or _candidate_shape(original) or record.get('error_code') != 'invalid_draft_shape'):
+                        raise ValueError('invalid_candidate_rejection_changed')
+                elif rejection['reason'] == 'recursive_draft_json':
+                    raw = base64.b64decode(record['original_invalid_candidate_base64'], validate=True)
+                    if (len(raw) > 65536 or rejection['sha256'] != _sha(raw)
+                            or record.get('error_code') != 'RecursionError'):
+                        raise ValueError('recursive_candidate_rejection_changed')
+                    try:
+                        _proof(json.loads(raw, object_pairs_hook=_unique_pairs))
+                    except RecursionError:
+                        pass
+                    else:
+                        raise ValueError('recursive_candidate_rejection_changed')
+                else:
+                    raise ValueError('invalid_candidate_rejection_changed')
             if proof is not None:
                 candidate = copy.deepcopy(proof)
+                if type(candidate) is not dict:
+                    raise ValueError('invalid_candidate_proof')
                 unresolved_hashes = candidate.pop('unresolved_sha256')
+                if not _candidate_shape(candidate):
+                    raise ValueError('invalid_candidate_proof')
                 if [_sha(v.encode()) for v in candidate['unresolved']] != unresolved_hashes:
                     raise ValueError('unresolved_proof_changed')
                 decision = semantic_decision(case, candidate, profile=profile)
