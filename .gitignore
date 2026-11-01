@@ -8,3 +8,11 @@ __pycache__/
 *.sqlite-shm
 dist/
 build/
+
+# macOS junk
+.DS_Store
+
+# 批次推进工作区：各批计划的现场产物（183k 文件 / 4.6G，含 acceptance 运行日志与
+# 临时 home、auth.json 等凭据残留）。只在本机保留，不进版本控制；
+# 成型的结论放 reports/ 与 memory。
+RPE推进计划/

@@ -1,0 +1,45 @@
+{
+  "baseline_head": "c9445972ba5a058724fadf39135de3bc6c1e0ee9",
+  "baseline_tag": "v1.10.0",
+  "archive": {
+    "path": "/Users/audrey/Documents/Codex/2026-10-13/session-storage-is-unavailable-another-hermes/outputs/量子通信研究总结_聊天气泡.html",
+    "bytes": 259757,
+    "sha256": "c012065436956cf21647fd1b386eb97a5b8efe4b18f155dd9bb91db0612c7999",
+    "messages": 62,
+    "user_messages": 31
+  },
+  "methods": [
+    "direct HTML source reading without executing scripts",
+    "read-only source and historical report comparison",
+    "three independent read-only subagent scopes",
+    "in-memory CLI adapter boundary reproduction with actual success field names"
+  ],
+  "runtime_Hermes_model_calls": 0,
+  "runtime_CLI_Agent_calls": 0,
+  "new_services": 0,
+  "reproduction_created_files": 0,
+  "production_code_modified": false,
+  "historical_instructions_executed": false,
+  "public_entry_issue": {
+    "severity": "P1",
+    "consumer": "src/rpe_harness/proposal_cli.py:62",
+    "consumer_success_field": "passed",
+    "producer": "src/rpe_harness/integrations/hermes_review.py:501",
+    "producer_success_fields": [
+      "verified",
+      "proposal_verified"
+    ],
+    "reproduction": "actual dispatcher with in-memory host result; patched TemporaryDirectory and mkdir; no database or model",
+    "observed_status": "needs_context",
+    "observed_missing": [
+      "verified_model_proposal"
+    ]
+  },
+  "source_digests": {
+    "src/rpe_harness/proposal_cli.py": "95c780d335fb829ddd5c2f851553a2491bb1cde21bfddd48dbcfea92ee7bb4c5",
+    "src/rpe_harness/integrations/hermes_review.py": "4d22d03aafd652d0c552bd15b415d0512aac4a670699d8b8d588bc4e1393b627",
+    "tests/test_proposal_cli.py": "55075b61223ba771a79b44b6e9e5fb61f62400845f04cad3d3d93253c131e9a3",
+    "src/rpe_harness/capability_catalog.py": "df8ddd3d596131fbef136b2a18cd5d815ff1bd4621049ff38840a0022ec2c8bb",
+    "src/rpe_harness/intent.py": "be33b09f3a6b2a41ac9a77d4c8b75363c6c0dad75447740ab9acc5a411b47608"
+  }
+}
