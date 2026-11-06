@@ -1,0 +1,1 @@
+恢复并读取真实电子表格技能。只读 input.xlsx，按本次附件决定的模式和工作表，用原始 xlsx_read.py 把完整 JSON 另存 output.json。保留输入文件、原行序和 JSON 类型，不重写 helper；要求清单标明附件来源。

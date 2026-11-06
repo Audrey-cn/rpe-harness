@@ -1,0 +1,9 @@
+{
+  "business_artifacts_verified": 2,
+  "errors": [],
+  "human_confirmation_verified": false,
+  "runtime_proof": "recorded_observations_not_independent_attestation",
+  "schema_version": "rpe.v115-evidence-verification/v1",
+  "source_documents_verified": 3,
+  "verified": true
+}

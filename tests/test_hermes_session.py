@@ -56,15 +56,15 @@ def test_profile_scopes_writes_and_signals(tmp_path):
     assert '/Users/example/.hermes/auth.json' in profile
 
 
-def test_home_copies_minimum_credentials_and_disables_background(tmp_path):
+def test_home_never_writes_provider_key_and_disables_background(tmp_path):
     workspace = tmp_path / 'work'
     workspace.mkdir()
     settings = {'provider': 'xiaomi', 'model': 'mimo-v2.6-pro',
                 'base_url': 'https://token-plan-cn.xiaomimimo.com/v1', 'api_key': 'test-secret'}
     home = prepare_home(tmp_path / 'session', workspace, tmp_path / 'runs.sqlite',
                         tool_enabled=True, settings=settings)
-    assert (home / '.env').stat().st_mode & 0o777 == 0o600
-    assert 'test-secret' in (home / '.env').read_text()
+    assert not (home / '.env').exists()
+    assert 'test-secret' not in (home / 'config.yaml').read_text()
     config = json.loads((home / 'config.yaml').read_text())
     assert config['plugins']['enabled'] == ['rpe-harness']
     assert config['mcp_servers'] == {}

@@ -1,0 +1,71 @@
+{
+  "frozen_environment_matches_before_and_after_full_suite_and_model": true,
+  "full": {
+    "tests": 2225,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 7,
+    "seconds": 631.124,
+    "passed": 2218,
+    "skipped_names": [
+      "test_native_fail_open_hook_failure_leaves_private_free_durable_marker",
+      "test_native_hermes_loader_dispatches_shipped_plugin_and_persists_real_ids",
+      "test_native_normalized_response_serializer_retains_actual_model_call_identity",
+      "test_bootstrap_registers_custom_toolset_through_actual_installed_sdk_only_for_producer",
+      "test_installed_sdk_toolset_middleware_and_actual_filewrite_close_producer",
+      "test_installed_native_file_terminal_and_cold_restore_under_real_sandbox",
+      "test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal"
+    ],
+    "subtests_passed": 3,
+    "primary_tests_passed": 2215
+  },
+  "wheel": {
+    "tests": 302,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 2,
+    "seconds": 79.759,
+    "passed": 300,
+    "skipped_names": [
+      "test_installed_native_file_terminal_and_cold_restore_under_real_sandbox",
+      "test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal"
+    ]
+  },
+  "wheel_first": {
+    "tests": 302,
+    "errors": 0,
+    "failures": 1,
+    "skipped": 2,
+    "seconds": 173.567,
+    "passed": 299,
+    "skipped_names": [
+      "test_installed_native_file_terminal_and_cold_restore_under_real_sandbox",
+      "test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal"
+    ]
+  },
+  "wheel_cold_skill_recheck": {
+    "tests": 1,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 2.078,
+    "passed": 1,
+    "skipped_names": []
+  },
+  "optional_hermes": {
+    "tests": 5,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "seconds": 5.565,
+    "passed": 5,
+    "skipped_names": []
+  },
+  "full_suite_green": true,
+  "installed_wheel_green": true,
+  "paired_sample_complete": true,
+  "comparison_ready": false,
+  "ready_for_unattended_release": false,
+  "human_confirmation_verified": false,
+  "verified_billing": null
+}

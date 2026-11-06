@@ -1,0 +1,7 @@
+{
+  "isolated_session_ids_checked": 3,
+  "stable_db_and_wal_copy": true,
+  "session_rows_matching": 0,
+  "message_rows_matching": 0,
+  "copy_attempts": 1
+}

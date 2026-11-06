@@ -13,3 +13,13 @@ Only the public instruction file, bounded read helper and upstream MIT license
 are preserved. Linked helpers/references mentioned in the instruction file are
 outside this fixture. Unit tests use this fixed fixture; live acceptance must
 separately snapshot and verify the actual host skill.
+
+On 2026-11-07, the installed `productivity/xlsx/SKILL.md` still matched this
+fixture. The installed helper's SHA256 was
+`5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935`.
+Inserting `  # noqa: BLE001` after `except Exception as exc:` reproduced
+the installed bytes exactly. Both helpers produced the same Python AST.
+At local Hermes commit `b200f5bc60e31588ba2cb60e288029c4a54ba5fa`, the helper
+at `skills/productivity/microsoft-office/scripts/xlsx_read.py` still had the
+original fixture hash. Tests reconstruct the audited installed variant from
+the original fixture and check its hash.

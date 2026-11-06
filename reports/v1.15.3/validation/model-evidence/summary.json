@@ -1,0 +1,905 @@
+{
+  "by_arm": {
+    "native": {
+      "complete_chain": 1,
+      "costs": {
+        "api_requests": 6,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 42496,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 49.01523254299536,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 24045,
+        "known_api_requests": 6,
+        "known_cache_read_tokens": 42496,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 49.01523254299536,
+        "known_input_tokens": 24045,
+        "known_output_tokens": 1786,
+        "known_prompt_tokens": 66541,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 68327,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 49.5279757976532,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 1786,
+        "phase_count": 4,
+        "prompt_tokens": 66541,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 68327,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "formal_attempts": 1,
+      "formal_costs": {
+        "api_requests": 6,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 42496,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 49.01523254299536,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 24045,
+        "known_api_requests": 6,
+        "known_cache_read_tokens": 42496,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 49.01523254299536,
+        "known_input_tokens": 24045,
+        "known_output_tokens": 1786,
+        "known_prompt_tokens": 66541,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 68327,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 49.5279757976532,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 1786,
+        "phase_count": 4,
+        "prompt_tokens": 66541,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 68327,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 1
+    },
+    "review": {
+      "complete_chain": 1,
+      "costs": {
+        "api_requests": 4,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 25.05791354109533,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 10824,
+        "known_api_requests": 4,
+        "known_cache_read_tokens": 0,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 25.05791354109533,
+        "known_input_tokens": 10824,
+        "known_output_tokens": 931,
+        "known_prompt_tokens": 10824,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 11755,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 25.081623792648315,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 931,
+        "phase_count": 4,
+        "prompt_tokens": 10824,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 11755,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "formal_attempts": 1,
+      "formal_costs": {
+        "api_requests": 4,
+        "billing_verified_cost": null,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "elapsed_seconds_sum": 25.05791354109533,
+        "failed_phases": 0,
+        "incomplete_phases": 0,
+        "input_tokens": 10824,
+        "known_api_requests": 4,
+        "known_cache_read_tokens": 0,
+        "known_cache_write_tokens": 0,
+        "known_elapsed_seconds_sum": 25.05791354109533,
+        "known_input_tokens": 10824,
+        "known_output_tokens": 931,
+        "known_prompt_tokens": 10824,
+        "known_reasoning_tokens": 0,
+        "known_total_tokens": 11755,
+        "missing_observations": 0,
+        "observed_makespan_seconds": 25.081623792648315,
+        "observed_peak_rss_bytes": null,
+        "output_tokens": 931,
+        "phase_count": 4,
+        "prompt_tokens": 10824,
+        "reasoning_tokens": 0,
+        "rss_observation_coverage": 0,
+        "total_tokens": 11755,
+        "unknown_usage_phases": 0,
+        "usage_complete": true
+      },
+      "probe_correct": 0,
+      "production_complete_chain": 1
+    }
+  },
+  "comparison_ready": false,
+  "costs": {
+    "api_requests": 10,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 42496,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 77.31878320896067,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 34869,
+    "known_api_requests": 10,
+    "known_cache_read_tokens": 42496,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 77.31878320896067,
+    "known_input_tokens": 34869,
+    "known_output_tokens": 2717,
+    "known_prompt_tokens": 77365,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 80082,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 82.57398414611816,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 2717,
+    "phase_count": 9,
+    "prompt_tokens": 77365,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 80082,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "coverage_limits": [
+    "finite directed engineering sample, not a population estimate",
+    "simulated semantic review and automated acceptance are not real human confirmation",
+    "all model identities and observations are local runtime checks, not third-party attestation",
+    "native tools remain free within the same task, source facts, skills, model and budgets",
+    "only the cold skill case supplies the real skill catalog to either arm",
+    "native source facts are explicitly projected into its prompt; the raw current request is retained separately",
+    "native execution uses the exact accepted candidate and native tools, never the RPE controller",
+    "driver and full-trial timers overlap phase timers; never add overlapping timers",
+    "literal value evidence does not prove omitted instructions or full natural-language understanding",
+    "native staged output is an explicitly supplied engineering protocol, not freeform behavior",
+    "request I/O limits and CLI estimates are not physical provider API or verified billing caps"
+  ],
+  "driver_elapsed_seconds_sum": 77.05403300002217,
+  "fingerprint": "ca6231310999ff7a9419c4fab81500f8e48955783a995528e75d577328de1fea",
+  "formal_attempts": 2,
+  "formal_costs": {
+    "api_requests": 10,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 42496,
+    "cache_write_tokens": null,
+    "elapsed_seconds_sum": 74.0731460840907,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 34869,
+    "known_api_requests": 10,
+    "known_cache_read_tokens": 42496,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 74.0731460840907,
+    "known_input_tokens": 34869,
+    "known_output_tokens": 2717,
+    "known_prompt_tokens": 77365,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 80082,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 74.62704586982727,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 2717,
+    "phase_count": 8,
+    "prompt_tokens": 77365,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 80082,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "human_confirmation_verified": false,
+  "human_review_seconds": null,
+  "native_execution_sessions": 1,
+  "pairs": [
+    {
+      "case_id": "stock-acceptance-xlsx",
+      "comparable": true,
+      "native_accepted": true,
+      "review_accepted": true
+    },
+    {
+      "case_id": "cold-inventory",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    },
+    {
+      "case_id": "pending-account-key",
+      "comparable": false,
+      "native_accepted": null,
+      "review_accepted": null
+    }
+  ],
+  "pilot_attempts": 0,
+  "pilot_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 0,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 0,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": null,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 0,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  },
+  "profile": "review-v115",
+  "records": [
+    {
+      "accepted": true,
+      "actual_host_prompt_sha256": "00f272bdcca50f0c3ebff7d208ae2ea5788b2536744cf3eec1d0fc5004c4417e",
+      "approval": {
+        "actor": "simulated_semantic_reviewer",
+        "candidate_sha256": "116ca1ca032be597504da170c9fa2c11d8b557afac28a94852c79092d210d31e",
+        "status": "confirmed",
+        "strategy": "native"
+      },
+      "approved": true,
+      "arm": "native",
+      "artifact_sha256": "2c67f9a5bb3b126ec613c3ffe3b7795b02e1f9c96246c3de8cc9446e6700a1c1",
+      "business_correct": true,
+      "candidate_proof": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "验货"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "使用已恢复的真实 xlsx 技能中原有的 xlsx_read.py 读取输入电子表格，不得重写 helper。来源：original_request。"
+          },
+          {
+            "fields": [
+              "/execution/input_path",
+              "/constraints"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "以只读方式读取 input.xlsx，保留输入文件不被改写。来源：original_request。"
+          },
+          {
+            "fields": [
+              "/execution/mode"
+            ],
+            "quote_ref": "q:39ef87642f1416a02055ff891845eecd7171e06cd1b6a18adf12e3b178b7fd6f",
+            "source_ref": {
+              "event_id": "review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3",
+              "sha256": "6596a2ecf607220085935181ace766c06d566e25f007ce0debba231f7d4289a3",
+              "source": "user-stock-acceptance"
+            },
+            "text": "读取模式为 rows（逐行导出），来自本次附件 user-stock-acceptance 的 mode 事实。来源：附件 user-stock-acceptance（event review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3）。"
+          },
+          {
+            "fields": [
+              "/execution/sheet"
+            ],
+            "quote_ref": "q:08bdef72aa48c0d7a32ac17386085782b82f5b4ec6c8cece3bf24ab4828fdcf1",
+            "source_ref": {
+              "event_id": "review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3",
+              "sha256": "6596a2ecf607220085935181ace766c06d566e25f007ce0debba231f7d4289a3",
+              "source": "user-stock-acceptance"
+            },
+            "text": "目标工作表为「验货」，来自本次附件 user-stock-acceptance 的 sheet 事实。来源：附件 user-stock-acceptance（event review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3）。"
+          },
+          {
+            "fields": [
+              "/execution/output_path"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "将完整 JSON 结果另存为 output.json。来源：original_request。"
+          },
+          {
+            "fields": [
+              "/capability",
+              "/execution/mode"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "保留原始行序与 JSON 值类型（不做行排序或类型转换），并保留 helper 的原始 JSON 结构。来源：original_request（行序与 JSON 类型由 xlsx.inspect 自身保证，映射到能力与 mode，不新增标志）。"
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "stock-acceptance-xlsx",
+      "category": "production",
+      "cold_recall_proof": {
+        "errors": [],
+        "native_view_calls": 1,
+        "restore_calls": 1,
+        "verified": true
+      },
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "arguments_sha256": "16317b2b8f51118eb1ab1e6e6ddd729f4de557214c7cdb31c1903067343fdcf1",
+        "bytes_written": 2661,
+        "content_sha256": "1c8398b0a269e8e26d6b4bf893002348cb3dbb2b1344478a44287395b04297a9",
+        "errors": [],
+        "proof_kind": "native_io_receipt",
+        "status": "verified_native_draft",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_gate": {
+        "arguments_sha256": "c032493c2ae9cce71b6f582a142b50719b46fc36c7f7b8f7a8c115c4ad831873",
+        "artifact_binding": "same_call_final_bytes_equal_observed_stdout_not_exclusive_writer",
+        "error_codes": [],
+        "error_count": 0,
+        "helper_call_id": "call_207384664b5344bdbe0921c5",
+        "kernel_exit_observed": true,
+        "output_sha256": "2c67f9a5bb3b126ec613c3ffe3b7795b02e1f9c96246c3de8cc9446e6700a1c1",
+        "process_argv_sha256": "a4f8fa012c80161ccce2ee560152f480152ce0464d0ad7139853d6aaca606f3c",
+        "process_returncode": 0,
+        "proof_kind": "authenticated_darwin_kernel_process_exit",
+        "receipt_authenticated": true,
+        "status": "accepted",
+        "stdout_sha256": "2c67f9a5bb3b126ec613c3ffe3b7795b02e1f9c96246c3de8cc9446e6700a1c1",
+        "verified": true
+      },
+      "execution_kind": "approved_native",
+      "execution_verified": true,
+      "fingerprint": "ca6231310999ff7a9419c4fab81500f8e48955783a995528e75d577328de1fea",
+      "full_trial_elapsed_seconds": 49.54260650021024,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "native_chain_diagnostics": {
+        "draft": {
+          "api_duplicate_outcomes": 0,
+          "api_duplicate_requests": 0,
+          "api_errors": 0,
+          "api_outcomes": 4,
+          "api_requests": 4,
+          "api_unmatched_outcomes": 0,
+          "api_unmatched_requests": 0,
+          "durable_observations_match": true,
+          "error_code": null,
+          "model_tool_calls": 6,
+          "stream_calls": 6,
+          "stream_unmatched_calls": 0,
+          "tool_missing_posts": 0,
+          "tool_post_calls": 6,
+          "tool_pre_calls": 6,
+          "tool_unemitted_calls": 0,
+          "tool_unmatched_posts": 0,
+          "tool_unobserved_calls": 0,
+          "verified": true
+        },
+        "execute": {
+          "api_duplicate_outcomes": 0,
+          "api_duplicate_requests": 0,
+          "api_errors": 0,
+          "api_outcomes": 2,
+          "api_requests": 2,
+          "api_unmatched_outcomes": 0,
+          "api_unmatched_requests": 0,
+          "durable_observations_match": true,
+          "error_code": null,
+          "model_tool_calls": 3,
+          "stream_calls": 3,
+          "stream_unmatched_calls": 0,
+          "tool_missing_posts": 0,
+          "tool_post_calls": 3,
+          "tool_pre_calls": 3,
+          "tool_unemitted_calls": 0,
+          "tool_unmatched_posts": 0,
+          "tool_unobserved_calls": 0,
+          "verified": true
+        }
+      },
+      "no_business_output": false,
+      "no_business_output_before_approval": true,
+      "parameter_sources": [
+        {
+          "event_id": "review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3",
+          "facts": {
+            "mode": "rows",
+            "sheet": "验货"
+          },
+          "payload": {
+            "event": {
+              "text": "本次验货：mode=rows；sheet=验货。"
+            },
+            "original_event_id": "approved-inspection",
+            "text": "本次验货：mode=rows；sheet=验货。"
+          },
+          "received_at": 1794006506.139534,
+          "session_id": "native-context-formal-stock-acceptance-xlsx-native",
+          "sha256": "6596a2ecf607220085935181ace766c06d566e25f007ce0debba231f7d4289a3",
+          "source": "user-stock-acceptance"
+        }
+      ],
+      "parameter_value_evidence": {
+        "coverage_limits": [
+          "Only literal values in model-mapped registered parameter rows are checked; unmapped instructions and semantic completeness still require human review.",
+          "A proposed default does not prove that the source omitted an explicit value.",
+          "Free prose without a supported enum literal remains unverified."
+        ],
+        "errors": [],
+        "missing": [],
+        "status": "ready",
+        "witnesses": [
+          {
+            "canonical_value": "rows",
+            "field": "/execution/mode",
+            "literal_values": [
+              "rows"
+            ],
+            "origin": "context_source",
+            "quote": "rows",
+            "requirement_id": "r0003",
+            "source_ref": {
+              "event_id": "review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3",
+              "sha256": "6596a2ecf607220085935181ace766c06d566e25f007ce0debba231f7d4289a3",
+              "source": "user-stock-acceptance"
+            },
+            "span": [
+              10,
+              14
+            ],
+            "status": "verified_literal"
+          },
+          {
+            "canonical_value": "rows",
+            "field": "/execution/mode",
+            "literal_values": [],
+            "origin": "source_quote",
+            "quote": "恢复并读取真实电子表格技能。只读 input.xlsx，按本次附件决定的模式和工作表，用原始 xlsx_read.py 把完整 JSON 另存 output.json。保留输入文件、原行序和 JSON 类型，不重写 helper；要求清单标明附件来源。",
+            "requirement_id": "r0006",
+            "span": [
+              0,
+              126
+            ],
+            "status": "unverified_prose"
+          }
+        ]
+      },
+      "phase": "formal",
+      "probe_correct": false,
+      "product_oracle_passed": true,
+      "raw_source_sha256": "6947500c103f89327d76236d5107f5e1fea8e68f77bb63ae346e20c274bd549b",
+      "request_budget_observations": {
+        "draft": {
+          "api_requests": 4,
+          "conformant": true,
+          "durable_observations_match": true,
+          "requests": [
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            }
+          ],
+          "truncated": false
+        },
+        "execute": {
+          "api_requests": 2,
+          "conformant": true,
+          "durable_observations_match": true,
+          "requests": [
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "a09c16d7b94741778386eb03cfdd941b",
+      "sha256": "55787d24921918f530c90b442aa58a42553f833c9df5851a534061bc9dc65e84",
+      "source_bindings": [
+        {
+          "facts": {
+            "mode": "rows",
+            "sheet": "验货"
+          },
+          "quote_refs": {
+            "mode": "q:39ef87642f1416a02055ff891845eecd7171e06cd1b6a18adf12e3b178b7fd6f",
+            "sheet": "q:08bdef72aa48c0d7a32ac17386085782b82f5b4ec6c8cece3bf24ab4828fdcf1"
+          },
+          "quote_spans": {
+            "mode": [
+              10,
+              14
+            ],
+            "sheet": [
+              2,
+              4
+            ]
+          },
+          "quotes": {
+            "mode": "rows",
+            "sheet": "验货"
+          },
+          "source_ref": {
+            "event_id": "review:9e4aeb2e74b46a73fc8fe5cd4bd0e18b65ecf3ef75cafd8bf91331a926a725a3",
+            "sha256": "6596a2ecf607220085935181ace766c06d566e25f007ce0debba231f7d4289a3",
+            "source": "user-stock-acceptance"
+          }
+        }
+      ],
+      "source_preserved": true,
+      "status": "completed",
+      "structured_terminal": null,
+      "trace_verified": true,
+      "trial_id": "formal-stock-acceptance-xlsx-native"
+    },
+    {
+      "accepted": true,
+      "actual_host_prompt_sha256": "6947500c103f89327d76236d5107f5e1fea8e68f77bb63ae346e20c274bd549b",
+      "approval": {
+        "actor": "simulated_semantic_reviewer",
+        "confirmation_id": "75d2a4acae0da15a22e12a2adca79391720b781b828c56218c7ba1afde2206e3",
+        "proposal_id": "3e3ec4ab1b0661b9ec5bde1ce897b7a3a00af2d60d7bce65bc24445602a7043d",
+        "proposal_sha256": "3e3ec4ab1b0661b9ec5bde1ce897b7a3a00af2d60d7bce65bc24445602a7043d",
+        "session_id": "8f11f5a4e1274e5ebf46000af072708d",
+        "status": "confirmed"
+      },
+      "approved": true,
+      "arm": "review",
+      "artifact_sha256": "2c67f9a5bb3b126ec613c3ffe3b7795b02e1f9c96246c3de8cc9446e6700a1c1",
+      "business_correct": true,
+      "candidate_proof": {
+        "capability": "xlsx.inspect",
+        "constraints": [
+          "preserve_original"
+        ],
+        "execution": {
+          "input_path": "input.xlsx",
+          "mode": "rows",
+          "output_path": "output.json",
+          "sheet": "验货"
+        },
+        "requirements": [
+          {
+            "fields": [
+              "/capability",
+              "/execution/input_path",
+              "/execution/output_path"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "Read the existing input.xlsx workbook and save the complete JSON output to output.json per the current request."
+          },
+          {
+            "fields": [
+              "/execution/mode"
+            ],
+            "quote_ref": "q:0f974fbc30b3bc60cec5edf18e3888f3317e97387036b7c6872e31d2cf633de0",
+            "source_ref": {
+              "event_id": "review:df9bbafec37bf456e3f26230663979ff19ef04acd3683d8fb3600300ed37b975",
+              "sha256": "6a4319cd998d89c84a5c0ab9546ea05d75a54a89cfb094d8f558c1ea9bfefa36",
+              "source": "user-stock-acceptance"
+            },
+            "text": "Use read-only mode 'rows' as decided by the attachment."
+          },
+          {
+            "fields": [
+              "/execution/sheet"
+            ],
+            "quote_ref": "q:10c3686a124a4f4cd04265efc0c3ed58ba50fbcb4b550c197e2aed710be286c3",
+            "source_ref": {
+              "event_id": "review:df9bbafec37bf456e3f26230663979ff19ef04acd3683d8fb3600300ed37b975",
+              "sha256": "6a4319cd998d89c84a5c0ab9546ea05d75a54a89cfb094d8f558c1ea9bfefa36",
+              "source": "user-stock-acceptance"
+            },
+            "text": "Select worksheet '验货' as decided by the attachment."
+          },
+          {
+            "fields": [
+              "/constraints"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "Preserve the input file (never overwrite it) per the current request."
+          },
+          {
+            "fields": [
+              "/capability",
+              "/execution/mode"
+            ],
+            "quote_ref": "q:ab043c3684b27401931b30fd79860c26381169229de0c570c6e786775a6e0a86",
+            "text": "Preserve original row order and JSON types; this is inherent to xlsx.inspect, which also preserves its original helper JSON structure and does not rewrite the helper."
+          }
+        ],
+        "unresolved": [],
+        "unresolved_sha256": []
+      },
+      "case_id": "stock-acceptance-xlsx",
+      "category": "production",
+      "comparable": true,
+      "draft_faithful": true,
+      "draft_gate": {
+        "arguments_transform": "identity",
+        "cold_skill_restores": 1,
+        "errors": [],
+        "native_discovery_calls": 1,
+        "native_proposal_calls": 1,
+        "native_selection_calls": 1,
+        "native_skill_view_calls": 1,
+        "post_arguments_phase": "raw_before_coercion",
+        "proposal_api_requests": 1,
+        "proposal_digest": "3e3ec4ab1b0661b9ec5bde1ce897b7a3a00af2d60d7bce65bc24445602a7043d",
+        "proposal_executions": 0,
+        "proposal_id": "3e3ec4ab1b0661b9ec5bde1ce897b7a3a00af2d60d7bce65bc24445602a7043d",
+        "proposal_sha256": "3e3ec4ab1b0661b9ec5bde1ce897b7a3a00af2d60d7bce65bc24445602a7043d",
+        "proposal_verified": true,
+        "protocol_recoveries": 0,
+        "reporting_api_requests": 0,
+        "selected_script_sha256": "5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935",
+        "selected_skill_id": "productivity/xlsx",
+        "selected_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "selection_kind": "selected",
+        "skill_selection_verified": true,
+        "skill_snapshot_id": "628a5a1edeb0c8ca2b599ca867d7094cce0d0c26f43f77b90ff86a352f2beece",
+        "source_ref": "user_prompt:6947500c103f89327d76236d5107f5e1fea8e68f77bb63ae346e20c274bd549b",
+        "source_sha256": "6947500c103f89327d76236d5107f5e1fea8e68f77bb63ae346e20c274bd549b",
+        "status": "verified_proposal",
+        "verified": true
+      },
+      "draft_invocation_verified": true,
+      "execution_kind": "approved_public_controller",
+      "execution_run_id": "04b8d0cb4af149e992d29f00ddef3a2e",
+      "execution_verified": true,
+      "fingerprint": "ca6231310999ff7a9419c4fab81500f8e48955783a995528e75d577328de1fea",
+      "full_trial_elapsed_seconds": 25.082301374990493,
+      "host_cleanup_complete": true,
+      "human_confirmation_verified": false,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "native_chain_diagnostics": {
+        "draft": {
+          "api_duplicate_outcomes": 0,
+          "api_duplicate_requests": 0,
+          "api_errors": 0,
+          "api_outcomes": 4,
+          "api_requests": 4,
+          "api_unmatched_outcomes": 0,
+          "api_unmatched_requests": 0,
+          "durable_observations_match": true,
+          "error_code": "native_stream_linkage_invalid",
+          "model_tool_calls": 4,
+          "stream_calls": 0,
+          "stream_unmatched_calls": 4,
+          "tool_missing_posts": 0,
+          "tool_post_calls": 4,
+          "tool_pre_calls": 4,
+          "tool_unemitted_calls": 0,
+          "tool_unmatched_posts": 0,
+          "tool_unobserved_calls": 0,
+          "verified": false
+        }
+      },
+      "no_business_output": false,
+      "no_business_output_before_approval": true,
+      "parameter_sources": [
+        {
+          "event_id": "review:df9bbafec37bf456e3f26230663979ff19ef04acd3683d8fb3600300ed37b975",
+          "facts": {
+            "mode": "rows",
+            "sheet": "验货"
+          },
+          "payload": {
+            "event": {
+              "text": "本次验货：mode=rows；sheet=验货。"
+            },
+            "original_event_id": "approved-inspection",
+            "text": "本次验货：mode=rows；sheet=验货。"
+          },
+          "received_at": 1794006562.0644019,
+          "session_id": "8f11f5a4e1274e5ebf46000af072708d",
+          "sha256": "6a4319cd998d89c84a5c0ab9546ea05d75a54a89cfb094d8f558c1ea9bfefa36",
+          "source": "user-stock-acceptance"
+        }
+      ],
+      "parameter_value_evidence": {
+        "coverage_limits": [
+          "Only literal values in model-mapped registered parameter rows are checked; unmapped instructions and semantic completeness still require human review.",
+          "A proposed default does not prove that the source omitted an explicit value.",
+          "Free prose without a supported enum literal remains unverified."
+        ],
+        "errors": [],
+        "missing": [],
+        "status": "ready",
+        "witnesses": [
+          {
+            "canonical_value": "rows",
+            "field": "/execution/mode",
+            "literal_values": [
+              "rows"
+            ],
+            "origin": "context_source",
+            "quote": "rows",
+            "requirement_id": "r0002",
+            "source_ref": {
+              "event_id": "review:df9bbafec37bf456e3f26230663979ff19ef04acd3683d8fb3600300ed37b975",
+              "sha256": "6a4319cd998d89c84a5c0ab9546ea05d75a54a89cfb094d8f558c1ea9bfefa36",
+              "source": "user-stock-acceptance"
+            },
+            "span": [
+              10,
+              14
+            ],
+            "status": "verified_literal"
+          },
+          {
+            "canonical_value": "rows",
+            "field": "/execution/mode",
+            "literal_values": [],
+            "origin": "source_quote",
+            "quote": "恢复并读取真实电子表格技能。只读 input.xlsx，按本次附件决定的模式和工作表，用原始 xlsx_read.py 把完整 JSON 另存 output.json。保留输入文件、原行序和 JSON 类型，不重写 helper；要求清单标明附件来源。",
+            "requirement_id": "r0005",
+            "span": [
+              0,
+              126
+            ],
+            "status": "unverified_prose"
+          }
+        ]
+      },
+      "phase": "formal",
+      "probe_correct": false,
+      "product_oracle_passed": true,
+      "raw_source_sha256": "6947500c103f89327d76236d5107f5e1fea8e68f77bb63ae346e20c274bd549b",
+      "request_budget_observations": {
+        "draft": {
+          "api_requests": 4,
+          "conformant": true,
+          "durable_observations_match": true,
+          "requests": [
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            },
+            {
+              "max_completion_tokens": 2400,
+              "thinking_type": "disabled"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "review_phase_proof": {
+        "cold_skill_restores": 1,
+        "native_discovery_calls": 1,
+        "native_selection_calls": 1,
+        "native_skill_view_calls": 1,
+        "selected_script_sha256": "5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935",
+        "selected_skill_id": "productivity/xlsx",
+        "selected_skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "selection_kind": "selected",
+        "skill_selection_verified": true,
+        "skill_snapshot_id": "628a5a1edeb0c8ca2b599ca867d7094cce0d0c26f43f77b90ff86a352f2beece"
+      },
+      "reviewer_kind": "simulated_semantic_reviewer",
+      "session_id": "8f11f5a4e1274e5ebf46000af072708d",
+      "sha256": "2f401e55e58a15252cc106a264540064f35430aa8d886770d325f98cc53774cd",
+      "skill_selection": {
+        "kind": "selected",
+        "script_sha256": "5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935",
+        "skill_id": "productivity/xlsx",
+        "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+        "snapshot_id": "628a5a1edeb0c8ca2b599ca867d7094cce0d0c26f43f77b90ff86a352f2beece"
+      },
+      "source_preserved": true,
+      "status": "completed",
+      "structured_terminal": null,
+      "trial_id": "formal-stock-acceptance-xlsx-review"
+    }
+  ],
+  "reviewer_kind": "simulated_semantic_reviewer",
+  "schema_version": "rpe.v115-summary/v1",
+  "sha256": "e207fb4e3dae49a23811f09b121052c62bf2024943efee1314fb8e50fb310a50",
+  "shared_costs": {
+    "api_requests": 0,
+    "billing_verified_cost": null,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "elapsed_seconds_sum": 3.2456371248699725,
+    "failed_phases": 0,
+    "incomplete_phases": 0,
+    "input_tokens": 0,
+    "known_api_requests": 0,
+    "known_cache_read_tokens": 0,
+    "known_cache_write_tokens": 0,
+    "known_elapsed_seconds_sum": 3.2456371248699725,
+    "known_input_tokens": 0,
+    "known_output_tokens": 0,
+    "known_prompt_tokens": 0,
+    "known_reasoning_tokens": 0,
+    "known_total_tokens": 0,
+    "missing_observations": 0,
+    "observed_makespan_seconds": 3.2369730472564697,
+    "observed_peak_rss_bytes": null,
+    "output_tokens": 0,
+    "phase_count": 1,
+    "prompt_tokens": 0,
+    "reasoning_tokens": 0,
+    "rss_observation_coverage": 0,
+    "total_tokens": 0,
+    "unknown_usage_phases": 0,
+    "usage_complete": true
+  }
+}

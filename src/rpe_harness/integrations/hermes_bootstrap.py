@@ -2,11 +2,12 @@
 
 This file is executable directly by Hermes's Python runtime and uses only the
 standard library until the installed Hermes bootstrap activates its dependencies.
-It never serializes prompts, response content, credentials, or unknown usage fields.
+The usage observer records numeric fields only. Hermes owns the JSONL output.
 """
 
 from __future__ import annotations
 
+import argparse
 from collections.abc import Mapping
 from functools import wraps
 import importlib
@@ -20,6 +21,7 @@ import subprocess
 import sys
 import time
 from typing import Any
+from uuid import uuid4
 
 
 _TOKEN_FIELDS = (
@@ -147,7 +149,7 @@ def install_usage_telemetry(mixin_type: type | None = None) -> None:
     mixin_type._usage_summary_for_api_request_hook = observed
 
 
-def install_process_telemetry() -> None:
+def install_process_telemetry(*, scrub_provider_key: bool = False) -> None:
     """Synchronously journal direct children of this isolated Python process.
 
     The patch stays in this process; shell forks and externally executed Python
@@ -215,6 +217,16 @@ def install_process_telemetry() -> None:
 
     @wraps(original)
     def observed(self: Any, *args: Any, **kwargs: Any) -> None:
+        if scrub_provider_key:
+            # Legacy CLI resolves its key from the running Python environment.
+            # Never let it reach a child, including callers that inherit env=None.
+            env = args[10] if len(args) > 10 else kwargs.get('env')
+            clean_env = dict(os.environ if env is None else env)
+            clean_env.pop('XIAOMI_API_KEY', None)
+            if len(args) > 10:
+                args = (*args[:10], clean_env, *args[11:])
+            else:
+                kwargs['env'] = clean_env
         original(self, *args, **kwargs)
         if self.poll() is not None:
             return
@@ -284,8 +296,91 @@ def install_clean_ingress_guard() -> None:
     middleware.run_llm_execution_middleware = guarded
 
 
+def _parse_isolated_turn(argv: list[str]) -> argparse.Namespace:
+    """Validate the launcher contract before loading Hermes or its configuration."""
+    parser = argparse.ArgumentParser(prog='RPE isolated Hermes chat', allow_abbrev=False)
+    for flag in ('--cli', '--oneshot', '-Q', '--ignore-rules'):
+        parser.add_argument(flag, action='store_true', required=True)
+    parser.add_argument('--query-file', type=Path, required=True)
+    parser.add_argument('--format', choices=['stream-json'], required=True)
+    parser.add_argument('--source', choices=['rpe-harness'], required=True)
+    parser.add_argument('--provider', choices=['xiaomi'], required=True)
+    parser.add_argument('--model', required=True)
+    parser.add_argument('--toolsets', required=True)
+    parser.add_argument('--max-turns', type=int, required=True)
+    parser.add_argument('--run-budget', type=int, required=True)
+    options = parser.parse_args(argv)
+    options.toolsets = options.toolsets.split(',')
+    if options.max_turns <= 0 or options.run_budget <= 0 or not all(options.toolsets):
+        parser.error('the isolated turn requires positive limits and explicit toolsets')
+
+    home_setting = Path(os.environ.get('HERMES_HOME', ''))
+    options.home = home_setting.resolve()
+    if (not home_setting.is_absolute()
+            or options.home.is_relative_to((Path.home() / '.hermes').resolve())
+            or not (options.home / 'config.yaml').is_file()):
+        raise SystemExit('isolated Hermes home is required')
+    workspace = Path(os.environ.get('RPE_HERMES_WORKSPACE', ''))
+    options.workspace = workspace.resolve()
+    if not workspace.is_absolute() or options.workspace != Path.cwd():
+        raise SystemExit('isolated Hermes workspace must match the launch directory')
+    return options
+
+
+def _consume_provider_key() -> str | None:
+    inherited = os.environ.pop('RPE_HERMES_PROVIDER_KEY_FD', None)
+    if inherited is None:
+        return None
+    try:
+        fd = int(inherited)
+        if fd < 3:
+            raise ValueError('unexpected provider key descriptor')
+        with os.fdopen(fd, 'rb') as stream:
+            if not stat.S_ISFIFO(os.fstat(stream.fileno()).st_mode):
+                raise ValueError('provider key must arrive through a pipe')
+            data = stream.read(513)
+        if not 0 < len(data) <= 512 or any(character in data for character in b'\x00\n\r'):
+            raise ValueError('invalid provider key')
+        return data.decode()
+    except (OSError, ValueError):
+        raise SystemExit('invalid isolated Hermes provider key descriptor') from None
+
+
+def _run_isolated_turn(options: argparse.Namespace, provider_key: str) -> int:
+    """Run one turn inside the observed process, using the installed Hermes SDK."""
+    from hermes_cli.config import load_config
+    from hermes_cli.plugins import discover_plugins
+    from hermes_cli.stream_json import StreamJsonEmitter
+    from run_agent import AIAgent
+
+    config = load_config()
+    model = config['model']
+    base_url = model.get('base_url')
+    if (model.get('provider') != options.provider or model.get('default') != options.model
+            or not base_url):
+        raise SystemExit('isolated Hermes provider settings differ from the requested route')
+    prompt = options.query_file.read_text(encoding='utf-8')
+    discover_plugins()
+    session_id = uuid4().hex
+    emitter = StreamJsonEmitter(options.model, session_id)
+    agent = AIAgent(
+        provider=options.provider, api_key=provider_key, base_url=base_url, api_mode='chat_completions',
+        model=options.model, max_iterations=options.max_turns, run_budget_seconds=options.run_budget,
+        enabled_toolsets=options.toolsets, quiet_mode=True, skip_context_files=True, skip_memory=True,
+        skip_background_review=True, save_trajectories=False, session_id=session_id,
+        platform='cli', cwd=str(options.workspace), ephemeral_system_prompt=config['agent'].get('system_prompt'),
+    )
+    agent.suppress_status_output = True
+    emitter.attach(agent)
+    try:
+        result = agent.run_conversation(user_message=prompt, task_id=session_id)
+    finally:
+        agent.close()
+    return emitter.emit_result(result, session_id=agent.session_id)
+
+
 def main(argv: list[str] | None = None) -> Any:
-    """Dispatch unchanged CLI arguments after activating and observing installed Hermes."""
+    """Activate Hermes and use its local turn when CLI chat is gateway-backed."""
     install_root = os.environ.get("RPE_HERMES_INSTALL_ROOT", "")
     root = Path(install_root).resolve() if install_root else None
     if root is None or not (root / "hermes_cli/main.py").is_file():
@@ -293,6 +388,18 @@ def main(argv: list[str] | None = None) -> Any:
     sys.path.insert(0, str(root))
     if argv is not None:
         sys.argv = [sys.argv[0], *argv]
+    chat_args = sys.argv[1:]
+    use_sdk = chat_args[:1] == ['chat'] and (root / 'hermes_cli/gateway_chat_startup.py').is_file()
+    provider_key = _consume_provider_key()
+    isolated_turn = None
+    if use_sdk or provider_key is not None:
+        if chat_args[:1] != ['chat']:
+            raise SystemExit('isolated credentials require an explicit chat command')
+        isolated_turn = _parse_isolated_turn(chat_args[1:])
+        os.environ.update(HERMES_SINGLE_QUERY_SESSION='1', HERMES_IGNORE_RULES='1',
+                          HERMES_SESSION_SOURCE=isolated_turn.source, HERMES_SESSION_SOURCE_EXPLICIT='1')
+    if use_sdk and provider_key is None:
+        raise SystemExit('isolated Hermes provider key descriptor is required')
     if os.environ.get('RPE_HERMES_NATIVE_EXECUTION_KEY_FD'):
         search_path = list(sys.path)
         try:
@@ -300,7 +407,13 @@ def main(argv: list[str] | None = None) -> Any:
             importlib.import_module('rpe_harness.integrations.hermes_native_process').install_native_execution_signing_key()
         finally:
             sys.path[:] = search_path
-    install_process_telemetry()
+    legacy_credentials = provider_key is not None and not use_sdk
+    if legacy_credentials:
+        if not os.environ.get('RPE_HERMES_PROCESS_PATH'):
+            raise SystemExit('isolated process registry is required for legacy Hermes credentials')
+        install_process_telemetry(scrub_provider_key=True)
+    else:
+        install_process_telemetry()
     importlib.import_module("hermes_bootstrap")
     install_producer_toolset()
     install_usage_telemetry()
@@ -320,6 +433,20 @@ def main(argv: list[str] | None = None) -> Any:
                 getattr(adapter, function)()
             finally:
                 sys.path[:] = search_path
+    if use_sdk:
+        return _run_isolated_turn(isolated_turn, provider_key)
+    if legacy_credentials:
+        legacy_model = json.loads((isolated_turn.home / 'config.yaml').read_text(encoding='utf-8'))['model']
+        if (legacy_model.get('provider') != isolated_turn.provider
+                or legacy_model.get('default') != isolated_turn.model or not legacy_model.get('base_url')):
+            raise SystemExit('isolated Hermes provider settings differ from the requested route')
+        os.environ['XIAOMI_API_KEY'] = provider_key
+        os.environ['XIAOMI_BASE_URL'] = legacy_model['base_url']
+        try:
+            return importlib.import_module('hermes_cli.main').main()
+        finally:
+            os.environ.pop('XIAOMI_API_KEY', None)
+            os.environ.pop('XIAOMI_BASE_URL', None)
     return importlib.import_module("hermes_cli.main").main()
 
 

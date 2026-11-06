@@ -779,18 +779,22 @@ def register(ctx) -> None:
                         payload['tool_exit_code'] = native_result['exit_code']
                         payload['status'] = 'succeeded' if native_result['exit_code']==0 else 'failed'
                     elif payload.get('tool_name') == 'skill_view' and native_config:
-                        content = native_result.get('content')
-                        path = native_result.get('_source_path')
-                        args = payload.get('args',{})
-                        matching = [row for row in native_config['entries'] if row.get('load_name') == args.get('name')]
-                        if (len(matching)==1 and native_result.get('success') is True
-                                and isinstance(content,str) and path==matching[0]['skill_path']
-                                and native_result.get('setup_needed') is False
-                                and hashlib.sha256(content.encode()).hexdigest()==matching[0]['skill_sha256']):
-                            row=matching[0]
-                            payload.update(status='loaded',skill_id=row['skill_id'],
-                                snapshot_id=native_config['snapshot_id'],skill_sha256=row['skill_sha256'],
-                                content_sha256=row['skill_sha256'],skill_source_path=path)
+                        from .hermes_skill_source import _verified_native_skill_source
+                        args = payload.get('args')
+                        if type(args) is dict and set(args) == {'name'} and isinstance(args['name'], str):
+                            matching = [row for row in native_config['entries'] if row.get('load_name') == args['name']]
+                            if len(matching) == 1:
+                                row = matching[0]
+                                try:
+                                    path = _verified_native_skill_source(native_result, path=row['skill_path'],
+                                        root=native_config['materialized_root'], skill_sha256=row['skill_sha256'],
+                                        name=row['name'])
+                                except (OSError, ValueError, TypeError, KeyError):
+                                    pass  # Preserve the ordinary native event without a skill-load receipt.
+                                else:
+                                    payload.update(status='loaded', skill_id=row['skill_id'],
+                                        snapshot_id=native_config['snapshot_id'], skill_sha256=row['skill_sha256'],
+                                        content_sha256=row['skill_sha256'], skill_source_path=path)
             if kind == 'post_tool_call' and payload.get('tool_name') == 'rpe_task':
                 try:
                     result = json.loads(payload.get('result', ''))

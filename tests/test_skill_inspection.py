@@ -1,7 +1,6 @@
 import copy
 import hashlib
 import json
-import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -10,8 +9,8 @@ from zipfile import ZIP_DEFLATED
 
 import pytest
 from openpyxl import Workbook
+from test_skill_catalog import copy_xlsx_skill
 
-XLSX_FIXTURE = Path(__file__).parent / 'fixtures/skills/productivity/xlsx'
 NATIVE_ONLY = pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').exists(),
                                  reason='native helper requires macOS filesystem/network sandbox')
 
@@ -22,10 +21,10 @@ def modules():
     return SkillInspectionPlan, prepare_skill_inspection, verify_skill_inspection
 
 
-def request(tmp_path, mode='rows'):
+def request(tmp_path, mode='rows', *, reviewed_noqa=False):
     from rpe_harness.skill_catalog import SkillCatalog
     root = tmp_path / 'skills'
-    shutil.copytree(XLSX_FIXTURE, root / 'productivity/xlsx')
+    copy_xlsx_skill(root / 'productivity/xlsx', reviewed_noqa=reviewed_noqa)
     catalog = SkillCatalog(tmp_path / 'db.sqlite', tmp_path / 'owned')
     catalog.sync(root)
     binding = catalog.trust_adapter('productivity/xlsx')
@@ -49,10 +48,11 @@ def request(tmp_path, mode='rows'):
     ('rows', {'sheet': 'Data', 'rows': [['key', 'value', 'date'], [1, True, '2026-10-14T12:00:00'], [2, '=A2+1', None]]}),
     ('formulas', {'formulas': [{'sheet': 'Data', 'cell': 'B3', 'formula': '=A2+1', 'cached': None}]}),
 ])
+@pytest.mark.parametrize('reviewed_noqa', [False, True], ids=['original', 'reviewed-noqa'])
 @NATIVE_ONLY
-def test_original_helper_execution_and_independent_oracle(tmp_path, mode, expected):
+def test_original_helper_execution_and_independent_oracle(tmp_path, mode, expected, reviewed_noqa):
     Plan, prepare, verify = modules()
-    payload = request(tmp_path, mode)
+    payload = request(tmp_path, mode, reviewed_noqa=reviewed_noqa)
     plan = Plan.from_request(payload)
     assert Plan.from_dict(plan.to_dict()).sha256 == plan.sha256
     prepared = prepare(**plan.execution_kwargs())
@@ -139,6 +139,24 @@ def test_source_helper_changed_after_sync_is_rejected(tmp_path):
     helper.write_text(helper.read_text() + '\n# changed\n')
     with pytest.raises(ValueError):
         Plan.from_request(payload)
+
+
+def test_trust_does_not_transfer_to_another_audited_revision(tmp_path):
+    from rpe_harness.skill_catalog import SkillCatalog, validate_skill_binding
+    payload = request(tmp_path)
+    binding = payload['execution']['skill_binding']
+    reviewed = tmp_path / 'reviewed'
+    copy_xlsx_skill(reviewed, reviewed_noqa=True)
+    helper = tmp_path / 'skills/productivity/xlsx/scripts/xlsx_read.py'
+    helper.write_bytes((reviewed / 'scripts/xlsx_read.py').read_bytes())
+    with pytest.raises(ValueError, match='original skill or helper changed'):
+        validate_skill_binding(binding)
+
+    catalog = SkillCatalog(tmp_path / 'db.sqlite', tmp_path / 'owned')
+    catalog.sync(tmp_path / 'skills')
+    row = catalog.lookup('productivity/xlsx')
+    assert row['snapshot_id'] != binding['snapshot_id']
+    assert row['adapter_status'] == 'untrusted' and row['executable'] is False
 
 
 @pytest.mark.parametrize('mode, bad', [('formulas', {'formulas': [{'sheet': 'Data', 'cell': 'B3', 'formula': '=A2+1', 'cached': False}]}),

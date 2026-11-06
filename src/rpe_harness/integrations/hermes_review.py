@@ -17,6 +17,7 @@ import threading
 from .hermes_address import _catalog, _model_catalog_entries, _json_bytes
 from .hermes_clean import _transport_parameters
 from .hermes_gate import digest_json, _same_call
+from .hermes_skill_source import _native_skill_result, _verified_native_skill_source
 from .hermes_skills import (IDS, WorkflowStore, _identity, _actual_policy, _raw_policy,
                             _observer_policy, _skill_exchange, project_observer_tools)
 from .review_skills import (PHASE_TOOL, selection_for, validate_selection, model_skill,
@@ -621,16 +622,12 @@ def register_review_workflow(ctx, *, store, workspace, python, error_path):
                     if type(args) is not dict or set(args) != {'name'} or args['name'] != state['native_load_name']:
                         raise ValueError('native skill load does not match explicit selection')
                     raw_result = next_call(args)
-                    result = json.loads(raw_result) if isinstance(raw_result, str) else raw_result
+                    result = _native_skill_result(raw_result)
                     selected = state['skill_selection']
-                    if (not isinstance(result, dict) or result.get('success') is not True
-                            or result.get('setup_needed') is not False
-                            or result.get('name') != state['selected']['name']
-                            or result.get('_source_path') != state['native_skill_path']
-                            or not isinstance(result.get('content'), str)
-                            or len(result['content'].encode()) > 65536
-                            or hashlib.sha256(result['content'].encode()).hexdigest() != selected['skill_sha256']):
-                        raise ValueError('actual native skill_view source differs')
+                    _verified_native_skill_source(result, path=state['native_skill_path'],
+                                                  root=config['skills']['materialized_path'],
+                                                  skill_sha256=selected['skill_sha256'],
+                                                  name=state['selected']['name'])
                     _fresh, rpc = _skill_exchange('lookup', {'skill_id': selected['skill_id']}, store=store, native=native)
                     state = workflows.get(native)
                     receipt = store.record('rpe_skill_loaded', {**native, 'receipt_id': rpc,

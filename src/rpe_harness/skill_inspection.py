@@ -16,8 +16,8 @@ from zipfile import BadZipFile
 
 from .execution import _new_staging, cleanup_staging
 from .path_binding import current_binding, read_source
-from .skill_catalog import (_absolute, _canonical, _read, validate_skill_binding,
-                            BINDING_FIELDS, XLSX_SKILL_ID, XLSX_SKILL_SHA256, XLSX_SCRIPT_SHA256)
+from .skill_catalog import (_absolute, _canonical, _read, _registered_xlsx_bytes,
+                            validate_skill_binding, BINDING_FIELDS, XLSX_SKILL_ID)
 from .xlsx_resource import preflight_xlsx, RESOURCE_REVISION
 
 CAPABILITY = 'xlsx.inspect'
@@ -234,8 +234,8 @@ def normalized_contract(payload):
     binding = params['skill_binding']
     if type(binding) is not dict or set(binding) != BINDING_FIELDS:
         raise ValueError('inspection binding shape is invalid')
-    if (binding['skill_id'] != XLSX_SKILL_ID or binding['skill_sha256'] != XLSX_SKILL_SHA256
-            or binding['script_sha256'] != XLSX_SCRIPT_SHA256
+    if (binding['skill_id'] != XLSX_SKILL_ID
+            or not _registered_xlsx_bytes(binding['skill_sha256'], binding['script_sha256'])
             or any(not isinstance(value, str) for value in binding.values())
             or len(binding['snapshot_id']) != 64
             or any(c not in '0123456789abcdef' for c in binding['snapshot_id'])

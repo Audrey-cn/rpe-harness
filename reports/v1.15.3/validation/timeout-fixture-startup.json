@@ -1,0 +1,27 @@
+[
+  {
+    "popen_ms": 1.78,
+    "pid_marker_ms": 556.99,
+    "marker_present": true
+  },
+  {
+    "popen_ms": 2.04,
+    "pid_marker_ms": 546.21,
+    "marker_present": true
+  },
+  {
+    "popen_ms": 1.5,
+    "pid_marker_ms": 518.67,
+    "marker_present": true
+  },
+  {
+    "popen_ms": 1.6,
+    "pid_marker_ms": 541.29,
+    "marker_present": true
+  },
+  {
+    "popen_ms": 2.29,
+    "pid_marker_ms": 496.38,
+    "marker_present": true
+  }
+]

@@ -181,7 +181,20 @@ def test_full_discovery_native_load_context_and_real_contract_outcome(configured
     assert verdict['execution_kind'] == 'rpe_contract'
 
 
-@pytest.mark.parametrize('fault', ['wrong_path', 'wrong_content', 'setup_needed', 'failed'])
+def test_current_native_path_pair_can_authorize_owned_skill_load(configured):
+    env = configured
+    found = dispatch(env, 'rpe_discover', {'q': 'xlsx', 'capability': 'tabular.deduplicate'})
+    path = Path(env['material']['entries'][0]['skill_path'])
+    value = {'success': True, 'setup_needed': False, 'name': 'xlsx',
+             'path': 'productivity/xlsx/SKILL.md', 'skill_dir': str(path.parent),
+             'content': path.read_text()}
+    loaded = dispatch(env, 'skill_view', {'name': found['selected']['load_name']}, native_result=value)
+    assert loaded['success'] is True
+    assert any(e['kind'] == 'rpe_skill_loaded' for e in env['store'].list())
+
+
+@pytest.mark.parametrize('fault', ['wrong_path', 'wrong_content', 'setup_needed', 'failed',
+                                   'legacy_downgrade', 'relative_alias', 'missing_directory'])
 def test_native_load_return_cannot_fake_source_identity(configured, fault):
     env = configured
     found = dispatch(env, 'rpe_discover', {'q': 'xlsx', 'capability': 'tabular.deduplicate'})
@@ -190,6 +203,15 @@ def test_native_load_return_cannot_fake_source_identity(configured, fault):
              '_source_path': row['skill_path'], 'content': Path(row['skill_path']).read_text()}
     if fault == 'wrong_path':
         value['_source_path'] = str(env['source'] / 'productivity/xlsx/SKILL.md')
+    elif fault == 'legacy_downgrade':
+        value.update(path='productivity/xlsx/SKILL.md', skill_dir=str(Path(row['skill_path']).parent),
+                     _source_path=None)
+    elif fault == 'relative_alias':
+        value.pop('_source_path')
+        value.update(path='productivity/xlsx/./SKILL.md', skill_dir=str(Path(row['skill_path']).parent))
+    elif fault == 'missing_directory':
+        value.pop('_source_path')
+        value.update(path='productivity/xlsx/SKILL.md')
     elif fault == 'wrong_content':
         value['content'] = 'fake successful skill'
     elif fault == 'setup_needed':

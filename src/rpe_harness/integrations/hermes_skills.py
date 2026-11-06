@@ -10,11 +10,11 @@ import json
 import os
 from pathlib import Path
 import sqlite3
-import stat
 import threading
 import uuid
 
 from .hermes_gate import digest_json, _same_call
+from .hermes_skill_source import _native_skill_result, _read_owned_skill, _verified_native_skill_source
 
 IDS = ('session_id', 'task_id', 'turn_id', 'api_request_id', 'tool_call_id')
 PHASE_TO_TOOL = {'discover': 'rpe_discover', 'view': 'skill_view',
@@ -24,36 +24,6 @@ CONSTRAINT_FLAGS = {
     'tabular.deduplicate': ['preserve_original', 'preserve_order', 'preserve_formulas'],
 }
 CONSTRAINT_DESCRIPTION = 'Use only these fixed contract flags. Put higher-level business requirements in goal, not constraints.'
-
-
-def _read_owned_skill(path, root):
-    """Walk only materialized directories by descriptor; never follow aliases."""
-    path, root = Path(path), Path(root)
-    if not root.is_absolute() or root != root.resolve() or any(p.is_symlink() for p in (root, *root.parents)):
-        raise ValueError('materialized root is not canonical')
-    parts = path.relative_to(root).parts
-    if not parts or any(part in ('.', '..') for part in parts):
-        raise ValueError('invalid materialized skill path')
-    descriptor = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-    try:
-        for part in parts[:-1]:
-            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=descriptor)
-            os.close(descriptor)
-            descriptor = child
-        file_descriptor = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=descriptor)
-        try:
-            info = os.fstat(file_descriptor)
-            if not stat.S_ISREG(info.st_mode) or info.st_size > 65536:
-                raise ValueError('materialized skill is not a bounded regular file')
-            with os.fdopen(os.dup(file_descriptor), 'rb') as stream:
-                raw = stream.read(65537)
-            if len(raw) > 65536:
-                raise ValueError('materialized skill exceeds limit')
-            return raw
-        finally:
-            os.close(file_descriptor)
-    finally:
-        os.close(descriptor)
 
 
 def project_observer_tools(tools, mode):
@@ -587,15 +557,13 @@ def register_skill_workflow(ctx, *, store, workspace, python, error_path):
                     if hashlib.sha256(_read_owned_skill(path, config['materialized_root'])).hexdigest() != selected['skill_sha256']:
                         raise ValueError('materialized bytes changed')
                     raw = next_call(args)
-                    if isinstance(raw, str) and len(raw.encode()) > 1_048_576:
-                        raise ValueError('native skill result exceeds limit')
-                    result = json.loads(raw) if isinstance(raw, str) else raw
+                    result = _native_skill_result(raw)
                     row, lookup_receipt = rpc('lookup', {'skill_id': selected['skill_id']}, native)
                     state = workflows.get(native)
-                    if (not isinstance(result, dict) or result.get('success') is not True or
-                            result.get('setup_needed') is not False or result.get('name') != row['name'] or
-                            result.get('_source_path') != str(path) or not isinstance(result.get('content'), str) or
-                            hashlib.sha256(result['content'].encode()).hexdigest() != row['skill_sha256']):
+                    try:
+                        _verified_native_skill_source(result, path=path, root=config['materialized_root'],
+                                                      skill_sha256=row['skill_sha256'], name=row['name'])
+                    except (OSError, ValueError):
                         return fail(state, 'native_load_source_mismatch')
                     event = store.record('rpe_skill_loaded', {**metadata(native, state), 'receipt_id': lookup_receipt,
                                          'arguments_sha256': digest_json(args),

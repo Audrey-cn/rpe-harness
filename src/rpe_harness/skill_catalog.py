@@ -15,7 +15,16 @@ MAX_FILE = 65536
 XLSX_SKILL_ID = 'productivity/xlsx'
 XLSX_SKILL_SHA256 = 'b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b'
 XLSX_SCRIPT_SHA256 = '5ab31b1b417efea11a8af7b15c6aa5f26d6d966effefaa19af604c1fa0ca0916'
+_XLSX_ADAPTER_HASHES = (
+    (XLSX_SKILL_SHA256, XLSX_SCRIPT_SHA256),
+    # Audited installed revision adds only the exception's Ruff suppression.
+    (XLSX_SKILL_SHA256, '5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935'),
+)
 BINDING_FIELDS = {'snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256', 'script_path'}
+
+
+def _registered_xlsx_bytes(skill_sha256, script_sha256):
+    return (skill_sha256, script_sha256) in _XLSX_ADAPTER_HASHES
 
 
 def _canonical(value):
@@ -102,8 +111,8 @@ def validate_skill_binding(binding):
     """Exact pinned implementation and immutable snapshot seal, independent of descriptions."""
     if type(binding) is not dict or set(binding) != BINDING_FIELDS:
         raise ValueError('skill binding fields are invalid')
-    if (binding['skill_id'] != XLSX_SKILL_ID or binding['skill_sha256'] != XLSX_SKILL_SHA256
-            or binding['script_sha256'] != XLSX_SCRIPT_SHA256
+    if (binding['skill_id'] != XLSX_SKILL_ID
+            or not _registered_xlsx_bytes(binding['skill_sha256'], binding['script_sha256'])
             or not isinstance(binding['snapshot_id'], str)
             or not re.fullmatch('[a-f0-9]{64}', binding['snapshot_id'])):
         raise ValueError('skill adapter is not explicitly registered')
@@ -226,8 +235,8 @@ class SkillCatalog:
         if len(entries) > MAX_SKILLS:
             raise ValueError('skill snapshot exceeds 2048 skills')
         relocated = [row for row in entries if row['skill_id'] != XLSX_SKILL_ID
-            and row.get('status') == 'available' and row.get('skill_sha256') == XLSX_SKILL_SHA256
-            and row.get('script_sha256') == XLSX_SCRIPT_SHA256
+            and row.get('status') == 'available'
+            and _registered_xlsx_bytes(row.get('skill_sha256'), row.get('script_sha256'))
             and (row.get('archived') or row['skill_id'] == 'xlsx')]
         if len(relocated) == 1 and not any(row['skill_id'] == XLSX_SKILL_ID for row in entries):
             row = relocated[0]
@@ -308,8 +317,8 @@ class SkillCatalog:
                         row['status'] = 'stale'
                 except (OSError, ValueError):
                     row['status'] = 'stale'
-        if (skill_id == XLSX_SKILL_ID and row['skill_sha256'] == XLSX_SKILL_SHA256
-                and row.get('script_sha256') == XLSX_SCRIPT_SHA256 and not row.get('dynamic')):
+        if (skill_id == XLSX_SKILL_ID and not row.get('dynamic')
+                and _registered_xlsx_bytes(row['skill_sha256'], row.get('script_sha256'))):
             row['adapter_status'] = 'trusted' if trusted and row['status'] == 'available' else 'untrusted'
             row['capabilities'] = ['xlsx.inspect', 'tabular.deduplicate']
             row['input_formats'] = ['xlsx', 'csv']
@@ -350,8 +359,8 @@ class SkillCatalog:
         for raw in document['entries']:
             if raw['status'] != 'available' or raw['load_name'] is None:
                 continue
-            registered = (raw['skill_id'] == XLSX_SKILL_ID and raw['skill_sha256'] == XLSX_SKILL_SHA256
-                          and raw.get('script_sha256') == XLSX_SCRIPT_SHA256 and not raw.get('dynamic'))
+            registered = (raw['skill_id'] == XLSX_SKILL_ID and not raw.get('dynamic')
+                          and _registered_xlsx_bytes(raw['skill_sha256'], raw.get('script_sha256')))
             if capability and (not registered or capability not in {'xlsx.inspect', 'tabular.deduplicate'}):
                 continue
             metadata = ' '.join([raw['skill_id'], raw['name'], raw['description'], *raw['tags']]).casefold()

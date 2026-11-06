@@ -117,7 +117,7 @@ def evaluate_skill_session(result, db_path, workspace, *, catalog_root, required
                     ('snapshot_id', 'skill_id', 'skill_sha256', 'script_sha256'))):
             raise ValueError('discovery_or_load_receipt_mismatch')
         session_root = Path(result['session_root']).resolve()
-        from .hermes_skills import _read_owned_skill
+        from .hermes_skill_source import _read_owned_skill
         materialized_root = Path(state['materialized_root'])
         path = materialized_root / row['skill_id'] / 'SKILL.md'
         if (not Path(state['config_path']).resolve().is_relative_to(session_root) or

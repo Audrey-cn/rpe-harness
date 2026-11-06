@@ -1,0 +1,16 @@
+{
+  "phase": "registered",
+  "attempts": {
+    "review": 0,
+    "native": 0,
+    "native_execute": 0
+  },
+  "model_replayed": false,
+  "human_confirmation_verified": false,
+  "verified_billing": null,
+  "draft_limit": 2,
+  "native_execution_limit": 1,
+  "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b",
+  "script_sha256": "5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935",
+  "environment_unchanged": true
+}

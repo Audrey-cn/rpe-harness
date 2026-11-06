@@ -2,6 +2,7 @@
 import importlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import sqlite3
@@ -212,12 +213,14 @@ sys.path[:0] = [sys.argv[1],sys.argv[2]]
 snapshot = json.loads(Path(sys.argv[3]).read_text())
 os.environ['HERMES_HOME'] = str(Path(snapshot['materialized_path']).parent)
 from rpe_harness.integrations.review_skills import restore_review_skill
+from rpe_harness.integrations.hermes_skill_source import _verified_native_skill_source
 from tools.skills_tool import skill_view
 row = next(row for row in snapshot['entries'] if row['skill_id']=='productivity/xlsx')
 path = restore_review_skill(row,snapshot['materialized_path'])
 result = json.loads(skill_view(row['native_load_name'],preprocess=False))
-assert result['success'],result
-print(json.dumps({'source':result['_source_path'],'restored':str(path),
+source = _verified_native_skill_source(result, path=path, root=snapshot['materialized_path'],
+    skill_sha256=row['skill_sha256'], name=row['name'])
+print(json.dumps({'source':source,'restored':str(path),
  'digest':hashlib.sha256(result['content'].encode()).hexdigest(),
  'archive_exists':Path(row['archive_path']).exists()}))
 '''
@@ -229,6 +232,97 @@ print(json.dumps({'source':result['_source_path'],'restored':str(path),
     assert evidence['source'] == evidence['restored'] == str(skill_env['home'] / 'skills/xlsx/SKILL.md')
     assert evidence['digest'] == 'b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b'
     assert evidence['archive_exists'] is False
+
+
+@pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+                    reason='actual macOS native Hermes sandbox')
+def test_native_sandbox_records_owned_cold_skill_source(skill_env, monkeypatch):
+    from rpe_harness.integrations import hermes_session
+
+    hermes_root = Path(os.environ.get('RPE_HERMES_SOURCE', '/Users/audrey/.hermes/hermes-agent')).resolve()
+    runtime = hermes_root / '.venv/bin/python'
+    if not runtime.is_file():
+        pytest.skip('installed Hermes runtime unavailable')
+    source = Path(rpe_harness.__file__).resolve().parent.parent
+    workspace, db = (skill_env[key] for key in ('workspace', 'db'))
+    launch = {}
+
+    class SandboxPrepared(Exception):
+        pass
+
+    def capture_sandbox(command, *, env, **kwargs):
+        assert command[:2] == ['/usr/bin/sandbox-exec', '-f']
+        launch.update(profile=command[2], environment=env)
+        raise SandboxPrepared
+
+    with monkeypatch.context() as patch:
+        patch.setattr(hermes_session, '_installed_python', lambda _: runtime)
+        patch.setattr(hermes_session.subprocess, 'Popen', capture_sandbox)
+        with pytest.raises(SandboxPrepared):
+            hermes_session.run_hermes_session('Load the approved cold skill.', workspace, db,
+                tool_enabled=False, owner_root=workspace.parent / 'native-sessions',
+                read_isolation_root=workspace.parent, hermes_root=hermes_root, public_contract='review',
+                catalog_root=skill_env['owned'], skill_snapshot_id=skill_env['snapshot']['snapshot_id'],
+                host_settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'offline-test-key',
+                               'base_url': 'https://example.invalid/v1'})
+    environment = {key: launch['environment'][key] for key in ('HERMES_HOME', 'TMPDIR', 'HERMES_RUNTIME_DIR',
+        'HERMES_DISABLE_LAZY_INSTALLS', 'RPE_HERMES_TOOL_ENABLED', 'RPE_HERMES_DB', 'RPE_HERMES_WORKSPACE',
+        'RPE_HERMES_SKILL_CONFIG')}
+    home = Path(environment['HERMES_HOME'])
+    snapshot = json.loads(Path(environment['RPE_HERMES_SKILL_CONFIG']).read_text())
+    row = next(row for row in snapshot['entries'] if row['skill_id'] == 'productivity/xlsx')
+    assert row['name'] == row['load_name'] == 'xlsx'
+    archive = Path(snapshot['materialized_root']) / '.archive' / row['name']
+    skill = Path(row['skill_path'])
+    assert archive.is_dir() and not skill.exists()
+    environment.update(PATH='/usr/bin:/bin', HOME=str(home), XDG_CACHE_HOME=str(home / 'cache'))
+    program = '''import json,socket,sys
+from pathlib import Path
+sys.path[:0]=sys.argv[1:3]
+def deny_network(*args,**kwargs): raise AssertionError('network disabled in native cold skill smoke')
+socket.socket.connect=socket.socket.connect_ex=deny_network
+from tools import skills_tool,skill_usage
+from tools.registry import registry
+from rpe_harness.integrations.hermes import register
+class Context:
+    def __init__(self): self.hooks={}
+    def register_hook(self,name,callback): self.hooks[name]=callback
+context=Context()
+register(context)
+name=sys.argv[3]
+ok,message=skill_usage.restore_skill(name)
+assert ok,message
+args={'name':name}
+identity=dict(session_id='native-cold',task_id='native-cold-task',turn_id='native-cold-turn',
+    api_request_id='native-cold-api',tool_call_id='native-cold-view',tool_name='skill_view',args=args)
+context.hooks['pre_tool_call'](**identity)
+result=registry.dispatch('skill_view',args,task_id=identity['task_id'],session_id=identity['session_id'])
+native=json.loads(result)
+assert native['success'] and native['name']==name,result
+context.hooks['post_tool_call'](**identity,status='ok',result=result)
+context.hooks['post_tool_call'](**{**identity,'tool_call_id':'wrong-name'},status='ok',
+    result=json.dumps({**native,'name':'imposter'}))
+assert 'rpe_harness.integrations.hermes_skills' not in sys.modules
+for relative in ('integrations/hermes_skills.py','integrations/hermes_gate.py','path_binding.py'):
+    try:
+        (Path(sys.argv[1])/'rpe_harness'/relative).read_bytes()
+    except PermissionError:
+        pass
+    else:
+        raise AssertionError('extra Harness source exposed in native sandbox')
+'''
+    result = subprocess.run(['/usr/bin/sandbox-exec', '-f', launch['profile'], str(runtime), '-I', '-B', '-c', program,
+        str(source), str(hermes_root), row['load_name']], env=environment,
+        cwd=workspace, capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr
+    assert skill.is_file() and not archive.exists()
+    pre, post, wrong_name = hermes.HostEventStore(db).list('native-cold')
+    assert pre['kind'] == 'pre_tool_call' and post['kind'] == 'post_tool_call'
+    assert pre['arguments_sha256'] == post['arguments_sha256'] == digest_json({'name': row['load_name']})
+    assert post['status'] == 'loaded' and post['skill_source_path'] == str(skill)
+    assert post['skill_id'] == row['skill_id'] and post['skill_sha256'] == row['skill_sha256']
+    assert post['content_sha256'] == row['skill_sha256'] and post['snapshot_id'] == snapshot['snapshot_id']
+    assert wrong_name['status'] == 'ok' and 'skill_source_path' not in wrong_name
 
 
 @pytest.mark.parametrize('skill_review', ['Inspect source.xlsx as rows into output.json; preserve original.'], indirect=True)

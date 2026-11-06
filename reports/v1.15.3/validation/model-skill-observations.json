@@ -1,0 +1,60 @@
+{
+  "source": "scoped Hermes host-event SQLite reads after the run",
+  "arms": {
+    "review": {
+      "skill_observations": [
+        {
+          "kind": "rpe_review_skill_restored",
+          "tool_name": "rpe_select",
+          "status": "restored",
+          "skill_id": "productivity/xlsx",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b"
+        },
+        {
+          "kind": "rpe_skill_loaded",
+          "tool_name": "skill_view",
+          "status": "loaded",
+          "skill_id": "productivity/xlsx",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b"
+        }
+      ],
+      "lifecycle": {
+        "on_session_start": 1,
+        "on_session_end": 1,
+        "pre_api_request": 4,
+        "post_api_request": 4
+      }
+    },
+    "native": {
+      "skill_observations": [
+        {
+          "kind": "native_cold_observation",
+          "tool_name": "terminal",
+          "status": "restored",
+          "skill_id": "productivity/xlsx",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b"
+        },
+        {
+          "kind": "post_tool_call",
+          "tool_name": "skill_view",
+          "status": "loaded",
+          "skill_id": "productivity/xlsx",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b"
+        },
+        {
+          "kind": "post_tool_call",
+          "tool_name": "skill_view",
+          "status": "loaded",
+          "skill_id": "productivity/xlsx",
+          "skill_sha256": "b302d7ac997843a757ab3c11513ea012889ebdae32f842edb44faa9a4485f19b"
+        }
+      ],
+      "lifecycle": {
+        "on_session_start": 2,
+        "on_session_end": 2,
+        "pre_api_request": 6,
+        "post_api_request": 6
+      }
+    }
+  }
+}

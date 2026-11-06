@@ -3,6 +3,7 @@ import copy
 import importlib
 import importlib.util
 import json
+from contextlib import contextmanager
 import os
 from pathlib import Path
 import subprocess
@@ -175,6 +176,18 @@ def runtime_environment(tmp_path):
     return interpreter, environment
 
 
+@contextmanager
+def offline_provider_key(environment):
+    reader, writer = os.pipe()
+    try:
+        with os.fdopen(writer, 'wb') as stream:
+            stream.write(b'offline-not-secret')
+        environment['RPE_HERMES_PROVIDER_KEY_FD'] = str(reader)
+        yield reader
+    finally:
+        os.close(reader)
+
+
 @pytest.mark.parametrize('tool_enabled', ['0', '1'])
 def test_installed_streaming_sdk_observes_the_same_bounded_wire_for_both_arms(tmp_path,
         tool_enabled):
@@ -205,8 +218,7 @@ def test_file_bootstrap_installs_budget_without_preloading_sdk_or_harness(tmp_pa
         RPE_HERMES_INSTALL_ROOT=str(hermes_root), RPE_HERMES_TOOL_ENABLED='0',
         RPE_HERMES_ENTRY_MODE='optional', RPE_HARNESS_IMPORT_ROOT=str(source),
         RPE_HERMES_DB=str(tmp_path / 'events.sqlite'), RPE_HERMES_WORKSPACE=str(tmp_path),
-        RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'),
-        XIAOMI_API_KEY='offline-not-secret', XIAOMI_BASE_URL='https://example.invalid/v1')
+        RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'))
     prompt = tmp_path / 'prompt.txt'
     prompt.write_text('fixture')
     profile = tmp_path / 'bootstrap.sb'
@@ -218,9 +230,10 @@ def test_file_bootstrap_installs_budget_without_preloading_sdk_or_harness(tmp_pa
     # streaming, SDK serialization and macOS import restrictions remain real.
     program = _STREAM_WIRE_PROGRAM[:_STREAM_WIRE_PROGRAM.index(
         'from rpe_harness.integrations.hermes_request_budget')] + _FILE_BOOTSTRAP_TAIL
-    child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
-        '-B', '-c', program, str(bootstrap), str(prompt)], env=environment, cwd=tmp_path,
-        capture_output=True, text=True, timeout=45)
+    with offline_provider_key(environment) as key_fd:
+        child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+            '-B', '-c', program, str(bootstrap), str(prompt)], env=environment, cwd=tmp_path,
+            capture_output=True, text=True, timeout=45, pass_fds=(key_fd,))
     (tmp_path / 'file-bootstrap.stderr.log').write_text(child.stderr)
     (tmp_path / 'file-bootstrap.stdout.log').write_text(child.stdout)
     assert child.returncode == 0, child.stderr[-6000:] + child.stdout[-3000:]

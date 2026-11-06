@@ -227,8 +227,10 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
                                 for suffix in ['', '-wal', '-shm', '-journal'])
         roots += ' (subpath '+quote(database.parent / ('.'+database.name+'.leases'))+')'
     real_home = Path(real_home).resolve()
-    credentials = '\n'.join('(deny file-read* (literal '+quote(real_home / name)+'))'
-                            for name in ['.env', 'auth.json', 'config.yaml'])
+    private_files = [real_home / name for name in ('.env', 'auth.json', 'config.yaml')]
+    if install_root:
+        private_files.extend(Path(install_root).resolve() / name for name in ('.env', '.op.env'))
+    credentials = '\n'.join('(deny file-read* (literal '+quote(path)+'))' for path in private_files)
     private_state = ''
     if install_root:
         allowed = ' '.join('(subpath '+quote(Path(p).resolve())+')'
@@ -243,6 +245,7 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
         minimal = [import_root, package, package / 'integrations',
                    package / '__init__.py', package / 'integrations/__init__.py',
                    package / 'integrations/hermes.py', package / 'integrations/hermes_bootstrap.py',
+                   package / 'integrations/hermes_skill_source.py',
                    package / 'integrations/hermes_native.py', package / 'integrations/hermes_native_process.py',
                    package / 'integrations/hermes_review_finish.py',
                    package / 'integrations/hermes_request_budget.py', package / 'integrations/hermes_native_finish.py']
@@ -349,7 +352,8 @@ def _validated_host_settings(settings, *, request_budget=None):
             raise ValueError('invalid endpoint')
     except ValueError:
         raise ValueError('provider endpoint must be a plain HTTPS URL') from None
-    if any('\n' in settings[key] or '\r' in settings[key] for key in ('api_key', 'base_url')):
+    if (len(settings['api_key'].encode()) > 512
+            or any(c in settings[key] for key in ('api_key', 'base_url') for c in '\x00\n\r')):
         raise ValueError('invalid credential assignment')
     if request_budget is not None:
         from .hermes_request_budget import validate_request_budget_profile
@@ -411,11 +415,6 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     session_root.mkdir(parents=True, exist_ok=False, mode=0o700)
     home = session_root / 'home'
     home.mkdir(mode=0o700)
-    credential_path = home / '.env'
-    fd = os.open(credential_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    with os.fdopen(fd, 'w') as stream:
-        stream.write('XIAOMI_API_KEY='+json.dumps(settings['api_key'])+'\n')
-        stream.write('XIAOMI_BASE_URL='+json.dumps(settings['base_url'])+'\n')
     config = {
         'model': {'default': settings['model'], 'provider': 'xiaomi', 'base_url': settings['base_url']},
         'agent': {'max_turns': 12, 'run_budget_seconds': 180, 'api_max_retries': 1,
@@ -459,7 +458,8 @@ def prepare_home(session_root, workspace, db_path, *, tool_enabled, settings, en
     (plugin / 'plugin.yaml').write_text(f'name: rpe-harness\nversion: {__version__}\ndescription: Durable RPE task and host observations\n', encoding='utf-8')
     (plugin / '__init__.py').write_text(
         'import os, sys\nsys.path.insert(0, os.environ["RPE_HARNESS_IMPORT_ROOT"])\n'
-        'from rpe_harness.integrations.hermes import register\n', encoding='utf-8')
+        'try:\n    from rpe_harness.integrations.hermes import register\n'
+        'finally:\n    sys.path.pop(0)\n', encoding='utf-8')
     return home
 
 
@@ -727,7 +727,7 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
         config = {'catalog_root':str(Path(catalog_root).resolve()),
                   'snapshot_id':snapshot['snapshot_id'],
                   'materialized_root':snapshot['materialized_path'],
-                  'entries':[{key:entry[key] for key in ('skill_id','load_name','skill_path',
+                  'entries':[{key:entry[key] for key in ('skill_id','name','load_name','skill_path',
                      'skill_sha256','script_path','script_sha256') if key in entry}
                      for entry in snapshot['entries']]}
         for projected, entry in zip(config['entries'], snapshot['entries']):
@@ -927,20 +927,23 @@ def run_hermes_session(prompt, workspace, db_path, *, tool_enabled, owner_root,
                 db_path=db_path, workspace=workspace, python=sys.executable,extension=extension, review_auto=entry_mode == 'review'))
             env.update(broker_environment)
         with stdout_path.open('w') as output, stderr_path.open('w') as errors:
-            key_read = None
-            try:
-                if native_execution_key is not None:
-                    key_read, key_write = os.pipe()
-                    try:
-                        os.write(key_write, native_execution_key)
-                    finally:
-                        os.close(key_write)
-                    env['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_read)
+            with ExitStack() as inherited:
+                pass_fds = []
+                for variable, secret in (
+                    ('RPE_HERMES_PROVIDER_KEY_FD', settings['api_key'].encode()),
+                    ('RPE_HERMES_NATIVE_EXECUTION_KEY_FD', native_execution_key),
+                ):
+                    if secret is not None:
+                        reader, writer = os.pipe()
+                        inherited.callback(os.close, reader)
+                        with os.fdopen(writer, 'wb') as stream:
+                            if len(secret) > os.fpathconf(stream.fileno(), 'PC_PIPE_BUF'):
+                                raise ValueError('isolated credential exceeds atomic pipe write limit')
+                            stream.write(secret)
+                        env[variable] = str(reader)
+                        pass_fds.append(reader)
                 process = subprocess.Popen(command, cwd=workspace, env=env, stdout=output, stderr=errors,
-                    start_new_session=True, **({'pass_fds': (key_read,)} if key_read is not None else {}))
-            finally:
-                if key_read is not None:
-                    os.close(key_read)
+                    start_new_session=True, pass_fds=tuple(pass_fds))
             owned_descendants = {}
             start_identity = None
             cleanup_errors = []

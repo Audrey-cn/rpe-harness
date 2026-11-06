@@ -1,0 +1,59 @@
+{
+  "daily_files": {
+    ".hermes/config.yaml": {
+      "unchanged": true
+    },
+    ".hermes/auth.json": {
+      "unchanged": true
+    },
+    ".hermes/state.db": {
+      "unchanged": false
+    },
+    ".claude.json": {
+      "unchanged": true
+    }
+  },
+  "skill_tree": {
+    "before_file_count": 656,
+    "after_file_count": 657,
+    "changed_paths": [
+      ".curator_ledger.jsonl",
+      ".locks/1f503e923f778271e53c405d0ebc47e3863c15a02e8b7f83a33c392a27062220.lock",
+      ".locks/ae64147b70e782280528c2bd469b015be06680520932ce7546b34ba9a3a88a24.lock",
+      ".usage.json",
+      "creative/ai-video-shot-prompts/SKILL.md",
+      "creative/ai-video-shot-prompts/references/prompt-sources.md",
+      "mlops/apple-silicon-video-gen/SKILL.md",
+      "mlops/apple-silicon-video-gen/scripts/motion_metric.py",
+      "uaek-agent-enhancement/SKILL.md",
+      "uaek-effort-control/SKILL.md",
+      "uaek-memory-management/SKILL.md",
+      "uaek-verification-framework/SKILL.md",
+      "uaek-workflow-guidance/SKILL.md"
+    ]
+  },
+  "repositories_before_integration": {
+    "rpe-harness": {
+      "head_unchanged": true,
+      "status_unchanged": true
+    },
+    "progenitor-protocol": {
+      "head_unchanged": true,
+      "status_unchanged": true
+    },
+    "progenitor-registry": {
+      "head_unchanged": true,
+      "status_unchanged": true
+    }
+  },
+  "owned_root": "/private/tmp/rpe-v1153.x951u9zZ",
+  "regular_files": 32779,
+  "regular_bytes": 440799078,
+  "symlinks": 1416,
+  "owned_pids_before": [],
+  "owned_cwd_pids_before": [],
+  "private_settings_existed": false,
+  "root_removed": true,
+  "owned_pids_after": [],
+  "owned_cwd_pids_after": []
+}

@@ -2,6 +2,8 @@
 import hashlib
 import importlib
 import json
+import os
+import signal
 import stat
 import sys
 import time
@@ -143,25 +145,59 @@ def test_settings_cannot_override_the_owned_runtime_directories(audit, tmp_path)
 
 
 @pytest.mark.parametrize('profile', ['legacy', 'structured-v2'])
-def test_timeout_kills_the_owned_process_group(audit, tmp_path, profile):
+def test_timeout_kills_the_owned_process_group(audit, tmp_path, monkeypatch, profile):
     module, owner = audit
+    child_code = """
+import pathlib,signal,time
+signal.signal(signal.SIGTERM,signal.SIG_IGN)
+pathlib.Path('child.ready').touch()
+time.sleep(12)
+"""
     executable = cli(tmp_path, """import pathlib,signal,subprocess,sys,time
 signal.signal(signal.SIGTERM,signal.SIG_IGN)
-child = subprocess.Popen([sys.executable,'-c',
- "import pathlib,signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(1.2);pathlib.Path('leaked-child').write_text('leak')"])
+child = subprocess.Popen([sys.executable,'-c',""" + repr(child_code) + """])
 pathlib.Path('child.pid').write_text(str(child.pid))
 while True: time.sleep(1)
 """)
-    started = time.monotonic()
+    attempt = owner/'agent-audit'
+    popen = module.subprocess.Popen
+    ready_at = []
+
+    def start_fixture(*args, **kwargs):
+        process = popen(*args, **kwargs)
+        try:
+            deadline = time.monotonic() + 8
+            while not all((attempt/name).is_file() for name in ('child.pid', 'child.ready')):
+                assert process.poll() is None and time.monotonic() < deadline, 'fixture did not start'
+                time.sleep(.01)
+            ready_at.append(time.monotonic())
+            return process
+        except BaseException:
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.wait(timeout=5)
+            raise
+
+    # The one-second communicate timeout must exercise a live child that
+    # already ignores SIGTERM, independent of interpreter startup time.
+    monkeypatch.setattr(module.subprocess, 'Popen', start_fixture)
     record = module.run_agent_audit(_BUNDLE, owner, timeout=1,
                                     executable=executable, profile=profile)
     assert record['status'] == 'timed_out'
     assert record['error_code'] == 'timeout'
-    assert time.monotonic()-started < 3
+    assert time.monotonic()-ready_at[0] < 3
     assert record['usage'] is None
-    assert (owner/'agent-audit'/'child.pid').is_file()
-    time.sleep(0.9)
-    assert not (owner/'agent-audit'/'leaked-child').exists()
+    child_pid = int((attempt/'child.pid').read_text())
+    deadline = time.monotonic() + 2
+    while True:
+        try:
+            os.kill(child_pid, 0)
+        except ProcessLookupError:
+            break
+        assert time.monotonic() < deadline, 'owned child survived process group cleanup'
+        time.sleep(.01)
 
 
 @pytest.mark.parametrize('output', ['not JSON', json.dumps(result(structured_output=None)),

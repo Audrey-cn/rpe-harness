@@ -12,6 +12,7 @@ from types import SimpleNamespace
 
 import pytest
 import rpe_harness
+from test_hermes_request_budget import offline_provider_key
 
 
 BOOTSTRAP_PATH = (
@@ -217,6 +218,44 @@ def test_file_bootstrap_dispatches_cli_after_patch_without_modifying_installatio
     assert not list(install_root.rglob("__pycache__"))
 
 
+def test_legacy_cli_receives_pipe_key_without_forwarding_to_children(tmp_path):
+    install = tmp_path / 'installed-hermes'
+    for directory in ('agent', 'hermes_cli'):
+        (install / directory).mkdir(parents=True)
+        (install / directory / '__init__.py').touch()
+    (install / 'hermes_bootstrap.py').touch()
+    (install / 'agent/api_request_hooks.py').write_text('''class ApiRequestHooksMixin:
+    def _usage_summary_for_api_request_hook(self, response): return {}
+''')
+    (install / 'hermes_cli/main.py').write_text('''import os, subprocess, sys
+def main():
+    assert os.environ['XIAOMI_API_KEY'] == 'offline-not-secret'
+    assert os.environ['XIAOMI_BASE_URL'] == 'https://example.invalid/v1'
+    assert 'RPE_HERMES_PROVIDER_KEY_FD' not in os.environ
+    cmd = [sys.executable, '-B', '-c', "import os;assert 'XIAOMI_API_KEY' not in os.environ"]
+    subprocess.run(cmd, check=True)
+    subprocess.run(cmd, env=dict(os.environ), check=True)
+    return 0
+''')
+    home = tmp_path / 'home'
+    home.mkdir()
+    (home / 'config.yaml').write_text(json.dumps({'model': {'provider': 'xiaomi',
+        'default': 'test-model', 'base_url': 'https://example.invalid/v1'}}))
+    prompt = tmp_path / 'prompt.txt'
+    prompt.write_text('Legacy credential probe')
+    environment = {key: value for key, value in os.environ.items() if key in {'HOME', 'PATH', 'LANG'}}
+    environment.update(RPE_HERMES_INSTALL_ROOT=str(install), HERMES_HOME=str(home),
+        RPE_HERMES_WORKSPACE=str(tmp_path), RPE_HERMES_PROCESS_PATH=str(tmp_path / 'children.jsonl'))
+    with offline_provider_key(environment) as provider_fd:
+        child = subprocess.run([sys.executable, '-B', str(BOOTSTRAP_PATH), 'chat', '--cli',
+            '--query-file', str(prompt), '--oneshot', '-Q', '--format', 'stream-json', '--source', 'rpe-harness',
+            '--provider', 'xiaomi', '--model', 'test-model', '--toolsets', 'terminal,file', '--max-turns', '2',
+            '--run-budget', '17', '--ignore-rules'], env=environment, cwd=tmp_path,
+            capture_output=True, text=True, timeout=10, pass_fds=(provider_fd,))
+    assert child.returncode == 0, child.stderr
+    assert not (home / '.env').exists()
+
+
 def test_spawn_registry_captures_detached_child_before_short_parent_returns(tmp_path):
     registry = tmp_path / "processes.jsonl"
     code = '''import importlib.util,json,os,pathlib,subprocess,sys,time
@@ -357,6 +396,33 @@ def test_non_review_file_bootstrap_never_imports_review_adapter(tmp_path, monkey
     assert imported == ['hermes_bootstrap', 'hermes_cli.main']
 
 
+def test_gateway_backed_chat_rejects_nonisolated_args_without_cli_fallback(tmp_path, monkeypatch, capsys):
+    module = bootstrap()
+    cli = tmp_path / 'hermes_cli'
+    cli.mkdir()
+    (cli / 'main.py').touch()
+    (cli / 'gateway_chat_startup.py').touch()
+    monkeypatch.setenv('RPE_HERMES_INSTALL_ROOT', str(tmp_path))
+    for name in ('RPE_HERMES_ENTRY_MODE', 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD',
+                 'RPE_HERMES_REQUEST_BUDGET_CONFIG', 'RPE_HERMES_NATIVE_FINISH_ENABLED'):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(sys, 'path', list(sys.path))
+    monkeypatch.setattr(sys, 'argv', list(sys.argv))
+    for name in ('install_process_telemetry', 'install_producer_toolset',
+                 'install_usage_telemetry', 'install_clean_ingress_guard'):
+        monkeypatch.setattr(module, name, lambda: None)
+
+    def native_import(name):
+        assert name == 'hermes_bootstrap', 'unexpected gateway or provider dispatch'
+        return SimpleNamespace()
+
+    monkeypatch.setattr(module.importlib, 'import_module', native_import)
+    with pytest.raises(SystemExit) as failed:
+        module.main(['chat', '--resume', 'daily-session'])
+    assert failed.value.code == 2
+    assert 'RPE isolated Hermes chat' in capsys.readouterr().err
+
+
 @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
                     reason='actual macOS installed Hermes native-clean startup')
 @pytest.mark.parametrize('with_key', [False, True])
@@ -368,6 +434,8 @@ def test_installed_native_clean_file_bootstrap_reaches_constructor_without_harne
         pytest.skip('installed Hermes runtime unavailable')
     workspace = tmp_path / 'workspace'
     workspace.mkdir()
+    prompt = workspace / 'prompt.txt'
+    prompt.write_text('Constructor probe only')
     home = prepare_home(tmp_path / 'native-session', workspace, tmp_path / 'runs.sqlite',
         tool_enabled=False, public_contract='review', preserve_native_tool_search=True,
         settings={'provider': 'xiaomi', 'model': 'test-model', 'api_key': 'provider-free-key',
@@ -402,8 +470,9 @@ spec=importlib.util.spec_from_file_location('actual_native_file_bootstrap',sys.a
 bootstrap=importlib.util.module_from_spec(spec);spec.loader.exec_module(bootstrap)
 initial_pythonpath=os.environ.get('PYTHONPATH')
 key_fd=int(os.environ['RPE_HERMES_NATIVE_EXECUTION_KEY_FD']) if sys.argv[2]=='key' else None
+prompt=sys.argv[3]
 actual_constructor_called=[]
-def constructor_main():
+def check_native_constructor(agent):
     assert os.environ.get('PYTHONPATH')==initial_pythonpath
     assert os.environ['RPE_HARNESS_IMPORT_ROOT'] not in sys.path
     if key_fd is not None:
@@ -418,25 +487,47 @@ def constructor_main():
         "import importlib.util,os;assert importlib.util.find_spec('rpe_harness') is None;assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ"],
         capture_output=True,text=True,timeout=5)
     assert probe.returncode==0,probe.stderr
+    assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
+    assert not {'rpe_propose','rpe_task','rpe_confirm'} & agent.valid_tool_names
+    actual_constructor_called.append(True)
+def constructor_main():
     from run_agent import AIAgent
     agent=AIAgent(api_key='provider-free-test-key',base_url='http://127.0.0.1:9/v1',
         provider='openai',api_mode='chat_completions',model='test-model',max_iterations=2,
         quiet_mode=True,skip_context_files=True,skip_memory=True,save_trajectories=False,
         session_id='native-clean-constructor',platform='cli',enabled_toolsets=['terminal','file'])
-    assert 'terminal' in agent.valid_tool_names,sorted(agent.valid_tool_names)
-    assert not {'rpe_propose','rpe_task','rpe_confirm'} & agent.valid_tool_names
-    actual_constructor_called.append(True)
+    try: check_native_constructor(agent)
+    finally: agent.close()
     return 0
-# Replace only final CLI dispatch when bootstrap imports it, after consuming any key FD.
-original_import=bootstrap.importlib.import_module
-def dispatch(name,package=None):
-    module=original_import(name,package=package)
-    if name=='hermes_cli.main':
-        bootstrap.importlib.import_module=original_import
-        module.main=constructor_main
-    return module
-bootstrap.importlib.import_module=dispatch
-assert bootstrap.main(['chat','--cli','--oneshot','--toolsets','terminal,file'])==0
+if os.path.isfile(os.path.join(os.environ['RPE_HERMES_INSTALL_ROOT'],'hermes_cli/gateway_chat_startup.py')):
+    # Stop after the installed SDK constructor, before a provider can run.
+    original_turn=bootstrap._run_isolated_turn
+    def constructor_only(options, provider_key):
+        from run_agent import AIAgent
+        def checked_turn(agent, **kwargs):
+            check_native_constructor(agent)
+            assert agent.model=='test-model' and agent.provider=='xiaomi'
+            assert agent.max_iterations==2 and agent.run_budget_seconds==17
+            assert agent.suppress_status_output is True
+            assert 'XIAOMI_API_KEY' not in os.environ and 'RPE_HERMES_PROVIDER_KEY_FD' not in os.environ
+            assert kwargs['user_message']=='Constructor probe only'
+            assert kwargs['task_id']==agent.session_id
+            return {'final_response':'offline constructor probe'}
+        AIAgent.run_conversation=checked_turn
+        return original_turn(options, provider_key)
+    bootstrap._run_isolated_turn=constructor_only
+else:
+    original_import=bootstrap.importlib.import_module
+    def dispatch(name,package=None):
+        module=original_import(name,package=package)
+        if name=='hermes_cli.main':
+            bootstrap.importlib.import_module=original_import
+            module.main=constructor_main
+        return module
+    bootstrap.importlib.import_module=dispatch
+assert bootstrap.main(['chat','--cli','--query-file',prompt,'--oneshot','-Q',
+    '--format','stream-json','--source','rpe-harness','--provider','xiaomi','--model','test-model',
+    '--toolsets','terminal,file','--max-turns','2','--run-budget','17','--ignore-rules'])==0
 assert actual_constructor_called==[True] and network_attempts==[]
 print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
     'harness_importable_at_entry':False,'network_attempts':len(network_attempts),'provider_requests':0,
@@ -449,10 +540,11 @@ print(json.dumps({'actual_file_bootstrap':True,'installed_constructor':True,
         os.close(writer)
         environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_descriptor)
     try:
-        child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
-            '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key'],
-            cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
-            pass_fds=(key_descriptor,) if with_key else ())
+        with offline_provider_key(environment) as provider_fd:
+            child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+                '-B', '-c', program, str(BOOTSTRAP_PATH), 'key' if with_key else 'no-key', str(prompt)],
+                cwd=workspace, env=environment, capture_output=True, text=True, timeout=45,
+                pass_fds=(provider_fd, key_descriptor) if with_key else (provider_fd,))
     finally:
         if key_descriptor is not None:
             os.close(key_descriptor)

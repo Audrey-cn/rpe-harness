@@ -1,9 +1,23 @@
 import hashlib
 from pathlib import Path
+import shutil
 
 import pytest
 
 XLSX_FIXTURE = Path(__file__).parent / 'fixtures/skills/productivity/xlsx'
+XLSX_REVIEWED_HELPER_SHA256 = '5f8dc99437e4b65d72cac4f99ef25d383b477926d5ae31e0e8aae6fa3266d935'
+
+
+def copy_xlsx_skill(destination, *, reviewed_noqa=False):
+    shutil.copytree(XLSX_FIXTURE, destination)
+    if reviewed_noqa:
+        helper = destination / 'scripts/xlsx_read.py'
+        original = helper.read_bytes()
+        exception_line = b'    except Exception as exc:\n'
+        assert original.count(exception_line) == 1
+        reviewed = original.replace(exception_line, b'    except Exception as exc:  # noqa: BLE001\n')
+        assert hashlib.sha256(reviewed).hexdigest() == XLSX_REVIEWED_HELPER_SHA256
+        helper.write_bytes(reviewed)
 
 
 def catalog_type():
@@ -77,9 +91,8 @@ def test_source_tampering_and_external_capability_does_not_authorize(tmp_path):
 
 
 def test_real_xlsx_trust_materialize_and_snapshot_tampering(tmp_path):
-    import shutil
     root = tmp_path / 'skills'
-    shutil.copytree(XLSX_FIXTURE, root / 'productivity/xlsx')
+    copy_xlsx_skill(root / 'productivity/xlsx')
     catalog = catalog_type()(tmp_path / 'db.sqlite', tmp_path / 'owned')
     snapshot = catalog.sync(root)
     assert catalog.lookup('productivity/xlsx')['adapter_status'] == 'untrusted'
@@ -93,6 +106,36 @@ def test_real_xlsx_trust_materialize_and_snapshot_tampering(tmp_path):
     assert catalog.lookup('productivity/xlsx')['status'] == 'corrupt'
     with pytest.raises(ValueError):
         catalog.materialize(tmp_path / 'other/skills')
+
+
+@pytest.mark.parametrize('relative', ['productivity/xlsx', '.archive/xlsx', 'xlsx'])
+def test_audited_xlsx_revision_is_discoverable_but_requires_explicit_trust(tmp_path, relative):
+    root = tmp_path / 'skills'
+    copy_xlsx_skill(root / relative, reviewed_noqa=True)
+    catalog = catalog_type()(tmp_path / 'db.sqlite', tmp_path / 'owned')
+    catalog.sync(root)
+    candidates = catalog.query('xlsx', capability='xlsx.inspect')['candidates']
+    assert len(candidates) == 1
+    row = candidates[0]
+    assert row['skill_id'] == 'productivity/xlsx'
+    assert row['adapter_status'] == 'untrusted' and row['executable'] is False
+    binding = catalog.trust_adapter(row['skill_id'])
+    assert binding['script_sha256'] == XLSX_REVIEWED_HELPER_SHA256
+    assert catalog.lookup(row['skill_id'])['executable'] is True
+
+
+@pytest.mark.parametrize('changed_file', ['SKILL.md', 'scripts/xlsx_read.py'])
+def test_another_comment_is_not_covered_by_the_xlsx_revision(tmp_path, changed_file):
+    root = tmp_path / 'skills'
+    source = root / 'productivity/xlsx'
+    copy_xlsx_skill(source, reviewed_noqa=True)
+    path = source / changed_file
+    path.write_bytes(path.read_bytes() + b'\n# Another annotation\n')
+    catalog = catalog_type()(tmp_path / 'db.sqlite', tmp_path / 'owned')
+    catalog.sync(root)
+    assert catalog.query('xlsx', capability='xlsx.inspect')['candidates'] == []
+    with pytest.raises(ValueError, match='no registered adapter'):
+        catalog.trust_adapter('productivity/xlsx')
 
 
 @pytest.mark.parametrize('kwargs', [{'limit': 0}, {'limit': 11}, {'q': 'x' * 4097}, {'include_cold': 1}])

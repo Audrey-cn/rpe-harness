@@ -1,0 +1,203 @@
+{
+  "records": [
+    {
+      "api_expected": true,
+      "arm": "native",
+      "attempt_id": "formal-stock-acceptance-xlsx-native-draft",
+      "elapsed_seconds": 29.07483920897357,
+      "finished_at": 1794006535.175702,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "cba717b99ba4290048d5be84849f6f3e92459b2dc4a78a37dbcf0c8f6dc507a4",
+      "reservation_sha256": "171150ec3201bb666c095faab7af0f16c8bfd7118833ab2e2660265e6b2698ed",
+      "reserved_at": 1794006506.099543,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 4,
+        "cache_read_tokens": 33664,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 14097,
+        "known_total_tokens": 49282,
+        "missing_observations": 0,
+        "output_tokens": 1521,
+        "prompt_tokens": 47761,
+        "reasoning_tokens": 0,
+        "requests_with_usage": 4,
+        "total_tokens": 49282
+      }
+    },
+    {
+      "api_expected": true,
+      "arm": "native",
+      "attempt_id": "formal-stock-acceptance-xlsx-native-execute",
+      "elapsed_seconds": 19.9124754590448,
+      "finished_at": 1794006555.193053,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "execute",
+      "record_sha256": "97a5f05cac242797ec922543dd577ad8e376697ab5efee1b11dd4c5aa793e6bb",
+      "reservation_sha256": "0cfad5578f5794a9ac212bf627f43f4bc5282d74bcf10c91aa0aeba8fba583d2",
+      "reserved_at": 1794006535.278977,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 2,
+        "cache_read_tokens": 8832,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 9948,
+        "known_total_tokens": 19045,
+        "missing_observations": 0,
+        "output_tokens": 265,
+        "prompt_tokens": 18780,
+        "reasoning_tokens": 0,
+        "requests_with_usage": 2,
+        "total_tokens": 19045
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "native",
+      "attempt_id": "formal-stock-acceptance-xlsx-native-review",
+      "elapsed_seconds": 7.583317346870899e-05,
+      "finished_at": 1794006535.275792,
+      "phase": "review",
+      "record_sha256": "54b49fde17864ab76bf45d4ff5e9a0bf215ac6e2459d71f27d6dbb47321d894b",
+      "reservation_sha256": "29fcf373c97a7816b26bb2e242a7613ed84fb5836968c5940ffb705884332a6a",
+      "reserved_at": 1794006535.274472,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "native",
+      "attempt_id": "formal-stock-acceptance-xlsx-native-verification",
+      "elapsed_seconds": 0.027842041803523898,
+      "finished_at": 1794006555.627519,
+      "phase": "verification",
+      "record_sha256": "cc0681d9d64600c83e80cf29883c71cb485ef3324c5b36769700834e7d2e826f",
+      "reservation_sha256": "f8571d77d3e1a245f547a18f320d96b9d9adedd4f74057f3e56b16e2f2c5ca87",
+      "reserved_at": 1794006555.598478,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": true,
+      "arm": "review",
+      "attempt_id": "formal-stock-acceptance-xlsx-review-draft",
+      "elapsed_seconds": 21.303307041991502,
+      "finished_at": 1794006576.95035,
+      "model_identity": {
+        "provider": "xiaomi",
+        "requested_model": "mimo-v2.6-pro",
+        "response_models": [
+          "mimo-v2.6-pro"
+        ]
+      },
+      "phase": "draft",
+      "record_sha256": "d64184c5a9f2fd4b6608cf053bae65d1abbdfb2c7b0c58d15a0e7413376f3109",
+      "reservation_sha256": "50f914f483ea2faeae49d9f7a64b04745c14db2b455c88d7a4439d719ac9090f",
+      "reserved_at": 1794006555.6449652,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": {
+        "api_errors": 0,
+        "api_requests": 4,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "coverage_complete": true,
+        "input_tokens": 10824,
+        "known_total_tokens": 11755,
+        "missing_observations": 0,
+        "output_tokens": 931,
+        "prompt_tokens": 10824,
+        "reasoning_tokens": 0,
+        "requests_with_usage": 4,
+        "total_tokens": 11755
+      }
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "formal-stock-acceptance-xlsx-review-execute",
+      "elapsed_seconds": 2.2108114161528647,
+      "finished_at": 1794006580.6961842,
+      "phase": "execute",
+      "record_sha256": "7f1d25f52d18c40dc67f2e936bb1e672f5df0820291c0bc93a3a5a8c7e236714",
+      "reservation_sha256": "e28aa4f2a5728bc4f1e6725499ae4a84f742e04b3c20fa0acb1a6851ac7001e8",
+      "reserved_at": 1794006578.484179,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "formal-stock-acceptance-xlsx-review-review",
+      "elapsed_seconds": 1.522635499946773,
+      "finished_at": 1794006578.4834309,
+      "phase": "review",
+      "record_sha256": "c0ce09ea89d9420903293238d6145d612a369dfed4b1ad8848f51322f0d08d83",
+      "reservation_sha256": "92c3fb9238bc29e26d31ceb6529f37ab61c6397420df96ce3f40ac6585b200bc",
+      "reserved_at": 1794006576.958945,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "review",
+      "attempt_id": "formal-stock-acceptance-xlsx-review-verification",
+      "elapsed_seconds": 0.021159583004191518,
+      "finished_at": 1794006580.726589,
+      "phase": "verification",
+      "record_sha256": "5baee2612a50877e4dc54cc7acb4c7030161f188004e9eaec138b719d9a1c77e",
+      "reservation_sha256": "c03331ab490adf254b4855f01ab9bdb321501a6854b7d58f0b5b1b9998034529",
+      "reserved_at": 1794006580.70415,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    },
+    {
+      "api_expected": false,
+      "arm": "shared",
+      "attempt_id": "shared-preregistration",
+      "elapsed_seconds": 3.2456371248699725,
+      "finished_at": 1794006501.3895779,
+      "phase": "preregistration",
+      "record_sha256": "6eef34cdea3fe2910f06f36d56d56dfe300838b25bb27b4e45f3e5b5bb42bf6a",
+      "reservation_sha256": "6c5bd0af0c6582e8ac69d8e34bb28c66857e11eba60cfce08472fae445a80853",
+      "reserved_at": 1794006498.1526048,
+      "schema_version": "rpe.phase-ledger/v1",
+      "scope": "operational",
+      "status": "completed",
+      "usage": null
+    }
+  ],
+  "sha256": "4b9f223f0a87a5d0147637b00e0c15b3dadfbfc79841c1d95c065c1cdef3896f"
+}

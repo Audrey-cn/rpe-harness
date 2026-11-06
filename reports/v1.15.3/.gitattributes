@@ -1,0 +1,4 @@
+validation/*.xml -whitespace
+validation/model-evidence/fixtures/** -text -whitespace
+validation/model-evidence/prompts/** -text -whitespace
+validation/model-evidence/artifacts/** -text -whitespace

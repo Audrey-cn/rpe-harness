@@ -9,7 +9,7 @@ import sys
 
 import pytest
 
-from test_hermes_request_budget import runtime_environment
+from test_hermes_request_budget import budget_profile, offline_provider_key, runtime_environment
 
 
 @pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
@@ -52,8 +52,7 @@ def test_native_file_bootstrap_stops_after_real_terminal_artifact_with_one_sdk_r
         RPE_HERMES_DB=str(tmp_path / 'events.sqlite'), RPE_HERMES_WORKSPACE=str(tmp_path),
         RPE_HERMES_PROCESS_PATH=str(home / 'processes.jsonl'),
         RPE_HERMES_ERROR_PATH=str(home / 'observer-errors.jsonl'),
-        RPE_HERMES_NATIVE_EVIDENCE_CONFIG=str(evidence), RPE_HERMES_NATIVE_FINISH_ENABLED='1',
-        XIAOMI_API_KEY='offline-not-secret', XIAOMI_BASE_URL='https://example.invalid/v1')
+        RPE_HERMES_NATIVE_EVIDENCE_CONFIG=str(evidence), RPE_HERMES_NATIVE_FINISH_ENABLED='1')
     prompt = tmp_path / 'prompt.txt'
     prompt.write_text('Write the authorized fixture to ' + target + ' using the terminal.')
     profile = tmp_path / 'bootstrap.sb'
@@ -68,10 +67,11 @@ def test_native_file_bootstrap_stops_after_real_terminal_artifact_with_one_sdk_r
         os.close(writer)
         environment['RPE_HERMES_NATIVE_EXECUTION_KEY_FD'] = str(key_fd)
     try:
-        child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
-            '-B', '-c', _PROGRAM, str(bootstrap), str(prompt), str(args)], env=environment,
-            cwd=tmp_path, capture_output=True, text=True, timeout=45,
-            pass_fds=(key_fd,) if key_fd is not None else ())
+        with offline_provider_key(environment) as provider_fd:
+            child = subprocess.run(['/usr/bin/sandbox-exec', '-f', str(profile), str(interpreter),
+                '-B', '-c', _PROGRAM, str(bootstrap), str(prompt), str(args)], env=environment,
+                cwd=tmp_path, capture_output=True, text=True, timeout=45,
+                pass_fds=(provider_fd, key_fd) if key_fd is not None else (provider_fd,))
     finally:
         if key_fd is not None:
             os.close(key_fd)
@@ -102,6 +102,87 @@ def test_native_file_bootstrap_stops_after_real_terminal_artifact_with_one_sdk_r
         assert not (tmp_path / 'output.csv').exists()
 
 
+@pytest.mark.skipif(sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file(),
+    reason='installed Hermes native macOS session launcher')
+def test_parent_launcher_accepts_same_process_hermes_terminal_receipt(tmp_path, monkeypatch):
+    from rpe_harness.integrations import hermes_session
+    from rpe_harness.integrations.hermes_native import evaluate_artifact_receipt
+    interpreter, _ = runtime_environment(tmp_path)
+    hermes_root = interpreter.parents[2]
+    if not (hermes_root / 'hermes_cli/gateway_chat_startup.py').is_file():
+        pytest.skip('gateway-backed Hermes launcher unavailable')
+    workspace = tmp_path / 'workspace'
+    workspace.mkdir()
+    content = 'id,value\na,first\n'
+    (workspace / 'fixture.csv').write_text(content)
+    terminal_probe = workspace / 'credential-boundary.py'
+    terminal_probe.write_text('''import ctypes, os, shutil, subprocess
+from pathlib import Path
+assert not (Path(os.environ['HERMES_HOME']) / '.env').exists()
+assert 'XIAOMI_API_KEY' not in os.environ
+assert 'RPE_HERMES_PROVIDER_KEY_FD' not in os.environ
+pid = int(Path('host-pid').read_text())
+try:
+    inspected = subprocess.run(['/bin/ps', 'eww', '-p', str(pid)], capture_output=True, timeout=2)
+    assert b'offline-not-secret' not in inspected.stdout
+except PermissionError:
+    pass
+# Darwin's argument/environment API also must not reveal the key even when the
+# sandbox permits inspecting this same-sandbox parent process.
+sysctl = ctypes.CDLL(None, use_errno=True).sysctl
+mib = (ctypes.c_int * 3)(1, 49, pid)  # CTL_KERN, KERN_PROCARGS2
+buffer = ctypes.create_string_buffer(262144)
+length = ctypes.c_size_t(len(buffer))
+if sysctl(mib, 3, buffer, ctypes.byref(length), None, 0) == 0:
+    assert b'offline-not-secret' not in buffer.raw[:length.value]
+shutil.copyfile('fixture.csv', 'output.csv')
+''')
+    arguments = {'command': f'{shlex.quote(str(interpreter))} credential-boundary.py', 'timeout': 5}
+    args = workspace / 'offline-tool-arguments.json'
+    args.write_text(json.dumps(arguments))
+    wire_path = workspace / 'offline-wire.json'
+    shim = workspace / 'hermes-python-with-offline-transport'
+    # The parent uses its actual command, profile, inherited FD and cleanup.
+    # The executable shim only injects the same provider-response stub used above.
+    prelude = _PROGRAM[:_PROGRAM.index("assert 'run_agent' not in sys.modules")]
+    shim.write_text(f'#!{interpreter} -B\n' + prelude.replace('open(sys.argv[3])', f'open({str(args)!r})')
+        + '\nimport runpy\nassert sys.argv[1] == "-B"\n'
+        'open("host-pid", "w").write(str(os.getpid()))\n'
+        'sys.argv = sys.argv[2:]\n'
+        'try:\n    runpy.run_path(sys.argv[0], run_name="__main__")\n'
+        f'finally:\n    open({str(wire_path)!r}, "w").write(json.dumps(wire))\n')
+    shim.chmod(0o700)
+    monkeypatch.setattr(hermes_session, '_installed_python', lambda _: shim)
+    result = hermes_session.run_hermes_session('Write the authorized fixture to output.csv using the terminal.',
+        workspace, tmp_path / 'events.sqlite', tool_enabled=False, owner_root=tmp_path / 'sessions',
+        read_isolation_root=tmp_path, hermes_root=hermes_root, public_contract='clean',
+        max_task_attempts=1, max_turns=8, timeout=30, native_finish_enabled=True,
+        native_evidence={'artifact_name': 'output.csv'}, request_budget=budget_profile(),
+        host_settings={'model': 'mimo-v2.6-pro', 'provider': 'xiaomi',
+            'api_key': 'offline-not-secret', 'base_url': 'https://example.invalid/v1'})
+    session = Path(result['session_root'])
+    assert result['completed'], (session / 'stderr.log').read_text()
+    assert not result['timed_out'] and result['exit_code'] == 0
+    assert result['max_task_attempts'] == 1 and result['max_turns'] == 8
+    assert result['process_cleanup']['cleanup_complete'] and not result['process_cleanup']['remaining_descendants']
+    assert result['model_identity']['response_models'] == ['mimo-v2.6-pro']
+    assert len(json.loads(wire_path.read_text())) == 1
+    assert (workspace / 'output.csv').read_text() == content
+    [call] = result['stream_tool_calls']
+    assert call['name'] == 'terminal' and call['input'] == arguments
+    [pre_api] = [event for event in result['events'] if event['kind'] == 'pre_api_request']
+    [post_api] = [event for event in result['events'] if event['kind'] == 'post_api_request']
+    [receipt] = [event for event in result['events'] if event['kind'] == 'native_artifact_observation']
+    [end] = [event for event in result['events'] if event['kind'] == 'on_session_end']
+    assert result['session_id'] == pre_api['session_id'] == post_api['session_id'] == receipt['session_id'] == end['session_id']
+    assert pre_api['api_request_id'] == post_api['api_request_id'] == receipt['api_request_id']
+    assert receipt['tool_call_id'] == 'actual-terminal-call'
+    config = json.loads((session / 'native-evidence-config.json').read_text())
+    key = (session / 'native-execution-auth.key').read_bytes()
+    verdict = evaluate_artifact_receipt(receipt, config, key)
+    assert verdict['verified'] and verdict['receipt_authenticated']
+
+
 _PROGRAM = r'''import importlib.util,json,os,socket,subprocess,sys
 def deny(*args,**kwargs): raise AssertionError('network disabled in native finish smoke')
 socket.socket.connect=deny
@@ -114,6 +195,7 @@ def offline_transport(self,request):
     if request.url.host!='example.invalid' or request.url.path!='/v1/chat/completions':
         ancillary.append({'method':request.method,'host':request.url.host,'path':request.url.path})
         return httpx.Response(200,json={},request=request)
+    assert request.headers.get('authorization')=='Bearer offline-not-secret'
     body=json.loads(request.content)
     wire.append({'max_completion_tokens':body.get('max_completion_tokens'),'thinking':body.get('thinking'),
         'stream':body.get('stream'),'timeout':request.extensions['timeout']})

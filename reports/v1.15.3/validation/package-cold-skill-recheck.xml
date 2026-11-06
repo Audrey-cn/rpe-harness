@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="2.078" timestamp="2026-11-07T07:10:01.634365+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_review_skills" name="test_native_sandbox_records_owned_cold_skill_source" time="1.825" /></testsuite></testsuites>
