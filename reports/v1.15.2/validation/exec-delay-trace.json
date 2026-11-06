@@ -1,0 +1,79 @@
+{
+  "attempts": 7,
+  "failures": [
+    {
+      "iteration": 1,
+      "receipt_error": "native_process_probe_failed",
+      "receipt_pid": 97461,
+      "events": [
+        {
+          "before": {
+            "pid": 97460,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004187,
+              832321
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "immediate_recheck": {
+            "pid": 97460,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004187,
+              832321
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "after": {
+            "pid": 97460,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004187,
+              832321
+            ],
+            "executable": "/bin/bash"
+          },
+          "delay_ms": 3.798
+        }
+      ]
+    },
+    {
+      "iteration": 6,
+      "receipt_error": "native_process_probe_failed",
+      "receipt_pid": 97539,
+      "events": [
+        {
+          "before": {
+            "pid": 97538,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004189,
+              886018
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "immediate_recheck": {
+            "pid": 97538,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004189,
+              886018
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "after": {
+            "pid": 97538,
+            "parent_pid": 97431,
+            "start_identity": [
+              1794004189,
+              886018
+            ],
+            "executable": "/bin/bash"
+          },
+          "delay_ms": 2.616
+        }
+      ]
+    }
+  ]
+}

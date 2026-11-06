@@ -1,0 +1,2 @@
+# Preserve pytest's captured output byte for byte.
+validation/*.xml -whitespace

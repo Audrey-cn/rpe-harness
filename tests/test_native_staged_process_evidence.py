@@ -1,10 +1,14 @@
 """Same-call staged stdout evidence from real, provider-free subprocesses."""
+import errno
 import hashlib
+import json
 import os
 from pathlib import Path
 import shlex
 import subprocess
 import sys
+import time
+from types import SimpleNamespace
 
 import pytest
 
@@ -141,12 +145,75 @@ def test_legacy_configuration_keeps_direct_inode_binding_and_receipt_fields(stag
     config, argv = staged_case
     del config['stdout_name']
     _child, row = invoke(config, shlex.join(argv)+' > output.json')
-    assert row['verified'] is True, row
+    assert row['verified'] is True, json.dumps(row, ensure_ascii=False)
     assert row['artifact_binding'] == 'final_bytes_on_observed_stdout_inode_not_exclusive_writer'
     assert not any(key.startswith('stdout_') for key in row)
     (Path(config['workspace'])/'output.json').unlink()
     _child, row = invoke(config, shlex.join(argv)+' > helper-stdout.json; cp helper-stdout.json output.json')
     assert row['verified'] is False, row
+
+
+@pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin process metadata ABI')
+@pytest.mark.parametrize('mode', ['exec-changed', 'exec-in-progress', 'live-unchanged'])
+def test_argv_probe_failure_distinguishes_exec_from_current_image(staged_case, monkeypatch, mode):
+    config, argv = staged_case
+    del config['stdout_name']
+    release = Path(config['workspace'])/'release-launcher'
+    exec_changed = mode != 'live-unchanged'
+    launch = ('os.execv(shell[0], shell)' if exec_changed else
+              'raise SystemExit(subprocess.call(shell))')
+    launcher = ('import os,subprocess,sys,time\n'
+                'while not os.path.exists(sys.argv[1]): time.sleep(.002)\n'
+                'shell = ["/bin/bash", "-c", sys.argv[2]]\n'+launch)
+    script = 'sleep .1; '+shlex.join(argv)+' > output.json; :'
+    original = native._DarwinProcesses.arguments
+    original_info = native._DarwinProcesses.info
+    failed = []
+    stale = {}
+    replayed = []
+    frozen = None
+
+    def info(probe, pid):
+        nonlocal frozen
+        if pid in stale:
+            replayed.append(pid)
+            return stale.pop(pid)
+        if replayed and pid == replayed[-1]:
+            frozen = None
+        return original_info(probe, pid)
+
+    def arguments(probe, pid):
+        nonlocal frozen
+        values, environment = original(probe, pid)
+        if values[1:4] != ['-I', '-c', launcher]:
+            return values, environment
+        before = original_info(probe, pid)
+        release.touch()
+        deadline = time.monotonic() + 2
+        while time.monotonic() < deadline:
+            if not exec_changed or probe.info(pid)['executable'] == '/bin/bash':
+                failed.append(pid)
+                if mode == 'exec-in-progress':
+                    # Replay one stale image read after the real exec. Pause only
+                    # the observer clock so scheduler jitter cannot exhaust the window.
+                    stale[pid] = before
+                    frozen = time.monotonic()
+                # Inject the syscall failure; process identity and helper exit are real.
+                raise OSError(errno.EIO, 'native process arguments unavailable')
+            time.sleep(.002)
+        return values, environment
+
+    monkeypatch.setattr(native._DarwinProcesses, 'arguments', arguments)
+    monkeypatch.setattr(native._DarwinProcesses, 'info', info)
+    if mode == 'exec-in-progress':
+        monkeypatch.setattr(native, 'time', SimpleNamespace(
+            monotonic=lambda: time.monotonic() if frozen is None else frozen))
+    child, row = invoke(config, 'exec '+shlex.join([sys.executable, '-I', '-c', launcher, str(release), script]))
+    assert failed and child.returncode == 0, child.stderr
+    assert bool(replayed) is (mode == 'exec-in-progress')
+    assert row['verified'] is exec_changed, row['process_observation_error']
+    assert ('native_process_probe_failed' in row['process_observation_error']) is not exec_changed
+    assert row['pid'] not in failed and row['process_returncode'] == 0
 
 
 @pytest.mark.skipif(sys.platform != 'darwin', reason='Darwin kernel process receipt')

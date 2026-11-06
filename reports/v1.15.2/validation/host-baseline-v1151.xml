@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="4.814" timestamp="2026-11-07T06:42:40.160573+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_hermes_request_budget" name="test_file_bootstrap_installs_budget_without_preloading_sdk_or_harness" time="1.476"><failure message="AssertionError: Error: Unsupported gateway CLI options: --run-budget. No local fallback or policy changes were made.&#10;    --run-budget: use `agent.run_budget_seconds` in config.yaml&#10;  &#10;  session_id: &#10;  Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 36, in &lt;module&gt;&#10;      assert status in (None,0),status&#10;             ^^^^^^^^^^^^^^^^^^&#10;  AssertionError: 2&#10;  {&quot;type&quot;: &quot;system&quot;, &quot;subtype&quot;: &quot;init&quot;, &quot;model&quot;: &quot;mimo-v2.6-pro&quot;, &quot;session_id&quot;: &quot;&quot;, &quot;timestamp&quot;: 1794004961670}&#10;[+4 more lines; full report in element text]">tests/test_hermes_request_budget.py:226: in test_file_bootstrap_installs_budget_without_preloading_sdk_or_harness
+    assert child.returncode == 0, child.stderr[-6000:] + child.stdout[-3000:]
+E   AssertionError: Error: Unsupported gateway CLI options: --run-budget. No local fallback or policy changes were made.
+E       --run-budget: use `agent.run_budget_seconds` in config.yaml
+E     
+E     session_id: 
+E     Traceback (most recent call last):
+E       File "&lt;string&gt;", line 36, in &lt;module&gt;
+E         assert status in (None,0),status
+E                ^^^^^^^^^^^^^^^^^^
+E     AssertionError: 2
+E     {"type": "system", "subtype": "init", "model": "mimo-v2.6-pro", "session_id": "", "timestamp": 1794004961670}
+E     {"type": "result", "session_id": "", "exit_code": 2, "text": "", "tokens": {"input": 0, "output": 0, "total": 0, "cache_read": 0, "cache_write": 0}, "duration_ms": 0, "error": "Unsupported gateway CLI options: --run-budget. No local fallback or policy changes were made.\n  --run-budget: use `agent.run_budget_seconds` in config.yaml", "timestamp": 1794004961670}
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/usr/bin/sandbox-exec', '-f', '/private/tmp/rpe-receipt-20261107.jqGEJDWr/host-baseline/test_f...ing&gt;", line 36, in &lt;module&gt;\n    assert status in (None,0),status\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: 2\n').returncode</failure></testcase><testcase classname="tests.test_hermes_review_finish" name="test_installed_cold_review_finishes_after_four_native_provider_requests[skill_review0]" time="2.858"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;/private/tmp/rpe-receipt-20261107.jqGEJDWr/installed-old/rpe_harness/integrations/hermes_review.py&quot;, line 484, in policy&#10;      _allow_phase_repeat(store, state, config)&#10;      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^&#10;    File &quot;/private/tmp/rpe-receipt-20261107.jqGEJDWr/installed-old/rpe_harness/integrations/hermes_review.py&quot;, line 913, in _allow_phase_repeat&#10;      raise ValueError('review_unexpected_phase_repeat')&#10;[+62 more lines; full report in element text]">tests/test_hermes_review_finish.py:206: in test_installed_cold_review_finishes_after_four_native_provider_requests
+    assert child.returncode == 0, child.stderr[-7000:] + child.stdout[-2000:]
+E   AssertionError: Traceback (most recent call last):
+E       File "/private/tmp/rpe-receipt-20261107.jqGEJDWr/installed-old/rpe_harness/integrations/hermes_review.py", line 484, in policy
+E         _allow_phase_repeat(store, state, config)
+E         ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+E       File "/private/tmp/rpe-receipt-20261107.jqGEJDWr/installed-old/rpe_harness/integrations/hermes_review.py", line 913, in _allow_phase_repeat
+E         raise ValueError('review_unexpected_phase_repeat')
+E     ValueError: review_unexpected_phase_repeat
+E     
+E     The above exception was the direct cause of the following exception:
+E     
+E     Traceback (most recent call last):
+E       File "&lt;string&gt;", line 38, in &lt;module&gt;
+E         result=agent.run_conversation(sys.argv[2],task_id='review-task')
+E       File "/Users/audrey/.hermes/hermes-agent/agent/turn_facade.py", line 148, in run_conversation
+E         result = run_conversation(
+E             self, user_message, system_message, conversation_history, effective_task_id,
+E         ...&lt;7 lines&gt;...
+E             prelude=prelude,
+E         )
+E       File "/Users/audrey/.hermes/hermes-agent/agent/conversation_loop.py", line 1837, in run_conversation
+E         result = _run_conversation_turn(
+E             agent,
+E         ...&lt;13 lines&gt;...
+E             prelude=prelude,
+E         )
+E       File "/Users/audrey/.hermes/hermes-agent/agent/conversation_loop.py", line 1765, in _run_conversation_turn
+E         early_result = _run_api_retry_loop(agent, s)
+E       File "/Users/audrey/.hermes/hermes-agent/agent/conversation_loop.py", line 1583, in _run_api_retry_loop
+E         _run_phase(build_api_request, agent, s)
+E         ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/audrey/.hermes/hermes-agent/agent/conversation_loop.py", line 1558, in _run_phase
+E         verdict = fn(agent, **{n: extra[n] if n in extra else getattr(state, n) for n in params})
+E       File "/Users/audrey/.hermes/hermes-agent/agent/turn_api_request.py", line 187, in build_api_request
+E         built = build_request_payload(
+E             agent, api_messages=api_messages, _moa_prepared_request=_moa_prepared_request,
+E             tools_for_api=tools_for_api, system_message=system_message, api_call_count=api_call_count,
+E             api_request_id=api_request_id, effective_task_id=effective_task_id, turn_id=turn_id,
+E         )
+E       File "/Users/audrey/.hermes/hermes-agent/agent/turn_api_request.py", line 158, in build_request_payload
+E         _llm_request_mw = apply_llm_request_middleware(
+E             api_kwargs, task_id=effective_task_id, turn_id=turn_id, api_request_id=api_request_id,
+E         ...&lt;2 lines&gt;...
+E             api_call_count=api_call_count,
+E         )
+E       File "/Users/audrey/.hermes/hermes-agent/hermes_cli/middleware.py", line 96, in apply_llm_request_middleware
+E         return _apply_request_chain(
+E             LLM_REQUEST_MIDDLEWARE, "request", [], original_request,
+E             request=_safe_copy(original_request), original_request=original_request, **context,
+E         )
+E       File "/Users/audrey/.hermes/hermes-agent/hermes_cli/middleware.py", line 70, in _apply_request_chain
+E         for result in invoke_middleware(kind, _payload_key=payload_key, **middleware_payload(**kwargs)):
+E                       ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/audrey/.hermes/hermes-agent/hermes_cli/plugins.py", line 1831, in invoke_middleware
+E         return _delivery_manager().invoke_middleware(kind, **kwargs)
+E                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+E       File "/Users/audrey/.hermes/hermes-agent/hermes_cli/plugins_dispatch.py", line 755, in invoke_middleware
+E         ret = cb(**call_kwargs)
+E       File "/private/tmp/rpe-receipt-20261107.jqGEJDWr/installed-old/rpe_harness/integrations/hermes_review.py", line 512, in policy
+E         raise ReviewIngressBlocked('review transport request blocked before provider',
+E             code='review_unexpected_phase_repeat' if type(error) is ValueError and
+E                 str(error) == 'review_unexpected_phase_repeat' else None) from error
+E     rpe_harness.integrations.hermes_review.ReviewIngressBlocked: review transport request blocked before provider
+E       ┊ ⚡ rpe_disco   0.0s
+E       ┊ ⚡ rpe_selec   0.0s
+E       ┊ 📚 skill     xlsx  0.0s [{'code': 'review_identity_invalid'}]
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-B', '-c', "import json,socket,sys\nfro...rror\nrpe_harness.integrations.hermes_review.ReviewIngressBlocked: review transport request blocked before provider\n').returncode</failure></testcase><testcase classname="tests.test_review_skills" name="test_cold_copy_uses_real_hermes_restoration_and_original_native_view" time="0.270"><failure message="AssertionError: Traceback (most recent call last):&#10;    File &quot;&lt;string&gt;&quot;, line 13, in &lt;module&gt;&#10;      print(json.dumps({'source':result['_source_path'],'restored':str(path),&#10;                                 ~~~~~~^^^^^^^^^^^^^^^^&#10;  KeyError: '_source_path'&#10;  &#10;assert 1 == 0&#10;[+1 more line; full report in element text]">tests/test_review_skills.py:227: in test_cold_copy_uses_real_hermes_restoration_and_original_native_view
+    assert result.returncode == 0, result.stderr
+E   AssertionError: Traceback (most recent call last):
+E       File "&lt;string&gt;", line 13, in &lt;module&gt;
+E         print(json.dumps({'source':result['_source_path'],'restored':str(path),
+E                                    ~~~~~~^^^^^^^^^^^^^^^^
+E     KeyError: '_source_path'
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/Users/audrey/.hermes/hermes-agent/.venv/bin/python', '-I', '-B', '-c', "\nimport hashlib,json..._path\'],\'restored\':str(path),\n                               ~~~~~~^^^^^^^^^^^^^^^^\nKeyError: \'_source_path\'\n').returncode</failure></testcase></testsuite></testsuites>

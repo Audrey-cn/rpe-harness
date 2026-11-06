@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="2.327" timestamp="2026-11-07T06:42:40.125595+08:00" hostname="AudreydeMacBook-Pro.local"><testcase classname="tests.test_agent_audit" name="test_timeout_kills_the_owned_process_group[legacy]" time="1.125"><failure message="AssertionError: assert False&#10; +  where False = is_file()&#10; +    where is_file = ((PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p0/owner') / 'agent-audit') / 'child.pid').is_file">audit = (&lt;module 'rpe_harness.experiments.agent_audit' from '/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harne...udit.py'&gt;, PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p0/owner'))
+tmp_path = PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p0')
+profile = 'legacy'
+
+    @pytest.mark.parametrize('profile', ['legacy', 'structured-v2'])
+    def test_timeout_kills_the_owned_process_group(audit, tmp_path, profile):
+        module, owner = audit
+        executable = cli(tmp_path, """import pathlib,signal,subprocess,sys,time
+    signal.signal(signal.SIGTERM,signal.SIG_IGN)
+    child = subprocess.Popen([sys.executable,'-c',
+     "import pathlib,signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(1.2);pathlib.Path('leaked-child').write_text('leak')"])
+    pathlib.Path('child.pid').write_text(str(child.pid))
+    while True: time.sleep(1)
+    """)
+        started = time.monotonic()
+        record = module.run_agent_audit(_BUNDLE, owner, timeout=1,
+                                        executable=executable, profile=profile)
+        assert record['status'] == 'timed_out'
+        assert record['error_code'] == 'timeout'
+        assert time.monotonic()-started &lt; 3
+        assert record['usage'] is None
+&gt;       assert (owner/'agent-audit'/'child.pid').is_file()
+E       AssertionError: assert False
+E        +  where False = is_file()
+E        +    where is_file = ((PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p0/owner') / 'agent-audit') / 'child.pid').is_file
+
+tests/test_agent_audit.py:162: AssertionError</failure></testcase><testcase classname="tests.test_agent_audit" name="test_timeout_kills_the_owned_process_group[structured-v2]" time="1.118"><failure message="AssertionError: assert False&#10; +  where False = is_file()&#10; +    where is_file = ((PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p1/owner') / 'agent-audit') / 'child.pid').is_file">audit = (&lt;module 'rpe_harness.experiments.agent_audit' from '/Users/audrey/.codex/worktrees/rpe-v114/rpe-harness/src/rpe_harne...udit.py'&gt;, PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p1/owner'))
+tmp_path = PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p1')
+profile = 'structured-v2'
+
+    @pytest.mark.parametrize('profile', ['legacy', 'structured-v2'])
+    def test_timeout_kills_the_owned_process_group(audit, tmp_path, profile):
+        module, owner = audit
+        executable = cli(tmp_path, """import pathlib,signal,subprocess,sys,time
+    signal.signal(signal.SIGTERM,signal.SIG_IGN)
+    child = subprocess.Popen([sys.executable,'-c',
+     "import pathlib,signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);time.sleep(1.2);pathlib.Path('leaked-child').write_text('leak')"])
+    pathlib.Path('child.pid').write_text(str(child.pid))
+    while True: time.sleep(1)
+    """)
+        started = time.monotonic()
+        record = module.run_agent_audit(_BUNDLE, owner, timeout=1,
+                                        executable=executable, profile=profile)
+        assert record['status'] == 'timed_out'
+        assert record['error_code'] == 'timeout'
+        assert time.monotonic()-started &lt; 3
+        assert record['usage'] is None
+&gt;       assert (owner/'agent-audit'/'child.pid').is_file()
+E       AssertionError: assert False
+E        +  where False = is_file()
+E        +    where is_file = ((PosixPath('/private/tmp/rpe-receipt-20261107.jqGEJDWr/timeout-check/test_timeout_kills_the_owned_p1/owner') / 'agent-audit') / 'child.pid').is_file
+
+tests/test_agent_audit.py:162: AssertionError</failure></testcase></testsuite></testsuites>

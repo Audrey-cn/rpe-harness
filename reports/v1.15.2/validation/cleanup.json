@@ -1,0 +1,33 @@
+{
+  "owned_root": "/private/tmp/rpe-receipt-20261107.jqGEJDWr",
+  "owned_absent": true,
+  "owned_process_pids": [],
+  "regular_files_removed": 46075,
+  "regular_bytes_removed": 610683614,
+  "symlinks_removed": 1883,
+  "daily_files_checked": 4,
+  "daily_files_changed": [
+    "/Users/audrey/.hermes/auth.json",
+    "/Users/audrey/.hermes/state.db"
+  ],
+  "skills_files_checked": 656,
+  "skill_files_changed": [],
+  "repositories_before_local_integration": {
+    "/Users/audrey/项目/rpe-harness": {
+      "head_unchanged_before_local_integration": true,
+      "status_unchanged_before_local_integration": true
+    },
+    "/Users/audrey/项目/progenitor-protocol": {
+      "head_unchanged_before_local_integration": true,
+      "status_unchanged_before_local_integration": true
+    },
+    "/Users/audrey/项目/progenitor-registry": {
+      "head_unchanged_before_local_integration": true,
+      "status_unchanged_before_local_integration": true
+    }
+  },
+  "daily_state_restored": false,
+  "actual_test_model_sessions": 0,
+  "credential_copy_removed": true,
+  "strict_daily_preservation": false
+}

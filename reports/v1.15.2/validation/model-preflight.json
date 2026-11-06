@@ -1,0 +1,17 @@
+{
+  "recorded_environment_match": false,
+  "portable_evidence_verified": false,
+  "replays": 0,
+  "human_confirmation_verified": false,
+  "verified_billing": null,
+  "before_validation_to_pre_model_differences": [],
+  "completed": false,
+  "failure_phase": "register",
+  "failure_type": "ValueError",
+  "pre_to_post_model_differences": [],
+  "counters": {
+    "review_drafts": 0,
+    "native_drafts": 0,
+    "native_executions": 0
+  }
+}

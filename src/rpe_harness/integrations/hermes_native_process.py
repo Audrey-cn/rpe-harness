@@ -9,6 +9,7 @@ evidence, not independent third-party attestation.
 from __future__ import annotations
 
 import ctypes
+import errno
 import hashlib
 import hmac
 import json
@@ -197,8 +198,10 @@ class _DarwinProcesses:
         size = ctypes.c_size_t(len(buf))
         mib = (ctypes.c_int * 3)(1, 49, pid)
         if self.libc.sysctl(mib, 3, buf, ctypes.byref(size), None, 0):
+            error = OSError('native process arguments unavailable')
+            error.errno = ctypes.get_errno()
             self.info(pid)  # A vanished candidate supplies no proof; live failures stay errors.
-            raise OSError('native process arguments unavailable')
+            raise error
         raw = buf.raw[:size.value]
         argc = struct.unpack_from('=i', raw)[0]
         if not 1 <= argc <= 32:
@@ -372,7 +375,27 @@ class _KernelCall:
                         info = process.info(pid)
                         if Path(info['executable']).resolve() != Path(self.config['helper_python']).resolve():
                             continue  # bash can subsequently exec Python under the same PID
-                        argv, environment = process.arguments(pid)
+                        try:
+                            argv, environment = process.arguments(pid)
+                        except OSError as error:
+                            # A fork child can still report the Python image while
+                            # exec replaces it with the shell. Discard only that
+                            # stale observation; the new image can be examined again.
+                            if isinstance(error, ProcessLookupError):
+                                continue
+                            # KERN_PROCARGS2 can return EIO before proc_pidpath
+                            # reflects exec. Give that identity check a short window;
+                            # an unresolved live error must still reject the receipt.
+                            recheck = time.monotonic() + (.020 if error.errno == errno.EIO else 0)
+                            while True:
+                                current = process.info(pid)
+                                if (current['start_identity'] != info['start_identity']
+                                        or current['executable'] != info['executable']):
+                                    break
+                                remaining = recheck - time.monotonic()
+                                if remaining <= 0 or self.stop.wait(min(.002, remaining)):
+                                    raise
+                            continue
                         if not self.matches(argv, environment):
                             continue
                         seen.add(pid)

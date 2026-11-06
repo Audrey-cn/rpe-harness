@@ -1,0 +1,104 @@
+{
+  "attempts": 13,
+  "failures": [
+    {
+      "iteration": 9,
+      "receipt_error": "native_process_probe_failed",
+      "receipt_pid": 91705,
+      "events": [
+        {
+          "line": 375,
+          "type": "OSError",
+          "error": "native process arguments unavailable",
+          "errno": null,
+          "syscall_errno": 5,
+          "pid": 91704,
+          "before": {
+            "pid": 91704,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003732,
+              733257
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "after": {
+            "pid": 91704,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003732,
+              733257
+            ],
+            "executable": "/bin/bash"
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 11,
+      "receipt_error": "native_process_probe_failed",
+      "receipt_pid": 91714,
+      "events": [
+        {
+          "line": 375,
+          "type": "OSError",
+          "error": "native process arguments unavailable",
+          "errno": null,
+          "syscall_errno": 5,
+          "pid": 91713,
+          "before": {
+            "pid": 91713,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003733,
+              400066
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "after": {
+            "pid": 91713,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003733,
+              400066
+            ],
+            "executable": "/bin/bash"
+          }
+        }
+      ]
+    },
+    {
+      "iteration": 12,
+      "receipt_error": "native_process_probe_failed",
+      "receipt_pid": 91716,
+      "events": [
+        {
+          "line": 375,
+          "type": "OSError",
+          "error": "native process arguments unavailable",
+          "errno": null,
+          "syscall_errno": 5,
+          "pid": 91715,
+          "before": {
+            "pid": 91715,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003733,
+              618305
+            ],
+            "executable": "/Users/audrey/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3.12"
+          },
+          "after": {
+            "pid": 91715,
+            "parent_pid": 91657,
+            "start_identity": [
+              1794003733,
+              618305
+            ],
+            "executable": "/bin/bash"
+          }
+        }
+      ]
+    }
+  ]
+}

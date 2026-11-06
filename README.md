@@ -1,4 +1,6 @@
-# RPE-Harness 1.15.1
+# RPE-Harness 1.15.2
+
+1.15.2修复 macOS 原生收据在启动子进程切换映像时的误拒：仅在内核探测确认进程已换映像或身份后丢弃旧采样，保留未解决的活进程错误。安装包的相关检查已通过；当前 Hermes 接口与 XLSX 适配器签名仍需匹配后才能完成真实模型复验。见[维护与复验报告](reports/v1.15.2/1.15.2原生收据与环境复验.md)。
 
 1.15.1修复比较辅助器的异常草稿容错：原候选与失败成本保留，后续任务继续且不重发，离线重查拒绝证据。一个新增CSV任务已走通公开入口、确认和实际产物；原生业务参数正确但引用合同不合格，未获执行批准。仅为一对新输入冒烟，最终全量2194项通过、1项原生收据失败、7项跳过，安装包90项通过；清理结果另列，见[1.15.1维护报告](reports/v1.15.1/1.15.1维护与验收报告.md)。
 
@@ -76,7 +78,7 @@ python3.12 -m venv .venv
 
 ~~~sh
 .venv/bin/python -m pip install '.[dev]'
-PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider
+PYTHONPATH="$PWD/src" PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider
 ~~~
 
 wheel 自带 CSV 去重、XLSX 去重和 JSON 空白规范化三个内置执行器，不依赖源码目录外的 `data/`。需要使用本机技能索引时显式追加 `--data-dir /Users/audrey/项目/rpe-harness/data`；这些外部技能只供路由推荐，不能自动执行其 SKILL.md 或脚本。

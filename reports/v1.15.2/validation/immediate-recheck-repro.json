@@ -1,0 +1,45 @@
+{
+  "attempts": 120,
+  "failures": [
+    {
+      "iteration": 108,
+      "rows": [
+        {
+          "kind": "native_helper_process_observation",
+          "verified": false,
+          "proof_kind": "darwin_kernel_process_exit",
+          "process_config_sha256": "d31fa4494ca805ed0a997f49a7111366499eb2cc2829ccd1d52873cb3b516d65",
+          "skill_id": "productivity/xlsx",
+          "snapshot_id": "snapshot",
+          "skill_sha256": "93b22a197a293a70540cfb5a3900f40ac53bb4ed27d2bda72a7041cdc78d0ca5",
+          "script_sha256": "b4fa4d070af96706a405d8add9536855e88fd6959e9d8fda150dcd245cf93358",
+          "input_sha256": "eafb8cc48189fbb651c71fde66233adad49525f64700ab8a66398a192c73c0f7",
+          "helper_python_sha256": "4034ee87dc784bce1e066ce3f86fb69ca27f6ecc314442577aeb4492bd7bbba2",
+          "pid": 94993,
+          "parent_pid": 94992,
+          "process_argv_sha256": "abf2818efad218b4cd24814ac186647e5be2b177447832b3c0465b26fdaf6a5c",
+          "startup_environment_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "process_returncode": 0,
+          "kernel_exit_observed": true,
+          "process_start_identity_sha256": "3642a6281a62496dbb16c3a66059557f7abb87d34aab3deecdc514fa4914cf68",
+          "output_sha256": "2f0795aa5606bc3efdae1fad0a9267c80b4d1beeab25b26e739deefe8bbc4144",
+          "output_size": 19,
+          "output_identity_sha256": "3c96dea70e8d194276efb630466ba886e0e5368a6774162565c673c596ac2fa5",
+          "output_path_sha256": "41137de2aed4202d433b6fd7f42c09fb4868b9c329b377f294c9b8210e20e1e3",
+          "overlap": false,
+          "observer_joined": true,
+          "artifact_binding": "final_bytes_on_observed_stdout_inode_not_exclusive_writer",
+          "session_id": "staged-unit",
+          "task_id": "task",
+          "turn_id": "turn",
+          "api_request_id": "api",
+          "tool_call_id": "execute",
+          "tool_name": "terminal",
+          "arguments_sha256": "4ab2cb2039b7a1afb8b7ddc51e595c2624df404a81b6cdf34142b5f44e8f4bd4",
+          "tool_status": "succeeded",
+          "process_observation_error": "native_process_probe_failed"
+        }
+      ]
+    }
+  ]
+}
