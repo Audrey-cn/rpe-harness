@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v1.19.0` · `Linux / macOS / Windows` · `Python 3.10+ & Node.js 20+` · `Zero Daemon` · `SQLite + 1 Dep` · `MIT License`
+`v2.0.0` · `Linux / macOS / Windows` · `Zero-Dep Stdio MCP` · `Contract Plugin SDK` · `SQLite + 1 Dep` · `MIT License`
 
 <p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
@@ -50,16 +50,17 @@ flowchart LR
     ORACLE -->|Verified| PUB["Atomic Publish + SQLite Audit Receipt"]
 ```
 
-### Core Capabilities (`v1.19.0`)
+### Core Capabilities (`v2.0.0`)
 
 | Layer | Module | Guarantee |
 | :--- | :--- | :--- |
+| **Zero-Dep Stdio MCP Server** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) | `rpe-harness mcp` speaks pure stdlib JSON-RPC 2.0 MCP for **Claude Code, Codex CLI, Cursor, and Hermes**. Exposes **only** model-safe tools (`rpe_capabilities`, `rpe_start_task`, `rpe_show_task`, `rpe_reconcile_task`); keeps `confirm/execute/cancel/handoff` strictly host-side and prevents owner/session spoofing. |
+| **Contract Plugin SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) | Declarative `ContractPlugin` interface (`validate_options`, `execute`, `verify`) with Python `entry_points` (`rpe_harness.contracts`) discovery. Ships **5 built-in verified contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `xlsx.inspect`), all backed by independent oracles and atomic no-overwrite publish. |
 | **C2 · Narrow Source Resolver** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | Resolves individual authorized fields in ≤2 bounded reads; blocks `needs_user`, `conflict`, `stale` (SHA mismatch), and `forbidden` (cross-job/session) in **~1 ms at 0 tokens** without leaking private fields into prompts. |
 | **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
 | **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
-| **Universal Host Adapters** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | Zero-dependency Node.js ESM &amp; Python thin bridges (`execFile` over `rpe host`) ready for **Claude Code, Codex CLI, Hermes, or any custom agent host**. Injects non-spoofable `host_id` / `owner` / `session_id`; keeps `confirm/execute/cancel/handoff` strictly host-only; invalidates prior confirmations on cross-host handoff. |
-| **Signed Capability Assets** | [`assets/`](src/rpe_harness/assets/) · [`evolution/`](src/rpe_harness/evolution/) | Absorbs Progenitor's content-addressed SHA-256 packages & RSA-SHA256 dual-signed provenance without P2P/IPFS daemons. Imported assets default to `unverified` and require independent acceptance before CAS activation or rollback. |
-| **OS Sandbox Backends** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | Supports macOS `/usr/bin/sandbox-exec` and Linux `bwrap` (bubblewrap) with RSS/timeout monitoring; fails closed (`unavailable`) on unsupported hosts — never fakes isolation. |
+| **Universal Host Adapters** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | Zero-dependency Node.js ESM &amp; Python thin bridges (`execFile` over `rpe host`) ready for **Claude Code, Codex CLI, Hermes, or any custom agent host**. Injects non-spoofable `host_id` / `owner` / `session_id`; invalidates prior confirmations on cross-host handoff. |
+| **Signed Capability Assets & Sandbox** | [`assets/`](src/rpe_harness/assets/) · [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | Content-addressed SHA-256 packages & RSA-SHA256 provenance without P2P/IPFS daemons; macOS `sandbox-exec` & Linux `bwrap` isolation (fails closed when unavailable). |
 
 ---
 
@@ -104,7 +105,42 @@ pip install -e ".[dev]"
 rpe-harness host capabilities
 ```
 
-### 2. Embed from Python (`HostAPI`)
+### 2. Mount in Claude Code / Codex CLI / Cursor via 5-Line `mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "rpe-harness": {
+      "command": "rpe-harness",
+      "args": ["mcp", "--owner", "alice", "--session-id", "dev-1", "--workspace", "/path/to/workspace"]
+    }
+  }
+}
+```
+
+> Only model-safe read/proposal tools (`rpe_capabilities`, `rpe_start_task`, `rpe_show_task`, `rpe_reconcile_task`) are exposed over MCP. Approval & execution stay strictly host-side (`rpe-harness host confirm` / `execute`).
+
+### 3. Register Your Own Verifiable Contract (`ContractPlugin` SDK)
+
+```python
+from rpe_harness.contract_sdk import ContractPlugin, DEFAULT_REGISTRY
+
+DEFAULT_REGISTRY.register(ContractPlugin(
+    capability="acme.redact",
+    executor_id="plugin/acme-redact",
+    input_formats=("txt",),
+    validate_options=lambda opts, raw: {},
+    execute=lambda plan, raw: (raw.replace(b"SECRET", b"[REDACTED]"), {}),
+    verify=lambda plan, raw, staged: {
+        "passed": b"SECRET" not in staged,
+        "checks": {"secret_removed": b"SECRET" not in staged},
+    },
+))
+```
+
+Or publish via `[project.entry-points."rpe_harness.contracts"]` in `pyproject.toml` for automatic discovery.
+
+### 4. Embed from Python (`HostAPI`) or Node.js
 
 ```python
 from rpe_harness.host_api import HostAPI, TrustedHostAction
@@ -157,9 +193,9 @@ const res = await trustedActions.executeTask({
 
 We publish boundaries as openly as benchmarks:
 
-1. **Narrow built-in contract surface**: Today the kernel ships **3 verified built-in capabilities** (`tabular.deduplicate` for CSV/XLSX, `json.normalize/v1`, and audited XLSX inspection). It is a reference verifiable execution kernel, not a 100-tool general automation suite.
-2. **OS sandbox availability**: Strong process/filesystem/network isolation for untrusted candidate code uses macOS `/usr/bin/sandbox-exec` or Linux `bwrap` (`bubblewrap`); on Windows or hosts without `bwrap`, `sandbox_backend()` honestly reports `unavailable` and fails closed.
-3. **Long-horizon unattended soak**: Multi-hour unattended soak benchmarks and full end-to-end GUI host packaging remain active downstream work — current proof covers unit/integration invariants, 3-OS CI, and controlled 4-family multi-model pairs.
+1. **Built-in contracts vs custom plugins**: The kernel ships **5 verified built-in contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `xlsx.inspect`) plus the **`rpe.contract/v1` Plugin SDK** (`entry_points`) so teams can plug in domain-specific deterministic executors + independent oracles without touching kernel internals.
+2. **OS sandbox availability**: Strong process/filesystem/network isolation for untrusted candidate code uses macOS `/usr/bin/sandbox-exec` or Linux `bwrap` (`bubblewrap`); on Windows or hosts without `bwrap`, `sandbox_backend()` currently reports `unavailable` and fails closed (Windows Job Object containment & live Linux `bwrap` CI are next in `v2.1.0`).
+3. **Long-horizon unattended soak**: Multi-hour unattended soak benchmarks remain next (`v2.1.0` adds a 100-iteration fault-injection soak harness) — current proof covers unit/integration invariants, 3-OS CI, and controlled 5-family multi-model pairs.
 
 ---
 

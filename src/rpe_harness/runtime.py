@@ -87,6 +87,19 @@ class HarnessRuntime:
                 task_types=[TaskType.DATA_PROCESSING, TaskType.FILE_OPERATION],
                 input_formats=['xlsx'],tags=['xlsx.inspect'],capabilities=['xlsx.inspect'],
                 priority=10,preconditions=['file_exists','output_available']))
+            from .contract_sdk import DEFAULT_REGISTRY
+            for plugin in DEFAULT_REGISTRY.list_plugins():
+                router.register_skill(SkillEntry(
+                    plugin.executor_id,
+                    plugin.capability,
+                    plugin.description or f'Contract plugin {plugin.capability}',
+                    task_types=[TaskType.DATA_PROCESSING, TaskType.FILE_OPERATION],
+                    input_formats=list(plugin.input_formats),
+                    tags=[plugin.capability],
+                    capabilities=[plugin.capability],
+                    priority=10,
+                    preconditions=['file_exists', 'output_available'],
+                ))
             for sid, item in self.store.skill_states().items():
                 if sid in router.skills:
                     router.skills[sid].enabled = item['enabled']

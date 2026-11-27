@@ -46,6 +46,8 @@ def main(argv=None):
     register_review(commands)
     from .host_cli import register_host
     register_host(commands)
+    from .mcp_server import register_mcp
+    register_mcp(commands)
     run = commands.add_parser('run')
     run.add_argument('--request', required=True, help='JSON file or - for stdin')
     _configuration(run)
@@ -138,6 +140,9 @@ def main(argv=None):
         elif args.command == 'host':
             from .host_cli import dispatch_host
             result = dispatch_host(args)
+        elif args.command == 'mcp':
+            from .mcp_server import dispatch_mcp
+            return dispatch_mcp(args)
         elif args.command == 'source':
             from .source_cli import dispatch_source
             result = dispatch_source(args)

@@ -244,6 +244,20 @@ def _new_staging(source: Path, output: Path, input_hash: str) -> Path:
     return path
 
 
+def register_staging_bytes(source: Path, output: Path, input_hash: str, data: bytes) -> Path:
+    """Create an owned staging file, write bytes, and fsync it for atomic publication."""
+    staging = _new_staging(source, output, input_hash)
+    try:
+        with staging.open("wb") as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        return staging
+    except BaseException:
+        cleanup_staging({"staging_path": str(staging)})
+        raise
+
+
 def prepare_deduplication(
     input_path: Path, output_path: Path, key_columns: list[str], *,
     sheet: str | None = None, keep: str = "first", encoding: str = "utf-8-sig",
@@ -373,14 +387,20 @@ def publish_output(prepared: dict[str, Any], plan: Any = None) -> None:
         if binding is not None:
             binding.publish(staging)
             return
-        os.link(staging, output, follow_symlinks=False)
+        if os.name == "nt":
+            if os.path.lexists(output):
+                raise FileExistsError(str(output))
+            os.link(staging, output)
+        else:
+            os.link(staging, output, follow_symlinks=False)
     except FileExistsError as error:
         raise ValueError("output already exists; overwriting is forbidden") from error
-    descriptor = os.open(output.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
-    try:
-        os.fsync(descriptor)
-    finally:
-        os.close(descriptor)
+    if os.name != "nt":
+        descriptor = os.open(output.parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        try:
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
 
 
 def cleanup_staging(prepared: dict[str, Any]) -> None:

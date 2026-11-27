@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v1.19.0` · `Linux / macOS / Windows` · `Python 3.10+ & Node.js 20+` · `零常驻服务` · `SQLite + 1 个依赖` · `MIT 许可证`
+`v2.0.0` · `Linux / macOS / Windows` · `零依赖 Stdio MCP` · `可插拔合约 SDK` · `SQLite + 1 个依赖` · `MIT 许可证`
 
 <p><a href="README.md"><strong>English</strong></a> | <strong>简体中文</strong></p>
 
@@ -50,16 +50,17 @@ flowchart LR
     ORACLE -->|验真通过| PUB["独占原子发布 + SQLite 审计回执"]
 ```
 
-### 核心能力矩阵（`v1.19.0`）
+### 核心能力矩阵（`v2.0.0`）
 
 | 模块 | 代码入口 | 核心保证 |
 | :--- | :--- | :--- |
+| **零依赖 Stdio MCP 服务** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) | `rpe-harness mcp` 纯标准库 JSON-RPC 2.0 接入 **Claude Code、Codex CLI、Cursor 与 Hermes**；仅暴露模型安全工具（`rpe_capabilities / rpe_start_task / rpe_show_task / rpe_reconcile_task`），将 `confirm/execute/cancel/handoff` 锁死在宿主侧并拦截身份伪造。 |
+| **声明式合约插件 SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) | 提供 `ContractPlugin` 标准接口与 Python `entry_points`（`rpe_harness.contracts`）自动发现；开箱内置 **5 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`xlsx.inspect`），统一走独占原子无覆盖发布。 |
 | **C2 · 窄授权来源补取** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | 仅在显式授权的 `source_refs` 内最多做 2 次有界读取；**~1 ms、0 token** 确定性拦截 `needs_user / conflict / stale / forbidden`，彻底隔离来源里的无关隐私字段。 |
 | **C4 · 宿主无关任务门面** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 个标准方法（`start / show / confirm / execute / cancel / reconcile / handoff`）+ 薄 JSON CLI（`rpe host ...`）；不导入任何 Agent 循环，复用同一 SQLite 账本。 |
 | **C4 · 原子取消 vs 发布竞态** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | 幂等 CLI（`runs cancel`）与回环 HTTP（`POST /runs/<id>/cancel`）；立即围栏发布，已进入发布则如实返回 `too_late`；内置 `fcntl`（POSIX）+ `msvcrt`（Windows）跨平台文件锁。 |
-| **通用宿主薄适配层** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | 零依赖 Node.js ESM 与 Python 薄桥接（通过 `execFile` 对接 `rpe host`），可快速适配 **Claude Code、Codex CLI、Hermes 或任意自定义宿主**；宿主身份不可由模型伪造，`confirm/execute/cancel/handoff` 严格留在宿主侧，跨宿主交接强制废止原确认。 |
-| **签名能力资产与回滚** | [`assets/`](src/rpe_harness/assets/) · [`evolution/`](src/rpe_harness/evolution/) | 吸收原 Progenitor 协议的 SHA-256 内容寻址与 RSA-SHA256 双签名来源校验，彻底去除 P2P/IPFS 守护进程；导入候选默认 `unverified`，须经独立验收才可 CAS 激活或一键回滚。 |
-| **OS 级进程沙箱后端** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | 支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`（bubblewrap）及内存/超时监控；不支持平台严格 fail-closed 返回 `unavailable`，绝不伪造隔离。 |
+| **通用宿主薄适配层** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | 零依赖 Node.js ESM 与 Python 薄桥接（通过 `execFile` 对接 `rpe host`），可快速适配 **Claude Code、Codex CLI、Hermes 或任意自定义宿主**；跨宿主交接强制废止原确认。 |
+| **签名能力资产与沙箱** | [`assets/`](src/rpe_harness/assets/) · [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | SHA-256 内容寻址与 RSA-SHA256 双签名来源校验（零 P2P/IPFS 守护进程）；支持 macOS `sandbox-exec` 与 Linux `bwrap`，不支持平台严格 fail-closed。 |
 
 ---
 
@@ -104,7 +105,42 @@ pip install -e ".[dev]"
 rpe-harness host capabilities
 ```
 
-### 2. 从 Python 接入（`HostAPI`）
+### 2. 5 行 `mcp.json` 挂载到 Claude Code / Codex CLI / Cursor
+
+```json
+{
+  "mcpServers": {
+    "rpe-harness": {
+      "command": "rpe-harness",
+      "args": ["mcp", "--owner", "alice", "--session-id", "dev-1", "--workspace", "/path/to/workspace"]
+    }
+  }
+}
+```
+
+> MCP 侧**仅暴露**只读与起草工具（`rpe_capabilities`、`rpe_start_task`、`rpe_show_task`、`rpe_reconcile_task`），确认与执行严格留在宿主侧（`rpe-harness host confirm` / `execute`）。
+
+### 3. 注册你自己的可验证业务合约（`ContractPlugin` SDK）
+
+```python
+from rpe_harness.contract_sdk import ContractPlugin, DEFAULT_REGISTRY
+
+DEFAULT_REGISTRY.register(ContractPlugin(
+    capability="acme.redact",
+    executor_id="plugin/acme-redact",
+    input_formats=("txt",),
+    validate_options=lambda opts, raw: {},
+    execute=lambda plan, raw: (raw.replace(b"SECRET", b"[REDACTED]"), {}),
+    verify=lambda plan, raw, staged: {
+        "passed": b"SECRET" not in staged,
+        "checks": {"secret_removed": b"SECRET" not in staged},
+    },
+))
+```
+
+也可通过 `pyproject.toml` 的 `[project.entry-points."rpe_harness.contracts"]` 自动发现第三方合约包。
+
+### 4. 从 Python（`HostAPI`）或 Node.js 接入
 
 ```python
 from rpe_harness.host_api import HostAPI, TrustedHostAction
@@ -157,9 +193,9 @@ const res = await trustedActions.executeTask({
 
 我们把边界和基准数据写得一样透明：
 
-1. **内置业务契约面较窄**：当前内置 **3 个带独立 Oracle 的核心契约**（CSV/XLSX 去重、`json.normalize/v1`、受控 XLSX 读取），定位为高可信执行内核参考实现与协议底座，而非百宝箱式通用助手。
-2. **OS 级强沙箱范围**：外部候选代码的文件系统/网络强隔离支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`；在 Windows 或未装 `bwrap` 的主机上，`sandbox_backend()` 会如实返回 `unavailable` 并严格 fail-closed。
-3. **长时无人值守验证**：多小时无人值守长跑与完整 GUI 宿主打包仍在持续演进中，当前证据覆盖单测/集成不变量、三平台 CI 与四大家族受控多模型对照。
+1. **内置合约与插件扩展**：当前开箱内置 **5 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`xlsx.inspect`），并通过 **`rpe.contract/v1` 插件 SDK** 支持第三方按需扩展自己的确定性执行器与独立验真器。
+2. **OS 级强沙箱范围**：外部候选代码的文件系统/网络强隔离支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`；在 Windows 或未装 `bwrap` 的主机上，`sandbox_backend()` 当前如实返回 `unavailable` 并严格 fail-closed（Windows Job Object 隔离与 Linux `bwrap` 实测 CI 将在下一步 `v2.1.0` 落地）。
+3. **长时无人值守验证**：多小时无人值守长跑仍在演进中（下一步 `v2.1.0` 将落地 100 轮故障注入压力测试），当前证据覆盖单测/集成不变量、三平台 CI 与五大家族受控多模型对照。
 
 ---
 

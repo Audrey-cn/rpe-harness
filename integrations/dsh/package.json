@@ -1,9 +1,9 @@
 {
   "name": "rpe-harness-dsh-adapter",
-  "version": "1.19.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Zero-dependency thin DSH / Cordis second-host adapter for RPE-Harness C4 HostAPI",
+  "description": "Zero-dependency universal Node.js host adapter for RPE-Harness C4 HostAPI",
   "scripts": {
     "test": "node --test test.mjs"
   },

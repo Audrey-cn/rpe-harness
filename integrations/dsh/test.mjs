@@ -30,9 +30,13 @@ test('DSH adapter enforces host identity, digest confirmation, cancellation, and
     assert.equal('cancelTask' in plugin.modelTools, false);
     assert.equal('handoffTask' in plugin.modelTools, false);
 
+    const pkg = JSON.parse(await readFile(path.join(__dirname, 'package.json'), 'utf8'));
     const caps = await plugin.modelTools.rpe_capabilities();
     assert.equal(caps.schema_version, 'rpe.host/v1');
-    assert.equal(caps.version, '1.19.0');
+    assert.equal(caps.version, pkg.version);
+    assert.equal(caps.mcp_stdio, true);
+    assert.ok(caps.contracts.includes('tabular.filter'));
+    assert.ok(caps.contracts.includes('json.patch'));
     assert.ok(caps.methods.includes('handoff'));
     assert.ok(caps.methods.includes('execute'));
 

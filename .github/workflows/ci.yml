@@ -53,6 +53,8 @@ jobs:
           tests/test_assets.py
           tests/test_asset_cli.py
           tests/test_causal_graph.py
+          tests/test_mcp_server.py
+          tests/test_contract_sdk.py
       - name: Run DSH second-host Node.js full-loop E2E tests
         env:
           RPE_TEST_PYTHON: python
@@ -85,6 +87,8 @@ jobs:
           tests/test_cancel_handler.py
           tests/test_cancel_worker_protocol.py
           tests/test_proposal_confirmation_boundaries.py
+          tests/test_mcp_server.py
+          tests/test_contract_sdk.py
       - name: Run DSH second-host Node.js full-loop E2E tests on macOS
         env:
           RPE_TEST_PYTHON: python
@@ -115,6 +119,8 @@ jobs:
           tests/test_source_resolver.py
           tests/test_cross_host_handoff.py
           tests/test_cancel_interfaces.py
+          tests/test_mcp_server.py
+          tests/test_contract_sdk.py
       - name: Verify host CLI capabilities on Windows
         env:
           PYTHONPATH: src
