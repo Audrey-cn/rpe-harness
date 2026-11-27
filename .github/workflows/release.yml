@@ -34,8 +34,13 @@ jobs:
             --title "RPE-Harness $TAG" \
             --generate-notes
       - name: Publish to PyPI (when PYPI_API_TOKEN is configured)
-        if: startsWith(github.ref, 'refs/tags/v') && secrets.PYPI_API_TOKEN != ''
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: twine upload --skip-existing dist/*
+        run: |
+          if [ -n "$TWINE_PASSWORD" ]; then
+            twine upload --skip-existing dist/*
+          else
+            echo "PYPI_API_TOKEN not configured; skipping PyPI upload (GitHub Release artifacts published)."
+          fi
