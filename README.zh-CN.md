@@ -14,7 +14,7 @@
   <a href="#-为什么做-rpe-harness">为什么做 RPE</a> ·
   <a href="#-核心架构">核心架构</a> ·
   <a href="#-竞品对比">竞品对比</a> ·
-  <a href="#-四大家族真实对照实测">四大家族实测</a> ·
+  <a href="#-五大家族真实对照实测">五大家族实测</a> ·
   <a href="#-30-秒快速上手">快速上手</a> ·
   <a href="#-诚实的当前边界">当前边界</a>
 </p>
@@ -76,14 +76,15 @@ flowchart LR
 
 ---
 
-## 📊 四大家族真实对照实测
+## 📊 五大家族真实对照实测
 
-2026-11-27 在 **4 个模型家族**上运行完全相同的 4 项受控任务（2 项正向确定性执行 + 2 项负例边界探针），原始回执见 [`reports/v1.18.0/c3-multimodel-comparison/`](reports/v1.18.0/c3-multimodel-comparison/README.md)：
+2026-11-27 在 **5 个模型家族（20/20 独立 Oracle 全绿）** 上运行完全相同的 4 项受控任务（2 项正向确定性执行 + 2 项负例边界探针），原始回执见 [`reports/v1.18.0/c3-multimodel-comparison/`](reports/v1.18.0/c3-multimodel-comparison/README.md)：
 
 | 模型 | 接入形态 | RPE 通过率 | 原生通过率 | RPE 总开销 | 原生总开销 | 降幅 |
 | :--- | :--- | :---: | :---: | ---: | ---: | ---: |
 | **`mimo-v2.6-pro`**（Xiaomi） | 原始 API | **4/4** | 4/4 | **309 tok** | 869 tok | **−64.4%** |
 | **`deepseek-chat`**（DeepSeek） | 原始 API | **4/4** | 4/4 | **219 tok** | 541 tok | **−59.5%** |
+| **`qwen4-max`**（Alibaba 千问） | 原始 API | **4/4** | 4/4 | **362 tok** | 885 tok | **−59.1%** |
 | **`gpt-6.1-sol`**（OpenAI） | `codex-cli` Agent 外壳 | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
 | **`Gemini`**（Google） | Antigravity 子代理 | **4/4** | 4/4 | **159 chars** *(仅 2 次调用)* | 203 chars *(4 次调用)* | **−21.7% 字符** *(底层 token 未暴露)* |
 

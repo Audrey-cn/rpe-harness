@@ -1,26 +1,28 @@
-# RPE-Harness v1.18.0 · C3 四大家族多模型真实对照实证报告
+# RPE-Harness v1.18.0–v1.19.0 · C3 五大家族多模型真实对照实证报告
 
 - **日期**：2026-11-27
-- **对照模型（4 个模型家族 / 两种运行形态）**：
+- **对照模型（5 个模型家族 / 两种运行形态）**：
   1. **`mimo-v2.6-pro`**（Xiaomi MiMo · 原始 Chat Completions API）
   2. **`deepseek-chat`**（DeepSeek · 原始 Chat Completions API）
-  3. **`gpt-6.1-sol`**（OpenAI · 本机 `codex-cli` Agent CLI 外壳）
-  4. **`Gemini`**（Google · Antigravity 隔离 `research` 子代理）
+  3. **`qwen4-max`**（Alibaba Qwen · 原始 Chat Completions API）
+  4. **`gpt-6.1-sol`**（OpenAI · 本机 `codex-cli` Agent CLI 外壳）
+  5. **`Gemini`**（Google · Antigravity 隔离 `research` 子代理）
 - **原始数据**：[`results.json`](results.json)
-- **对照方法**：同一组 4 项受控任务（2 项正向确定性执行 + 2 项负例边界探针），比较 **RPE `v1.18.0`**（C2 `SourceResolver` 窄授权补取 + C4 `HostAPI` digest 绑定确认 + `HarnessRuntime` 确定性执行与独立 Oracle 验收）与 **原生直出执行**。
+- **对照方法**：同一组 4 项受控任务（2 项正向确定性执行 + 2 项负例边界探针），比较 **RPE**（C2 `SourceResolver` 窄授权补取 + C4 `HostAPI` digest 绑定确认 + `HarnessRuntime` 确定性执行与独立 Oracle 验收）与 **原生直出执行**。
 
-## 四大家族汇总结果
+## 五大家族汇总结果
 
 | 模型 | 接入形态 | RPE 通过率 | 原生通过率 | RPE 总开销 | 原生总开销 | 降幅 |
 | :--- | :--- | :---: | :---: | ---: | ---: | ---: |
 | **`mimo-v2.6-pro`** | 原始 API | **4/4** | 4/4 | **309 tok** | 869 tok | **−64.4%** |
 | **`deepseek-chat`** | 原始 API | **4/4** | 4/4 | **219 tok** | 541 tok | **−59.5%** |
+| **`qwen4-max`** | 原始 API | **4/4** | 4/4 | **362 tok** | 885 tok | **−59.1%** |
 | **`gpt-6.1-sol`** | `codex-cli` Agent 外壳 | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
 | **`Gemini`** | Antigravity 子代理 | **4/4** | 4/4 | **159 chars** *(仅 2 次调用)* | 203 chars *(4 次调用)* | **−21.7% 输出字符** *(未暴露底层 token)* |
 
 ## 关键发现
 
-1. **跨四大家族 100% 行为一致性（16/16 全绿）**：无论底层模型是 MiMo、DeepSeek、GPT 还是 Gemini，只要接上 RPE `v1.18.0` 的窄起草契约 + 确定性执行器 + 独立 Oracle，4 项任务全部通过独立验收。
+1. **跨五大家族 100% 行为一致性（20/20 全绿）**：无论底层模型是 MiMo、DeepSeek、Qwen4-Max、GPT 还是 Gemini，只要接上 RPE 的窄起草契约 + 确定性执行器 + 独立 Oracle，4 项任务全部通过独立验收。
 2. **越重的 Agent 外壳，RPE C2 前置拦截的收益越大**：
    - 在轻量原始 API（MiMo / DeepSeek）上，RPE 减少 **59.5%–64.4%** token；
    - 在真实重型 Agent CLI 外壳（`codex-cli`）上，因为每次启动都自带系统/工具提示词开销（约 `11.7k–25.5k tok/次`），C2 `SourceResolver` 在 `1–2 ms` 内零 token 拦截掉 `pending-account-key` 与 `conflicting-sources` 两项负例，直接省去 **~3.7 万 tokens 与 81 秒墙钟等待**，整轮降幅达到 **−68.0%**。

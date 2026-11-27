@@ -14,7 +14,7 @@
   <a href="#-why-rpe-harness">Why RPE</a> ·
   <a href="#-architecture">Architecture</a> ·
   <a href="#-how-rpe-compares">vs Alternatives</a> ·
-  <a href="#-4-family-live-benchmarks">4-Family Benchmarks</a> ·
+  <a href="#-5-family-live-benchmarks">5-Family Benchmarks</a> ·
   <a href="#-30-second-quickstart">Quickstart</a> ·
   <a href="#-honest-scope--current-limits">Honest Limits</a>
 </p>
@@ -76,14 +76,15 @@ flowchart LR
 
 ---
 
-## 📊 4-Family Live Benchmarks
+## 📊 5-Family Live Benchmarks
 
-Measured on **2026-11-27** across **4 model families** on identical controlled tasks (2 positive deterministic execution tasks + 2 negative boundary probes — full receipts in [`reports/v1.18.0/c3-multimodel-comparison/`](reports/v1.18.0/c3-multimodel-comparison/README.md)):
+Measured on **2026-11-27** across **5 model families (20/20 Oracle pass)** on identical controlled tasks (2 positive deterministic execution tasks + 2 negative boundary probes — full receipts in [`reports/v1.18.0/c3-multimodel-comparison/`](reports/v1.18.0/c3-multimodel-comparison/README.md)):
 
-| Model | Harness Mode | RPE `v1.18` Pass | Native Pass | RPE Total Cost | Native Total Cost | Reduction |
+| Model | Harness Mode | RPE Pass | Native Pass | RPE Total Cost | Native Total Cost | Reduction |
 | :--- | :--- | :---: | :---: | ---: | ---: | ---: |
 | **`mimo-v2.6-pro`** (Xiaomi) | Raw Chat API | **4/4** | 4/4 | **309 tok** | 869 tok | **−64.4%** |
 | **`deepseek-chat`** (DeepSeek) | Raw Chat API | **4/4** | 4/4 | **219 tok** | 541 tok | **−59.5%** |
+| **`qwen4-max`** (Alibaba Qwen) | Raw Chat API | **4/4** | 4/4 | **362 tok** | 885 tok | **−59.1%** |
 | **`gpt-6.1-sol`** (OpenAI) | `codex-cli` Agent CLI | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
 | **`Gemini`** (Google) | Antigravity Subagent | **4/4** | 4/4 | **159 chars** *(2 calls)* | 203 chars *(4 calls)* | **−21.7% chars** *(tokens unexposed)* |
 

@@ -149,6 +149,76 @@
       }
     },
     {
+      "model": "qwen4-max",
+      "provider": "alibaba-bailian",
+      "cases": [
+        {
+          "case_id": "dispatch-tabs",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 183,
+            "elapsed_ms": 2244
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 369,
+            "elapsed_ms": 2234
+          }
+        },
+        {
+          "case_id": "json-lexical-minify",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 179,
+            "elapsed_ms": 3080
+          },
+          "native": {
+            "passed": true,
+            "actual": "{\"version\":1.0,\"zero\":-0,\"sci\":1e0,\"z_first\":\"line\\nbreak\",\"a_second\":[1.00,2.50,-0.0]}",
+            "total_tokens": 206,
+            "elapsed_ms": 1526
+          }
+        },
+        {
+          "case_id": "pending-account-key",
+          "rpe": {
+            "passed": true,
+            "status": "needs_user",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 184,
+            "elapsed_ms": 1269
+          }
+        },
+        {
+          "case_id": "conflicting-sources",
+          "rpe": {
+            "passed": true,
+            "status": "conflict",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 126,
+            "elapsed_ms": 1746
+          }
+        }
+      ],
+      "totals": {
+        "rpe_passed": "4/4",
+        "native_passed": "4/4",
+        "rpe_total_tokens": 362,
+        "native_total_tokens": 885,
+        "token_reduction_pct": 59.1
+      }
+    },
+    {
       "model": "gpt-6.1-sol (via codex-cli)",
       "provider": "openai-codex-cli",
       "harness_note": "Token counts include Codex CLI system/tool prompt overhead.",
