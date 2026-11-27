@@ -12,6 +12,7 @@ try:
 except ImportError:  # Windows
     resource = None
 import signal
+import stat
 import subprocess
 import sys
 import tempfile
@@ -273,10 +274,17 @@ def sandbox_capabilities() -> dict[str, object]:
             'process_tree': ('pid_namespace_die_with_parent_and_killpg' if pid_namespace
                              else 'killpg_only_no_pid_namespace'),
             'pid_namespace': pid_namespace,
+            'pid_namespace_mode': ('unshare_pid' if pid_namespace
+                                   else 'fallback_no_pid_namespace'),
+            'candidate_execution_available': pid_namespace,
+            'candidate_execution_unavailable_reason': (None if pid_namespace else
+                'Linux candidate execution requires bwrap --unshare-pid; '
+                'process-group cleanup alone cannot contain descendants that call setsid'),
             'process_tree_limitation': (
                 'PID namespace teardown contains descendants' if pid_namespace else
                 'Host kernel/AppArmor or bwrap lacks PID namespaces; descendants that change '
-                'process groups can escape killpg cleanup; bwrap filesystem/network limits remain'
+                'process groups can escape killpg cleanup; candidate execution is refused '
+                'while diagnostic fallback commands retain filesystem/network limits'
             ),
             'filesystem': 'ro_bind_namespace',
             'network': 'unshare_net_denied',
@@ -300,7 +308,8 @@ def sandbox_capabilities() -> dict[str, object]:
     }
 
 
-def _bwrap_command(job: Path, driver: Path, code: Path) -> list[str]:
+def _bwrap_command(job: Path, driver: Path, code: Path,
+                   input_copy: Path | None = None) -> list[str]:
     import shutil
     bwrap = shutil.which('bwrap')
     if not bwrap:
@@ -312,8 +321,12 @@ def _bwrap_command(job: Path, driver: Path, code: Path) -> list[str]:
         p = Path(ro)
         if p.exists():
             cmd.extend(['--ro-bind', str(p), str(p)])
-    cmd.extend(['--bind', str(job), str(job), '--chdir', str(job),
-                sys.executable, '-I', '-B', str(driver), str(code)])
+    cmd.extend(['--bind', str(job), str(job)])
+    if input_copy is not None:
+        # Overlay the writable job-directory bind with a read-only file mount.
+        # chmod alone cannot freeze a file owned by the untrusted child user.
+        cmd.extend(['--ro-bind', str(input_copy), str(input_copy)])
+    cmd.extend(['--chdir', str(job), sys.executable, '-I', '-B', str(driver), str(code)])
     return cmd
 
 
@@ -363,6 +376,11 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
     backend = sandbox_backend()
     if backend == 'unavailable':
         raise RuntimeError('candidate filesystem/network sandbox is unavailable')
+    if backend == 'linux-bwrap':
+        capabilities = sandbox_capabilities()
+        if not capabilities['candidate_execution_available']:
+            raise CandidateExecutionError('candidate PID namespace unavailable: '
+                + capabilities['candidate_execution_unavailable_reason'])
     if type(timeout) not in (float, int) or not 0 < timeout <= 30:
         raise ValueError('candidate timeout must be in (0,30] seconds')
     if type(memory_limit_bytes) is not int or not 0 < memory_limit_bytes <= MAX_RESIDENT_BYTES:
@@ -370,7 +388,7 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
     if len(content) > MAX_CODE_BYTES:
         raise ValueError('candidate code exceeds the bounded size')
     source = Path(plan['input_path'])
-    from ..path_binding import read_source
+    from ..path_binding import read_regular_file, read_source
     capability = plan.get('capability')
     limits = resource_limits(capability)
     is_json = capability == 'json.normalize'
@@ -462,7 +480,7 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                 child_argv = ['/usr/bin/sandbox-exec', '-p', profile,
                               str(Path(sys.executable).resolve()), '-I', '-B', str(driver), str(code)]
             else:
-                child_argv = _bwrap_command(job, driver, code)
+                child_argv = _bwrap_command(job, driver, code, input_copy)
             with packet.open('rb') as incoming, log.open('wb') as outgoing:
                 proc = subprocess.Popen(child_argv,
                                         stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
@@ -491,13 +509,24 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                     except ProcessLookupError:
                         pass
                     proc.wait()
-        if input_copy.read_bytes() != data:
-            raise CandidateExecutionError('candidate altered the frozen source')
+        try:
+            copied = input_copy.lstat()
+            if not stat.S_ISREG(copied.st_mode) or copied.st_nlink != 1:
+                raise ValueError('frozen source must remain an owned regular file')
+            frozen_data = read_regular_file(input_copy, max_bytes=limits['input_bytes'])
+            if frozen_data != data:
+                raise ValueError('frozen source contents changed')
+        except (OSError, ValueError) as error:
+            raise CandidateExecutionError('candidate altered the frozen source') from error
         if proc.returncode != 0:
-            # Bounded log inspection never reads an arbitrarily large diagnostic.
-            with log.open('rb') as handle:
-                handle.seek(max(0, os.fstat(handle.fileno()).st_size - 4096))
-                detail = handle.read(4096).decode('utf-8', errors='replace')
+            # Diagnostic paths are just as untrusted as staging paths: opening
+            # a replaced FIFO before seeking could otherwise block the parent.
+            try:
+                diagnostic = read_regular_file(log, max_bytes=MAX_OUTPUT_BYTES)
+            except (OSError, ValueError) as error:
+                raise CandidateExecutionError(
+                    'candidate failure diagnostic must be a bounded regular file') from error
+            detail = diagnostic[-4096:].decode('utf-8', errors='replace')
             lines = detail.splitlines()
             marker = 'RPE_CANDIDATE_REJECTED:'
             if (proc.returncode == 65 and lines and lines[-1].startswith(marker)
@@ -513,8 +542,15 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                         and type(receipt['message']) is str):
                     raise CandidateRejected(f'candidate rejected input in {job}: {receipt["type"]}: {receipt["message"]}')
             raise CandidateExecutionError(f'candidate exited {proc.returncode}: {detail[:1000]}')
-        if staging.is_symlink() or not staging.is_file() or staging.stat().st_nlink != 1:
-            raise CandidateExecutionError('candidate did not create an owned regular staging file')
-        if staging.stat().st_size > MAX_OUTPUT_BYTES:
-            raise CandidateExecutionError('candidate output exceeds the bounded size')
-        return staging.read_bytes()
+        try:
+            staged = staging.lstat()
+            if not stat.S_ISREG(staged.st_mode) or staged.st_nlink != 1:
+                raise ValueError('staging must be an owned regular file')
+            if staged.st_size > MAX_OUTPUT_BYTES:
+                raise CandidateExecutionError('candidate output exceeds the bounded size')
+            # The nofollow, nonblocking descriptor check also closes replacements
+            # between the lstat above and the read, including FIFOs and devices.
+            return read_regular_file(staging, max_bytes=MAX_OUTPUT_BYTES)
+        except (OSError, ValueError) as error:
+            raise CandidateExecutionError(
+                'candidate did not create a bounded owned regular staging file') from error

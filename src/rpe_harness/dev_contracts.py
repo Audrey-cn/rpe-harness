@@ -12,6 +12,7 @@ import io
 import re
 import sqlite3
 import tempfile
+import time
 from pathlib import Path
 from typing import Any
 
@@ -35,9 +36,12 @@ def _format_env_value(value: str) -> str:
 
 
 def _split_env_comment(value: str) -> tuple[str, str]:
-    quote: str | None = None
+    # Quotes embedded in an unquoted value (for example don't) are literal.
+    # Only a leading quote protects whitespace-delimited '#' characters.
+    quote: str | None = value[0] if value.startswith(('"', "'")) else None
     escaped = False
-    for idx, char in enumerate(value):
+    for idx in range(1 if quote is not None else 0, len(value)):
+        char = value[idx]
         if escaped:
             escaped = False
             continue
@@ -47,8 +51,6 @@ def _split_env_comment(value: str) -> tuple[str, str]:
         if quote is not None:
             if char == quote:
                 quote = None
-        elif char in {'"', "'"}:
-            quote = char
         elif char == '#' and (idx == 0 or value[idx - 1] in ' \t'):
             start = idx
             while start and value[start - 1] in ' \t':
@@ -111,7 +113,7 @@ def _apply_env_ops(entries: list[dict[str, Any]], operations: list[dict[str, Any
             items.pop(existing_idx)
         else:
             raise ValueError(f'unsupported env.patch op: {op["op"]}')
-    return '\n'.join(e['line'] for e in items) + '\n'
+    return '\n'.join(e['line'] for e in items) + ('\n' if items else '')
 
 
 def _env_validate(options: dict[str, Any], raw: bytes) -> dict[str, Any]:
@@ -174,7 +176,7 @@ def _env_verify(plan: PluginExecutionPlan, raw_input: bytes, staged_bytes: bytes
                                  _format_env_value(op['value']), comment))
     expected_lines = [expected[value]['line'] if kind == 'kv' else value
                       for kind, value in layout]
-    expected_bytes = ('\n'.join(expected_lines) + '\n').encode('utf-8')
+    expected_bytes = ('\n'.join(expected_lines) + ('\n' if expected_lines else '')).encode('utf-8')
     src_comments = [e['line'] for e in src_entries if e['kind'] == 'raw']
     out_comments = [e['line'] for e in out_entries if e['kind'] == 'raw']
     out_inline = {e['key']: e['comment'] for e in out_entries if e['kind'] == 'kv'}
@@ -199,6 +201,7 @@ ENV_PATCH_PLUGIN = ContractPlugin(
     execute=_env_execute,
     verify=_env_verify,
     description='Deterministic .env key set/delete preserving comments, blank lines, and ordering',
+    option_keys=('operations',),
 )
 
 
@@ -210,6 +213,9 @@ _FORBIDDEN_SQL_RE = re.compile(
     r'\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|ATTACH|DETACH|PRAGMA|VACUUM|REINDEX|BEGIN|COMMIT|ROLLBACK)\b',
     re.IGNORECASE,
 )
+_SQLITE_QUERY_TIMEOUT_SECONDS = 5.0
+_SQLITE_PROGRESS_INTERVAL = 1000
+_SQLITE_MAX_VM_STEPS = 50_000_000
 
 
 def _sql_code_only(query: str) -> str:
@@ -228,12 +234,13 @@ def _sql_code_only(query: str) -> str:
             code.append(' ')
             # SQLite allows a block comment to extend through the end of input.
             idx = len(query) if end < 0 else end + 2
-        elif query[idx] in {"'", '"'}:
-            quote = query[idx]
+        elif query[idx] in {"'", '"', '`', '['}:
+            opening = query[idx]
+            quote = ']' if opening == '[' else opening
             idx += 1
             while idx < len(query):
                 if query[idx] == quote:
-                    if idx + 1 < len(query) and query[idx + 1] == quote:
+                    if opening != '[' and idx + 1 < len(query) and query[idx + 1] == quote:
                         idx += 2
                         continue
                     idx += 1
@@ -276,6 +283,20 @@ def _run_readonly_query(raw: bytes, query: str, max_rows: int) -> tuple[list[str
         uri = f'{db_path.as_uri()}?mode=ro'
         conn = sqlite3.connect(uri, uri=True, timeout=5)
         try:
+            # SQLite's connection timeout only bounds lock waits. An aggregate
+            # can execute unbounded VM work before producing its first row.
+            deadline = time.monotonic() + _SQLITE_QUERY_TIMEOUT_SECONDS
+            steps = 0
+            limit_reached = False
+
+            def check_execution_budget() -> int:
+                nonlocal steps, limit_reached
+                steps += _SQLITE_PROGRESS_INTERVAL
+                limit_reached = (steps >= _SQLITE_MAX_VM_STEPS
+                                 or time.monotonic() >= deadline)
+                return int(limit_reached)
+
+            conn.set_progress_handler(check_execution_budget, _SQLITE_PROGRESS_INTERVAL)
             conn.execute('PRAGMA query_only = ON')
             cur = conn.execute(query)
             if not cur.description:
@@ -286,6 +307,10 @@ def _run_readonly_query(raw: bytes, query: str, max_rows: int) -> tuple[list[str
                 raise ValueError(f'query result exceeds max_rows limit ({max_rows})')
             rows = [['' if cell is None else str(cell) for cell in row] for row in rows_raw]
             return header, rows
+        except sqlite3.OperationalError as exc:
+            if limit_reached:
+                raise ValueError('SQLite query exceeded execution budget') from exc
+            raise
         finally:
             conn.close()
 
@@ -344,4 +369,5 @@ SQLITE_EXPORT_PLUGIN = ContractPlugin(
     execute=_sqlite_execute,
     verify=_sqlite_verify,
     description='Strictly read-only SQLite SELECT export to CSV with independent oracle re-query',
+    option_keys=('query', 'max_rows', 'delimiter'),
 )

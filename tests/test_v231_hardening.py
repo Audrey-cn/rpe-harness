@@ -131,6 +131,12 @@ def test_v231_mcp_trusted_catalog_activates_xlsx_inspect(tmp_path):
     shutil.copytree(
         _V231_ROOT / "tests/fixtures/skills/productivity/xlsx", source / "productivity/xlsx"
     )
+    # Git may check these text fixtures out as CRLF on Windows. The trusted
+    # adapter digest is over canonical LF bytes, independent of the host OS.
+    for skill_file in source.rglob("*"):
+        if skill_file.is_file():
+            skill_file.write_text(skill_file.read_text(encoding="utf-8"),
+                                  encoding="utf-8", newline="\n")
     db = tmp_path / "runs.sqlite"
     catalog_root = tmp_path / "catalog"
     skills = SkillCatalog(db, catalog_root)
@@ -308,7 +314,7 @@ def test_v231_retry_rejected_before_plan_step_remains_visible(
 def test_v231_versions_and_release_gates():
     import tomllib
 
-    assert __version__ == "2.3.1"
+    assert __version__ == "2.3.2"
     project = tomllib.loads((_V231_ROOT / "pyproject.toml").read_text())
     assert project["project"]["version"] == __version__
     assert (
@@ -325,7 +331,7 @@ def test_v231_versions_and_release_gates():
     import textwrap
 
     guard = textwrap.dedent(guard).strip()
-    for tag, succeeds in [("v2.3.1", True), ("v2.3.0", False), ("main", False)]:
+    for tag, succeeds in [("v2.3.2", True), ("v2.3.1", False), ("main", False)]:
         result = subprocess.run(
             [sys.executable, "-c", guard],
             cwd=_V231_ROOT,

@@ -51,6 +51,13 @@ class HarnessHTTPServer(ThreadingHTTPServer):
 
 
 class HarnessHandler(BaseHTTPRequestHandler):
+    def end_headers(self):
+        # Include browser isolation headers on handler and parser error responses.
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('X-Frame-Options', 'DENY')
+        self.send_header('Content-Security-Policy', "frame-ancestors 'none'")
+        super().end_headers()
+
     def setup(self):
         super().setup()
         self.connection.settimeout(self.server.request_timeout)
@@ -82,6 +89,7 @@ class HarnessHandler(BaseHTTPRequestHandler):
 
     def _dispatch(self, post):
         try:
+            self._validate_request_origin(post=post)
             if not post:
                 self.deadline.cancel()
             body = self._read_body() if post else None
@@ -97,6 +105,38 @@ class HarnessHandler(BaseHTTPRequestHandler):
         except Exception:
             code, result = 500, {'error': 'internal error'}
         self._json(code, result)
+
+    def _validate_request_origin(self, *, post):
+        hosts = self.headers.get_all('Host', [])
+        try:
+            loopbacks = {'localhost', '127.0.0.1', '[::1]'}
+            authorities = {f'{name}:{self.server.server_port}' for name in loopbacks}
+            if self.server.server_port == 80:
+                authorities.update(loopbacks)
+            # Exact authorities also reject malformed bracketed IPv6 literals,
+            # userinfo, duplicate/comma-joined hosts, and ambiguous URL syntax.
+            if len(hosts) != 1 or hosts[0].lower() not in authorities:
+                raise ValueError('invalid Host')
+            host = urlsplit('//' + hosts[0])
+            if post:
+                fetch_sites = self.headers.get_all('Sec-Fetch-Site', [])
+                if (len(fetch_sites) > 1 or any(value.strip().lower() not in
+                        {'same-origin', 'none'} for value in fetch_sites)):
+                    raise ValueError('cross-site request')
+                origins = self.headers.get_all('Origin', [])
+                if origins:
+                    if len(origins) != 1 or any(char.isspace() for char in origins[0]):
+                        raise ValueError('invalid Origin')
+                    origin = urlsplit(origins[0])
+                    if (origin.scheme != 'http' or origin.hostname != host.hostname
+                            or origin.username is not None or origin.password is not None
+                            or origin.path or origin.query or origin.fragment
+                            or origin.netloc.lower() not in authorities
+                            or origins[0].lower() != f'http://{origin.netloc.lower()}'
+                            or (origin.port if origin.port is not None else 80) != self.server.server_port):
+                        raise ValueError('cross-origin request')
+        except ValueError:
+            raise APIError(403, 'untrusted Host or request origin')
 
     def _handle(self, body):
         url = urlsplit(self.path)
@@ -240,10 +280,6 @@ class HarnessHandler(BaseHTTPRequestHandler):
             raise APIError(400, 'negative Content-Length')
         if length > MAX_BODY:
             raise APIError(413, 'request exceeds 1 MiB')
-        origin = self.headers.get('Origin')
-        allowed = {f'http://{host}:{self.server.server_port}' for host in ['localhost', '127.0.0.1', '[::1]']}
-        if origin is not None and origin not in allowed:
-            raise APIError(403, 'cross-origin requests are unsupported')
         if length and self.headers.get('Content-Type', '').split(';')[0].strip().lower() != 'application/json':
             raise APIError(415, 'Content-Type must be application/json')
         raw = self.rfile.read(length)

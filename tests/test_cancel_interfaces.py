@@ -294,7 +294,8 @@ def test_http_cancel_reuses_length_and_size_guards(api, length, expected):
     path = '/runs/' + record['run_id'] + '/cancel'
     with socket.create_connection(address, timeout=3) as connection:
         connection.sendall(
-            f'POST {path} HTTP/1.0\r\nContent-Length: {length}\r\n\r\n'.encode())
+            (f'POST {path} HTTP/1.0\r\nHost: {address[0]}:{address[1]}\r\n'
+             f'Content-Length: {length}\r\n\r\n').encode())
         assert f' {expected} '.encode() in connection.recv(4096)
     assert runtime.store.get(record['run_id']) == record
 
@@ -305,8 +306,8 @@ def test_http_cancel_incomplete_body_times_out_without_mutation(api):
     path = '/runs/' + record['run_id'] + '/cancel'
     with socket.create_connection(address, timeout=3) as connection:
         connection.sendall(
-            f'POST {path} HTTP/1.0\r\nContent-Length: 100\r\n'
-            'Content-Type: application/json\r\n\r\n{'.encode())
+            (f'POST {path} HTTP/1.0\r\nHost: {address[0]}:{address[1]}\r\n'
+             'Content-Length: 100\r\nContent-Type: application/json\r\n\r\n{').encode())
         assert b' 408 ' in connection.recv(4096)
     assert runtime.store.get(record['run_id']) == record
 

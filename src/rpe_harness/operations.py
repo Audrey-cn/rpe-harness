@@ -385,13 +385,17 @@ class TaskOperations:
             from .recovery import _guards, _saved_plan, _stopped_owner
             try:
                 with _stopped_owner(self.runs, run):
-                    _guards(run, _saved_plan(run))
+                    plan = _saved_plan(run)
+                    _guards(run, plan)
                 with self._connect() as db:
                     exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
                                         "AND name='recovery_attempts'").fetchone()
-                    reserved = db.execute('SELECT 1 FROM recovery_attempts WHERE retry_of=?',
+                    reserved = db.execute('SELECT retry_run_id,plan_sha256 FROM recovery_attempts WHERE retry_of=?',
                         (run['run_id'],)).fetchone() if exists else None
-                if reserved is None:
+                # A durable reservation may precede run admission. Recovery
+                # resumes that same event/plan rather than allocating a retry.
+                if (reserved is None or (reserved['retry_run_id'] is None
+                                         and reserved['plan_sha256'] == plan.sha256)):
                     allowed = ['recover_run']
             except (ValueError, OSError, KeyError, TypeError):
                 pass

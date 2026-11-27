@@ -52,7 +52,8 @@ def test_unknown_and_invalid_topk_reject_wrong_skill(api):
 def test_partial_body_cannot_block_health_and_times_out(api):
     address, _ = api
     with socket.create_connection(address, timeout=2) as slow:
-        slow.sendall(b'POST /route HTTP/1.0\r\nContent-Length: 100\r\nContent-Type: application/json\r\n\r\n{')
+        slow.sendall((f'POST /route HTTP/1.0\r\nHost: {address[0]}:{address[1]}\r\n'
+                      'Content-Length: 100\r\nContent-Type: application/json\r\n\r\n{').encode())
         start = time.monotonic()
         assert call(address, '/health')[0] == 200
         assert time.monotonic() - start < 0.3
@@ -63,7 +64,8 @@ def test_bad_length_large_body_and_unknown_route_have_json_errors(api):
     address, _ = api
     for length, expected in [('nope', b'400'), ('-1', b'400'), ('99999999', b'413')]:
         with socket.create_connection(address, timeout=2) as sock:
-            sock.sendall(f'POST /route HTTP/1.0\r\nContent-Length: {length}\r\n\r\n'.encode())
+            sock.sendall((f'POST /route HTTP/1.0\r\nHost: {address[0]}:{address[1]}\r\n'
+                          f'Content-Length: {length}\r\n\r\n').encode())
             assert expected in sock.recv(4096)
     assert call(address, '/missing', {})[0] == 404
 
@@ -82,7 +84,8 @@ def test_usage_requires_real_skill_boolean_and_survives_reload(api):
 def test_trickled_body_has_absolute_deadline(api):
     address, _ = api
     with socket.create_connection(address, timeout=2) as slow:
-        slow.sendall(b'POST /route HTTP/1.0\r\nContent-Length: 100\r\nContent-Type: application/json\r\n\r\n{')
+        slow.sendall((f'POST /route HTTP/1.0\r\nHost: {address[0]}:{address[1]}\r\n'
+                      'Content-Length: 100\r\nContent-Type: application/json\r\n\r\n{').encode())
         started = time.monotonic()
         for _ in range(4):
             time.sleep(0.12)

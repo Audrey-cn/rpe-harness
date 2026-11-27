@@ -62,12 +62,19 @@ def list_pending(api: HostAPI, *, owner: str | None = None) -> list[dict[str, An
 def list_recent(api: HostAPI, *, owner: str | None = None) -> list[dict[str, Any]]:
     """Keep approved and terminal operations visible after they leave the pending list."""
     with api._connect() as db:
-        query = 'SELECT * FROM rpe_operations'
+        # Filter pending work before the bounded history window. Confirmation
+        # receipts also cover a crash before the operation linkage was repaired.
+        query = ("SELECT o.* FROM rpe_operations o JOIN rpe_proposals p "
+                 "ON p.proposal_id=o.proposal_id WHERE (o.cancelled=1 "
+                 "OR o.confirmation_id IS NOT NULL OR EXISTS "
+                 "(SELECT 1 FROM rpe_confirmations c WHERE c.proposal_id=o.proposal_id) "
+                 "OR json_extract(CAST(p.document AS TEXT), '$.status') "
+                 "<> 'awaiting_confirmation')")
         parameters = ()
         if owner is not None:
-            query += ' WHERE owner=?'
+            query += ' AND o.owner=?'
             parameters = (owner,)
-        rows = db.execute(query + ' ORDER BY rowid DESC LIMIT 50', parameters).fetchall()
+        rows = db.execute(query + ' ORDER BY o.rowid DESC LIMIT 50', parameters).fetchall()
     recent = []
     for row in rows:
         view = api._view(dict(row))

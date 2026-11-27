@@ -15,7 +15,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, TextIO
+from typing import Any, BinaryIO, TextIO
 
 from . import __version__
 from .host_api import HostAPI
@@ -235,26 +235,32 @@ class StdioMCPServer:
             'error': {'code': -32601, 'message': f'Method not found: {method}'},
         }
 
-    def serve(self, stdin: TextIO = sys.stdin, stdout: TextIO = sys.stdout) -> int:
+    def serve(self, stdin: TextIO | BinaryIO = sys.stdin, stdout: TextIO = sys.stdout) -> int:
+        # Decode each complete bounded record ourselves. A TextIOWrapper may
+        # otherwise decode ahead and raise outside the per-message error handler.
+        source = getattr(stdin, 'buffer', stdin)
         while True:
-            # TextIO limits characters, so also enforce the UTF-8 byte budget.
             # Drain an oversized record in bounded chunks before accepting the
             # next record; one hostile line must produce only one parse error.
-            raw_line = stdin.readline(MAX_STDIN_LINE_BYTES + 1)
+            raw_line = source.readline(MAX_STDIN_LINE_BYTES + 1)
             if not raw_line:
                 break
             try:
+                binary = isinstance(raw_line, bytes)
                 if (len(raw_line) > MAX_STDIN_LINE_BYTES or
-                        len(raw_line.encode('utf-8')) > MAX_STDIN_LINE_BYTES):
-                    while raw_line and not raw_line.endswith('\n'):
-                        raw_line = stdin.readline(MAX_STDIN_LINE_BYTES + 1)
+                        (not binary and len(raw_line.encode('utf-8')) > MAX_STDIN_LINE_BYTES)):
+                    newline = b'\n' if binary else '\n'
+                    while raw_line and not raw_line.endswith(newline):
+                        raw_line = source.readline(MAX_STDIN_LINE_BYTES + 1)
                     raise ValueError('stdin line exceeds 1 MiB')
+                if binary:
+                    raw_line = raw_line.decode('utf-8')
                 line = raw_line.strip()
                 if not line:
                     continue
                 message = json.loads(line)
                 response = self.handle_message(message)
-            except (json.JSONDecodeError, RecursionError, ValueError) as exc:
+            except (json.JSONDecodeError, UnicodeDecodeError, RecursionError, ValueError) as exc:
                 response: dict[str, Any] | None = {
                     'jsonrpc': '2.0',
                     'id': None,

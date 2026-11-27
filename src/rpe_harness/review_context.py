@@ -9,6 +9,7 @@ import time
 from .capability_catalog import CapabilityCatalog, _definitions
 from .context import (CapabilityContext, ContextStore, FactRequirement, SourceRef,
                       _json, _text, requirements_for)
+from .contract_sdk import DEFAULT_REGISTRY, _strict_equal
 from .review_quotes import source_quote_anchors
 
 _SCHEMA = 'rpe.review-context/v1'
@@ -21,6 +22,11 @@ def validate_sources(value):
     if type(value) is not list or len(value) > 8:
         raise ValueError('review context requires an array of at most eight sources')
     owned = json.loads(_json(value, 256 * 1024))
+    # Only trusted Python registrations can extend the import schema. Discover
+    # declarations at validation time so registration and removal take effect
+    # without a module reload; skill-catalog prose cannot grant fact names.
+    plugin_fields = {key for plugin in DEFAULT_REGISTRY.list_plugins()
+                     for key in plugin.option_keys}
     identities = set()
     for item in owned:
         if type(item) is not dict or set(item) != {'source', 'event_id', 'payload', 'facts'}:
@@ -36,11 +42,16 @@ def validate_sources(value):
                 or not payload['text'].strip()):
             raise ValueError('context source payload.text must be nonempty text')
         _json(payload, 64 * 1024)
-        if type(facts) is not dict or set(facts) - _FACT_FIELDS:
+        if type(facts) is not dict or set(facts) - (_FACT_FIELDS | plugin_fields):
             raise ValueError('context facts contain unknown or unauthorized fields')
         _json(facts, 16 * 1024)
         for name, fact in facts.items():
-            if name in {'key_columns', 'constraints'}:
+            if name in plugin_fields and name not in _FACT_FIELDS:
+                # Plugin options may be structured JSON, numbers, booleans or
+                # empty values. Their registered validator checks semantics at
+                # admission; recovery still requires exact explicit agreement.
+                continue
+            elif name in {'key_columns', 'constraints'}:
                 valid = (type(fact) is list and (bool(fact) or name == 'constraints')
                     and all(type(part) is str and part.strip() and '\x00' not in part for part in fact)
                     and len(set(fact)) == len(fact))
@@ -108,7 +119,8 @@ def validate_context(db_path, bundle, session_id):
         projected.append(_projection(value, content))
     legacy = [{key: value for key, value in row.items() if key not in {'quote_refs', 'quote_spans'}}
               for row in projected]
-    if projected != owned['model_sources'] and legacy != owned['model_sources']:
+    if (not _strict_equal(projected, owned['model_sources'])
+            and not _strict_equal(legacy, owned['model_sources'])):
         raise ValueError('review context model projection differs from verified sources')
     return owned
 
@@ -135,7 +147,7 @@ def recover_context(db_path, bundle, session_id, capability, execution, constrai
                     raise ValueError('source conflict: constraints')
             elif (field not in names and
                   (definition.get('plugin_options') or field in definition['execution_fields'])):
-                if field not in execution or execution[field] != content['facts'][field]:
+                if field not in execution or not _strict_equal(execution[field], content['facts'][field]):
                     raise ValueError('source conflict or missing explicit field: execution.' + field)
     return store.recover(requirement=requirement, session_id=session_id,
                          facts={name: value for name, value in execution.items() if name in names},

@@ -95,7 +95,11 @@ def _validate_plugin_paths(
 
 @dataclass(frozen=True)
 class ContractPlugin:
-    """Declarative specification of a verifiable deterministic contract."""
+    """Declarative specification of a verifiable deterministic contract.
+
+    ``option_keys`` declares option names permitted in explicit review-context
+    facts. The validator still owns their types and semantics at admission.
+    """
 
     capability: str
     executor_id: str
@@ -109,6 +113,7 @@ class ContractPlugin:
     description: str = ''
     executor_revision: str = ''
     verifier_revision: str = ''
+    option_keys: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.capability, str) or not re.fullmatch(r'[a-z][a-z0-9_.-]{2,63}', self.capability):
@@ -119,6 +124,12 @@ class ContractPlugin:
             raise ValueError('input_formats must be a nonempty tuple of extensions')
         if type(self.contract_version) is not int or self.contract_version < 1:
             raise ValueError('contract_version must be a positive integer')
+        if (not isinstance(self.option_keys, tuple)
+                or any(not isinstance(key, str)
+                       or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,63}', key)
+                       for key in self.option_keys)
+                or len(set(self.option_keys)) != len(self.option_keys)):
+            raise ValueError('option_keys must be a tuple of unique identifier keys')
         if not self.executor_revision:
             object.__setattr__(self, 'executor_revision', _callable_revision(self.execute, self.executor_id))
         if not self.verifier_revision:
@@ -132,6 +143,7 @@ class ContractPlugin:
             'input_formats': list(self.input_formats),
             'constraints': sorted(self.constraints),
             'description': self.description,
+            'option_keys': list(self.option_keys),
         }
 
 
@@ -245,7 +257,17 @@ class ContractRegistry:
         self._lock = threading.RLock()
         self._plugins: dict[str, ContractPlugin] = {}
         self._entry_points_loaded = False
+        self._developer_contracts_pending = False
         self.load_errors: list[dict[str, str]] = []
+
+    def _load_developer_contracts(self) -> None:
+        # Called under _lock after module initialization; dev_contracts imports
+        # these SDK types, so eagerly importing its plugins creates a cycle.
+        if self._developer_contracts_pending:
+            from .dev_contracts import ENV_PATCH_PLUGIN, SQLITE_EXPORT_PLUGIN
+            self._developer_contracts_pending = False
+            self.register(ENV_PATCH_PLUGIN)
+            self.register(SQLITE_EXPORT_PLUGIN)
 
     def register(self, plugin: ContractPlugin, *, replace: bool = False) -> None:
         if not isinstance(plugin, ContractPlugin):
@@ -253,18 +275,21 @@ class ContractRegistry:
         if plugin.capability in _RESERVED_CAPABILITIES:
             raise ValueError(f'contract capability is reserved for a built-in: {plugin.capability}')
         with self._lock:
+            self._load_developer_contracts()
             if not replace and plugin.capability in self._plugins:
                 raise ValueError(f'contract capability already registered: {plugin.capability}')
             self._plugins[plugin.capability] = plugin
 
     def unregister(self, capability: str) -> None:
         with self._lock:
+            self._load_developer_contracts()
             self._plugins.pop(capability, None)
 
     def load_entry_points(self) -> list[str]:
         """Discover installed plugins under the rpe_harness.contracts entry-point group."""
         loaded: list[str] = []
         with self._lock:
+            self._load_developer_contracts()
             if self._entry_points_loaded:
                 return loaded
             self._entry_points_loaded = True
@@ -528,6 +553,7 @@ TABULAR_FILTER_PLUGIN = ContractPlugin(
     execute=_filter_execute,
     verify=_filter_verify,
     description='Deterministic CSV row filtering preserving header, leading zeros, and row order',
+    option_keys=('column', 'operator', 'value', 'values', 'encoding', 'delimiter'),
 )
 
 
@@ -654,6 +680,7 @@ JSON_PATCH_PLUGIN = ContractPlugin(
     execute=_patch_execute,
     verify=_patch_verify,
     description='Deterministic JSON object set/delete patching with strict-type oracle verification',
+    option_keys=('operations', 'indent'),
 )
 
 
@@ -661,9 +688,7 @@ def _create_default_registry() -> ContractRegistry:
     reg = ContractRegistry()
     reg.register(TABULAR_FILTER_PLUGIN)
     reg.register(JSON_PATCH_PLUGIN)
-    from .dev_contracts import ENV_PATCH_PLUGIN, SQLITE_EXPORT_PLUGIN
-    reg.register(ENV_PATCH_PLUGIN)
-    reg.register(SQLITE_EXPORT_PLUGIN)
+    reg._developer_contracts_pending = True
     return reg
 
 
