@@ -4,7 +4,8 @@
   "methodology": "Real live API paired comparison: RPE v1.18.0 (C2 SourceResolver + C4 HostAPI + HarnessRuntime deterministic executors + independent oracles) vs Native Direct LLM execution on identical tasks.",
   "caveats": [
     "4 controlled tasks per model (2 positive execution tasks + 2 negative boundary probes); not a large-scale multi-hour unattended benchmark.",
-    "API billing invoices were not audited; token counts come directly from live provider usage responses."
+    "API billing invoices were not audited; token counts come directly from live provider usage responses.",
+    "Codex CLI token counts include full CLI agent system/tool prompt overhead; Gemini subagent does not expose raw provider token usage so output character reduction is reported instead."
   ],
   "results": [
     {
@@ -145,6 +146,138 @@
         "rpe_total_tokens": 219,
         "native_total_tokens": 541,
         "token_reduction_pct": 59.5
+      }
+    },
+    {
+      "model": "gpt-6.1-sol (via codex-cli)",
+      "provider": "openai-codex-cli",
+      "harness_note": "Token counts include Codex CLI system/tool prompt overhead.",
+      "cases": [
+        {
+          "case_id": "dispatch-tabs",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 16466,
+            "elapsed_ms": 68900
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 25497,
+            "elapsed_ms": 63170
+          }
+        },
+        {
+          "case_id": "json-lexical-minify",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 11690,
+            "elapsed_ms": 40129
+          },
+          "native": {
+            "passed": true,
+            "actual": "{\"version\":1.0,\"zero\":-0,\"sci\":1e0,\"z_first\":\"line\\nbreak\",\"a_second\":[1.00,2.50,-0.0]}",
+            "total_tokens": 25504,
+            "elapsed_ms": 34740
+          }
+        },
+        {
+          "case_id": "pending-account-key",
+          "rpe": {
+            "passed": true,
+            "status": "needs_user",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 25419,
+            "elapsed_ms": 43429
+          }
+        },
+        {
+          "case_id": "conflicting-sources",
+          "rpe": {
+            "passed": true,
+            "status": "conflict",
+            "total_tokens": 0,
+            "elapsed_ms": 2
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 11666,
+            "elapsed_ms": 38357
+          }
+        }
+      ],
+      "totals": {
+        "rpe_passed": "4/4",
+        "native_passed": "4/4",
+        "rpe_total_tokens": 28156,
+        "native_total_tokens": 88086,
+        "token_reduction_pct": 68.0
+      }
+    },
+    {
+      "model": "Gemini (via Antigravity subagent)",
+      "provider": "google-antigravity",
+      "harness_note": "Antigravity subagent harness does not expose raw provider token usage; output character footprint is reported honestly alongside exact RPE Oracle pass/fail.",
+      "cases": [
+        {
+          "case_id": "dispatch-tabs",
+          "rpe": {
+            "passed": true,
+            "output_chars": 108
+          },
+          "native": {
+            "passed": true,
+            "output_chars": 70
+          }
+        },
+        {
+          "case_id": "json-lexical-minify",
+          "rpe": {
+            "passed": true,
+            "output_chars": 51
+          },
+          "native": {
+            "passed": true,
+            "output_chars": 87
+          }
+        },
+        {
+          "case_id": "pending-account-key",
+          "rpe": {
+            "passed": true,
+            "status": "needs_user",
+            "output_chars": 0
+          },
+          "native": {
+            "passed": true,
+            "output_chars": 24
+          }
+        },
+        {
+          "case_id": "conflicting-sources",
+          "rpe": {
+            "passed": true,
+            "status": "conflict",
+            "output_chars": 0
+          },
+          "native": {
+            "passed": true,
+            "output_chars": 22
+          }
+        }
+      ],
+      "totals": {
+        "rpe_passed": "4/4",
+        "native_passed": "4/4",
+        "rpe_output_chars": 159,
+        "native_output_chars": 203,
+        "output_char_reduction_pct": 21.7,
+        "provider_tokens": "unavailable (subagent harness)"
       }
     }
   ]
