@@ -58,7 +58,7 @@ flowchart LR
 | **C2 · Narrow Source Resolver** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | Resolves individual authorized fields in ≤2 bounded reads; blocks `needs_user`, `conflict`, `stale` (SHA mismatch), and `forbidden` (cross-job/session) in **~1 ms at 0 tokens** without leaking private fields into prompts. |
 | **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
 | **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
-| **A2 · Second-Host DSH Adapter** | [`integrations/dsh/`](integrations/dsh/) | Zero-dependency Node.js ESM plugin (`execFile` over `rpe host`). Injects non-spoofable `host_id: "dsh"` / `owner` / `session_id`; keeps `confirm/execute/cancel/handoff` strictly host-only; invalidates prior confirmations on cross-host handoff (**G2 Gate**). |
+| **Universal Host Adapters** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | Zero-dependency Node.js ESM &amp; Python thin bridges (`execFile` over `rpe host`) ready for **Claude Code, Codex CLI, Hermes, or any custom agent host**. Injects non-spoofable `host_id` / `owner` / `session_id`; keeps `confirm/execute/cancel/handoff` strictly host-only; invalidates prior confirmations on cross-host handoff. |
 | **Signed Capability Assets** | [`assets/`](src/rpe_harness/assets/) · [`evolution/`](src/rpe_harness/evolution/) | Absorbs Progenitor's content-addressed SHA-256 packages & RSA-SHA256 dual-signed provenance without P2P/IPFS daemons. Imported assets default to `unverified` and require independent acceptance before CAS activation or rollback. |
 | **OS Sandbox Backends** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | Supports macOS `/usr/bin/sandbox-exec` and Linux `bwrap` (bubblewrap) with RSS/timeout monitoring; fails closed (`unavailable`) on unsupported hosts — never fakes isolation. |
 
@@ -72,7 +72,7 @@ flowchart LR
 | **Infrastructure** | Heavy framework + checkpointer | Temporal server / cloud workers | SDK + external sandbox/telemetry | **Zero daemon · 1 SQLite file · 1 pip dep (`openpyxl`)** |
 | **HITL Boundary** | Graph `interrupt()` node | Workflow waitpoint | Tool-call approval | **Host-only `TrustedHostAction` + `proposal digest` + cross-host invalidation** |
 | **Result Proof** | User-written node logic | Workflow code | Schema + LLM-as-a-judge | **Independent deterministic Oracle + atomic no-overwrite publish** |
-| **Cross-Platform** | Python / JS | Cloud / Docker | Python / TS | **Linux · macOS · Windows (Python + Node.js DSH)** |
+| **Cross-Platform** | Python / JS | Cloud / Docker | Python / TS | **Linux · macOS · Windows (Python + Node.js Universal Adapters)** |
 
 ---
 
@@ -128,10 +128,10 @@ receipt = api.confirm_task(
 result = api.execute_task(op["operation_id"], "alice", confirmation_id=receipt["confirmation_id"])
 ```
 
-### 3. Embed from Node.js / DSH (`integrations/dsh/`)
+### 3. Embed from Node.js / Any JS Host (Claude Code · Codex CLI · Custom Agents)
 
 ```js
-import { createDshRpePlugin } from './integrations/dsh/index.mjs';
+import { createDshRpePlugin } from './integrations/dsh/index.mjs'; // zero-dep Node.js reference bridge
 
 const { modelTools, trustedActions } = createDshRpePlugin({
   dbPath: '/path/to/runs.sqlite',
@@ -140,7 +140,7 @@ const { modelTools, trustedActions } = createDshRpePlugin({
 
 // Expose ONLY `modelTools` to the LLM; keep `trustedActions` strictly host-side
 const op = await modelTools.rpe_start_task(modelDraft, {
-  owner: 'alice', sessionId: 'dsh-1', workspace: '/path/to/workspace',
+  owner: 'alice', sessionId: 'host-sess-1', workspace: '/path/to/workspace',
 });
 const conf = await trustedActions.confirmTask({
   operationId: op.operation_id, digest: op.digest,
@@ -159,7 +159,7 @@ We publish boundaries as openly as benchmarks:
 
 1. **Narrow built-in contract surface**: Today the kernel ships **3 verified built-in capabilities** (`tabular.deduplicate` for CSV/XLSX, `json.normalize/v1`, and audited XLSX inspection). It is a reference verifiable execution kernel, not a 100-tool general automation suite.
 2. **OS sandbox availability**: Strong process/filesystem/network isolation for untrusted candidate code uses macOS `/usr/bin/sandbox-exec` or Linux `bwrap` (`bubblewrap`); on Windows or hosts without `bwrap`, `sandbox_backend()` honestly reports `unavailable` and fails closed.
-3. **Production UI & multi-hour soak**: Desktop UI integration (NewCC) and multi-hour unattended soak benchmarks (`G3`/`G4`) are still active downstream work — current proof covers unit/integration invariants, 3-OS CI, and controlled multi-model pairs.
+3. **Long-horizon unattended soak**: Multi-hour unattended soak benchmarks and full end-to-end GUI host packaging remain active downstream work — current proof covers unit/integration invariants, 3-OS CI, and controlled 4-family multi-model pairs.
 
 ---
 
@@ -169,7 +169,7 @@ We publish boundaries as openly as benchmarks:
 | :--- | :--- |
 | Full Chinese documentation & CLI/HTTP reference | [README.zh-CN.md](README.zh-CN.md) |
 | Progenitor / Akasha asset fusion design | [docs/fusion.md](docs/fusion.md) |
-| DSH second-host adapter guide & E2E tests | [integrations/dsh/README.md](integrations/dsh/README.md) |
+| Node.js universal host bridge reference & E2E tests | [integrations/dsh/README.md](integrations/dsh/README.md) |
 | 4-family live C3 comparison report | [reports/v1.18.0/c3-multimodel-comparison/README.md](reports/v1.18.0/c3-multimodel-comparison/README.md) |
 | Real-Hermes XLSX paired verification (`v1.15.3`) | [reports/v1.15.3/1.15.3兼容与复验.md](reports/v1.15.3/1.15.3兼容与复验.md) |
 | License | [MIT](LICENSE) · [Third-Party Notices](THIRD_PARTY_NOTICES.md) |

@@ -58,7 +58,7 @@ flowchart LR
 | **C2 · 窄授权来源补取** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | 仅在显式授权的 `source_refs` 内最多做 2 次有界读取；**~1 ms、0 token** 确定性拦截 `needs_user / conflict / stale / forbidden`，彻底隔离来源里的无关隐私字段。 |
 | **C4 · 宿主无关任务门面** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 个标准方法（`start / show / confirm / execute / cancel / reconcile / handoff`）+ 薄 JSON CLI（`rpe host ...`）；不导入任何 Agent 循环，复用同一 SQLite 账本。 |
 | **C4 · 原子取消 vs 发布竞态** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | 幂等 CLI（`runs cancel`）与回环 HTTP（`POST /runs/<id>/cancel`）；立即围栏发布，已进入发布则如实返回 `too_late`；内置 `fcntl`（POSIX）+ `msvcrt`（Windows）跨平台文件锁。 |
-| **A2 · DSH 第二宿主薄适配** | [`integrations/dsh/`](integrations/dsh/) | 零依赖 Node.js ESM 插件（`execFile` 对接 `rpe host`）；注入不可伪造的 `host_id: "dsh"`/`owner`/`session_id`；`confirm/execute/cancel/handoff` 严禁暴露给模型；跨宿主交接强制废止原确认（**G2 门禁**）。 |
+| **通用宿主薄适配层** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | 零依赖 Node.js ESM 与 Python 薄桥接（通过 `execFile` 对接 `rpe host`），可快速适配 **Claude Code、Codex CLI、Hermes 或任意自定义宿主**；宿主身份不可由模型伪造，`confirm/execute/cancel/handoff` 严格留在宿主侧，跨宿主交接强制废止原确认。 |
 | **签名能力资产与回滚** | [`assets/`](src/rpe_harness/assets/) · [`evolution/`](src/rpe_harness/evolution/) | 吸收原 Progenitor 协议的 SHA-256 内容寻址与 RSA-SHA256 双签名来源校验，彻底去除 P2P/IPFS 守护进程；导入候选默认 `unverified`，须经独立验收才可 CAS 激活或一键回滚。 |
 | **OS 级进程沙箱后端** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | 支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`（bubblewrap）及内存/超时监控；不支持平台严格 fail-closed 返回 `unavailable`，绝不伪造隔离。 |
 
@@ -72,7 +72,7 @@ flowchart LR
 | **运行依赖** | 重框架生态 + Checkpointer | 需 Temporal 集群 / 云服务 | SDK + 外部沙箱/可观测平台 | **零常驻服务 · 单 SQLite · 仅 1 个依赖（`openpyxl`）** |
 | **HITL 审批粒度** | 节点级 `interrupt()` | Workflow 级 Waitpoint | 工具级审批 | **宿主独占 `TrustedHostAction` + `proposal digest` + 跨宿主自动失效** |
 | **结果验收方式** | 用户自写校验节点 | 业务代码 | Schema + LLM-as-a-judge | **强制独立确定性 Oracle 复算 + 独占原子无覆盖发布** |
-| **跨平台验证** | Python / JS | 云端 / Docker | Python / TS | **Linux · macOS · Windows 三平台 CI（Python + Node.js DSH）** |
+| **跨平台验证** | Python / JS | 云端 / Docker | Python / TS | **Linux · macOS · Windows 三平台 CI（Python + Node.js 通用适配）** |
 
 ---
 
@@ -128,10 +128,10 @@ receipt = api.confirm_task(
 result = api.execute_task(op["operation_id"], "alice", confirmation_id=receipt["confirmation_id"])
 ```
 
-### 3. 从 Node.js / DSH 接入（`integrations/dsh/`）
+### 3. 从 Node.js / 任意 JS 宿主接入（Claude Code · Codex CLI · 自定义 Agent）
 
 ```js
-import { createDshRpePlugin } from './integrations/dsh/index.mjs';
+import { createDshRpePlugin } from './integrations/dsh/index.mjs'; // 零依赖 Node.js 参考桥接
 
 const { modelTools, trustedActions } = createDshRpePlugin({
   dbPath: '/path/to/runs.sqlite',
@@ -140,7 +140,7 @@ const { modelTools, trustedActions } = createDshRpePlugin({
 
 // 仅把 `modelTools` 暴露给大模型；`trustedActions` 严格留在宿主侧
 const op = await modelTools.rpe_start_task(modelDraft, {
-  owner: 'alice', sessionId: 'dsh-1', workspace: '/path/to/workspace',
+  owner: 'alice', sessionId: 'host-sess-1', workspace: '/path/to/workspace',
 });
 const conf = await trustedActions.confirmTask({
   operationId: op.operation_id, digest: op.digest,
@@ -159,7 +159,7 @@ const res = await trustedActions.executeTask({
 
 1. **内置业务契约面较窄**：当前内置 **3 个带独立 Oracle 的核心契约**（CSV/XLSX 去重、`json.normalize/v1`、受控 XLSX 读取），定位为高可信执行内核参考实现与协议底座，而非百宝箱式通用助手。
 2. **OS 级强沙箱范围**：外部候选代码的文件系统/网络强隔离支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`；在 Windows 或未装 `bwrap` 的主机上，`sandbox_backend()` 会如实返回 `unavailable` 并严格 fail-closed。
-3. **桌面 UI 与长跑验证**：桌面宿主 UI（NewCC）与多小时无人值守日用门禁（`G3`/`G4`）仍在下游推进中，当前证据覆盖单测/集成不变量、三平台 CI 与受控多模型对照。
+3. **长时无人值守验证**：多小时无人值守长跑与完整 GUI 宿主打包仍在持续演进中，当前证据覆盖单测/集成不变量、三平台 CI 与四大家族受控多模型对照。
 
 ---
 
@@ -169,7 +169,7 @@ const res = await trustedActions.executeTask({
 | :--- | :--- |
 | 英文主首页 | [README.md](README.md) |
 | 阿卡夏（Progenitor）资产融合设计 | [docs/fusion.md](docs/fusion.md) |
-| DSH 第二宿主薄适配说明与端到端测试 | [integrations/dsh/README.md](integrations/dsh/README.md) |
+| Node.js 通用宿主桥接参考与端到端测试 | [integrations/dsh/README.md](integrations/dsh/README.md) |
 | 四大家族真实 C3 对照报告 | [reports/v1.18.0/c3-multimodel-comparison/README.md](reports/v1.18.0/c3-multimodel-comparison/README.md) |
 | `v1.15.3` 真实 Hermes XLSX 实测报告 | [reports/v1.15.3/1.15.3兼容与复验.md](reports/v1.15.3/1.15.3兼容与复验.md) |
 | 许可证 | [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) |
