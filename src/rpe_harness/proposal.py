@@ -593,7 +593,7 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
     owned, process, identity, binding, lock_fd = {}, None, None, None, None
     deadline = time.monotonic() + timeout
     cleanup_errors, result = [], {'status': 'failed', 'error': {'code': 'harness_launch_error'}}
-    with tempfile.TemporaryDirectory(prefix='rpe-review-', dir=database.parent) as temporary:
+    with tempfile.TemporaryDirectory(prefix='rpe-review-', dir=database.parent, ignore_cleanup_errors=True) as temporary:
         try:
             lock_fd = _worker_lock(database, deadline)
             # A wait may outlive an input edit or catalog revocation. Approval
@@ -605,13 +605,17 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
                 if _path_facts(payload, workspace) != path_facts:
                     raise ValueError('reviewed directory path changed before launch')
                 source = Path(payload['execution']['input_path'])
+                if not source.is_absolute():
+                    source = workspace / source
                 from .path_binding import read_regular_file
                 if hashlib.sha256(read_regular_file(source, max_bytes=None)).hexdigest() != input_sha256:
                     raise ValueError('bound input differs from the durable receipt')
                 if time.monotonic() >= deadline:
                     raise TimeoutError('review worker deadline elapsed before launch')
                 environment = {key: value for key, value in os.environ.items()
-                    if key in {'SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'PATH', 'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH'}}
+                    if key.upper() in {'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PATHEXT', 'PATH',
+                                       'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH', 'APPDATA',
+                                       'LOCALAPPDATA', 'PROGRAMFILES', 'PROGRAMDATA'}}
                 environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
                     PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1',
                     TMPDIR=temporary, TMP=temporary, TEMP=temporary)

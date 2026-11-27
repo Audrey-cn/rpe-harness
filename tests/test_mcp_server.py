@@ -104,7 +104,7 @@ def test_mcp_rejects_owner_spoofing_and_enforces_host_side_approval(tmp_path: Pa
     executed = api.execute_task(
         op['operation_id'], 'alice', confirmation_id=confirmed['confirmation_id'],
     )
-    assert executed['status'] == 'succeeded'
+    assert executed['status'] == 'succeeded', executed
     assert out.exists()
     assert out.read_text(encoding='utf-8').strip() == '{"name":[1,2]}'
 
