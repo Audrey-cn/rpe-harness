@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.0.0` · `Linux / macOS / Windows` · `Zero-Dep Stdio MCP` · `Contract Plugin SDK` · `SQLite + 1 Dep` · `MIT License`
+`v2.1.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Zero-Dep Stdio MCP` · `Contract Plugin SDK` · `120-Iter Soak` · `MIT License`
 
 <p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
@@ -50,7 +50,7 @@ flowchart LR
     ORACLE -->|Verified| PUB["Atomic Publish + SQLite Audit Receipt"]
 ```
 
-### Core Capabilities (`v2.0.0`)
+### Core Capabilities (`v2.1.0`)
 
 | Layer | Module | Guarantee |
 | :--- | :--- | :--- |
@@ -60,7 +60,7 @@ flowchart LR
 | **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
 | **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
 | **Universal Host Adapters** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | Zero-dependency Node.js ESM &amp; Python thin bridges (`execFile` over `rpe host`) ready for **Claude Code, Codex CLI, Hermes, or any custom agent host**. Injects non-spoofable `host_id` / `owner` / `session_id`; invalidates prior confirmations on cross-host handoff. |
-| **Signed Capability Assets & Sandbox** | [`assets/`](src/rpe_harness/assets/) · [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | Content-addressed SHA-256 packages & RSA-SHA256 provenance without P2P/IPFS daemons; macOS `sandbox-exec` & Linux `bwrap` isolation (fails closed when unavailable). |
+| **3-OS Containment & Signed Assets** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | Native OS containment across all 3 platforms: macOS `sandbox-exec`, Linux `bwrap` (`bubblewrap`), and Windows Win32 **Job Object** (`ctypes`: hard process memory cap + `ActiveProcessLimit=1` + `KILL_ON_JOB_CLOSE`), paired with honest `sandbox_capabilities()` reporting and SHA-256 / RSA-SHA256 asset provenance. |
 
 ---
 
@@ -194,8 +194,8 @@ const res = await trustedActions.executeTask({
 We publish boundaries as openly as benchmarks:
 
 1. **Built-in contracts vs custom plugins**: The kernel ships **5 verified built-in contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `xlsx.inspect`) plus the **`rpe.contract/v1` Plugin SDK** (`entry_points`) so teams can plug in domain-specific deterministic executors + independent oracles without touching kernel internals.
-2. **OS sandbox availability**: Strong process/filesystem/network isolation for untrusted candidate code uses macOS `/usr/bin/sandbox-exec` or Linux `bwrap` (`bubblewrap`); on Windows or hosts without `bwrap`, `sandbox_backend()` currently reports `unavailable` and fails closed (Windows Job Object containment & live Linux `bwrap` CI are next in `v2.1.0`).
-3. **Long-horizon unattended soak**: Multi-hour unattended soak benchmarks remain next (`v2.1.0` adds a 100-iteration fault-injection soak harness) — current proof covers unit/integration invariants, 3-OS CI, and controlled 5-family multi-model pairs.
+2. **OS containment scope across platforms**: `sandbox_capabilities()` reports exact guarantees per OS — macOS `sandbox-exec` and Linux `bwrap` enforce process + filesystem + network isolation; Windows `windows-job-object` enforces hard process memory, `ActiveProcessLimit=1`, and process-tree `KILL_ON_JOB_CLOSE` containment (filesystem/network remain host ACL, honestly declared rather than faked).
+3. **Soak vs multi-day chaos**: `v2.1.0` ships a reproducible **120-iteration fault-injection soak harness** ([`scripts/soak_test.py`](scripts/soak_test.py), [`receipt`](reports/v2.1.0/soak/README.md): **120/120 pass**, 0 leaked staging files, SQLite `PRAGMA integrity_check == ok`); multi-day distributed chaos benchmarks remain out of scope for a single-node local kernel.
 
 ---
 

@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.0.0` · `Linux / macOS / Windows` · `零依赖 Stdio MCP` · `可插拔合约 SDK` · `SQLite + 1 个依赖` · `MIT 许可证`
+`v2.1.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `零依赖 Stdio MCP` · `可插拔合约 SDK` · `120 轮压测全绿` · `MIT 许可证`
 
 <p><a href="README.md"><strong>English</strong></a> | <strong>简体中文</strong></p>
 
@@ -50,7 +50,7 @@ flowchart LR
     ORACLE -->|验真通过| PUB["独占原子发布 + SQLite 审计回执"]
 ```
 
-### 核心能力矩阵（`v2.0.0`）
+### 核心能力矩阵（`v2.1.0`）
 
 | 模块 | 代码入口 | 核心保证 |
 | :--- | :--- | :--- |
@@ -60,7 +60,7 @@ flowchart LR
 | **C4 · 宿主无关任务门面** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 个标准方法（`start / show / confirm / execute / cancel / reconcile / handoff`）+ 薄 JSON CLI（`rpe host ...`）；不导入任何 Agent 循环，复用同一 SQLite 账本。 |
 | **C4 · 原子取消 vs 发布竞态** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | 幂等 CLI（`runs cancel`）与回环 HTTP（`POST /runs/<id>/cancel`）；立即围栏发布，已进入发布则如实返回 `too_late`；内置 `fcntl`（POSIX）+ `msvcrt`（Windows）跨平台文件锁。 |
 | **通用宿主薄适配层** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | 零依赖 Node.js ESM 与 Python 薄桥接（通过 `execFile` 对接 `rpe host`），可快速适配 **Claude Code、Codex CLI、Hermes 或任意自定义宿主**；跨宿主交接强制废止原确认。 |
-| **签名能力资产与沙箱** | [`assets/`](src/rpe_harness/assets/) · [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | SHA-256 内容寻址与 RSA-SHA256 双签名来源校验（零 P2P/IPFS 守护进程）；支持 macOS `sandbox-exec` 与 Linux `bwrap`，不支持平台严格 fail-closed。 |
+| **三平台原生隔离与签名资产** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | 覆盖三平台原生隔离后端：macOS `sandbox-exec`、Linux `bwrap`（bubblewrap）与 Windows 原生 **Win32 Job Object**（纯 `ctypes` 硬内存上限 + `ActiveProcessLimit=1` + 进程树随句柄销毁），通过 `sandbox_capabilities()` 诚实声明每平台边界，配合 SHA-256 / RSA-SHA256 资产签名验真。 |
 
 ---
 
@@ -194,8 +194,8 @@ const res = await trustedActions.executeTask({
 我们把边界和基准数据写得一样透明：
 
 1. **内置合约与插件扩展**：当前开箱内置 **5 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`xlsx.inspect`），并通过 **`rpe.contract/v1` 插件 SDK** 支持第三方按需扩展自己的确定性执行器与独立验真器。
-2. **OS 级强沙箱范围**：外部候选代码的文件系统/网络强隔离支持 macOS `/usr/bin/sandbox-exec` 与 Linux `bwrap`；在 Windows 或未装 `bwrap` 的主机上，`sandbox_backend()` 当前如实返回 `unavailable` 并严格 fail-closed（Windows Job Object 隔离与 Linux `bwrap` 实测 CI 将在下一步 `v2.1.0` 落地）。
-3. **长时无人值守验证**：多小时无人值守长跑仍在演进中（下一步 `v2.1.0` 将落地 100 轮故障注入压力测试），当前证据覆盖单测/集成不变量、三平台 CI 与五大家族受控多模型对照。
+2. **三平台隔离边界透明声明**：`sandbox_capabilities()` 按平台诚实汇报真实能力——macOS `sandbox-exec` 与 Linux `bwrap` 提供进程 + 文件系统 + 网络隔离；Windows `windows-job-object` 提供硬内存上限、`ActiveProcessLimit=1` 与进程树 `KILL_ON_JOB_CLOSE` 回收（文件系统与网络沿用宿主 ACL，如实声明、绝不伪造）。
+3. **压力测试范围**：`v2.1.0` 内置可复现的 **120 轮故障注入压力测试**（[`scripts/soak_test.py`](scripts/soak_test.py)，[`实测回执`](reports/v2.1.0/soak/README.md)：**120/120 全绿**、0 残留 staging 文件、SQLite `PRAGMA integrity_check == ok`）；面向单机本地内核，不包含多天分布式混沌集群压测。
 
 ---
 

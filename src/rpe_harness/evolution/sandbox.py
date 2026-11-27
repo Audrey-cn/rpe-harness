@@ -34,9 +34,16 @@ def resource_limits(capability=None):
     return {'input_bytes': JSON_INPUT_BYTES if capability == 'json.normalize' else MAX_INPUT_BYTES,
             'output_bytes': MAX_OUTPUT_BYTES,
             'code_bytes': MAX_CODE_BYTES, 'resident_bytes': MAX_RESIDENT_BYTES,
-            'memory_enforcement': 'rss_monitor_soft', 'rss_poll_seconds': RSS_POLL_SECONDS,
-            'memory_limitation': 'macOS rlimits do not cap memory; instantaneous allocation peaks are not guaranteed',
-            'network': 'denied', 'fork': 'denied', 'open_files': 64}
+            'memory_enforcement': 'windows_job_hard_limit' if sys.platform == 'win32' else 'rss_monitor_soft',
+            'rss_poll_seconds': RSS_POLL_SECONDS,
+            'memory_limitation': (
+                'Windows Job Object enforces hard process memory and active-process=1 limits'
+                if sys.platform == 'win32'
+                else 'macOS rlimits do not cap memory; instantaneous allocation peaks are not guaranteed'
+            ),
+            'network': 'host_acl' if sys.platform == 'win32' else 'denied',
+            'fork': 'denied', 'open_files': 64}
+
 
 class CandidateExecutionError(RuntimeError):
     """A real child ran, but failed; resource failures are not parser rejections."""
@@ -69,11 +76,13 @@ def _literal(path):
 
 def _profile(job, staging, log):
     # The candidate cannot read the Harness/oracle, use a network, fork, or change its input.
+    exe = Path(sys.executable)
     reads = {Path('/usr'), Path('/System'), Path('/dev'), Path(sys.base_prefix).resolve(),
-             Path(sys.prefix).resolve(), job}
+             Path(sys.prefix).resolve(), exe.parent.resolve(), exe.resolve().parent.parent, job}
     readable = ' '.join('(subpath ' + _literal(path) + ')' for path in sorted(reads))
     return ('(version 1)(deny default)'
             '(allow process-exec)(deny process-fork)(allow sysctl-read)'
+            '(allow file-read-metadata)'
             '(allow file-read* (literal "/") ' + readable + ')'
             '(deny file-read* (subpath ' + _literal(Path(__file__).resolve().parents[1]) + '))'
             '(allow file-write* (literal ' + _literal(staging) + ')'
@@ -122,15 +131,134 @@ def _resident_bytes(pid):
     raise OSError(error or errno.EIO, f'candidate RSS observation incomplete: {received} bytes')
 
 
+# ---------------------------------------------------------------------------
+# Windows native Win32 Job Object containment (pure stdlib ctypes)
+# ---------------------------------------------------------------------------
+
+class _IO_COUNTERS(ctypes.Structure):
+    _fields_ = [
+        ('ReadOperationCount', ctypes.c_uint64),
+        ('WriteOperationCount', ctypes.c_uint64),
+        ('OtherOperationCount', ctypes.c_uint64),
+        ('ReadTransferCount', ctypes.c_uint64),
+        ('WriteTransferCount', ctypes.c_uint64),
+        ('OtherTransferCount', ctypes.c_uint64),
+    ]
+
+
+class _JOBOBJECT_BASIC_LIMIT_INFORMATION(ctypes.Structure):
+    _fields_ = [
+        ('PerProcessUserTimeLimit', ctypes.c_int64),
+        ('PerJobUserTimeLimit', ctypes.c_int64),
+        ('LimitFlags', ctypes.c_uint32),
+        ('MinimumWorkingSetSize', ctypes.c_size_t),
+        ('MaximumWorkingSetSize', ctypes.c_size_t),
+        ('ActiveProcessLimit', ctypes.c_uint32),
+        ('Affinity', ctypes.c_size_t),
+        ('PriorityClass', ctypes.c_uint32),
+        ('SchedulingClass', ctypes.c_uint32),
+    ]
+
+
+class _JOBOBJECT_EXTENDED_LIMIT_INFORMATION(ctypes.Structure):
+    _fields_ = [
+        ('BasicLimitInformation', _JOBOBJECT_BASIC_LIMIT_INFORMATION),
+        ('IoInfo', _IO_COUNTERS),
+        ('ProcessMemoryLimit', ctypes.c_size_t),
+        ('JobMemoryLimit', ctypes.c_size_t),
+        ('PeakProcessMemoryUsed', ctypes.c_size_t),
+        ('PeakJobMemoryUsed', ctypes.c_size_t),
+    ]
+
+
+_JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 0x00000008
+_JOB_OBJECT_LIMIT_PROCESS_MEMORY = 0x00000100
+_JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000
+_JOB_OBJECT_EXTENDED_LIMIT_INFORMATION_CLASS = 9
+
+
+def _win32_create_job(memory_limit_bytes: int):
+    """Create a Win32 Job Object with hard memory cap, active-process=1, and kill-on-close."""
+    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+    kernel32.CreateJobObjectW.argtypes = [ctypes.c_void_p, ctypes.c_wchar_p]
+    kernel32.CreateJobObjectW.restype = ctypes.c_void_p
+    kernel32.SetInformationJobObject.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32]
+    kernel32.SetInformationJobObject.restype = ctypes.c_int
+    kernel32.AssignProcessToJobObject.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    kernel32.AssignProcessToJobObject.restype = ctypes.c_int
+    kernel32.TerminateJobObject.argtypes = [ctypes.c_void_p, ctypes.c_uint]
+    kernel32.TerminateJobObject.restype = ctypes.c_int
+    kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+    kernel32.CloseHandle.restype = ctypes.c_int
+
+    job = kernel32.CreateJobObjectW(None, None)
+    if not job:
+        raise OSError(ctypes.get_last_error(), 'CreateJobObjectW failed')
+    info = _JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
+    info.BasicLimitInformation.LimitFlags = (
+        _JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+        | _JOB_OBJECT_LIMIT_PROCESS_MEMORY
+        | _JOB_OBJECT_LIMIT_ACTIVE_PROCESS
+    )
+    info.BasicLimitInformation.ActiveProcessLimit = 1
+    info.ProcessMemoryLimit = memory_limit_bytes
+    if not kernel32.SetInformationJobObject(
+        job, _JOB_OBJECT_EXTENDED_LIMIT_INFORMATION_CLASS,
+        ctypes.byref(info), ctypes.sizeof(info),
+    ):
+        err = ctypes.get_last_error()
+        kernel32.CloseHandle(job)
+        raise OSError(err, 'SetInformationJobObject failed')
+    return kernel32, job
+
+
 def sandbox_backend() -> str:
-    """Detect available OS process/filesystem/network sandbox without faking isolation."""
+    """Detect available OS containment backend without faking isolation."""
     if sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file():
         return 'macos-sandbox-exec'
     if sys.platform.startswith('linux'):
         import shutil
         if shutil.which('bwrap'):
             return 'linux-bwrap'
+    if sys.platform == 'win32':
+        return 'windows-job-object'
     return 'unavailable'
+
+
+def sandbox_capabilities() -> dict[str, object]:
+    """Honest capability declaration for the detected OS containment backend."""
+    backend = sandbox_backend()
+    if backend == 'macos-sandbox-exec':
+        return {
+            'backend': backend,
+            'process_tree': 'deny_fork_and_killpg',
+            'filesystem': 'seatbelt_profile',
+            'network': 'denied',
+            'memory': 'rss_monitor_soft',
+        }
+    if backend == 'linux-bwrap':
+        return {
+            'backend': backend,
+            'process_tree': 'die_with_parent_and_killpg',
+            'filesystem': 'ro_bind_namespace',
+            'network': 'unshare_net_denied',
+            'memory': 'proc_statm_rss_soft',
+        }
+    if backend == 'windows-job-object':
+        return {
+            'backend': backend,
+            'process_tree': 'job_active_process_1_kill_on_close',
+            'filesystem': 'host_acl_only',
+            'network': 'host_acl_only',
+            'memory': 'job_object_hard_process_limit',
+        }
+    return {
+        'backend': 'unavailable',
+        'process_tree': 'none',
+        'filesystem': 'none',
+        'network': 'none',
+        'memory': 'none',
+    }
 
 
 def _bwrap_command(job: Path, driver: Path, code: Path) -> list[str]:
@@ -158,7 +286,7 @@ def _linux_resident_bytes(pid: int) -> int | None:
 
 def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                   memory_limit_bytes=MAX_RESIDENT_BYTES) -> bytes:
-    """Accept only a bounded, regular staging file from a no-network sandboxed child."""
+    """Accept only a bounded, regular staging file from an OS-contained child."""
     backend = sandbox_backend()
     if backend == 'unavailable':
         raise RuntimeError('candidate filesystem/network sandbox is unavailable')
@@ -191,48 +319,86 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
         input_copy.write_bytes(data)
         code.write_bytes(content)
         driver.write_text(_DRIVER, encoding='utf-8')
-        for path in (input_copy, code, driver):
-            path.chmod(0o400)
+        if os.name != 'nt':
+            for path in (input_copy, code, driver):
+                path.chmod(0o400)
         child_plan = dict(plan, input_path=str(input_copy))
         packet = job / 'plan.json'
         packet.write_text(json.dumps({'plan': child_plan, 'staging_path': str(staging)}), encoding='utf-8')
-        packet.chmod(0o400)
-        env = {'PATH': '/usr/bin:/bin', 'HOME': str(job), 'TMPDIR': str(job),
-               'LANG': 'en_US.UTF-8', 'PYTHONDONTWRITEBYTECODE': '1'}
-        if backend == 'macos-sandbox-exec':
-            profile = _profile(job, staging, log)
-            child_argv = ['/usr/bin/sandbox-exec', '-p', profile,
-                          sys.executable, '-I', '-B', str(driver), str(code)]
-        else:
-            child_argv = _bwrap_command(job, driver, code)
-        with packet.open('rb') as incoming, log.open('wb') as outgoing:
-            proc = subprocess.Popen(child_argv,
-                                    stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
-                                    cwd=job, env=env, start_new_session=True,
-                                    preexec_fn=lambda: _limits(timeout))
+        if os.name != 'nt':
+            packet.chmod(0o400)
+        if backend == 'windows-job-object':
+            env = {
+                'SYSTEMROOT': os.environ.get('SYSTEMROOT', r'C:\Windows'),
+                'PATH': os.environ.get('PATH', ''),
+                'TEMP': str(job),
+                'TMP': str(job),
+                'PYTHONUTF8': '1',
+                'PYTHONDONTWRITEBYTECODE': '1',
+            }
+            child_argv = [sys.executable, '-I', '-B', str(driver), str(code)]
+            kernel32, job_handle = _win32_create_job(memory_limit_bytes)
             try:
-                deadline = time.monotonic() + timeout
-                while proc.poll() is None:
+                with packet.open('rb') as incoming, log.open('wb') as outgoing:
+                    proc = subprocess.Popen(
+                        child_argv,
+                        stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
+                        cwd=job, env=env,
+                        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+                    )
                     try:
-                        resident = (_resident_bytes(proc.pid) if backend == 'macos-sandbox-exec'
-                                    else _linux_resident_bytes(proc.pid))
-                    except OSError as error:
-                        raise CandidateExecutionError('candidate RSS observation failed') from error
-                    if resident is not None and resident > memory_limit_bytes:
-                        raise CandidateExecutionError('candidate RSS soft memory threshold exceeded')
-                    remaining = deadline - time.monotonic()
-                    if remaining <= 0:
-                        raise CandidateExecutionError('candidate timeout')
-                    try:
-                        proc.wait(timeout=min(RSS_POLL_SECONDS, remaining))
-                    except subprocess.TimeoutExpired:
-                        pass
+                        # Assign process handle to Job Object; if process already exited, ignore benign failure.
+                        if proc.poll() is None:
+                            if not kernel32.AssignProcessToJobObject(job_handle, int(proc._handle)):
+                                if proc.poll() is None:
+                                    raise CandidateExecutionError('AssignProcessToJobObject failed')
+                        try:
+                            proc.wait(timeout=timeout)
+                        except subprocess.TimeoutExpired as exc:
+                            kernel32.TerminateJobObject(job_handle, 1)
+                            raise CandidateExecutionError('candidate timeout') from exc
+                    finally:
+                        kernel32.TerminateJobObject(job_handle, 1)
+                        proc.wait()
             finally:
+                kernel32.CloseHandle(job_handle)
+        else:
+            env = {'PATH': '/usr/bin:/bin', 'HOME': str(job), 'TMPDIR': str(job),
+                   'LANG': 'en_US.UTF-8', 'PYTHONDONTWRITEBYTECODE': '1'}
+            if backend == 'macos-sandbox-exec':
+                profile = _profile(job, staging, log)
+                child_argv = ['/usr/bin/sandbox-exec', '-p', profile,
+                              str(Path(sys.executable).resolve()), '-I', '-B', str(driver), str(code)]
+            else:
+                child_argv = _bwrap_command(job, driver, code)
+            with packet.open('rb') as incoming, log.open('wb') as outgoing:
+                proc = subprocess.Popen(child_argv,
+                                        stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
+                                        cwd=job, env=env, start_new_session=True,
+                                        preexec_fn=lambda: _limits(timeout))
                 try:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                proc.wait()
+                    deadline = time.monotonic() + timeout
+                    while proc.poll() is None:
+                        try:
+                            resident = (_resident_bytes(proc.pid) if backend == 'macos-sandbox-exec'
+                                        else _linux_resident_bytes(proc.pid))
+                        except OSError as error:
+                            raise CandidateExecutionError('candidate RSS observation failed') from error
+                        if resident is not None and resident > memory_limit_bytes:
+                            raise CandidateExecutionError('candidate RSS soft memory threshold exceeded')
+                        remaining = deadline - time.monotonic()
+                        if remaining <= 0:
+                            raise CandidateExecutionError('candidate timeout')
+                        try:
+                            proc.wait(timeout=min(RSS_POLL_SECONDS, remaining))
+                        except subprocess.TimeoutExpired:
+                            pass
+                finally:
+                    try:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    proc.wait()
         if input_copy.read_bytes() != data:
             raise CandidateExecutionError('candidate altered the frozen source')
         if proc.returncode != 0:

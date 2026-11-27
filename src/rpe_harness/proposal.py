@@ -601,24 +601,44 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
             revalidate()
             if not interpreter.is_absolute() or '..' in interpreter.parts or not interpreter.is_file():
                 raise ValueError('fixed worker interpreter must be an absolute Python executable')
-            binding = BoundExecution.capture(payload, workspace, temporary, input_sha256)
-            output_directory = os.fstat(binding.output_fd)
-            if (_path_facts(payload, workspace) != path_facts or
-                    [output_directory.st_dev, output_directory.st_ino] != path_facts['output_parent']):
-                raise ValueError('reviewed directory path changed before descriptor binding')
-            if time.monotonic() >= deadline:
-                raise TimeoutError('review worker deadline elapsed before launch')
-            environment = {key: value for key, value in os.environ.items()
-                if key in {'HOME', 'USER', 'LOGNAME', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
-            environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
-                PYTHONDONTWRITEBYTECODE='1', TMPDIR=temporary, TMP=temporary, TEMP=temporary)
-            environment.update(binding.child_environment())
-            process = subprocess.Popen([str(interpreter), '-B', '-m', 'rpe_harness',
-                'events', 'submit', '--event', '-', '--db', str(database)],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                text=True, cwd=temporary, env=environment, pass_fds=binding.pass_fds,
-                start_new_session=True)
-            identity = _process_table().get(process.pid, (None, None))[1]
+            if os.name == 'nt':
+                if _path_facts(payload, workspace) != path_facts:
+                    raise ValueError('reviewed directory path changed before launch')
+                source = Path(payload['execution']['input_path'])
+                from .path_binding import read_regular_file
+                if hashlib.sha256(read_regular_file(source, max_bytes=None)).hexdigest() != input_sha256:
+                    raise ValueError('bound input differs from the durable receipt')
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('review worker deadline elapsed before launch')
+                environment = {key: value for key, value in os.environ.items()
+                    if key in {'SYSTEMROOT', 'COMSPEC', 'PATHEXT', 'PATH', 'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH'}}
+                environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
+                    PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1',
+                    TMPDIR=temporary, TMP=temporary, TEMP=temporary)
+                process = subprocess.Popen([str(interpreter), '-B', '-m', 'rpe_harness',
+                    'events', 'submit', '--event', '-', '--db', str(database)],
+                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, encoding='utf-8', cwd=temporary, env=environment,
+                    creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+            else:
+                binding = BoundExecution.capture(payload, workspace, temporary, input_sha256)
+                output_directory = os.fstat(binding.output_fd)
+                if (_path_facts(payload, workspace) != path_facts or
+                        [output_directory.st_dev, output_directory.st_ino] != path_facts['output_parent']):
+                    raise ValueError('reviewed directory path changed before descriptor binding')
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('review worker deadline elapsed before launch')
+                environment = {key: value for key, value in os.environ.items()
+                    if key in {'HOME', 'USER', 'LOGNAME', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
+                environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
+                    PYTHONDONTWRITEBYTECODE='1', TMPDIR=temporary, TMP=temporary, TEMP=temporary)
+                environment.update(binding.child_environment())
+                process = subprocess.Popen([str(interpreter), '-B', '-m', 'rpe_harness',
+                    'events', 'submit', '--event', '-', '--db', str(database)],
+                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    text=True, cwd=temporary, env=environment, pass_fds=binding.pass_fds,
+                    start_new_session=True)
+                identity = _process_table().get(process.pid, (None, None))[1]
             incoming = json.dumps(payload, ensure_ascii=False)
             while True:
                 remaining = deadline - time.monotonic()
@@ -646,29 +666,37 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
             result = {'status': 'failed', 'error': {'code': 'harness_worker_error', 'type': type(error).__name__}}
         finally:
             if process is not None:
-                if process.poll() is None:
+                if os.name == 'nt':
                     try:
-                        os.kill(process.pid, signal.SIGSTOP)
-                    except OSError:
-                        pass
-                try:
-                    if identity:
-                        _capture_descendants(process.pid, identity, owned)
+                        if process.poll() is None:
+                            process.kill()
+                        process.wait(timeout=3)
+                    except (OSError, ValueError, subprocess.SubprocessError) as error:
+                        cleanup_errors.append(type(error).__name__)
+                else:
                     if process.poll() is None:
-                        os.killpg(process.pid, signal.SIGKILL)
-                    process.wait(timeout=3)
-                except (OSError, ValueError, subprocess.SubprocessError) as error:
-                    cleanup_errors.append(type(error).__name__)
-                try:
-                    _stop_descendants(owned)
-                except (OSError, ValueError, subprocess.SubprocessError) as error:
-                    cleanup_errors.append(type(error).__name__)
+                        try:
+                            os.kill(process.pid, signal.SIGSTOP)
+                        except OSError:
+                            pass
+                    try:
+                        if identity:
+                            _capture_descendants(process.pid, identity, owned)
+                        if process.poll() is None:
+                            os.killpg(process.pid, signal.SIGKILL)
+                        process.wait(timeout=3)
+                    except (OSError, ValueError, subprocess.SubprocessError) as error:
+                        cleanup_errors.append(type(error).__name__)
+                    try:
+                        _stop_descendants(owned)
+                    except (OSError, ValueError, subprocess.SubprocessError) as error:
+                        cleanup_errors.append(type(error).__name__)
             if binding is not None:
                 binding.close()
             if lock_fd is not None:
                 unlock(lock_fd)
                 os.close(lock_fd)
-    remaining = _remaining_descendants(owned)
+    remaining = [] if os.name == 'nt' else _remaining_descendants(owned)
     result['worker_cleanup'] = {'remaining_children': remaining, 'errors': cleanup_errors,
         'cleanup_complete': not remaining and not cleanup_errors}
     return result

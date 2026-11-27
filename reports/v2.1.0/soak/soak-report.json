@@ -1,0 +1,39 @@
+{
+  "version": "2.1.0",
+  "timestamp_utc": "2026-11-27T10:07:12.031491+00:00",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "python": "3.12.15",
+  "sandbox_backend": "macos-sandbox-exec",
+  "sandbox_capabilities": {
+    "backend": "macos-sandbox-exec",
+    "process_tree": "deny_fork_and_killpg",
+    "filesystem": "seatbelt_profile",
+    "network": "denied",
+    "memory": "rss_monitor_soft"
+  },
+  "iterations": 120,
+  "elapsed_seconds": 3.535,
+  "throughput_ops_per_sec": 33.95,
+  "counts": {
+    "tabular_dedup_ok": 12,
+    "tabular_filter_ok": 12,
+    "json_normalize_ok": 12,
+    "json_patch_ok": 12,
+    "mcp_host_full_loop_ok": 12,
+    "handoff_invalidation_ok": 12,
+    "cancel_fence_ok": 12,
+    "stale_digest_rejected": 12,
+    "wrong_owner_forbidden": 12,
+    "oracle_tamper_blocked": 12
+  },
+  "failures": [],
+  "invariants": {
+    "zero_failures": true,
+    "zero_leaked_staging_files": true,
+    "leaked_staging_files": [],
+    "all_sources_byte_intact": true,
+    "sqlite_integrity_check": "ok",
+    "zero_stuck_running_runs": true
+  },
+  "passed": true
+}

@@ -9,7 +9,7 @@ import sys
 
 from . import __version__
 from .contract_sdk import DEFAULT_REGISTRY
-from .evolution.sandbox import sandbox_backend
+from .evolution.sandbox import sandbox_backend, sandbox_capabilities
 from .operations import TaskOperations, TrustedHostAction
 
 __all__ = ['HostAPI', 'TaskOperations', 'TrustedHostAction']
@@ -29,6 +29,7 @@ class HostAPI(TaskOperations):
             'version': __version__,
             'platform': sys.platform,
             'sandbox_backend': sandbox_backend(),
+            'sandbox_capabilities': sandbox_capabilities(),
             'methods': ['start', 'show', 'confirm', 'execute', 'cancel', 'reconcile', 'handoff'],
             'contracts': contracts,
             'mcp_stdio': True,
