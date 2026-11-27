@@ -122,13 +122,15 @@ def interpret_intent(extracted, *, catalog, workspace, session_id, source_ref, s
         execution, normalizations = _normal_execution(execution, root)
         known_result = catalog.resolve(capability) if capability is not None else None
         known = known_result['candidates'][0] if known_result and known_result['candidates'] else None
-        if known is not None and set(execution) - set(known['execution_fields']):
+        if (known is not None and not known.get('plugin_options')
+                and set(execution) - set(known['execution_fields'])):
             raise ValueError('execution contains unknown parameters or a model-supplied binding')
         if source_facts is not None:
             facts = copy.deepcopy(source_facts)
             if 'execution' in facts:
                 facts['execution'], _ = _normal_execution(facts['execution'], root)
-                if known is not None and set(facts['execution']) - set(known['execution_fields']):
+                if (known is not None and not known.get('plugin_options')
+                        and set(facts['execution']) - set(known['execution_fields'])):
                     raise ValueError('source execution facts contain unknown parameters')
             conflicts = []
             for name, value in facts.items():
@@ -165,7 +167,8 @@ def interpret_intent(extracted, *, catalog, workspace, session_id, source_ref, s
         entry = resolved['candidates'][0]
         if capability == 'xlsx.inspect':
             execution['skill_binding'] = copy.deepcopy(entry['skill_binding'])
-        request = {'schema_version': 2, 'capability': capability, 'contract_version': 1,
+        request = {'schema_version': 2, 'capability': capability,
+                   'contract_version': entry['contract_version'],
                    'goal': extracted['goal'], 'constraints': copy.deepcopy(constraints),
                    'execution': execution, 'source_ref': source_ref, 'session_id': session_id}
         # An event is stable within one real session/source and exact extraction.

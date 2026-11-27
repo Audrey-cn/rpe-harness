@@ -9,6 +9,7 @@ description = "State-driven capability addressing for persistent learning agents
 requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
+    "cloudpickle>=3,<4",
     "openpyxl>=3.1.5,<3.2",
 ]
 

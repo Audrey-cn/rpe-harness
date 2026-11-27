@@ -59,7 +59,16 @@ def test_repeated_http_addresses_and_intent_prepare_reuse_one_catalog_scan(tmp_p
         assert initial == 1
         for _ in range(3):
             assert call(address, '/capabilities/resolve', {'capability': 'tabular.deduplicate'})[1]['status'] == 'ready'
-            assert len(call(address, '/capabilities')[1]['entries']) == 4
+            entries = call(address, '/capabilities')[1]['entries']
+            capabilities = {row['capability']: row for row in entries if row['capability']}
+            assert {'tabular.deduplicate', 'json.normalize', 'xlsx.inspect',
+                    'tabular.filter', 'json.patch'} <= capabilities.keys()
+            for capability in ('tabular.filter', 'json.patch'):
+                assert capabilities[capability]['executable'] is True
+                assert call(address, '/capabilities/resolve', {'capability': capability})[1]['status'] == 'ready'
+            discovered = [row for row in entries if row.get('skill_id') == 'unrelated']
+            assert len(discovered) == 1
+            assert discovered[0]['executable'] is False
         status, handoff = prepare_json(server, tmp_path)
         assert status == 200 and handoff['status'] == 'ready'
         assert len(enumerated) == initial
