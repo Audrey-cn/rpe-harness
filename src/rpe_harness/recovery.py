@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from .contracts import ExecutionPlan
-from .file_lock import NOFOLLOW, lock_exclusive
+from .file_lock import NOFOLLOW, lock_exclusive, unlock
 from .tasks import plan_from_dict, current_plan_revisions
 
 
@@ -36,6 +36,7 @@ def _chain_lock(store, root_run_id: str):
         lock_exclusive(descriptor, blocking=True)
         yield
     finally:
+        unlock(descriptor)
         os.close(descriptor)
 
 

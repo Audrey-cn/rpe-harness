@@ -17,7 +17,7 @@ import sqlite3
 import stat
 import uuid
 
-from .file_lock import NOFOLLOW, lock_exclusive
+from .file_lock import NOFOLLOW, lock_exclusive, unlock
 from .intent import _bounded, _identity
 from .proposal import ProposalStore, create_proposal
 from .skill_catalog import _absolute
@@ -80,6 +80,7 @@ class TaskOperations:
             lock_exclusive(descriptor, blocking=True)
             yield
         finally:
+            unlock(descriptor)
             os.close(descriptor)
 
     def _owned(self, operation_id, owner):
