@@ -1,9 +1,10 @@
 """Bounded durable scheduling. Queue records never authorize activation."""
 from __future__ import annotations
 
-import fcntl
 import os
 import stat
+
+from ..file_lock import lock_exclusive
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -34,7 +35,7 @@ def maintenance_lease(db_path, owned_root):
         os.close(directory)
     with os.fdopen(fd, 'a+b') as lease:
         try:
-            fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            lock_exclusive(lease, blocking=False)
         except BlockingIOError:
             yield False
         else:

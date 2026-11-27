@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import csv
-import fcntl
 import io
 import json
+
+from ..file_lock import lock_exclusive
 import os
 import tempfile
 import time
@@ -387,7 +388,7 @@ def apply_candidate(proposal_id, db_path, owned_root=None, *, _checkpoint=None):
     directory.mkdir(exist_ok=True)
     lease_path = directory / identifier
     lease = lease_path.open('a+b')
-    fcntl.flock(lease, fcntl.LOCK_EX)
+    lock_exclusive(lease, blocking=True)
     snapshot = {'version_id': before[0], 'generation': before[1],
                 'target_version_id': proposal['version_id'], 'certificate_hash': proposal['validation_hash']}
     try:

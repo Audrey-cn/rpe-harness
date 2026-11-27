@@ -1,9 +1,10 @@
 """Durable evolution records. Candidate text never grants execution authority."""
 from __future__ import annotations
 
-import fcntl
 import hashlib
 import json
+
+from ..file_lock import lock_exclusive
 import os
 import sqlite3
 import time
@@ -274,7 +275,7 @@ class EvolutionStore:
             lease = lease_path.open('a+b')
             try:
                 try:
-                    fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    lock_exclusive(lease, blocking=False)
                 except BlockingIOError:
                     continue
                 with self.connect() as db:

@@ -1,245 +1,175 @@
 <div align="center">
 
-# ⚙️ RPE-Harness · State-Driven Capability Addressing &amp; Verifiable Agent Execution
+<img src="docs/banner.svg" alt="RPE-Harness — Local-First Verifiable Execution Kernel for Coding Agents" width="100%">
 
-**让 AI Agent 负责起草与意图理解，把确定性执行、独立产物验收、原子取消与无损回滚交给本地可信内核。**
+<br />
 
-*State-driven capability addressing, independent artifact verification, atomic cancel-vs-publish convergence, and auditable evolution for persistent coding agents.*
+[![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v1.18.0` · `Python 3.10+` · `Node.js 20+ (DSH)` · `SQLite + openpyxl` · `MIT License`
+`v1.19.0` · `Linux / macOS / Windows` · `Python 3.10+ & Node.js 20+` · `Zero Daemon` · `SQLite + 1 Dep` · `MIT License`
+
+<p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
 <p>
-  <a href="#-核心架构与亮点">核心架构</a> ·
-  <a href="#-v1180-新增a2-dsh-第二宿主薄适配与跨宿主安全交接">v1.18.0 新特性</a> ·
-  <a href="#本机快速使用">快速上手</a> ·
-  <a href="integrations/dsh/README.md">DSH 第二宿主适配</a> ·
-  <a href="docs/fusion.md">阿卡夏融合设计</a>
+  <a href="#-why-rpe-harness">Why RPE</a> ·
+  <a href="#-architecture">Architecture</a> ·
+  <a href="#-how-rpe-compares">vs Alternatives</a> ·
+  <a href="#-4-family-live-benchmarks">4-Family Benchmarks</a> ·
+  <a href="#-30-second-quickstart">Quickstart</a> ·
+  <a href="#-honest-scope--current-limits">Honest Limits</a>
 </p>
 
 </div>
 
 ---
 
-## 🧩 核心架构与亮点
+## 🎯 Why RPE-Harness
 
-**RPE-Harness** 是从原 `Progenitor`（阿卡夏协议与基因注册表）彻底迭代而来的**单运行时可验证执行内核**：不再依赖守护进程、P2P 或外部框架，仅需 Python 标准库 + `openpyxl`，即可为 Hermes / Claude Code / 自定义 Agent 提供可审计的本地能力执行闭环：
+Most AI agent frameworks focus on giving LLMs **more autonomy** to call tools and grade their own output. In real local workflows, that causes four recurring failure modes:
 
-| 模块 | 能力边界 |
-| :--- | :--- |
-| **🎯 确定性执行与独立 Oracle 验收** | 内置 CSV/XLSX 去重、`json.normalize/v1` 与原生 XLSX helper 适配；保留原文件、禁止覆盖输出、独立校验器复核产物与输入 hash 后原子发布 |
-| **🛑 C4 原子取消与发布竞态收敛 (`v1.16.0`)** | 提供 `runs cancel` CLI 与 `POST /runs/<RUN_ID>/cancel` 回环接口：幂等取消、数据库原子围栏、租约安全释放；对已启动发布或已终态任务拒绝篡改并返回真实状态 |
-| **🔐 能力资产与来源签名（吸收 Progenitor）** | 内容寻址（SHA-256 去重）+ RSA PKCS#1 v1.5 SHA-256 双签名发布包与显式本地 `keyring`；所有导入候选默认 `unverified`，须经独立验收才可 CAS 激活或一键回滚 |
-| **📝 自然语言起草 + Digest 绑定确认** | 模型只负责起草带原文引用的要求清单，用户确认绑定当前 `digest` 的草案后由确定性执行器落地；陈旧草案或跨任务误点一律拒绝 |
-| **📊 实证优先（Evidence-First）** | 在 `v1.15.3` 真实 Hermes + `mimo-v2.6-pro` 受控 XLSX 对照中，两侧产出**逐字节一致**且均通过独立验收，RPE 路径总 token 减少 **82.8%**（`11,755` vs `68,327`；单样本受控实测，详见 [1.15.3 报告](reports/v1.15.3/1.15.3兼容与复验.md)） |
+1. **Self-grading illusions** — An agent claims a file was transformed correctly while silently dropping leading zeros (`0041` → `41`), rewriting lexical JSON (`1.0` → `1`, `-0` → `0`), or clobbering the original file.
+2. **Forged or stale approvals** — Ordinary tool approval lets models mutate parameters, or a delayed UI click confirms a draft whose input file has already changed.
+3. **Cancel-vs-publish lies** — Clicking "Stop" while a worker is writing either corrupts output or falsely claims rollback after publication already occurred.
+4. **Wasted tokens on unresolvable prompts** — Heavy agent loops burn tens of thousands of tokens before realizing a required business constraint is missing or two source docs contradict each other.
 
-## 🆕 v1.18.0 新增：A2 DSH 第二宿主薄适配与跨宿主安全交接
+**RPE-Harness flips the authority model:**
 
-- **DSH 第二宿主零依赖薄适配（[`integrations/dsh/`](integrations/dsh/)）**：纯 Node.js ESM 插件，直接通过 `execFile` 对接共享的 `rpe host` JSON CLI，不复制执行器或 SQLite 账本；模型工具仅暴露 `rpe_capabilities / rpe_start_task / rpe_show_task` 且宿主身份不可伪造，`confirm / cancel / reconcile / handoff` 严格锁定为宿主用户可信动作。
-- **跨宿主安全交接（`HostAPI.handoff_task` & `rpe host handoff`）**：支持显式重授权来源、路径重映射与不可变血缘留存，强制废止原宿主 `confirmation_id`，拒绝任何未授权、已撤权或跨会话来源，以及原宿主 digest 重放（通过 G2 门禁负例验证）。
+> **Let the LLM draft intent. Keep authorized source resolution, digest-bound user confirmation, deterministic execution, independent oracle verification, and atomic cancellation inside a zero-daemon local SQLite kernel.**
 
-### v1.17.0 · C2 窄来源补取与 C4 宿主无关任务门面
+---
 
-- **C2 窄授权来源补取（`source_resolver.py`）**：新增 `SourceResolver.resolve(field, source_refs, job_id, session_id)`，仅在已授权 `source_refs` 内做最多 2 次有界补取，精确区分 `found / needs_user / conflict / stale / forbidden`，杜绝静默猜测、字节篡改或跨任务隐私泄漏。
-- **C4 宿主无关任务门面（`host_api.py` / `operations.py` / `host_cli.py`）**：提供 `HostAPI` 五个标准接口（`start_task / show_task / confirm_task / cancel_task / reconcile_task`）及薄 JSON CLI（`rpe host capabilities|start|show|confirm|cancel|reconcile`），复用既有 SQLite 账本、不导入 Hermes 循环，为 DSH 与 NewCC 接线提供统一底座。
-- **双平台 GitHub Actions CI**：Ubuntu（Python 3.11/3.12 静态检查与核心回归）+ macOS（真实 `sandbox-exec` 沙箱验证）。
+## 🏗️ Architecture
 
-### v1.16.0 · C4 公共任务取消与状态收敛
-
-- **CLI 与 HTTP 双入口**：新增 `rpe runs cancel RUN_ID --db DB [--reason ...]` 与回环接口 `POST /runs/<RUN_ID>/cancel`（复用 `Origin` / `Content-Type` / JSON 大小与超时门禁）。
-- **原子取消 vs 发布竞态**：数据库层立即围栏发布，非终态任务平滑收敛至 `cancelled` 并记录取消原因与时间戳；已进入发布意图或已终态任务严格返回冲突与真实记录，绝不伪造回滚；重复取消天然幂等。
-- **租约清理与 digest 确认护栏**：即便暂存目录清理失败仍保证释放 worker 租约；完整覆盖陈旧草案与跨会话确认拒绝回归测试；同步补齐 MIT `LICENSE` 与 Python 3.11/3.12 GitHub Actions CI。
-
-<details>
-<summary><strong>📜 完整版本演进史（v1.0 → v1.15.3）</strong></summary>
-
-1.15.3 适配本机新版 Hermes：在隔离进程里走 Hermes 原生单轮入口，校验技能返回的相对路径、技能目录和实际文件，并为审查过的 XLSX 助手字节增加精确授权。试验结果和仍未验证的边界见[1.15.3 维护报告](reports/v1.15.3/1.15.3兼容与复验.md)。
-
-1.15.2修复 macOS 原生收据在启动子进程切换映像时的误拒：仅在内核探测确认进程已换映像或身份后丢弃旧采样，保留未解决的活进程错误。安装包的相关检查已通过；当前 Hermes 接口与 XLSX 适配器签名仍需匹配后才能完成真实模型复验。见[维护与复验报告](reports/v1.15.2/1.15.2原生收据与环境复验.md)。
-
-1.15.1修复比较辅助器的异常草稿容错：原候选与失败成本保留，后续任务继续且不重发，离线重查拒绝证据。一个新增CSV任务已走通公开入口、确认和实际产物；原生业务参数正确但引用合同不合格，未获执行批准。仅为一对新输入冒烟，最终全量2194项通过、1项原生收据失败、7项跳过，安装包90项通过；清理结果另列，见[1.15.1维护报告](reports/v1.15.1/1.15.1维护与验收报告.md)。
-
-1.15增加显式的参数字面值核验、复用的工具响应门禁与一次恢复、同调用临时stdout交付收据，以及隔离宿主配置入口。三组受控对照RPE完整链3/3、原生1/3；独立CLI认为两边核心业务理解均合理，差异还包括来源和草稿结构。有限样本中的token下降不代表整个开发成本优势。最终包82项通过，全量预检的失败与修补另列；见[1.15报告](reports/v1.15.0/1.15开发与验收报告.md)及[执行计划](docs/superpowers/plans/2026-10-15-rpe-v115.md)。新profile需显式选择，日常Nous配置尚不能直接用于隔离起草。
-
-本地能力路由与可验证任务执行器。1.0 支持 CSV/XLSX 按明确关键列去重，独立检查产物、保留原文件、禁止覆盖输出，并把事件、执行阶段、验证和结果持久保存到 SQLite。
-
-1.2 增加明确能力契约、冻结执行计划、Hermes 强制工具入口，以及持久反馈、升级提案、自动候选验证和回滚。现有 CSV 契约的配方与 Python 执行器候选可自动激活；更广的核心代码与新能力升级保存为提案，等待相应可信验收集。持续学习收益与因果图收益仍需独立验证。
-
-1.3 将阿卡夏的能力包、内容寻址、本地 Registry 获取与来源签名纳入同一产品。执行、独立验证、反馈、激活与回滚仍由 RPE 统一管理。旧 Protocol 不作为运行依赖，旧 Registry 继续作为资源仓；导入的旧基因默认只供发现。运行依赖仍仅 openpyxl，资产与来源层使用标准库。融合设计、迁移边界和命令见 [能力资产与融合](docs/fusion.md)，开发进度见 [todo](docs/superpowers/plans/2026-10-14-akasha-fusion.md)。
-
-1.4 增加 `json.normalize/v1` 明确契约、双签名本地 Registry 发布包与离线发布前验收。JSON 和已有 CSV/XLSX 共用持久执行、独立验证、无覆盖发布、恢复与反馈；JSON 候选仍需专门可信验收集，不能借 CSV 证书自动激活。版本计划见 [1.4 todo](docs/superpowers/plans/2026-10-14-rpe-v14.md)，本地发布包命令见 [Registry 发布前验收](docs/registry-prepublish.md)。
-
-1.5 建立 JSON 候选专用验收和独立版本槽，维护循环自动整理已验证 JSON 配方，并处理外部代码提案；生产失败隔离并恢复有效前版本或内置执行器。无人值守验证覆盖跨进程升级、崩溃、错误产物与回滚，自动操作仍受专用证书和固定预算约束。见 [JSON 升级说明](docs/json-upgrades.md)与[1.5 todo](docs/superpowers/plans/2026-10-14-rpe-v15.md)。
-
-1.6 增加真实技能快照与原生 XLSX helper 适配、发现/加载/恢复/调用的独立验收、按来源恢复必要上下文，以及可超过100条历史运行的持久维护。升级生成器沿用既有 ABI，只产生待验收提案。使用与边界见 [真实技能和维护](docs/real-skills.md)，执行 todo 见 [1.6 计划](docs/superpowers/plans/2026-10-14-rpe-v16.md)。
-
-1.7 增加授权的真实训练材料导出、前候选实际探测与语义反馈生成，以及预登记的三组学习对照。新代码仍须独立资格验收和激活重播，冻结后才在未见输入复用。生成、失败、探测、验收和生产开销均计入账本；闭环成立与质量、总成本改善分别判断。当前扩展已有 CSV 去重 ABI 的实现，尚不代表任意新能力可自动学习。见 [真实反馈与生成](docs/learning-loop.md)与[1.7 todo](docs/superpowers/plans/2026-10-14-rpe-v17.md)。
-
-1.7 本地实验版已证明真实闭环和14次完整的新输入直接复用；原生对照与绑定补验仍暴露参数解释、预算内纠错的问题，质量或整轮成本收益未成立。数据、缺测及使用边界见[1.7验收报告](reports/v1.7.0/1.7开发与验收报告.md)。
-
-1.8 将开发重心回到统一能力目录、任务理解与必要状态寻址。新增路径先让 Hermes 提取当前任务的结构化意图，再由可信父进程查找适用能力、绑定输入与约束并保存最小状态；下一阶段只交接状态 ID，实际执行仍经现有独立验收。三项既有业务能力构成当前范围，外部技能 metadata 不注册执行权限。通用学习、技能整理与调度继续复用宿主，不新增训练框架或常驻服务。命令与限制见 [统一目录和状态交接](docs/capability-addressing.md)，设计与执行边界见 [1.8 设计](docs/superpowers/specs/2026-10-15-rpe-v18-design.md)和 [1.8 todo](docs/superpowers/plans/2026-10-15-rpe-v18.md)。原生收益以对应实际验收结果为准，不能从接口结构推导一般优势。
-
-1.8 本地版修后的两个真实任务已通过最小状态交接和独立验收，完整回归1444项通过。原冻结对照暴露接口缺陷，其负结果原样保留；修后冒烟不替换对照成绩，尚未证明相对Hermes原生的收益。实际用量、限制和清理见 [1.8验收报告](reports/v1.8.0/1.8开发与验收报告.md)。
-
-1.9 新增干净理解入口、逐项来源要求账本和控制器确定性执行。可自动执行的范围限定为完整严格JSON来源；未知要求、漏提、来源冲突和自由文字无法确认完整性时阻断。实际模型消息重建、真实理解工具调用、控制器执行及业务oracle分别验收，不将控制器包装成模型调用。仍复用Hermes机制与原有执行底座，详见 [干净来源与执行](docs/clean-source.md)和 [1.9 todo](docs/superpowers/plans/2026-10-15-rpe-v19.md)。
-
-1.9 本地版已完成：1524项回归与3项子测试通过；真实Hermes共14会话，正式生产任务两臂业务均4/4，clean要求/执行链4/4与来源边界2/2通过。严格来源任务组中clean总token为17156，原生246610；实际费用未核实，原生链路缺证不等同业务错误。边界、原始负结果和清理见 [1.9验收报告](reports/v1.9.0/1.9开发与验收报告.md)。
-
-1.10 增加自然语言任务的要求清单与确认入口：Hermes 只负责起草，展示完整原话、逐条引用、建议默认值和缺项；用户确认具体草案后，由既有执行器确定性执行与验收。无需用户手写 JSON。引用不证明任意语义完整性，用户仍须审阅清单是否符合原意。旧 `clean` 的严格来源保证保持独立。使用流程见 [自然语言任务审阅](docs/task-review.md)，设计与待办见 [1.10 设计](docs/superpowers/specs/2026-10-15-rpe-v110-design.md)及 [1.10 todo](docs/superpowers/plans/2026-10-15-rpe-v110.md)。
-
-1.10 本地验证版覆盖1618项回归及3项子测试，安装包61项检查通过。一个真实Hermes生成的原JSON清单经过独立模拟语义审阅后，确认、确定性执行、产物验收和幂等重放已跑通。正式原生对照两臂生产完整链仍0/4；修后单例也暴露严格字段评分对冗余标志的误拒，原成绩未重评。自然语言入口需要审阅，总体质量或总成本优势未成立；实际用量、限制、单独补验与清理见 [1.10验收报告](reports/v1.10.0/1.10开发与验收报告.md)。
-
-1.11 修复公开自然语言起草命令与验证器的合同接线；配置真实技能目录时增加全量元数据发现、模型显式选择、Hermes 原生加载及独立 HOME 中的冷技能召回。调用方可明确导入已有来源附件，模型只接收必要事实与引用，确认及执行重新核验绑定。执行能力仍限既有三个契约，通用净收益由实际对照决定。见 [1.11 使用说明](docs/review-skill-context.md)与 [1.11 todo](docs/superpowers/plans/2026-10-15-rpe-v111.md)。
-
-1.11 本地验证版的一个新输入已跑通真实冷技能、明确来源、原 helper、确认执行和重放；源码回归及必要补测覆盖当前 1,720 项与 3 子测试，独立安装检查 147 项。正式对照仍为 RPE 1/4、原生 0/4，成对证据不足，不能据此宣称质量或成本优势。实际结果、费用缺测和清理见 [1.11验收报告](reports/v1.11.0/1.11开发与验收报告.md)。
-
-1.12 统一单字符参数表达，增加绑定原文的 `quote_ref` 定位，并为原生文件写入、冷恢复与原 helper 调用补充实际观测。保留模型原稿、审阅确认和确定性执行边界，仍只支持既有三个执行契约；无需新增服务或运行依赖。冻结对照、独立 CLI 复核与实际用量见 [1.12验收报告](reports/v1.12.0/1.12开发与验收报告.md)，使用说明见 [自然语言与真实技能](docs/review-skill-context.md)。
-
-1.12 冻结验证的完整链为RPE 2/4、原生1/4，其中含一项缺键探针；三个生产任务的完整链均1/3，只有一对完整可比。当前尚未证明稳定无人值守、总体质量或总成本优势，具体阻断与开放待办均保留在报告中。
-
-1.14补齐显式Hermes请求预算、原生业务IO签名收据、正常结束回合和最终源码的真实模型入口证明。严格四组对照两边均0/4，新受限模式尚未通过业务验收，保持显式选择。最终wheel与91个源码模块一致，独立CLI审阅已完成；真实结果、全部失败和总成本见[1.14验收报告](reports/v1.14.0/1.14开发与验收报告.md)，实施待办见[1.14计划](docs/superpowers/plans/2026-10-15-rpe-v114.md)。
-
-1.13 将模型起草引用明确为文字或标识二选一；提案持久化后复用Hermes正常结束回合，减少纯收尾请求。macOS原生对照增加实际helper进程退出观测及回执校验，业务结果仍单独验收；无需新增运行依赖或常驻服务。真实结果、边界和成本见[1.13验收报告](reports/v1.13.0/1.13开发与验收报告.md)，待办见[1.13计划](docs/superpowers/plans/2026-10-15-rpe-v113.md)。
-
-</details>
-
-## 本机快速使用
-
-仓库提供 `scripts/rpe`，自动寻找具备 openpyxl 的 Python >=3.10，包括本机 Codex bundled runtime。它不安装软件、不修改全局配置，也不生成 Python 缓存。
-
-~~~sh
-cd /Users/audrey/项目/rpe-harness
-./scripts/rpe --version
-./scripts/rpe benchmark --report /tmp/rpe-basic-validation.json
-~~~
-
-复制 `examples/deduplicate-v2.json` 或 [JSON 示例](examples/json-normalize-v2.json)，将输入、输出改为真实绝对路径；输出文件必须不存在。原 tabular V1 示例仍兼容，JSON 要求 V2。然后执行和查询：
-
-~~~sh
-./scripts/rpe run --request request.json --db /absolute/path/runs.sqlite
-./scripts/rpe runs list --db /absolute/path/runs.sqlite
-./scripts/rpe runs show RUN_ID --db /absolute/path/runs.sqlite
-./scripts/rpe runs cancel RUN_ID --db /absolute/path/runs.sqlite --reason '停止本次任务'
-~~~
-
-标准输出是 JSON。执行成功退出码 0；拒绝或非法请求 2；执行失败、中断或已取消事件的重放 1；仍在运行的幂等重放 3。runs show/list 查询成功返回 0，记录自身 status 可为失败或拒绝。运行结果包含 run_id、status、stage、原始事件、状态、验证、产物和错误。默认数据库为 `~/.local/share/rpe-harness/runs.sqlite`，可通过 `--db` 或 `RPE_STATE_DIR` 指定。测试请显式使用临时数据库。
-
-`runs cancel` 将尚未发布的 received/running/interrupted 运行标为 cancelled，保存取消时间、原状态和可选原因（非空 UTF-8 文本，最多 4096 字节）。成功和重复取消退出 0；重复取消保留首次审计记录。已 succeeded/rejected/failed、已有发布证据或已经预留恢复后继的运行返回 conflict 和原记录，退出 2。取消和发布通过同一 SQLite 写事务收敛；已发布文件不会被删除或覆盖。正在准备或验证的工作在下一持久检查点释放租约和暂存文件；进程退出后的遗留取消租约会在后续启动时清理。
-
-## 常规安装
-
-~~~sh
-python3.12 -m venv .venv
-.venv/bin/python -m pip install .
-.venv/bin/rpe-harness --version
-~~~
-
-运行依赖仅 openpyxl 3.1.x；核心路由、SQLite、CLI、HTTP 使用标准库。1.0 面向 macOS/Linux，进程租约使用 POSIX 文件锁。开发测试：
-
-~~~sh
-.venv/bin/python -m pip install '.[dev]'
-PYTHONPATH="$PWD/src" PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p no:cacheprovider
-~~~
-
-wheel 自带 CSV 去重、XLSX 去重和 JSON 空白规范化三个内置执行器，不依赖源码目录外的 `data/`。需要使用本机技能索引时显式追加 `--data-dir /Users/audrey/项目/rpe-harness/data`；这些外部技能只供路由推荐，不能自动执行其 SKILL.md 或脚本。
-
-## 文件语义
-
-- 显式 key_columns、keep=first，保留首次出现记录及原顺序；不修剪字符串、不合并大小写、不把 CSV 前导零转为数字。空关键列、缺列、重复列名及不支持的选项会拒绝。
-- CSV 为紧凑输出，默认 UTF-8 BOM、逗号分隔，可指定 encoding/delimiter。
-- XLSX 保留工作表的原行坐标，清空重复记录的单元格内容，因此可能留下空行；保留记录、公式及受支持样式保持原位置。可指定 sheet；复杂对象和无法证明安全的公式明确拒绝。
-- 独立验证器重新读输入与暂存产物；检查第一条记录、非关键列、顺序、公式及输入 hash。验证通过后以独占原子操作发布，既有文件和 broken symlink 均不得覆盖。
-- openpyxl 不计算公式。验证证明的是公式结构与引用保留，不能证明 Excel 计算值。支持的具体公式/工作簿边界见执行器错误信息与 [设计](docs/superpowers/specs/2026-10-13-rpe-v1-design.md)。
-
-## JSON 契约
-
-请求显式声明 `capability="json.normalize"`、`schema_version=2`、`contract_version=1`。`execution` 只接受绝对 `input_path`、新 `output_path` 和必填 `style`；输入输出扩展名均须为 `.json`。路径各级禁止符号链接，请使用规范绝对路径，macOS 临时路径可使用 `/private/var/...`。
-
-| 参数或边界 | 行为 |
-|---|---|
-| `style="pretty"` | 固定两空格缩进、LF；空对象/数组同行；恰好一个末尾 LF |
-| `style="minify"` | 移除字符串外空白；恰好一个末尾 LF |
-| 词法保留 | 对象成员/数组顺序、字符串转义和数字 token 原样保留；`1`、`1.0`、`1e0`、`-0` 不互换 |
-| 固定预算 | 输入 ≤1 MiB、输出 ≤16 MiB、容器深度 ≤64、token 数 ≤100000、单个数字 token ≤256 字符 |
-| 输入 | 严格 UTF-8、无 BOM；允许对象、数组、字符串、数字、布尔、null 顶层值 |
-| 拒绝 | 重复解码后对象键、NaN/Infinity、非法 UTF-8/语法、孤立代理码位、尾随内容、超预算、覆盖输出 |
-
-预算不能由请求扩大，token 包括结构标点。可选 `constraints` 仅支持 `preserve_original`、`preserve_order`；即使不写 constraints，词法和原输入保留仍是强制行为。独立 oracle 重新读取源与产物，检查非空白 token、精确样式、原 hash 和执行/验证修订；准入、发布、恢复和反馈读取也受对应字节预算限制。JSON 返回 `input_bytes`、`output_bytes`、`root_type` 等指标，不产生表格行计数。它只处理空白，不排序键、不转码字符串、不转换数值，也不提供路径提取或 schema 修复。完整设计见 [1.4 设计](docs/superpowers/specs/2026-10-14-rpe-v14-design.md)。
-
-## 服务与 Agent 旁路
-
-~~~sh
-./scripts/rpe serve --host 127.0.0.1 --port 18400 --db /absolute/path/runs.sqlite
-# 原模块入口仍可用：python -m rpe_harness.server --port 18400 --db ...
-~~~
-
-GET：`/health`、`/stats`、`/skills`、`/skills/ID`、`/runs`、`/runs/RUN_ID`、`/capabilities`。
-POST：`/route`、`/run`、`/events`、`/runs/RUN_ID/cancel`、`/usage`、`/skills/state`、`/reload`、`/causal/discover`、`/causal/chain`、`/capabilities/resolve`、`/intent/prepare`、`/intent/show`。1.8 新入口的参数和边界见 [统一目录和状态交接](docs/capability-addressing.md)。
-
-取消接口只接受 `{}` 或 `{"reason":"停止任务"}`，成功和重复取消返回 200、冲突 409、未知运行 404；响应包含真实运行记录 `run`。`/run`、`/events` 重放已取消事件返回 409。
-
-请求体只接受 JSON 对象，最多 1 MiB；POST 要求 application/json，拒绝外部 Origin；请求接收有总时限、并发数有上限。默认回环监听。`/route` 只给推荐，不执行任务；UNKNOWN、缺事实、不兼容或低匹配会返回升级信号，未内置自动 LLM 升级器。`constraints` 是用户要求，`facts` 是已确认条件；执行路径重新探测文件事实。
-
-Hermes 或其他 Agent 可以发送同一 JSON 协议：
-
-~~~sh
-./scripts/rpe events submit --event event.json --db /absolute/path/runs.sqlite
-# 支持 --event - 从 stdin 读取
-~~~
-
-旁路协议与原生插件共享执行和幂等机制。幂等键为 `(source,event_id)`；同源同 ID 同内容返回原运行，同 ID 不同内容冲突。执行成功只有在产物验证、无覆盖发布、SQLite 提交都完成后成立；进程意外退出留下的运行在后续启动时按文件租约标 interrupted，不依赖 PID 是否已被复用。发布后、提交成功前崩溃也保留 interrupted，发布意图和 hash 留在 steps；不会自动补记成功。
-
-`./scripts/rpe recover RUN_ID --db /absolute/path/runs.sqlite` 只恢复已停止、尚未进入发布阶段的失败尝试，原输入 hash 和执行修订必须一致，输出必须不存在。重复恢复返回同一个关联后继；默认总尝试预算为 3。发布后的未知结果需要显式检查产物和记录，不能自动重试。
-
-## 真实 Hermes 会话
-
-当前隔离启动器在 macOS、本机 Hermes 0.21.7/0.22.0 的插件 API 和现有 Xiaomi API key 配置上做过验证。它读取当前选用的模型和计划端点，为每次调用创建独立 home，关闭记忆、外部插件、MCP、辅助模型请求和自动安装。只复制必要 API key，不复制 OAuth 状态，也不改日常配置或重启网关。
-
-~~~sh
-./scripts/rpe hermes run --workspace /absolute/path/workspace \
-  --prompt-file /absolute/path/task.txt --request /absolute/path/request.json \
-  --db /absolute/path/runs.sqlite
-~~~
-
-默认严格入口直接暴露 `rpe_task`，通过官方 middleware 发送指定工具选择，获得匹配的持久结果后才允许总结。执行准入还会阻止 `none` 或不完整策略的调用，以及同轮终态后的新任务；有效原调用只读重放，新 turn 可重新进入。工具使用输入/输出路径和目标等业务参数，内部生成 V2 请求。JSON 显式传 `capability="json.normalize"` 和 `style`；不传 capability 按原 tabular 契约处理，必须传 key_columns。路径必须位于指定工作区，禁止符号链接。`--request` 是可选的固定契约锚，能检测模型改变关键列、JSON style、路径和选项；不提供时仍验证产物符合模型抽取的契约，但自然语言意图抽取需业务验收。`--entry-mode optional` 保留可选工具模式用于对照，不会自动降级严格策略。
-
-集成模式的启动器父进程按次创建带随机认证凭据的回环执行入口，在 Hermes 沙箱之外启动固定 Harness CLI。Hermes 保留原文件沙箱；CSV 候选由外部 Harness 子进程施加自己的单层沙箱，避免 macOS 拒绝重复 `sandbox_apply`。入口核对固定工作区、真实调用 ID、持久 receipt、契约和当前输入 hash；它不接受任意 shell 或 Python 程序。执行有超时，退出时关闭入口并回收执行进程组和登记的后代，不安装常驻服务或调度任务。严格准入与最终 artifact gate 仍独立检查真实模型策略、调用链和产物。
-
-1.3 的外部入口按无符号链接目录遍历打开源文件和输出目录，把描述符传给固定 CLI；读取原文件使用源描述符，暂存使用可信数据库父目录，发布以输出目录描述符执行独占硬链接。路径被替换时会拒绝；即使替换发生在最后一次路径检查之后，也不会沿新符号链接向外写出。数据库、其父目录、候选 owned-root 和父进程仍是信任边界；这是目录对象绑定，不是对任意同 UID 进程的完整 OS 隔离。暂存与输出必须位于同一文件系统，缺少所需系统接口时拒绝。硬链接已成功而最后检查失败时，原绑定目录可能保留已验证产物，运行保持失败/未知发布结果，不能自动重试或补记成功。1.2 的 [原缺口证据](reports/v1.2.0/evidence/review/external-executor/README.md) 保留为历史快照。
-
-会话临时聊天历史、凭据副本和缓存在命令返回后清理；产物和指定数据库保留。`completed` 表示宿主完成，`harness_verified` 才表示最终 Harness 运行已验证。未调用 Harness 的完成会话返回 unverified，退出码 1。拒绝返回 2。真实宿主事件保存在 `hermes_host_events`；原生 tool_call_id/api_request_id/turn_id 与 Harness run_id 分开保存，缺失原生 event_id 保留 null。事件记录失败会产生独立失败标记并阻止验收通过。
-
-普通 XLSX 注释保留文本和作者，重复行注释清空；不保证注释框尺寸或绘图外观。控件、图片和其他复杂绘图仍拒绝。
-
-手动加载插件默认使用配置 Python 的直接子进程，不会创建上述入口；已有外层 macOS 沙箱时，候选可能无法再次施加沙箱，优先使用隔离启动器。配置和模式区别见 [Hermes 接入说明](integrations/hermes/README.md)。历史真实验收见 [1.1 报告](reports/v1.1.0/1.1开发与验收报告.md)。
-
-`/usage` 是外部未验证报告，和内部 verified_success_count 分开。`/skills/state` 可手动启用/禁用或休眠，重启与 reload 均保留。
-
-## 无人值守升级周期
-
-```sh
-./scripts/rpe evolution cycle --owned-root /absolute/path/harness-state \
-  --db /absolute/path/harness-state/runs.sqlite
-./scripts/rpe evolution list --db /absolute/path/harness-state/runs.sqlite
-./scripts/rpe evolution experiences --db /absolute/path/harness-state/runs.sqlite
-./scripts/rpe evolution show PROPOSAL_ID --db /absolute/path/harness-state/runs.sqlite
+```mermaid
+flowchart LR
+    U["Natural Language Task + Authorized Sources"] --> C2["C2 SourceResolver\n(0-Token Gate: found / needs_user / conflict / stale / forbidden)"]
+    C2 -->|Authorized Facts Only| LLM["Any LLM / Host\n(MiMo · DeepSeek · GPT · Gemini)"]
+    LLM -->|Unprivileged Draft| C4S["C4 HostAPI.start_task\n(operation_id + generation=1)"]
+    C4S --> C4C["C4 HostAPI.confirm_task\n(Host-Only TrustedHostAction + Digest Lock)"]
+    C4C --> EXEC["Deterministic Executor\n(Atomic Cancel Fence · No Overwrite)"]
+    EXEC --> ORACLE["Independent Artifact Oracle\n(Hash + Lexical + Row Invariants)"]
+    ORACLE -->|Verified| PUB["Atomic Publish + SQLite Audit Receipt"]
 ```
 
-数据库必须位于声明的 owned-root 内，候选、验证临时目录和版本证据也保存在这里。周期重新检查持久运行和实际产物，整理紧凑经验，记录带证据的升级提案，并可自动验证/激活已有契约的配方。`--no-auto-apply` 只生成和验证；程序本身不创建定时任务。可由现有任务调度器定期调用。
+### Core Capabilities (`v1.19.0`)
 
-代码候选通过 `evolution propose --candidate candidate.py --component executor --kind csv_executor --evidence-run-id RUN_ID --owned-root ... --db ...` 提交；验证和激活必须有非空、仍可复查的持久已验证运行证据，并通过独立的 CSV 验收集。1.2 的实际代码生成演示绑定了两次 CSV 运行，这不是 API 强制的次数门槛。随后 `evolution validate PROPOSAL_ID`、`evolution apply PROPOSAL_ID`、`evolution rollback VERSION_ID` 均接受 `--db`。代码 ABI 为 `prepare(plan: dict, staging_path: str) -> None`，只产生暂存文件，不能修改源文件或直接发布。
+| Layer | Module | Guarantee |
+| :--- | :--- | :--- |
+| **C2 · Narrow Source Resolver** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | Resolves individual authorized fields in ≤2 bounded reads; blocks `needs_user`, `conflict`, `stale` (SHA mismatch), and `forbidden` (cross-job/session) in **~1 ms at 0 tokens** without leaking private fields into prompts. |
+| **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
+| **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
+| **A2 · Second-Host DSH Adapter** | [`integrations/dsh/`](integrations/dsh/) | Zero-dependency Node.js ESM plugin (`execFile` over `rpe host`). Injects non-spoofable `host_id: "dsh"` / `owner` / `session_id`; keeps `confirm/execute/cancel/handoff` strictly host-only; invalidates prior confirmations on cross-host handoff (**G2 Gate**). |
+| **Signed Capability Assets** | [`assets/`](src/rpe_harness/assets/) · [`evolution/`](src/rpe_harness/evolution/) | Absorbs Progenitor's content-addressed SHA-256 packages & RSA-SHA256 dual-signed provenance without P2P/IPFS daemons. Imported assets default to `unverified` and require independent acceptance before CAS activation or rollback. |
+| **OS Sandbox Backends** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) | Supports macOS `/usr/bin/sandbox-exec` and Linux `bwrap` (bubblewrap) with RSS/timeout monitoring; fails closed (`unavailable`) on unsupported hosts — never fakes isolation. |
 
-候选生成器与验收器分离；默认周期无需模型，也支持注入本机 Agent 的提案。代码候选在 macOS 子进程沙箱内验证，限制网络、文件写入、派生进程、CPU 时间和输出体积；生产任务仍通过原计划的独立验证。内存使用标准库 ctypes 调用 Darwin libproc 读取 RSS，以 128 MiB 软阈值、20ms 轮询监督；不可观测结果失败关闭，仅目标进程已消失时返回空值。它不能保证瞬时分配峰值，不能描述为任意恶意代码的完整资源隔离。候选失效会隔离并回退内置执行器，原版本快照可回滚。休眠、隔离经验保留索引和来源。
+---
 
-JSON 的已验证文件结果进入专属配方和经验，外部 `json_executor` 提案经过专用41例验收可自动激活；CSV证据及证书不能混用。候选失效时当前任务按同plan内置回退，后续任务恢复有效前版本或内置。维护硬预算为32提案/100历史run，更多使用方式见 [JSON升级](docs/json-upgrades.md)。Registry可执行发布包ABI仍仅支持已验证CSV执行器/配方。跨输入、进程重启、隔离、回滚及休眠查找只证明机制可观察地工作，不代表长期学习或token节省。
+## ⚖️ How RPE Compares
 
-## 评测和开发路线
+| Dimension | **LangGraph** | **Temporal / Trigger.dev** | **PydanticAI / TrueForge** | **RPE-Harness** |
+| :--- | :--- | :--- | :--- | :--- |
+| **Primary Role** | Multi-agent state graph orchestration | Cloud-native durable workflow cluster | Typed agent SDK / cloud runtime | **Local-first verifiable execution & approval kernel** |
+| **Infrastructure** | Heavy framework + checkpointer | Temporal server / cloud workers | SDK + external sandbox/telemetry | **Zero daemon · 1 SQLite file · 1 pip dep (`openpyxl`)** |
+| **HITL Boundary** | Graph `interrupt()` node | Workflow waitpoint | Tool-call approval | **Host-only `TrustedHostAction` + `proposal digest` + cross-host invalidation** |
+| **Result Proof** | User-written node logic | Workflow code | Schema + LLM-as-a-judge | **Independent deterministic Oracle + atomic no-overwrite publish** |
+| **Cross-Platform** | Python / JS | Cloud / Docker | Python / TS | **Linux · macOS · Windows (Python + Node.js DSH)** |
 
-`benchmark` 使用固定人工真值与明确命名的简单元数据基线，只测路由。文件闭环、重启、服务和 wheel 由测试与发布报告验证；不能据此推出真实 Hermes token 节省或长期学习收益。
+---
 
-旧 `experiments.baseline` 只是读取 Hermes 目录后调用 Harness Router 的诊断；`cold_skill_test` 和 `stress_test` 为旧合成实验/微基准，不代表独立真实任务效果。
+## 📊 4-Family Live Benchmarks
 
-1.1：真实 Hermes 事件和工具接入、原生基线、可复现端到端验证。
-1.2：明确契约、可靠工具调用、真实故障恢复、重复原生对照、证据驱动提案与已有契约执行器演进。
-后续：扩展新能力和其他宿主、独立可信升级验收集、持续学习收益对照，再研究因果图与更广的程序化沉淀。总体设计见 [架构与演进](docs/architecture.md)。
+Measured on **2026-11-27** across **4 model families** on identical controlled tasks (2 positive deterministic execution tasks + 2 negative boundary probes — full receipts in [`reports/v1.18.0/c3-multimodel-comparison/`](reports/v1.18.0/c3-multimodel-comparison/README.md)):
 
-审核证据见 [完整审核](reports/audit-2026-10-13/项目完整审核报告.md)。1.0 设计和任务计划位于 `docs/superpowers/`，正式验证和清理记录位于 `reports/v1.0.0/`。
+| Model | Harness Mode | RPE `v1.18` Pass | Native Pass | RPE Total Cost | Native Total Cost | Reduction |
+| :--- | :--- | :---: | :---: | ---: | ---: | ---: |
+| **`mimo-v2.6-pro`** (Xiaomi) | Raw Chat API | **4/4** | 4/4 | **309 tok** | 869 tok | **−64.4%** |
+| **`deepseek-chat`** (DeepSeek) | Raw Chat API | **4/4** | 4/4 | **219 tok** | 541 tok | **−59.5%** |
+| **`gpt-6.1-sol`** (OpenAI) | `codex-cli` Agent CLI | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
+| **`Gemini`** (Google) | Antigravity Subagent | **4/4** | 4/4 | **159 chars** *(2 calls)* | 203 chars *(4 calls)* | **−21.7% chars** *(tokens unexposed)* |
+
+> **Evidence-First Caveats:** These are 4 controlled small-file tasks per model (6-row CSV / 7-row JSON), not a multi-hour unattended benchmark. `codex-cli` counts include full CLI system/tool prompt overhead (comparable only within the same harness); Gemini's subagent harness does not expose raw provider tokens so output characters and call counts are reported honestly instead. In a separate real-Hermes XLSX comparison (`v1.15.3`, [`report`](reports/v1.15.3/1.15.3兼容与复验.md)), RPE produced byte-identical output with **−82.8%** fewer tokens (`11,755` vs `68,327`).
+
+---
+
+## 🚀 30-Second Quickstart
+
+### 1. Install (Linux / macOS / Windows)
+
+```bash
+git clone https://github.com/Audrey-cn/rpe-harness.git
+cd rpe-harness
+python -m venv .venv
+# macOS/Linux: source .venv/bin/activate  |  Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
+rpe-harness host capabilities
+```
+
+### 2. Embed from Python (`HostAPI`)
+
+```python
+from rpe_harness.host_api import HostAPI, TrustedHostAction
+
+api = HostAPI("/path/to/runs.sqlite")
+
+# 1. Model drafts an unprivileged operation (never auto-confirms)
+op = api.start_task(request_payload, {
+    "host_id": "my-app", "owner": "alice",
+    "session_id": "sess-1", "workspace": "/path/to/workspace",
+})
+
+# 2. Only your trusted host UI callback constructs TrustedHostAction
+receipt = api.confirm_task(
+    op["operation_id"], op["digest"],
+    TrustedHostAction(owner="alice", operation_id=op["operation_id"],
+                      generation=op["generation"], digest=op["digest"], actor="alice"),
+)
+
+# 3. Deterministic execution + independent oracle verification
+result = api.execute_task(op["operation_id"], "alice", confirmation_id=receipt["confirmation_id"])
+```
+
+### 3. Embed from Node.js / DSH (`integrations/dsh/`)
+
+```js
+import { createDshRpePlugin } from './integrations/dsh/index.mjs';
+
+const { modelTools, trustedActions } = createDshRpePlugin({
+  dbPath: '/path/to/runs.sqlite',
+  repoRoot: '/path/to/rpe-harness',
+});
+
+// Expose ONLY `modelTools` to the LLM; keep `trustedActions` strictly host-side
+const op = await modelTools.rpe_start_task(modelDraft, {
+  owner: 'alice', sessionId: 'dsh-1', workspace: '/path/to/workspace',
+});
+const conf = await trustedActions.confirmTask({
+  operationId: op.operation_id, digest: op.digest,
+  generation: op.generation, owner: 'alice', userApproved: true,
+});
+const res = await trustedActions.executeTask({
+  operationId: op.operation_id, owner: 'alice', confirmationId: conf.confirmation_id,
+});
+```
+
+---
+
+## ⚠️ Honest Scope & Current Limits
+
+We publish boundaries as openly as benchmarks:
+
+1. **Narrow built-in contract surface**: Today the kernel ships **3 verified built-in capabilities** (`tabular.deduplicate` for CSV/XLSX, `json.normalize/v1`, and audited XLSX inspection). It is a reference verifiable execution kernel, not a 100-tool general automation suite.
+2. **OS sandbox availability**: Strong process/filesystem/network isolation for untrusted candidate code uses macOS `/usr/bin/sandbox-exec` or Linux `bwrap` (`bubblewrap`); on Windows or hosts without `bwrap`, `sandbox_backend()` honestly reports `unavailable` and fails closed.
+3. **Production UI & multi-hour soak**: Desktop UI integration (NewCC) and multi-hour unattended soak benchmarks (`G3`/`G4`) are still active downstream work — current proof covers unit/integration invariants, 3-OS CI, and controlled multi-model pairs.
+
+---
+
+## 📚 Documentation & Verification
+
+| Topic | Link |
+| :--- | :--- |
+| Full Chinese documentation & CLI/HTTP reference | [README.zh-CN.md](README.zh-CN.md) |
+| Progenitor / Akasha asset fusion design | [docs/fusion.md](docs/fusion.md) |
+| DSH second-host adapter guide & E2E tests | [integrations/dsh/README.md](integrations/dsh/README.md) |
+| 4-family live C3 comparison report | [reports/v1.18.0/c3-multimodel-comparison/README.md](reports/v1.18.0/c3-multimodel-comparison/README.md) |
+| Real-Hermes XLSX paired verification (`v1.15.3`) | [reports/v1.15.3/1.15.3兼容与复验.md](reports/v1.15.3/1.15.3兼容与复验.md) |
+| License | [MIT](LICENSE) · [Third-Party Notices](THIRD_PARTY_NOTICES.md) |

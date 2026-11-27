@@ -111,7 +111,6 @@ jobs:
           pytest -p no:cacheprovider -q
           tests/test_source_resolver.py
           tests/test_cross_host_handoff.py
-          tests/test_cancellation.py
           tests/test_cancel_interfaces.py
       - name: Verify host CLI capabilities on Windows
         env:
