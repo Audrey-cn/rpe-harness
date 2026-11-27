@@ -62,6 +62,18 @@ def _path_facts(request, workspace):
     for name, path in [('workspace', workspace),
             ('input_parent', Path(request['execution']['input_path']).parent),
             ('output_parent', Path(request['execution']['output_path']).parent)]:
+        if os.name == 'nt':
+            target = Path(os.path.abspath(Path(path).expanduser()))
+            cursor = Path(target.anchor)
+            for part in target.parts[1:]:
+                cursor /= part
+                if cursor.is_symlink():
+                    raise ValueError('binding requires paths without symlinks')
+            current = os.lstat(target)
+            if not stat.S_ISDIR(current.st_mode):
+                raise ValueError('bound directory must be a directory')
+            result[name] = [current.st_dev, current.st_ino]
+            continue
         descriptor = _directory(path)
         try:
             current = os.fstat(descriptor)
