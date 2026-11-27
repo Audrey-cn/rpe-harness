@@ -1,0 +1,27 @@
+{
+  "version": "2.3.2",
+  "timestamp_utc": "2026-11-27T13:18:27.483909+00:00",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "python": "3.12.15",
+  "model": "Gemini (Antigravity subagent)",
+  "summary": {
+    "total_steps": 10,
+    "rpe_pass_all": 10,
+    "paired_steps": 7,
+    "rpe_pass_paired": 7,
+    "native_pass_paired": 5,
+    "rpe_output_chars": 632,
+    "native_output_chars": 22482,
+    "output_char_reduction_pct": 97.2,
+    "note": "Antigravity subagent harness does not expose raw provider token counts; output characters and exact Oracle pass rates are reported honestly."
+  },
+  "paired_verdicts": {
+    "step1": true,
+    "step2": false,
+    "step3": false,
+    "step4": true,
+    "step5": true,
+    "step6": true,
+    "step7": true
+  }
+}

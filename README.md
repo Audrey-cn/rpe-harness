@@ -89,18 +89,19 @@ Measured on **2026-11-27** across **5 model families (20/20 Oracle pass)** on id
 | **`gpt-6.1-sol`** (OpenAI) | `codex-cli` Agent CLI | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
 | **`Gemini`** (Google) | Antigravity Subagent | **4/4** | 4/4 | **159 chars** *(2 calls)* | 203 chars *(4 calls)* | **−21.7% chars** *(tokens unexposed)* |
 
-### Long-Horizon 10-Step Pipeline Benchmark (`v2.3.2` · `qwen4-max`)
+### Long-Horizon 10-Step Pipeline Benchmark (5 Model Families · `v2.3.2`)
 
-Beyond 6-row toy files, we ran a reproducible **10-step chained engineering pipeline** ([`scripts/long_horizon_benchmark.py`](scripts/long_horizon_benchmark.py) · [`full receipt`](reports/v2.3.2/long-horizon-benchmark/README.md)) across a **300-row SQLite DB, 200-row leading-zero CSV, 100-key nested JSON, 60-line `.env.production` with inline comments, C2 conflict gate, destructive SQL probe, cancel fence, and MCP → Local Approval Inbox execution**:
+Beyond 6-row toy files, we ran the same **10-step chained engineering pipeline** across **all 5 model families** ([`scripts/long_horizon_benchmark.py`](scripts/long_horizon_benchmark.py) · [`full 5-family receipts`](reports/v2.3.2/long-horizon-benchmark/README.md)) over a **300-row SQLite DB, 200-row leading-zero CSV, 160-row chained filter, 100-key nested JSON, 60-line `.env.production` with inline comments, C2 conflict gate, destructive SQL guard, cancel fence, and MCP → Local Approval Inbox execution**:
 
-| Metric | **RPE-Harness `v2.3.2`** | **Native `qwen4-max` Direct** | Delta |
-| :--- | :---: | :---: | :---: |
-| **Paired Oracle Accuracy** | **7 / 7 (100%)** | 5 / 7 (71.4% — failed 200-row dedup & 160-row filter) | **+28.6 pp** |
-| **All 10 Pipeline & Safety Steps** | **10 / 10 (100%)** | N/A | — |
-| **Total Token Cost** | **709 tok** | 35,209 tok | **−98.0% (49.7× fewer)** |
-| **End-to-End Wall-Clock Time** | **8.95 s** | 102.93 s | **11.5× faster** |
+| Model Family | Harness Mode | RPE Pass (All 10 / Paired 7) | Native Pass (Paired 7) | RPE Total Cost | Native Total Cost | Cost Reduction | Speedup |
+| :--- | :--- | :---: | :---: | ---: | ---: | ---: | ---: |
+| **`qwen4-max`** (Alibaba) | Raw Chat API | **10/10 (7/7)** | 5/7 *(dedup & filter failed)* | **709 tok** | 35,209 tok | **−98.0%** | **11.5×** |
+| **`mimo-v2.6-pro`** (Xiaomi) | Raw Chat API | **10/10 (7/7)** | 4/7 *(dedup, filter & .env failed)* | **727 tok** | 33,819 tok | **−97.9%** | **13.0×** |
+| **`deepseek-chat`** (DeepSeek) | Raw Chat API | **10/10 (7/7)** | 5/7 *(dedup & filter failed)* | **494 tok** | 23,119 tok | **−97.9%** | **6.8×** |
+| **`gpt-6.1-sol`** (OpenAI) | `codex-cli` Agent CLI | **10/10 (7/7)** | 5/7 *(dedup & filter failed)* | **75,232 tok** | 112,981 tok | **−33.4%** *(incl. CLI prompt)* | **2.6×** |
+| **`Gemini`** (Google) | Antigravity Subagent | **10/10 (7/7)** | 5/7 *(dedup & filter failed)* | **632 chars** | 22,482 chars | **−97.2% chars** *(tokens unexposed)* | — |
 
-> **Evidence-First Caveats:** The 5-family table above measures 4 controlled small-file tasks per model (6-row CSV / 7-row JSON); the 10-step pipeline scales to 60–300 row local files on `qwen4-max` (single-provider live run, reproducible with any OpenAI-compatible API). `codex-cli` counts include full CLI system/tool prompt overhead (comparable only within the same harness); Gemini's subagent harness does not expose raw provider tokens so output characters and call counts are reported honestly instead. In a separate real-Hermes XLSX comparison (`v1.15.3`, [`report`](reports/v1.15.3/1.15.3兼容与复验.md)), RPE produced byte-identical output with **−82.8%** fewer tokens (`11,755` vs `68,327`).
+> **Evidence-First Caveats:** Every single tested family failed direct in-context 200-row CSV deduplication and 160-row chained filtering (`24/35` paired pass overall, **68.6%**), whereas RPE-Harness achieved **50/50 (100%)** byte-exact Oracle pass across all 5 families. `codex-cli` counts include fixed per-invocation CLI system/tool prompt overhead (comparable only within the same harness); Gemini's subagent harness does not expose raw provider tokens so output characters are reported honestly instead. In a separate real-Hermes XLSX comparison (`v1.15.3`, [`report`](reports/v1.15.3/1.15.3兼容与复验.md)), RPE produced byte-identical output with **−82.8%** fewer tokens (`11,755` vs `68,327`).
 
 ---
 
