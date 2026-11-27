@@ -242,6 +242,22 @@ def inherited_binding():
 
 def read_regular_file(path, *, max_bytes):
     """Bound a nofollow file read without interpreting it as the broker source."""
+    if os.name == 'nt':
+        target = Path(os.path.abspath(Path(path).expanduser()))
+        cursor = Path(target.anchor)
+        for part in target.parts[1:]:
+            cursor /= part
+            if cursor.is_symlink():
+                raise ValueError('file path must not traverse symlinks')
+        st = os.lstat(target)
+        if not stat.S_ISREG(st.st_mode):
+            raise ValueError('file must be regular')
+        if max_bytes is not None and st.st_size > max_bytes:
+            raise ValueError('source exceeds its read budget')
+        data = target.read_bytes()
+        if max_bytes is not None and len(data) > max_bytes:
+            raise ValueError('source exceeds its read budget')
+        return data
     parent = _directory(Path(path).parent)
     try:
         fd = os.open(Path(path).name, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW, dir_fd=parent)
