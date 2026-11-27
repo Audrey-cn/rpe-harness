@@ -29,7 +29,7 @@ If you use **Claude Code, Codex CLI, Hermes, or custom AI agents** on real local
 
 **RPE-Harness** sits right underneath your coding agent as a lightweight local kernel (1 SQLite file, 2 pip dependencies: `openpyxl` + `cloudpickle`, zero cloud setup) to improve three everyday dimensions:
 
-- **💰 Cut Token Budget (59%–82% fewer tokens in live tests)** — Stop paying an LLM to ingest giant files or burn 20k+ tokens discovering that a requirement is missing or two docs contradict each other. RPE's **C2 SourceResolver** catches missing/conflicting inputs in `~1 ms` at **0 tokens**, and for valid tasks the LLM only writes a tiny structured draft while deterministic local code processes the data (`O(1)` token cost regardless of file size).
+- **💰 Cut Token Budget (59%–98% fewer tokens in live tests)** — Stop paying an LLM to ingest giant files or burn 20k+ tokens discovering that a requirement is missing or two docs contradict each other. RPE's **C2 SourceResolver** catches missing/conflicting inputs in `~1 ms` at **0 tokens**, and for valid tasks the LLM only writes a tiny structured draft while deterministic local code processes the data (`O(1)` token cost regardless of file size — **−98.0% tokens** & **11.5× faster** in our 10-step, 200–300 row pipeline benchmark).
 - **⚡ Boost Reliability & Speed (Zero babysitting)** — No more manually diffing whether an AI silently dropped leading zeros (`0041` → `41`), altered JSON numbers (`1.0` → `1`, `-0` → `0`), or clobbered your original file. Every output is automatically verified by an **Independent Artifact Oracle** before atomic no-overwrite publish—and if you hit **Cancel** mid-run, RPE cleanly fences publication or tells you honestly if it already landed.
 - **🎯 Lock Down Precision & Control** — Keep the LLM doing what it's best at (understanding messy natural-language intent), while locking actual execution behind **digest-bound user confirmation** (`C4 HostAPI`). A model can never forge approval, silently mutate parameters after you click confirm, or replay a stale draft across hosts.
 
@@ -89,7 +89,18 @@ Measured on **2026-11-27** across **5 model families (20/20 Oracle pass)** on id
 | **`gpt-6.1-sol`** (OpenAI) | `codex-cli` Agent CLI | **4/4** | 4/4 | **28,156 tok** | 88,086 tok | **−68.0%** |
 | **`Gemini`** (Google) | Antigravity Subagent | **4/4** | 4/4 | **159 chars** *(2 calls)* | 203 chars *(4 calls)* | **−21.7% chars** *(tokens unexposed)* |
 
-> **Evidence-First Caveats:** These are 4 controlled small-file tasks per model (6-row CSV / 7-row JSON), not a multi-hour unattended benchmark. `codex-cli` counts include full CLI system/tool prompt overhead (comparable only within the same harness); Gemini's subagent harness does not expose raw provider tokens so output characters and call counts are reported honestly instead. In a separate real-Hermes XLSX comparison (`v1.15.3`, [`report`](reports/v1.15.3/1.15.3兼容与复验.md)), RPE produced byte-identical output with **−82.8%** fewer tokens (`11,755` vs `68,327`).
+### Long-Horizon 10-Step Pipeline Benchmark (`v2.3.2` · `qwen4-max`)
+
+Beyond 6-row toy files, we ran a reproducible **10-step chained engineering pipeline** ([`scripts/long_horizon_benchmark.py`](scripts/long_horizon_benchmark.py) · [`full receipt`](reports/v2.3.2/long-horizon-benchmark/README.md)) across a **300-row SQLite DB, 200-row leading-zero CSV, 100-key nested JSON, 60-line `.env.production` with inline comments, C2 conflict gate, destructive SQL probe, cancel fence, and MCP → Local Approval Inbox execution**:
+
+| Metric | **RPE-Harness `v2.3.2`** | **Native `qwen4-max` Direct** | Delta |
+| :--- | :---: | :---: | :---: |
+| **Paired Oracle Accuracy** | **7 / 7 (100%)** | 5 / 7 (71.4% — failed 200-row dedup & 160-row filter) | **+28.6 pp** |
+| **All 10 Pipeline & Safety Steps** | **10 / 10 (100%)** | N/A | — |
+| **Total Token Cost** | **709 tok** | 35,209 tok | **−98.0% (49.7× fewer)** |
+| **End-to-End Wall-Clock Time** | **8.95 s** | 102.93 s | **11.5× faster** |
+
+> **Evidence-First Caveats:** The 5-family table above measures 4 controlled small-file tasks per model (6-row CSV / 7-row JSON); the 10-step pipeline scales to 60–300 row local files on `qwen4-max` (single-provider live run, reproducible with any OpenAI-compatible API). `codex-cli` counts include full CLI system/tool prompt overhead (comparable only within the same harness); Gemini's subagent harness does not expose raw provider tokens so output characters and call counts are reported honestly instead. In a separate real-Hermes XLSX comparison (`v1.15.3`, [`report`](reports/v1.15.3/1.15.3兼容与复验.md)), RPE produced byte-identical output with **−82.8%** fewer tokens (`11,755` vs `68,327`).
 
 ---
 

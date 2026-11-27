@@ -1,0 +1,122 @@
+{
+  "version": "2.3.2",
+  "timestamp_utc": "2026-11-27T12:43:16.611154+00:00",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "python": "3.12.15",
+  "model": "qwen4-max",
+  "summary": {
+    "total_steps": 10,
+    "rpe_pass_all": 10,
+    "paired_steps": 7,
+    "rpe_pass_paired": 7,
+    "native_pass_paired": 5,
+    "rpe_total_tokens": 709,
+    "native_total_tokens": 35209,
+    "token_reduction_pct": 98.0,
+    "rpe_total_seconds": 8.952,
+    "native_total_seconds": 102.932,
+    "wall_time_speedup_x": 11.5
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "sqlite.query_export (300-row DB -> active APAC CSV)",
+      "rpe_pass": true,
+      "native_pass": true,
+      "rpe_tokens": 109,
+      "native_tokens": 7581,
+      "rpe_s": 1.42,
+      "native_s": 20.304
+    },
+    {
+      "step": 2,
+      "name": "tabular.deduplicate (200-row CSV with leading zeros)",
+      "rpe_pass": true,
+      "native_pass": false,
+      "rpe_tokens": 144,
+      "native_tokens": 6837,
+      "rpe_s": 1.674,
+      "native_s": 19.912
+    },
+    {
+      "step": 3,
+      "name": "tabular.filter (160-row chained CSV -> APAC)",
+      "rpe_pass": true,
+      "native_pass": false,
+      "rpe_tokens": 102,
+      "native_tokens": 4732,
+      "rpe_s": 2.153,
+      "native_s": 12.251
+    },
+    {
+      "step": 4,
+      "name": "json.patch (100-key nested JSON config)",
+      "rpe_pass": true,
+      "native_pass": true,
+      "rpe_tokens": 193,
+      "native_tokens": 7796,
+      "rpe_s": 2.057,
+      "native_s": 25.615
+    },
+    {
+      "step": 5,
+      "name": "json.normalize (100-key minify + lexical 1.0)",
+      "rpe_pass": true,
+      "native_pass": true,
+      "rpe_tokens": 0,
+      "native_tokens": 6067,
+      "rpe_s": 0.025,
+      "native_s": 15.53
+    },
+    {
+      "step": 6,
+      "name": "env.patch (60-line .env.production + inline comments)",
+      "rpe_pass": true,
+      "native_pass": true,
+      "rpe_tokens": 161,
+      "native_tokens": 2100,
+      "rpe_s": 1.323,
+      "native_s": 7.555
+    },
+    {
+      "step": 7,
+      "name": "C2 conflict gate (0-token pre-LLM block)",
+      "rpe_pass": true,
+      "native_pass": true,
+      "rpe_tokens": 0,
+      "native_tokens": 96,
+      "rpe_s": 0.006,
+      "native_s": 1.765
+    },
+    {
+      "step": 8,
+      "name": "Destructive SQL write guard (DROP TABLE blocked)",
+      "rpe_pass": true,
+      "native_pass": null,
+      "rpe_tokens": 0,
+      "native_tokens": 0,
+      "rpe_s": 0.0115,
+      "native_s": 0.0
+    },
+    {
+      "step": 9,
+      "name": "Stale digest + atomic cancel fence",
+      "rpe_pass": true,
+      "native_pass": null,
+      "rpe_tokens": 0,
+      "native_tokens": 0,
+      "rpe_s": 0.0163,
+      "native_s": 0.0
+    },
+    {
+      "step": 10,
+      "name": "MCP rpe_start_task -> Local Inbox approve_and_execute (.env.production)",
+      "rpe_pass": true,
+      "native_pass": null,
+      "rpe_tokens": 0,
+      "native_tokens": 0,
+      "rpe_s": 0.266,
+      "native_s": 0.0
+    }
+  ]
+}
