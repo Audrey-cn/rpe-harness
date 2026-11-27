@@ -11,6 +11,7 @@ import csv
 import io
 import re
 import sqlite3
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +34,29 @@ def _format_env_value(value: str) -> str:
     return value
 
 
+def _split_env_comment(value: str) -> tuple[str, str]:
+    quote: str | None = None
+    escaped = False
+    for idx, char in enumerate(value):
+        if escaped:
+            escaped = False
+            continue
+        if char == '\\':
+            escaped = True
+            continue
+        if quote is not None:
+            if char == quote:
+                quote = None
+        elif char in {'"', "'"}:
+            quote = char
+        elif char == '#' and (idx == 0 or value[idx - 1] in ' \t'):
+            start = idx
+            while start and value[start - 1] in ' \t':
+                start -= 1
+            return value[:start], value[start:]
+    return value, ''
+
+
 def _parse_env_lines(raw: bytes) -> list[dict[str, Any]]:
     try:
         text = raw.decode('utf-8')
@@ -52,7 +76,14 @@ def _parse_env_lines(raw: bytes) -> list[dict[str, Any]]:
         if key in seen_keys:
             raise ValueError(f'duplicate .env key in input: {key}')
         seen_keys.add(key)
-        entries.append({'kind': 'kv', 'prefix': prefix, 'key': key, 'eq': eq, 'value': val, 'line': line})
+        val, comment = _split_env_comment(val)
+        if comment.startswith('#') and not val:
+            # Whitespace after '=' belongs to the comment when the value is empty.
+            bare_eq = eq.rstrip(' \t')
+            comment = eq[len(bare_eq):] + comment
+            eq = bare_eq
+        entries.append({'kind': 'kv', 'prefix': prefix, 'key': key, 'eq': eq,
+                        'value': val, 'comment': comment, 'line': line})
     return entries
 
 
@@ -66,7 +97,11 @@ def _apply_env_ops(entries: list[dict[str, Any]], operations: list[dict[str, Any
             if existing_idx is not None:
                 e = items[existing_idx]
                 e['value'] = formatted
-                e['line'] = f"{e['prefix']}{key}{e['eq']}{formatted}"
+                comment = e.get('comment', '')
+                if comment.startswith('#'):
+                    comment = ' ' + comment
+                e['comment'] = comment
+                e['line'] = f"{e['prefix']}{key}{e['eq']}{formatted}{comment}"
             else:
                 items.append({'kind': 'kv', 'prefix': '', 'key': key, 'eq': '=', 'value': formatted,
                               'line': f'{key}={formatted}'})
@@ -117,11 +152,36 @@ def _env_execute(plan: PluginExecutionPlan, raw: bytes) -> tuple[bytes, dict[str
 def _env_verify(plan: PluginExecutionPlan, raw_input: bytes, staged_bytes: bytes) -> dict[str, Any]:
     src_entries = _parse_env_lines(raw_input)
     out_entries = _parse_env_lines(staged_bytes)
-    expected_bytes = _apply_env_ops(src_entries, plan.options['operations']).encode('utf-8')
+    # Keep an independent key/layout oracle rather than replaying the executor's
+    # line-mutation helper: otherwise the same comment-loss bug passes both sides.
+    expected = {e['key']: dict(e) for e in src_entries if e['kind'] == 'kv'}
+    layout = [(e['kind'], e['key'] if e['kind'] == 'kv' else e['line']) for e in src_entries]
+    for op in plan.options['operations']:
+        key = op['key']
+        if op['op'] == 'delete':
+            expected.pop(key)
+            layout.remove(('kv', key))
+            continue
+        if key not in expected:
+            expected[key] = {'prefix': '', 'eq': '=', 'comment': ''}
+            layout.append(('kv', key))
+        entry = expected[key]
+        comment = entry['comment']
+        if comment.startswith('#'):
+            comment = ' ' + comment
+        entry['comment'] = comment
+        entry['line'] = ''.join((entry['prefix'], key, entry['eq'],
+                                 _format_env_value(op['value']), comment))
+    expected_lines = [expected[value]['line'] if kind == 'kv' else value
+                      for kind, value in layout]
+    expected_bytes = ('\n'.join(expected_lines) + '\n').encode('utf-8')
     src_comments = [e['line'] for e in src_entries if e['kind'] == 'raw']
     out_comments = [e['line'] for e in out_entries if e['kind'] == 'raw']
+    out_inline = {e['key']: e['comment'] for e in out_entries if e['kind'] == 'kv'}
+    expected_inline = {key: e['comment'] for key, e in expected.items()}
     checks = {
-        'comments_and_blanks_preserved': src_comments == out_comments,
+        'comments_and_blanks_preserved': (src_comments == out_comments
+                                          and out_inline == expected_inline),
         'exact_match_with_oracle': staged_bytes == expected_bytes,
     }
     return {
@@ -152,35 +212,82 @@ _FORBIDDEN_SQL_RE = re.compile(
 )
 
 
+def _sql_code_only(query: str) -> str:
+    """Mask SQLite quoted tokens and comments without joining adjacent SQL words."""
+    code: list[str] = []
+    idx = 0
+    while idx < len(query):
+        if query.startswith('--', idx):
+            end = query.find('\n', idx + 2)
+            if end < 0:
+                break
+            code.append('\n')
+            idx = end + 1
+        elif query.startswith('/*', idx):
+            end = query.find('*/', idx + 2)
+            code.append(' ')
+            # SQLite allows a block comment to extend through the end of input.
+            idx = len(query) if end < 0 else end + 2
+        elif query[idx] in {"'", '"'}:
+            quote = query[idx]
+            idx += 1
+            while idx < len(query):
+                if query[idx] == quote:
+                    if idx + 1 < len(query) and query[idx + 1] == quote:
+                        idx += 2
+                        continue
+                    idx += 1
+                    break
+                idx += 1
+            else:
+                raise ValueError('unterminated SQL quoted token')
+            # Keep a token marker so quoted text after a statement terminator
+            # cannot disappear and make an internal semicolon look trailing.
+            code.append('?')
+        else:
+            code.append(query[idx])
+            idx += 1
+    return ''.join(code)
+
+
 def _validate_readonly_sql(query: Any) -> str:
     if not isinstance(query, str) or not query.strip():
         raise ValueError('query must be a nonempty SQL SELECT string')
-    cleaned = query.strip().rstrip(';').strip()
-    if ';' in cleaned:
+    cleaned = query.strip()
+    code = _sql_code_only(cleaned).strip()
+    if code.endswith(';'):
+        code = code[:-1].rstrip()
+    if ';' in code:
         raise ValueError('multiple SQL statements are forbidden')
-    if not re.match(r'^(SELECT|WITH)\b', cleaned, re.IGNORECASE):
+    if not re.match(r'^(SELECT|WITH)\b', code, re.IGNORECASE):
         raise ValueError('only read-only SELECT / WITH queries are allowed')
-    if _FORBIDDEN_SQL_RE.search(cleaned):
+    if _FORBIDDEN_SQL_RE.search(code):
         raise ValueError('write or schema-modifying SQL keywords are forbidden')
     return cleaned
 
 
-def _run_readonly_query(db_path: Path, query: str, max_rows: int) -> tuple[list[str], list[list[str]]]:
-    uri = f'file:{db_path.as_posix()}?mode=ro'
-    conn = sqlite3.connect(uri, uri=True, timeout=5)
-    try:
-        conn.execute('PRAGMA query_only = ON')
-        cur = conn.execute(query)
-        if not cur.description:
-            raise ValueError('query returned no columns')
-        header = [col[0] for col in cur.description]
-        rows_raw = cur.fetchmany(max_rows + 1)
-        if len(rows_raw) > max_rows:
-            raise ValueError(f'query result exceeds max_rows limit ({max_rows})')
-        rows = [['' if cell is None else str(cell) for cell in row] for row in rows_raw]
-        return header, rows
-    finally:
-        conn.close()
+def _run_readonly_query(raw: bytes, query: str, max_rows: int) -> tuple[list[str], list[list[str]]]:
+    # Query exactly the bytes admitted by the SDK, never the mutable source path.
+    # The private directory also keeps source-side WAL/journal files out of this snapshot.
+    with tempfile.TemporaryDirectory(prefix='rpe-sqlite-') as scratch:
+        db_path = Path(scratch) / 'snapshot.sqlite'
+        db_path.write_bytes(raw)
+        db_path.chmod(0o400)
+        uri = f'{db_path.as_uri()}?mode=ro'
+        conn = sqlite3.connect(uri, uri=True, timeout=5)
+        try:
+            conn.execute('PRAGMA query_only = ON')
+            cur = conn.execute(query)
+            if not cur.description:
+                raise ValueError('query returned no columns')
+            header = [col[0] for col in cur.description]
+            rows_raw = cur.fetchmany(max_rows + 1)
+            if len(rows_raw) > max_rows:
+                raise ValueError(f'query result exceeds max_rows limit ({max_rows})')
+            rows = [['' if cell is None else str(cell) for cell in row] for row in rows_raw]
+            return header, rows
+        finally:
+            conn.close()
 
 
 def _sqlite_validate(options: dict[str, Any], raw: bytes) -> dict[str, Any]:
@@ -201,7 +308,7 @@ def _sqlite_validate(options: dict[str, Any], raw: bytes) -> dict[str, Any]:
 
 def _sqlite_execute(plan: PluginExecutionPlan, raw: bytes) -> tuple[bytes, dict[str, Any]]:
     opts = plan.options
-    header, rows = _run_readonly_query(Path(plan.input_path), opts['query'], opts['max_rows'])
+    header, rows = _run_readonly_query(raw, opts['query'], opts['max_rows'])
     buf = io.StringIO(newline='')
     writer = csv.writer(buf, delimiter=opts['delimiter'], lineterminator='\n')
     writer.writerow(header)
@@ -211,7 +318,7 @@ def _sqlite_execute(plan: PluginExecutionPlan, raw: bytes) -> tuple[bytes, dict[
 
 def _sqlite_verify(plan: PluginExecutionPlan, raw_input: bytes, staged_bytes: bytes) -> dict[str, Any]:
     opts = plan.options
-    expected_header, expected_rows = _run_readonly_query(Path(plan.input_path), opts['query'], opts['max_rows'])
+    expected_header, expected_rows = _run_readonly_query(raw_input, opts['query'], opts['max_rows'])
     actual_rows = list(csv.reader(io.StringIO(staged_bytes.decode('utf-8'), newline=''),
                                   delimiter=opts['delimiter'], strict=True))
     exact = bool(actual_rows) and actual_rows[0] == expected_header and actual_rows[1:] == expected_rows

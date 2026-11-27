@@ -61,6 +61,7 @@ jobs:
           tests/test_dev_contracts.py
           tests/test_inbox.py
           tests/test_sandbox_backends.py
+          tests/test_v231_hardening.py
       - name: Run DSH second-host Node.js full-loop E2E tests
         env:
           RPE_TEST_PYTHON: python
@@ -99,6 +100,7 @@ jobs:
           tests/test_dev_contracts.py
           tests/test_inbox.py
           tests/test_sandbox_backends.py
+          tests/test_v231_hardening.py
       - name: Run DSH second-host Node.js full-loop E2E tests on macOS
         env:
           RPE_TEST_PYTHON: python
@@ -135,6 +137,7 @@ jobs:
           tests/test_dev_contracts.py
           tests/test_inbox.py
           tests/test_sandbox_backends.py
+          tests/test_v231_hardening.py
       - name: Verify host CLI capabilities on Windows
         env:
           PYTHONPATH: src

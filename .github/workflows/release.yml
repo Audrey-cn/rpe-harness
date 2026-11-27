@@ -19,7 +19,54 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install build & verification tools
-        run: python -m pip install --upgrade pip build twine
+        run: python -m pip install --upgrade pip build twine ".[dev]"
+      - name: Verify release tag matches package version
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import tomllib
+          from rpe_harness import __version__
+
+          version = tomllib.loads(Path('pyproject.toml').read_text())['project']['version']
+          dsh_version = json.loads(Path('integrations/dsh/package.json').read_text())['version']
+          tag = os.environ['GITHUB_REF_NAME']
+          if __version__ != version or dsh_version != version or tag != f'v{version}':
+              raise SystemExit(f'Release tag/version mismatch: tag={tag}, package={version}, '
+                               f'python={__version__}, dsh={dsh_version}')
+          PY
+      - name: Lint with Ruff
+        run: ruff check src tests
+      - name: Run core regression tests
+        env:
+          PYTHONPATH: src
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: >-
+          pytest -p no:cacheprovider -q
+          tests/test_v231_hardening.py
+          tests/test_host_facade.py
+          tests/test_cross_host_handoff.py
+          tests/test_cancellation.py
+          tests/test_cancel_interfaces.py
+          tests/test_cancel_handler.py
+          tests/test_cancel_worker_protocol.py
+          tests/test_proposal_confirmation_boundaries.py
+          tests/test_plugin_proposal_loop.py
+          tests/test_runtime.py
+          tests/test_recovery.py
+          tests/test_cli.py
+          tests/test_json_runtime.py
+          tests/test_proposal.py
+          tests/test_intent.py
+          tests/test_review_context.py
+          tests/test_review_quote_contract.py
+          tests/test_execution.py
+          tests/test_mcp_server.py
+          tests/test_contract_sdk.py
+          tests/test_dev_contracts.py
+          tests/test_inbox.py
+          tests/test_sandbox_backends.py
       - name: Build sdist and wheel
         run: python -m build
       - name: Verify distributions with twine

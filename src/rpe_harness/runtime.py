@@ -306,7 +306,8 @@ class HarnessRuntime:
                             'output_parent_identity': [parent.st_dev, parent.st_ino],
                             'publication_confirmed': False})
             artifact = {'path': plan.output_path, 'sha256': verification['output_sha256'],
-                        'format': plan.input_format, 'published': True, 'plan_sha256': plan.sha256,
+                        'format': getattr(plan, 'output_format', plan.input_format),
+                        'published': True, 'plan_sha256': plan.sha256,
                         'input_sha256': plan.input_sha256,
                         'actual_executor': actual,
                         **artifact_metrics(verification)}

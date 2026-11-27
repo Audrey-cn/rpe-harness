@@ -127,9 +127,51 @@ class TaskOperations:
             raise ValueError('operation execution event differs')
         result = json.loads(execution['result']) if execution and execution['result'] is not None else None
         run_id = found['run_id'] if found else (result.get('run_id') if isinstance(result, dict) else None)
-        if row['run_id'] is not None and row['run_id'] != run_id:
+        # Keep the proposal's original event anchor, while exposing the latest
+        # recovery attempt. A retry can stop before its plan step, or before
+        # recovery finalizes retry_run_id, so include its durable reservation.
+        chain = []
+        successors = {}
+        if run_id:
+            with self._connect() as db:
+                retries = db.execute("SELECT run_id,evidence_json FROM steps "
+                                     "WHERE stage='plan' AND evidence_json LIKE '%\"retry_of\"%'").fetchall()
+                recovery_exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
+                                             "AND name='recovery_attempts'").fetchone()
+                reserved = db.execute(
+                    "SELECT a.retry_of,a.retry_run_id,r.run_id AS event_run_id "
+                    "FROM recovery_attempts a LEFT JOIN events e "
+                    "ON e.source='recovery' AND e.event_id=a.retry_event_id "
+                    "LEFT JOIN runs r ON r.event_fk=e.id").fetchall() if recovery_exists else []
+            for step in retries:
+                parent = json.loads(step['evidence_json']).get('retry_of')
+                if isinstance(parent, str):
+                    successors.setdefault(parent, set()).add(step['run_id'])
+            for attempt in reserved:
+                linked, admitted = attempt['retry_run_id'], attempt['event_run_id']
+                if linked and admitted and linked != admitted:
+                    raise ValueError('operation recovery event linkage differs')
+                child = linked or admitted
+                if child:
+                    successors.setdefault(attempt['retry_of'], set()).add(child)
+            while run_id:
+                if run_id in chain:
+                    raise ValueError('operation recovery linkage contains a cycle')
+                chain.append(run_id)
+                children = successors.get(run_id, set())
+                if not children:
+                    break
+                if len(children) != 1:
+                    raise ValueError('operation recovery linkage is ambiguous')
+                run_id = next(iter(children))
+        if row['run_id'] is not None and row['run_id'] not in chain:
             raise ValueError('operation run linkage differs')
-        return (self.runs.get(run_id) if run_id else None), result, execution
+        run = self.runs.get(run_id) if run_id else None
+        if len(chain) > 1:
+            # The original execution receipt remains durable, but its status
+            # and cleanup receipt describe the failed attempt only.
+            result = {**copy.deepcopy(run), 'retry_of': chain[-2], 'original_run_id': chain[0]}
+        return run, result, execution
 
     def _view(self, row):
         context = json.loads(row['host_context'])

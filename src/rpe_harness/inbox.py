@@ -9,10 +9,12 @@ from __future__ import annotations
 import html
 import json
 import secrets
+import socket
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from .host_api import HostAPI, TrustedHostAction
 from .runtime import default_db_path
@@ -55,6 +57,32 @@ def list_pending(api: HostAPI, *, owner: str | None = None) -> list[dict[str, An
             'host_context': view.get('host_context') or {},
         })
     return pending
+
+
+def list_recent(api: HostAPI, *, owner: str | None = None) -> list[dict[str, Any]]:
+    """Keep approved and terminal operations visible after they leave the pending list."""
+    with api._connect() as db:
+        query = 'SELECT * FROM rpe_operations'
+        parameters = ()
+        if owner is not None:
+            query += ' WHERE owner=?'
+            parameters = (owner,)
+        rows = db.execute(query + ' ORDER BY rowid DESC LIMIT 50', parameters).fetchall()
+    recent = []
+    for row in rows:
+        view = api._view(dict(row))
+        if view['status'] == 'awaiting_confirmation':
+            continue
+        draft = view.get('draft') or {}
+        result = view.get('run') or view.get('execution_result') or {}
+        recent.append({
+            'operation_id': view['operation_id'], 'owner': view['owner'],
+            'generation': view['generation'], 'digest': view['digest'], 'status': view['status'],
+            'capability': draft.get('capability'),
+            'summary': (view.get('proposal') or {}).get('summary') or (view.get('source') or {}).get('raw') or '',
+            'artifact': view.get('artifact'), 'error': result.get('error'),
+        })
+    return recent
 
 
 def approve_and_execute(
@@ -135,6 +163,8 @@ def _render_html(csrf_token: str, db_path: Path) -> str:
     <button onclick="refresh()" style="background:#1e293b;color:#e2e8f0">Refresh</button>
   </header>
   <div id="list"></div>
+  <h2 style="font-size:16px">Recent operations</h2>
+  <div id="recent"></div>
 </div>
 <div id="toast"></div>
 <script>
@@ -145,45 +175,68 @@ function toast(msg) {{
   setTimeout(() => el.style.display = 'none', 3500);
 }}
 async function act(endpoint, payload) {{
-  const res = await fetch(endpoint, {{
-    method: 'POST',
-    headers: {{ 'Content-Type': 'application/json', 'X-RPE-CSRF': CSRF }},
-    body: JSON.stringify(payload),
-  }});
-  const data = await res.json();
-  toast((data.status || 'done') + (data.artifact && data.artifact.path ? ' → ' + data.artifact.path : ''));
-  await refresh();
+  try {{
+    const res = await fetch(endpoint, {{
+      method: 'POST',
+      headers: {{ 'Content-Type': 'application/json', 'X-RPE-CSRF': CSRF }},
+      body: JSON.stringify(payload),
+    }});
+    const data = await res.json();
+    const error = typeof data.error === 'string' ? data.error : data.error && (data.error.message || JSON.stringify(data.error));
+    if (!res.ok) throw new Error(error || `HTTP ${{res.status}}`);
+    toast((data.status || 'done') + (error ? ': ' + error : '') + (data.artifact && data.artifact.path ? ' → ' + data.artifact.path : ''));
+    await refresh();
+  }} catch (error) {{
+    toast('Error: ' + error.message);
+  }}
 }}
-async function refresh() {{
-  const res = await fetch('/api/pending');
-  const data = await res.json();
-  const root = document.getElementById('list');
-  if (!data.pending || !data.pending.length) {{
-    root.innerHTML = '<div class="empty">No pending tasks awaiting confirmation. Waiting for MCP / HostAPI proposals…</div>';
+function renderItems(id, items, pending) {{
+  const root = document.getElementById(id);
+  root.innerHTML = '';
+  if (!items || !items.length) {{
+    root.innerHTML = '<div class="empty">' + (pending ? 'No pending tasks awaiting confirmation.' : 'No recent operations.') + '</div>';
     return;
   }}
-  root.innerHTML = '';
-  for (const item of data.pending) {{
+  for (const item of items) {{
     const card = document.createElement('div'); card.className = 'card';
     card.innerHTML = `
       <div class="row">
-        <strong>${{item.capability || 'task'}}</strong>
-        <span class="badge">owner: ${{item.owner}} · gen ${{item.generation}}</span>
+        <strong></strong>
+        <span class="badge"></span>
       </div>
-      <div class="meta">op: ${{item.operation_id}} · digest: ${{item.digest.slice(0,16)}}…</div>
+      <div class="meta"></div>
       <pre></pre>
-      <div class="actions">
+      ${{pending ? `<div class="actions">
         <button class="btn-ok">Approve &amp; Execute</button>
         <button class="btn-no">Cancel</button>
-      </div>`;
-    card.querySelector('pre').textContent = item.summary || '(no summary)';
-    card.querySelector('.btn-ok').onclick = () => act('/api/approve', {{
-      operation_id: item.operation_id, owner: item.owner, digest: item.digest, generation: item.generation
-    }});
-    card.querySelector('.btn-no').onclick = () => act('/api/cancel', {{
-      operation_id: item.operation_id, owner: item.owner, generation: item.generation
-    }});
+      </div>` : ''}}`;
+    card.querySelector('strong').textContent = item.capability || 'task';
+    card.querySelector('.badge').textContent = `owner: ${{item.owner}} · gen ${{item.generation}} · ${{item.status}}`;
+    card.querySelector('.meta').textContent = `op: ${{item.operation_id}} · digest: ${{String(item.digest || '').slice(0,16)}}…`;
+    const detail = [item.summary || '(no summary)'];
+    if (item.error) detail.push(typeof item.error === 'string' ? item.error : JSON.stringify(item.error));
+    if (item.artifact && item.artifact.path) detail.push('Artifact: ' + item.artifact.path);
+    card.querySelector('pre').textContent = detail.join('\\n');
+    if (pending) {{
+      card.querySelector('.btn-ok').onclick = () => act('/api/approve', {{
+        operation_id: item.operation_id, owner: item.owner, digest: item.digest, generation: item.generation
+      }});
+      card.querySelector('.btn-no').onclick = () => act('/api/cancel', {{
+        operation_id: item.operation_id, owner: item.owner, generation: item.generation
+      }});
+    }}
     root.appendChild(card);
+  }}
+}}
+async function refresh() {{
+  try {{
+    const res = await fetch('/api/pending');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${{res.status}}`);
+    renderItems('list', data.pending, true);
+    renderItems('recent', data.recent, false);
+  }} catch (error) {{
+    toast('Error: ' + error.message);
   }}
 }}
 refresh();
@@ -202,12 +255,56 @@ class InboxHTTPServer(ThreadingHTTPServer):
         self.api = api
         self.owner_filter = owner
         self.csrf_token = secrets.token_urlsafe(24)
+        # Keep the requested name: binding localhost may resolve to 127.0.0.1.
+        self.bind_host = address[0]
+        self.address_family = socket.AF_INET6 if address[0] == '::1' else socket.AF_INET
         super().__init__(address, InboxHandler)
 
 
 class InboxHandler(BaseHTTPRequestHandler):
     def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
         return
+
+    def end_headers(self) -> None:
+        # Applies to JSON, HTML, and BaseHTTPRequestHandler's own error responses.
+        self.send_header('Content-Security-Policy', "frame-ancestors 'none'")
+        self.send_header('X-Frame-Options', 'DENY')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('Cache-Control', 'no-store')
+        super().end_headers()
+
+    def _trusted_request(self, *, post: bool = False) -> bool:
+        hosts = self.headers.get_all('Host', [])
+        try:
+            if len(hosts) != 1 or any(char.isspace() for char in hosts[0]):
+                raise ValueError('invalid Host')
+            host = urlsplit('//' + hosts[0])
+            bound_host = getattr(self.server, 'bind_host', self.server.server_address[0])
+            if (host.hostname not in _LOOPBACK_HOSTS or host.hostname != bound_host.lower()
+                    or host.username is not None
+                    or host.password is not None or host.path or host.query or host.fragment
+                    or host.netloc != hosts[0]
+                    or (host.port if host.port is not None else 80) != self.server.server_port):
+                raise ValueError('invalid Host')
+            if post:
+                fetch_sites = self.headers.get_all('Sec-Fetch-Site', [])
+                if (len(fetch_sites) > 1 or any(value.strip().lower() not in
+                        {'same-origin', 'same-site', 'none'} for value in fetch_sites)):
+                    raise ValueError('cross-site or invalid fetch metadata')
+                origins = self.headers.get_all('Origin', [])
+                if origins:
+                    if len(origins) != 1 or any(char.isspace() for char in origins[0]):
+                        raise ValueError('invalid Origin')
+                    origin = urlsplit(origins[0])
+                    if (origin.scheme != 'http' or origin.hostname != host.hostname
+                            or origin.username is not None or origin.password is not None
+                            or origin.path or origin.query or origin.fragment
+                            or (origin.port if origin.port is not None else 80) != self.server.server_port):
+                        raise ValueError('cross-origin request')
+        except ValueError:
+            self._send_json(403, {'error': 'untrusted Host or request origin'})
+            return False
+        return True
 
     def _send_json(self, code: int, payload: Any) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
@@ -227,6 +324,8 @@ class InboxHandler(BaseHTTPRequestHandler):
         return data
 
     def do_GET(self) -> None:
+        if not self._trusted_request():
+            return
         if self.path == '/':
             page = _render_html(self.server.csrf_token, self.server.api.db_path).encode('utf-8')
             self.send_response(200)
@@ -236,11 +335,16 @@ class InboxHandler(BaseHTTPRequestHandler):
             self.wfile.write(page)
             return
         if self.path == '/api/pending':
-            self._send_json(200, {'pending': list_pending(self.server.api, owner=self.server.owner_filter)})
+            self._send_json(200, {
+                'pending': list_pending(self.server.api, owner=self.server.owner_filter),
+                'recent': list_recent(self.server.api, owner=self.server.owner_filter),
+            })
             return
         self._send_json(404, {'error': 'not found'})
 
     def do_POST(self) -> None:
+        if not self._trusted_request(post=True):
+            return
         if self.headers.get('X-RPE-CSRF') != self.server.csrf_token:
             self._send_json(403, {'error': 'missing or invalid CSRF token'})
             return
@@ -290,7 +394,8 @@ def dispatch_inbox(args) -> dict[str, Any] | int:
     api = HostAPI(db_path)
     if args.web:
         server = InboxHTTPServer((args.host, args.port), api, owner=args.owner)
-        print(f'RPE-Harness Local Approval Inbox listening on http://{args.host}:{server.server_port}/', flush=True)
+        url_host = f'[{args.host}]' if ':' in args.host else args.host
+        print(f'RPE-Harness Local Approval Inbox listening on http://{url_host}:{server.server_port}/', flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:

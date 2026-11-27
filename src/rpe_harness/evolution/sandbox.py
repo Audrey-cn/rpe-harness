@@ -212,6 +212,34 @@ def _win32_create_job(memory_limit_bytes: int):
     return kernel32, job
 
 
+def _win32_resume_process(proc):
+    """Resume only after Job assignment; Popen closes the primary thread handle."""
+    function = ctypes.WinDLL('ntdll').NtResumeProcess
+    function.argtypes = [ctypes.c_void_p]
+    function.restype = ctypes.c_long
+    if function(int(proc._handle)) != 0:
+        raise CandidateExecutionError('NtResumeProcess failed')
+
+
+@lru_cache(maxsize=8)
+def _bwrap_pid_namespace_supported(bwrap: str) -> bool:
+    """Probe optional PID namespaces without weakening filesystem/network isolation.
+
+    Some kernels/AppArmor profiles deny PID namespaces, even when other bwrap
+    namespaces work. The fallback remains bwrap-contained and is declared below.
+    """
+    try:
+        result = subprocess.run(
+            [bwrap, '--unshare-net', '--unshare-pid', '--die-with-parent', '--ro-bind', '/', '/',
+             '--proc', '/proc', '/bin/true'],
+            stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            timeout=3, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return result.returncode == 0
+
+
 def sandbox_backend() -> str:
     """Detect available OS containment backend without faking isolation."""
     if sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file():
@@ -237,12 +265,23 @@ def sandbox_capabilities() -> dict[str, object]:
             'memory': 'rss_monitor_soft',
         }
     if backend == 'linux-bwrap':
+        import shutil
+        bwrap = shutil.which('bwrap')
+        pid_namespace = bool(bwrap and _bwrap_pid_namespace_supported(bwrap))
         return {
             'backend': backend,
-            'process_tree': 'die_with_parent_and_killpg',
+            'process_tree': ('pid_namespace_die_with_parent_and_killpg' if pid_namespace
+                             else 'killpg_only_no_pid_namespace'),
+            'pid_namespace': pid_namespace,
+            'process_tree_limitation': (
+                'PID namespace teardown contains descendants' if pid_namespace else
+                'Host kernel/AppArmor or bwrap lacks PID namespaces; descendants that change '
+                'process groups can escape killpg cleanup; bwrap filesystem/network limits remain'
+            ),
             'filesystem': 'ro_bind_namespace',
             'network': 'unshare_net_denied',
-            'memory': 'proc_statm_rss_soft',
+            'memory': 'proc_tree_statm_rss_soft',
+            'memory_limitation': 'Observed descendant RSS is summed; process-exit races and allocation peaks remain soft limits',
         }
     if backend == 'windows-job-object':
         return {
@@ -267,6 +306,8 @@ def _bwrap_command(job: Path, driver: Path, code: Path) -> list[str]:
     if not bwrap:
         raise RuntimeError('candidate filesystem/network sandbox is unavailable')
     cmd = [bwrap, '--unshare-net', '--die-with-parent', '--proc', '/proc', '--dev', '/dev']
+    if _bwrap_pid_namespace_supported(bwrap):
+        cmd.insert(1, '--unshare-pid')
     for ro in ('/usr', '/lib', '/lib64', '/bin', '/etc/alternatives', sys.base_prefix, sys.prefix):
         p = Path(ro)
         if p.exists():
@@ -282,6 +323,38 @@ def _linux_resident_bytes(pid: int) -> int | None:
         return int(statm[1]) * os.sysconf('SC_PAGE_SIZE')
     except (FileNotFoundError, ProcessLookupError, ValueError, IndexError):
         return None
+
+
+def _linux_child_pids(pid: int) -> list[int]:
+    # Children can be forked by any thread, not just the thread-group leader.
+    children = set()
+    try:
+        tasks = list(Path(f'/proc/{pid}/task').iterdir())
+    except (FileNotFoundError, ProcessLookupError):
+        return []
+    for task in tasks:
+        try:
+            children.update(int(value) for value in (task / 'children').read_text(encoding='ascii').split())
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+    return sorted(children)
+
+
+def _linux_process_tree_resident_bytes(pid: int) -> int | None:
+    """Observe the outer bwrap monitor, its init, and the actual candidate tree."""
+    total, observed = 0, False
+    pending, visited = [pid], set()
+    while pending:
+        current = pending.pop()
+        if current in visited:
+            continue
+        visited.add(current)
+        resident = _linux_resident_bytes(current)
+        if resident is not None:
+            total += resident
+            observed = True
+        pending.extend(_linux_child_pids(current))
+    return total if observed else None
 
 
 def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
@@ -336,7 +409,16 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                 'PYTHONUTF8': '1',
                 'PYTHONDONTWRITEBYTECODE': '1',
             }
-            child_argv = [sys.executable, '-I', '-B', str(driver), str(code)]
+            # Windows venv python.exe may be a redirector that spawns the base
+            # interpreter, which conflicts with the Job's active-process=1 cap.
+            # The isolated driver only needs the stdlib. Use the interpreter
+            # identified by this trusted runtime, never PATH or candidate input.
+            child_executable = sys.executable
+            base_executable = getattr(sys, '_base_executable', None)
+            if (isinstance(base_executable, str) and Path(base_executable).is_absolute()
+                    and Path(base_executable).is_file()):
+                child_executable = base_executable
+            child_argv = [child_executable, '-I', '-B', str(driver), str(code)]
             kernel32, job_handle = _win32_create_job(memory_limit_bytes)
             try:
                 with packet.open('rb') as incoming, log.open('wb') as outgoing:
@@ -344,14 +426,15 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                         child_argv,
                         stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
                         cwd=job, env=env,
-                        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+                        # The candidate must not execute before containment is installed.
+                        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP | 0x00000004,  # CREATE_SUSPENDED
                     )
+                    assigned = False
                     try:
-                        # Assign process handle to Job Object; if process already exited, ignore benign failure.
-                        if proc.poll() is None:
-                            if not kernel32.AssignProcessToJobObject(job_handle, int(proc._handle)):
-                                if proc.poll() is None:
-                                    raise CandidateExecutionError('AssignProcessToJobObject failed')
+                        assigned = bool(kernel32.AssignProcessToJobObject(job_handle, int(proc._handle)))
+                        if not assigned:
+                            raise CandidateExecutionError('AssignProcessToJobObject failed')
+                        _win32_resume_process(proc)
                         try:
                             proc.wait(timeout=timeout)
                         except subprocess.TimeoutExpired as exc:
@@ -359,7 +442,16 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                             raise CandidateExecutionError('candidate timeout') from exc
                     finally:
                         kernel32.TerminateJobObject(job_handle, 1)
-                        proc.wait()
+                        # A failed assignment leaves the child outside the Job Object.
+                        # Kill it directly and never let cleanup become an unbounded wait.
+                        try:
+                            if not assigned or proc.poll() is None:
+                                proc.kill()
+                        finally:
+                            try:
+                                proc.wait(timeout=3)
+                            except subprocess.TimeoutExpired as exc:
+                                raise CandidateExecutionError('candidate cleanup timeout') from exc
             finally:
                 kernel32.CloseHandle(job_handle)
         else:
@@ -381,7 +473,7 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                     while proc.poll() is None:
                         try:
                             resident = (_resident_bytes(proc.pid) if backend == 'macos-sandbox-exec'
-                                        else _linux_resident_bytes(proc.pid))
+                                        else _linux_process_tree_resident_bytes(proc.pid))
                         except OSError as error:
                             raise CandidateExecutionError('candidate RSS observation failed') from error
                         if resident is not None and resident > memory_limit_bytes:

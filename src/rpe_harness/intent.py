@@ -9,6 +9,7 @@ import re
 import sqlite3
 
 from .capability_catalog import _canonical, validate_catalog_source
+from .contract_sdk import path_format
 from .path_binding import source_digest_nofollow
 from .skill_catalog import _absolute, validate_skill_binding
 from .tasks import plan_from_request
@@ -156,7 +157,7 @@ def interpret_intent(extracted, *, catalog, workspace, session_id, source_ref, s
         missing = ['execution.' + name for name in required if name not in execution]
         if missing:
             return _failure('needs_context', missing=missing, catalog_sha256=catalog.snapshot_id)
-        fmt = Path(execution['input_path']).suffix.lower().lstrip('.')
+        fmt = path_format(execution['input_path'])
         resolved = catalog.resolve(capability, fmt, constraints)
         if resolved['status'] != 'ready':
             return _failure(resolved['status'], missing=resolved['missing'],

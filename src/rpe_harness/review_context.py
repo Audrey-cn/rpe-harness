@@ -6,8 +6,9 @@ import hashlib
 import json
 import time
 
-from .capability_catalog import _definitions
-from .context import ContextStore, SourceRef, _json, _text, requirements_for
+from .capability_catalog import CapabilityCatalog, _definitions
+from .context import (CapabilityContext, ContextStore, FactRequirement, SourceRef,
+                      _json, _text, requirements_for)
 from .review_quotes import source_quote_anchors
 
 _SCHEMA = 'rpe.review-context/v1'
@@ -115,8 +116,15 @@ def validate_context(db_path, bundle, session_id):
 def recover_context(db_path, bundle, session_id, capability, execution, constraints):
     """Check explicit draft values against required facts; never fill the draft."""
     bundle = validate_context(db_path, bundle, session_id)
-    definition = next(item for item in _definitions() if item['capability'] == capability)
-    requirement = requirements_for(capability)
+    candidates = CapabilityCatalog().resolve(capability)['candidates']
+    if not candidates:
+        raise ValueError('unsupported context capability')
+    definition = candidates[0]
+    if definition.get('plugin_options'):
+        requirement = CapabilityContext(capability, definition['contract_version'], tuple(
+            FactRequirement(name, 'string') for name in definition['required_execution']))
+    else:
+        requirement = requirements_for(capability)
     names = {item.name for item in requirement.requirements}
     store = ContextStore(db_path)
     for ref in bundle['source_refs']:
@@ -125,7 +133,8 @@ def recover_context(db_path, bundle, session_id, capability, execution, constrai
             if field == 'constraints':
                 if set(content['facts'][field]) != set(constraints):
                     raise ValueError('source conflict: constraints')
-            elif field in definition['execution_fields'] and field not in names:
+            elif (field not in names and
+                  (definition.get('plugin_options') or field in definition['execution_fields'])):
                 if field not in execution or execution[field] != content['facts'][field]:
                     raise ValueError('source conflict or missing explicit field: execution.' + field)
     return store.recover(requirement=requirement, session_id=session_id,

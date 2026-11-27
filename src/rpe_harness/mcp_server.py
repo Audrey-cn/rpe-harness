@@ -22,6 +22,7 @@ from .host_api import HostAPI
 from .runtime import default_db_path
 
 PROTOCOL_VERSION = '2024-11-05'
+MAX_STDIN_LINE_BYTES = 1024 * 1024
 
 _TOOLS: list[dict[str, Any]] = [
     {
@@ -101,11 +102,15 @@ class StdioMCPServer:
         owner: str = 'mcp-host',
         session_id: str = 'mcp-session',
         workspace: Path | str | None = None,
+        catalog_root: Path | str | None = None,
+        skill_snapshot_id: str | None = None,
     ) -> None:
         self.db_path = Path(db_path).expanduser().resolve() if db_path else default_db_path()
         self.owner = owner
         self.session_id = session_id
         self.workspace = Path(workspace).expanduser().resolve() if workspace else Path.cwd().resolve()
+        self.catalog_root = Path(catalog_root).expanduser().absolute() if catalog_root is not None else None
+        self.skill_snapshot_id = skill_snapshot_id
         self.api = HostAPI(self.db_path)
 
     def _tool_result(self, payload: Any, *, is_error: bool = False) -> dict[str, Any]:
@@ -137,6 +142,10 @@ class StdioMCPServer:
             if not isinstance(task, str) or not task.strip():
                 return self._tool_result({'error': 'task must be a nonempty string'}, is_error=True)
             req: dict[str, Any] = {'task': task}
+            if self.catalog_root is not None:
+                req['catalog_root'] = str(self.catalog_root)
+            if self.skill_snapshot_id is not None:
+                req['skill_snapshot_id'] = self.skill_snapshot_id
             if 'draft' in arguments:
                 if not isinstance(arguments['draft'], dict):
                     return self._tool_result({'error': 'draft must be a JSON object'}, is_error=True)
@@ -227,22 +236,33 @@ class StdioMCPServer:
         }
 
     def serve(self, stdin: TextIO = sys.stdin, stdout: TextIO = sys.stdout) -> int:
-        for raw_line in stdin:
-            line = raw_line.strip()
-            if not line:
-                continue
+        while True:
+            # TextIO limits characters, so also enforce the UTF-8 byte budget.
+            # Drain an oversized record in bounded chunks before accepting the
+            # next record; one hostile line must produce only one parse error.
+            raw_line = stdin.readline(MAX_STDIN_LINE_BYTES + 1)
+            if not raw_line:
+                break
             try:
+                if (len(raw_line) > MAX_STDIN_LINE_BYTES or
+                        len(raw_line.encode('utf-8')) > MAX_STDIN_LINE_BYTES):
+                    while raw_line and not raw_line.endswith('\n'):
+                        raw_line = stdin.readline(MAX_STDIN_LINE_BYTES + 1)
+                    raise ValueError('stdin line exceeds 1 MiB')
+                line = raw_line.strip()
+                if not line:
+                    continue
                 message = json.loads(line)
-            except json.JSONDecodeError as exc:
+                response = self.handle_message(message)
+            except (json.JSONDecodeError, RecursionError, ValueError) as exc:
                 response: dict[str, Any] | None = {
                     'jsonrpc': '2.0',
                     'id': None,
                     'error': {'code': -32700, 'message': f'Parse error: {exc}'},
                 }
-            else:
-                response = self.handle_message(message)
             if response is not None:
-                stdout.write(json.dumps(response, ensure_ascii=False) + '\n')
+                # Escaping also makes unpaired surrogate IDs safe on UTF-8 stdio.
+                stdout.write(json.dumps(response, ensure_ascii=True) + '\n')
                 stdout.flush()
         return 0
 
@@ -259,6 +279,8 @@ def register_mcp(subparsers) -> None:
                      help='trusted host session_id bound to this MCP server process')
     mcp.add_argument('--workspace', default=os.environ.get('RPE_MCP_WORKSPACE'),
                      help='trusted host workspace directory (default: current working directory)')
+    mcp.add_argument('--catalog-root', help='trusted local skill catalog root')
+    mcp.add_argument('--skill-snapshot-id', help='trusted skill snapshot SHA256')
 
 
 def dispatch_mcp(args) -> int:
@@ -267,5 +289,7 @@ def dispatch_mcp(args) -> int:
         owner=args.owner,
         session_id=args.session_id,
         workspace=args.workspace,
+        catalog_root=args.catalog_root,
+        skill_snapshot_id=args.skill_snapshot_id,
     )
     return server.serve()

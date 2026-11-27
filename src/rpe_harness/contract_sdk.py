@@ -36,6 +36,16 @@ _REQUEST_FIELDS = frozenset({
     'task_type', 'input_format',
 })
 _DEFAULT_CONSTRAINTS = frozenset({'preserve_original', 'preserve_order'})
+_RESERVED_CAPABILITIES = frozenset({'tabular.deduplicate', 'json.normalize', 'xlsx.inspect'})
+
+
+def path_format(value: str | Path) -> str:
+    """Infer a contract format, including conventional dotenv filenames."""
+    path = Path(value)
+    name = path.name.lower()
+    if name == '.env' or name.startswith('.env.') or name.endswith('.env'):
+        return 'env'
+    return path.suffix.lower().lstrip('.')
 
 
 def _callable_revision(fn: Callable[..., Any], fallback_label: str) -> str:
@@ -57,8 +67,8 @@ def _validate_plugin_paths(
                 or not Path(value).is_absolute() or '..' in Path(value).parts):
             raise ValueError('contract paths must be absolute without traversal or NUL')
     source, output = Path(source_raw), Path(output_raw)
-    fmt = source.suffix.lower().lstrip('.')
-    out_fmt = output.suffix.lower().lstrip('.')
+    fmt = path_format(source)
+    out_fmt = path_format(output)
     if fmt not in allowed_formats:
         raise ValueError(f'input must match allowed formats: {list(allowed_formats)}')
     expected_out = output_formats if output_formats is not None else (fmt,)
@@ -143,8 +153,13 @@ class PluginExecutionPlan:
     goal: str
     source_ref: str | None = None
     session_id: str | None = None
+    output_format: str | None = None
 
     def __post_init__(self) -> None:
+        if self.output_format is None:
+            object.__setattr__(self, 'output_format', self.input_format)
+        if not isinstance(self.output_format, str) or not self.output_format:
+            raise ValueError('output_format must be a nonempty string')
         for name in ('executor_revision', 'verifier_revision', 'input_sha256'):
             value = getattr(self, name)
             if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{64}', value):
@@ -180,7 +195,10 @@ class PluginExecutionPlan:
         return result
 
     def semantic_dict(self) -> dict[str, Any]:
-        return {k: v for k, v in self.to_dict().items() if k not in _METADATA}
+        # The output path already anchors its format. Keep the original digest
+        # schema so persisted pre-output_format plans can still be recovered.
+        return {k: v for k, v in self.to_dict().items()
+                if k not in _METADATA and k != 'output_format'}
 
     @property
     def sha256(self) -> str:
@@ -204,12 +222,19 @@ class PluginExecutionPlan:
 
     @classmethod
     def from_dict(cls, saved: dict[str, Any]) -> 'PluginExecutionPlan':
-        if not isinstance(saved, dict) or set(saved) != {item.name for item in fields(cls)}:
+        names = {item.name for item in fields(cls)}
+        if not isinstance(saved, dict) or set(saved) not in (names, names - {'output_format'}):
             raise ValueError('persisted plugin plan fields are incomplete or unknown')
         values = dict(saved)
         if not isinstance(values['constraints'], (list, tuple)):
             raise ValueError('persisted plugin constraints must be a sequence')
         values['constraints'] = tuple(values['constraints'])
+        if not isinstance(values['output_path'], str):
+            raise ValueError('output_path must be an absolute path without traversal')
+        output_format = path_format(values['output_path'])
+        if 'output_format' in values and values['output_format'] != output_format:
+            raise ValueError('persisted plugin output_format must match output path')
+        values['output_format'] = output_format
         return cls(**values)
 
 
@@ -225,6 +250,8 @@ class ContractRegistry:
     def register(self, plugin: ContractPlugin, *, replace: bool = False) -> None:
         if not isinstance(plugin, ContractPlugin):
             raise TypeError('plugin must be a ContractPlugin instance')
+        if plugin.capability in _RESERVED_CAPABILITIES:
+            raise ValueError(f'contract capability is reserved for a built-in: {plugin.capability}')
         with self._lock:
             if not replace and plugin.capability in self._plugins:
                 raise ValueError(f'contract capability already registered: {plugin.capability}')
@@ -253,7 +280,7 @@ class ContractRegistry:
                     if not isinstance(plugin, ContractPlugin):
                         raise TypeError('entry point did not return a ContractPlugin')
                     if plugin.capability not in self._plugins:
-                        self._plugins[plugin.capability] = plugin
+                        self.register(plugin)
                         loaded.append(plugin.capability)
                 except Exception as exc:
                     self.load_errors.append({'entry_point': ep.name, 'error': f'{type(exc).__name__}: {exc}'})
@@ -316,6 +343,7 @@ class ContractRegistry:
             input_path=str(source),
             output_path=str(output),
             input_format=fmt,
+            output_format=fmt if plugin.output_formats is None else path_format(output),
             input_sha256=hashlib.sha256(raw).hexdigest(),
             options_json=canonical_json(validated_opts),
             constraints=constraints,
