@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.1.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `零依赖 Stdio MCP` · `可插拔合约 SDK` · `120 轮压测全绿` · `MIT 许可证`
+`v2.3.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + 本地审批台` · `7 大内置合约 + 插件 SDK` · `MIT 许可证`
 
 <p><a href="README.md"><strong>English</strong></a> | <strong>简体中文</strong></p>
 
@@ -27,7 +27,7 @@
 
 如果你平时用 **Claude Code、Codex CLI、Hermes 或自研 Agent** 处理本地文件与工程任务，一定遇到过这三个最头疼的问题：**Token 烧得快、跑完还得人工肉眼复核怕出错、点“允许”又怕它把源文件改坏。**
 
-**RPE-Harness** 就像装在 Agent 底层的轻量级“本地执行安全阀”（零后台服务、单 SQLite 账本、仅 1 个依赖），直接从开发者最关心的三个维度提效：
+**RPE-Harness** 就像装在 Agent 底层的轻量级“本地执行安全阀”（零后台服务、单 SQLite 账本、仅 2 个依赖：`openpyxl` + `cloudpickle`），直接从开发者最关心的三个维度提效：
 
 - **💰 省预算（实测节省 59%–82% Token）**——别再让大模型整篇吞大文件，或者烧掉几万 Token 才发现少了个关键条件、两份文档写冲突了。RPE 的 **C2 `SourceResolver`** 会在调用模型前 `~1 ms`、**0 Token** 精准拦截缺参/冲突；正常任务也只让模型输出几十个字的轻量草案，真正的文件处理交给本地确定性代码（文件再大，Token 消耗也是常数级）。
 - **⚡ 提效率（告别反复返工与人工盯梢）**——不用再每次肉眼检查 AI 有没有悄悄吃掉前导零（`0041` → `41`）、改坏 JSON 数值（`1.0` → `1` / `-0` → `0`）或覆盖原文件。每次产物都会经过**独立 Oracle 自动验真**再独占原子落盘；中途想停，**原子取消**也会干净收敛、绝不留下半截脏文件。
@@ -50,12 +50,12 @@ flowchart LR
     ORACLE -->|验真通过| PUB["独占原子发布 + SQLite 审计回执"]
 ```
 
-### 核心能力矩阵（`v2.1.0`）
+### 核心能力矩阵（`v2.3.0`）
 
 | 模块 | 代码入口 | 核心保证 |
 | :--- | :--- | :--- |
-| **零依赖 Stdio MCP 服务** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) | `rpe-harness mcp` 纯标准库 JSON-RPC 2.0 接入 **Claude Code、Codex CLI、Cursor 与 Hermes**；仅暴露模型安全工具（`rpe_capabilities / rpe_start_task / rpe_show_task / rpe_reconcile_task`），将 `confirm/execute/cancel/handoff` 锁死在宿主侧并拦截身份伪造。 |
-| **声明式合约插件 SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) | 提供 `ContractPlugin` 标准接口与 Python `entry_points`（`rpe_harness.contracts`）自动发现；开箱内置 **5 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`xlsx.inspect`），统一走独占原子无覆盖发布。 |
+| **零依赖 Stdio MCP + 本地审批台** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) · [`inbox.py`](src/rpe_harness/inbox.py) | `rpe-harness mcp` 纯标准库 JSON-RPC 2.0 接入 **Claude Code、Codex CLI、Cursor 与 Hermes**（仅暴露模型安全工具）；配套 `rpe-harness inbox`（终端一键审批）与 `rpe-harness inbox --web`（仅回环绑定 + CSRF 校验的暗色单页 Web 审批台），打通人机确认最后一公里。 |
+| **声明式合约插件 SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) · [`dev_contracts.py`](src/rpe_harness/dev_contracts.py) · [`proposal_worker.py`](src/rpe_harness/proposal_worker.py) | `ContractPlugin` 已全链路打通 `ProposalStore / HostAPI / MCP` 审批闭环（支持 `entry_points` 自动发现与 digest 钉死传输）；开箱内置 **7 个带独立 Oracle 的核心合约**：`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`env.patch`、`sqlite.query_export`、`xlsx.inspect`。 |
 | **C2 · 窄授权来源补取** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | 仅在显式授权的 `source_refs` 内最多做 2 次有界读取；**~1 ms、0 token** 确定性拦截 `needs_user / conflict / stale / forbidden`，彻底隔离来源里的无关隐私字段。 |
 | **C4 · 宿主无关任务门面** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 个标准方法（`start / show / confirm / execute / cancel / reconcile / handoff`）+ 薄 JSON CLI（`rpe host ...`）；不导入任何 Agent 循环，复用同一 SQLite 账本。 |
 | **C4 · 原子取消 vs 发布竞态** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | 幂等 CLI（`runs cancel`）与回环 HTTP（`POST /runs/<id>/cancel`）；立即围栏发布，已进入发布则如实返回 `too_late`；内置 `fcntl`（POSIX）+ `msvcrt`（Windows）跨平台文件锁。 |
@@ -118,7 +118,11 @@ rpe-harness host capabilities
 }
 ```
 
-> MCP 侧**仅暴露**只读与起草工具（`rpe_capabilities`、`rpe_start_task`、`rpe_show_task`、`rpe_reconcile_task`），确认与执行严格留在宿主侧（`rpe-harness host confirm` / `execute`）。
+> MCP 侧**仅暴露**只读与起草工具（`rpe_capabilities`、`rpe_start_task`、`rpe_show_task`、`rpe_reconcile_task`）；模型提单后，在宿主侧一键审批执行：
+> ```bash
+> rpe-harness inbox          # 终端交互式审批队列
+> rpe-harness inbox --web    # 本地回环 Web 审批台（http://127.0.0.1:18401/）
+> ```
 
 ### 3. 注册你自己的可验证业务合约（`ContractPlugin` SDK）
 
@@ -193,7 +197,7 @@ const res = await trustedActions.executeTask({
 
 我们把边界和基准数据写得一样透明：
 
-1. **内置合约与插件扩展**：当前开箱内置 **5 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`xlsx.inspect`），并通过 **`rpe.contract/v1` 插件 SDK** 支持第三方按需扩展自己的确定性执行器与独立验真器。
+1. **内置合约与插件扩展**：当前开箱内置 **7 个带独立 Oracle 的核心合约**（`tabular.deduplicate`、`tabular.filter`、`json.normalize`、`json.patch`、`env.patch`、`sqlite.query_export`、`xlsx.inspect`），并通过 **`rpe.contract/v1` 插件 SDK** 全链路打通 MCP / HostAPI 审批与独立验真。
 2. **三平台隔离边界透明声明**：`sandbox_capabilities()` 按平台诚实汇报真实能力——macOS `sandbox-exec` 与 Linux `bwrap` 提供进程 + 文件系统 + 网络隔离；Windows `windows-job-object` 提供硬内存上限、`ActiveProcessLimit=1` 与进程树 `KILL_ON_JOB_CLOSE` 回收（文件系统与网络沿用宿主 ACL，如实声明、绝不伪造）。
 3. **压力测试范围**：`v2.1.0` 内置可复现的 **120 轮故障注入压力测试**（[`scripts/soak_test.py`](scripts/soak_test.py)，[`实测回执`](reports/v2.1.0/soak/README.md)：**120/120 全绿**、0 残留 staging 文件、SQLite `PRAGMA integrity_check == ok`）；面向单机本地内核，不包含多天分布式混沌集群压测。
 

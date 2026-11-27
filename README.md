@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.1.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Zero-Dep Stdio MCP` · `Contract Plugin SDK` · `120-Iter Soak` · `MIT License`
+`v2.3.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + Local Approval Inbox` · `7 Built-in Contracts + SDK` · `MIT License`
 
 <p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
@@ -27,7 +27,7 @@
 
 If you use **Claude Code, Codex CLI, Hermes, or custom AI agents** on real local files, you've probably hit the same three frustrations: **burning tokens on repeated retries, babysitting outputs to catch subtle mistakes, and worrying an agent will overwrite the wrong file.**
 
-**RPE-Harness** sits right underneath your coding agent as a lightweight local kernel (1 SQLite file, 1 pip dependency, zero cloud setup) to improve three everyday dimensions:
+**RPE-Harness** sits right underneath your coding agent as a lightweight local kernel (1 SQLite file, 2 pip dependencies: `openpyxl` + `cloudpickle`, zero cloud setup) to improve three everyday dimensions:
 
 - **💰 Cut Token Budget (59%–82% fewer tokens in live tests)** — Stop paying an LLM to ingest giant files or burn 20k+ tokens discovering that a requirement is missing or two docs contradict each other. RPE's **C2 SourceResolver** catches missing/conflicting inputs in `~1 ms` at **0 tokens**, and for valid tasks the LLM only writes a tiny structured draft while deterministic local code processes the data (`O(1)` token cost regardless of file size).
 - **⚡ Boost Reliability & Speed (Zero babysitting)** — No more manually diffing whether an AI silently dropped leading zeros (`0041` → `41`), altered JSON numbers (`1.0` → `1`, `-0` → `0`), or clobbered your original file. Every output is automatically verified by an **Independent Artifact Oracle** before atomic no-overwrite publish—and if you hit **Cancel** mid-run, RPE cleanly fences publication or tells you honestly if it already landed.
@@ -50,12 +50,12 @@ flowchart LR
     ORACLE -->|Verified| PUB["Atomic Publish + SQLite Audit Receipt"]
 ```
 
-### Core Capabilities (`v2.1.0`)
+### Core Capabilities (`v2.3.0`)
 
 | Layer | Module | Guarantee |
 | :--- | :--- | :--- |
-| **Zero-Dep Stdio MCP Server** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) | `rpe-harness mcp` speaks pure stdlib JSON-RPC 2.0 MCP for **Claude Code, Codex CLI, Cursor, and Hermes**. Exposes **only** model-safe tools (`rpe_capabilities`, `rpe_start_task`, `rpe_show_task`, `rpe_reconcile_task`); keeps `confirm/execute/cancel/handoff` strictly host-side and prevents owner/session spoofing. |
-| **Contract Plugin SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) | Declarative `ContractPlugin` interface (`validate_options`, `execute`, `verify`) with Python `entry_points` (`rpe_harness.contracts`) discovery. Ships **5 built-in verified contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `xlsx.inspect`), all backed by independent oracles and atomic no-overwrite publish. |
+| **Zero-Dep Stdio MCP + Local Approval Inbox** | [`mcp_server.py`](src/rpe_harness/mcp_server.py) · [`inbox.py`](src/rpe_harness/inbox.py) | `rpe-harness mcp` speaks pure stdlib JSON-RPC 2.0 MCP for **Claude Code, Codex CLI, Cursor, and Hermes** (exposing only model-safe tools). Pair it with `rpe-harness inbox` (interactive CLI) or `rpe-harness inbox --web` (loopback-only CSRF-guarded Web Approval UI) for one-click trusted human confirmation & execution. |
+| **Contract Plugin SDK (`rpe.contract/v1`)** | [`contract_sdk.py`](src/rpe_harness/contract_sdk.py) · [`dev_contracts.py`](src/rpe_harness/dev_contracts.py) · [`proposal_worker.py`](src/rpe_harness/proposal_worker.py) | Declarative `ContractPlugin` interface fully wired end-to-end into `ProposalStore`, `HostAPI`, and `MCP` (`entry_points` discovery + digest-pinned worker transport). Ships **7 built-in verified contracts**: `tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `env.patch`, `sqlite.query_export`, and `xlsx.inspect`. |
 | **C2 · Narrow Source Resolver** | [`source_resolver.py`](src/rpe_harness/source_resolver.py) | Resolves individual authorized fields in ≤2 bounded reads; blocks `needs_user`, `conflict`, `stale` (SHA mismatch), and `forbidden` (cross-job/session) in **~1 ms at 0 tokens** without leaking private fields into prompts. |
 | **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
 | **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
@@ -118,7 +118,11 @@ rpe-harness host capabilities
 }
 ```
 
-> Only model-safe read/proposal tools (`rpe_capabilities`, `rpe_start_task`, `rpe_show_task`, `rpe_reconcile_task`) are exposed over MCP. Approval & execution stay strictly host-side (`rpe-harness host confirm` / `execute`).
+> Only model-safe read/proposal tools (`rpe_capabilities`, `rpe_start_task`, `rpe_show_task`, `rpe_reconcile_task`) are exposed over MCP. Approve & execute pending tasks out-of-band in one click via:
+> ```bash
+> rpe-harness inbox          # interactive terminal approval queue
+> rpe-harness inbox --web    # loopback-only Web Approval UI (http://127.0.0.1:18401/)
+> ```
 
 ### 3. Register Your Own Verifiable Contract (`ContractPlugin` SDK)
 
@@ -193,7 +197,7 @@ const res = await trustedActions.executeTask({
 
 We publish boundaries as openly as benchmarks:
 
-1. **Built-in contracts vs custom plugins**: The kernel ships **5 verified built-in contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `xlsx.inspect`) plus the **`rpe.contract/v1` Plugin SDK** (`entry_points`) so teams can plug in domain-specific deterministic executors + independent oracles without touching kernel internals.
+1. **Built-in contracts vs custom plugins**: The kernel ships **7 verified built-in contracts** (`tabular.deduplicate`, `tabular.filter`, `json.normalize`, `json.patch`, `env.patch`, `sqlite.query_export`, `xlsx.inspect`) plus the **`rpe.contract/v1` Plugin SDK** (`entry_points`), all wired end-to-end through MCP / HostAPI confirmation and independent oracles.
 2. **OS containment scope across platforms**: `sandbox_capabilities()` reports exact guarantees per OS — macOS `sandbox-exec` and Linux `bwrap` enforce process + filesystem + network isolation; Windows `windows-job-object` enforces hard process memory, `ActiveProcessLimit=1`, and process-tree `KILL_ON_JOB_CLOSE` containment (filesystem/network remain host ACL, honestly declared rather than faked).
 3. **Soak vs multi-day chaos**: `v2.1.0` ships a reproducible **120-iteration fault-injection soak harness** ([`scripts/soak_test.py`](scripts/soak_test.py), [`receipt`](reports/v2.1.0/soak/README.md): **120/120 pass**, 0 leaked staging files, SQLite `PRAGMA integrity_check == ok`); multi-day distributed chaos benchmarks remain out of scope for a single-node local kernel.
 

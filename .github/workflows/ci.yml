@@ -58,6 +58,8 @@ jobs:
           tests/test_causal_graph.py
           tests/test_mcp_server.py
           tests/test_contract_sdk.py
+          tests/test_dev_contracts.py
+          tests/test_inbox.py
           tests/test_sandbox_backends.py
       - name: Run DSH second-host Node.js full-loop E2E tests
         env:
@@ -94,6 +96,8 @@ jobs:
           tests/test_plugin_proposal_loop.py
           tests/test_mcp_server.py
           tests/test_contract_sdk.py
+          tests/test_dev_contracts.py
+          tests/test_inbox.py
           tests/test_sandbox_backends.py
       - name: Run DSH second-host Node.js full-loop E2E tests on macOS
         env:
@@ -128,6 +132,8 @@ jobs:
           tests/test_plugin_proposal_loop.py
           tests/test_mcp_server.py
           tests/test_contract_sdk.py
+          tests/test_dev_contracts.py
+          tests/test_inbox.py
           tests/test_sandbox_backends.py
       - name: Verify host CLI capabilities on Windows
         env:
