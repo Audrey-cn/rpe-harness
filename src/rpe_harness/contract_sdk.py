@@ -46,15 +46,24 @@ def _callable_revision(fn: Callable[..., Any], fallback_label: str) -> str:
     return hashlib.sha256(src).hexdigest()
 
 
-def _validate_plugin_paths(source_raw: Any, output_raw: Any, allowed_formats: tuple[str, ...]) -> tuple[Path, Path, str]:
+def _validate_plugin_paths(
+    source_raw: Any,
+    output_raw: Any,
+    allowed_formats: tuple[str, ...],
+    output_formats: tuple[str, ...] | None = None,
+) -> tuple[Path, Path, str]:
     for value in (source_raw, output_raw):
         if (not isinstance(value, str) or not value or '\x00' in value
                 or not Path(value).is_absolute() or '..' in Path(value).parts):
             raise ValueError('contract paths must be absolute without traversal or NUL')
     source, output = Path(source_raw), Path(output_raw)
     fmt = source.suffix.lower().lstrip('.')
-    if fmt not in allowed_formats or output.suffix.lower() != f'.{fmt}':
-        raise ValueError(f'input and output must match allowed formats: {list(allowed_formats)}')
+    out_fmt = output.suffix.lower().lstrip('.')
+    if fmt not in allowed_formats:
+        raise ValueError(f'input must match allowed formats: {list(allowed_formats)}')
+    expected_out = output_formats if output_formats is not None else (fmt,)
+    if out_fmt not in expected_out:
+        raise ValueError(f'output must match allowed formats: {list(expected_out)}')
     if source == output:
         raise ValueError('input and output must differ')
     binding = current_binding()
@@ -84,6 +93,7 @@ class ContractPlugin:
     validate_options: Callable[[dict[str, Any], bytes], dict[str, Any]]
     execute: Callable[['PluginExecutionPlan', bytes], tuple[bytes, dict[str, Any]]]
     verify: Callable[['PluginExecutionPlan', bytes, bytes], dict[str, Any]]
+    output_formats: tuple[str, ...] | None = None
     contract_version: int = 1
     constraints: frozenset[str] = _DEFAULT_CONSTRAINTS
     description: str = ''
@@ -288,7 +298,7 @@ class ContractRegistry:
             raise ValueError('unsupported constraints for plugin contract')
         constraints = tuple(sorted(set(constraints_raw)))
         source, output, fmt = _validate_plugin_paths(
-            params['input_path'], params['output_path'], plugin.input_formats
+            params['input_path'], params['output_path'], plugin.input_formats, plugin.output_formats
         )
         if 'input_format' in payload and payload['input_format'] != fmt:
             raise ValueError('input_format must match input file extension')
@@ -623,6 +633,9 @@ def _create_default_registry() -> ContractRegistry:
     reg = ContractRegistry()
     reg.register(TABULAR_FILTER_PLUGIN)
     reg.register(JSON_PATCH_PLUGIN)
+    from .dev_contracts import ENV_PATCH_PLUGIN, SQLITE_EXPORT_PLUGIN
+    reg.register(ENV_PATCH_PLUGIN)
+    reg.register(SQLITE_EXPORT_PLUGIN)
     return reg
 
 
