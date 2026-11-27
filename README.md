@@ -6,13 +6,13 @@
 
 *State-driven capability addressing, independent artifact verification, atomic cancel-vs-publish convergence, and auditable evolution for persistent coding agents.*
 
-`v1.17.0` · `Python 3.10+` · `SQLite + openpyxl` · `MIT License` · `Successor to Progenitor`
+`v1.18.0` · `Python 3.10+` · `Node.js 20+ (DSH)` · `SQLite + openpyxl` · `MIT License`
 
 <p>
   <a href="#-核心架构与亮点">核心架构</a> ·
-  <a href="#-v1170-新增c2-窄来源补取与-c4-宿主无关任务门面">v1.17.0 新特性</a> ·
+  <a href="#-v1180-新增a2-dsh-第二宿主薄适配与跨宿主安全交接">v1.18.0 新特性</a> ·
   <a href="#本机快速使用">快速上手</a> ·
-  <a href="#服务与-agent-旁路">HTTP / Agent 旁路</a> ·
+  <a href="integrations/dsh/README.md">DSH 第二宿主适配</a> ·
   <a href="docs/fusion.md">阿卡夏融合设计</a>
 </p>
 
@@ -32,7 +32,12 @@
 | **📝 自然语言起草 + Digest 绑定确认** | 模型只负责起草带原文引用的要求清单，用户确认绑定当前 `digest` 的草案后由确定性执行器落地；陈旧草案或跨任务误点一律拒绝 |
 | **📊 实证优先（Evidence-First）** | 在 `v1.15.3` 真实 Hermes + `mimo-v2.6-pro` 受控 XLSX 对照中，两侧产出**逐字节一致**且均通过独立验收，RPE 路径总 token 减少 **82.8%**（`11,755` vs `68,327`；单样本受控实测，详见 [1.15.3 报告](reports/v1.15.3/1.15.3兼容与复验.md)） |
 
-## 🆕 v1.17.0 新增：C2 窄来源补取与 C4 宿主无关任务门面
+## 🆕 v1.18.0 新增：A2 DSH 第二宿主薄适配与跨宿主安全交接
+
+- **DSH 第二宿主零依赖薄适配（[`integrations/dsh/`](integrations/dsh/)）**：纯 Node.js ESM 插件，直接通过 `execFile` 对接共享的 `rpe host` JSON CLI，不复制执行器或 SQLite 账本；模型工具仅暴露 `rpe_capabilities / rpe_start_task / rpe_show_task` 且宿主身份不可伪造，`confirm / cancel / reconcile / handoff` 严格锁定为宿主用户可信动作。
+- **跨宿主安全交接（`HostAPI.handoff_task` & `rpe host handoff`）**：支持显式重授权来源、路径重映射与不可变血缘留存，强制废止原宿主 `confirmation_id`，拒绝任何未授权、已撤权或跨会话来源，以及原宿主 digest 重放（通过 G2 门禁负例验证）。
+
+### v1.17.0 · C2 窄来源补取与 C4 宿主无关任务门面
 
 - **C2 窄授权来源补取（`source_resolver.py`）**：新增 `SourceResolver.resolve(field, source_refs, job_id, session_id)`，仅在已授权 `source_refs` 内做最多 2 次有界补取，精确区分 `found / needs_user / conflict / stale / forbidden`，杜绝静默猜测、字节篡改或跨任务隐私泄漏。
 - **C4 宿主无关任务门面（`host_api.py` / `operations.py` / `host_cli.py`）**：提供 `HostAPI` 五个标准接口（`start_task / show_task / confirm_task / cancel_task / reconcile_task`）及薄 JSON CLI（`rpe host capabilities|start|show|confirm|cancel|reconcile`），复用既有 SQLite 账本、不导入 Hermes 循环，为 DSH 与 NewCC 接线提供统一底座。

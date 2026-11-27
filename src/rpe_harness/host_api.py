@@ -15,7 +15,7 @@ class HostAPI(TaskOperations):
 
     @staticmethod
     def capabilities():
-        return {'schema_version': 'rpe.host/v1', 'version': '1.17.0',
-                'methods': ['start', 'show', 'confirm', 'cancel', 'reconcile'],
+        return {'schema_version': 'rpe.host/v1', 'version': '1.18.0',
+                'methods': ['start', 'show', 'confirm', 'cancel', 'reconcile', 'handoff'],
                 'automatic_confirmation': False, 'automatic_execution': False,
                 'trusted_confirmation_required': True}

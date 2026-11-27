@@ -360,3 +360,80 @@ class TaskOperations:
                 'terminal_state': view['status'] if view['status'] in _TERMINAL else None,
                 'cleanup_state': cleanup_state, 'cleanup': copy.deepcopy(cleanup),
                 'allowed_recovery_actions': allowed}
+
+    def handoff_task(self, source_operation_id, source_owner, target_host_context, *,
+                     authorized_sources=None, path_mapping=None):
+        """Hand off an operation to a second host with fresh session/owner and zero inherited confirmation."""
+        row = self._owned(source_operation_id, source_owner)
+        if row is None:
+            return self._forbidden()
+        _bounded(target_host_context)
+        if type(target_host_context) is not dict:
+            raise ValueError('target_host_context must be an object')
+        target_ctx = json.loads(canonical_json(target_host_context))
+        for name in ('owner', 'session_id'):
+            _identity(target_ctx.get(name), name)
+        target_workspace = _absolute(target_ctx.get('workspace', ''))
+        if not target_ctx.get('workspace') or not target_workspace.is_dir():
+            raise ValueError('target host workspace must be an existing directory')
+        target_ctx['workspace'] = str(target_workspace)
+
+        reauthorized = []
+        if authorized_sources is not None:
+            _bounded(authorized_sources)
+            if not isinstance(authorized_sources, list):
+                raise ValueError('authorized_sources must be a list')
+            for item in authorized_sources:
+                if not isinstance(item, dict):
+                    return self._forbidden()
+                if item.get('revoked') is True or item.get('authorized') is False:
+                    return self._forbidden()
+                src_session = item.get('session_id')
+                if src_session is not None and src_session != target_ctx['session_id']:
+                    return self._forbidden()
+                src_owner = item.get('owner')
+                if src_owner is not None and src_owner != target_ctx['owner']:
+                    return self._forbidden()
+                reauthorized.append(item.get('source_id') or item.get('ref') or 'authorized-source')
+
+        mapping = {}
+        if path_mapping is not None:
+            _bounded(path_mapping)
+            if not isinstance(path_mapping, dict):
+                raise ValueError('path_mapping must be an object')
+            for src_path, dst_path in path_mapping.items():
+                if not isinstance(src_path, str) or not isinstance(dst_path, str) or not src_path or not dst_path:
+                    raise ValueError('path_mapping entries must be non-empty strings')
+                mapping[src_path] = dst_path
+
+        def _remap(value):
+            if not mapping:
+                return value
+            if isinstance(value, str):
+                out = value
+                for src_p, dst_p in mapping.items():
+                    out = out.replace(src_p, dst_p)
+                return out
+            if isinstance(value, list):
+                return [_remap(v) for v in value]
+            if isinstance(value, dict):
+                return {k: _remap(v) for k, v in value.items()}
+            return value
+
+        source_ctx = json.loads(row['host_context'])
+        source_view = self._view(row)
+        raw_text = _remap(source_view['source'].get('raw') or source_view['source'].get('text') or '')
+        draft = _remap(copy.deepcopy(source_view['draft']))
+        target_ctx['handoff_lineage'] = {
+            'handoff_from_operation_id': source_operation_id,
+            'handoff_from_owner': source_owner,
+            'handoff_from_host': source_ctx.get('host_id', 'unknown'),
+            'handoff_from_session_id': source_ctx.get('session_id'),
+            'source_proposal_id': row['proposal_id'],
+            'reauthorized_sources': reauthorized,
+            'prior_confirmation_invalidated': True,
+        }
+        created = self.start_task({'raw': raw_text, 'draft': draft}, target_ctx)
+        if 'operation_id' in created:
+            created['handoff_lineage'] = copy.deepcopy(target_ctx['handoff_lineage'])
+        return created

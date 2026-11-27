@@ -66,6 +66,14 @@ def register_host(commands):
     reconcile.add_argument('--owner', required=True)
     reconcile.add_argument('--db', help='SQLite path')
 
+    handoff = sub.add_parser('handoff', help='hand off an operation to another host with fresh session and invalidated prior confirmation')
+    handoff.add_argument('source_operation_id')
+    handoff.add_argument('--source-owner', required=True)
+    handoff.add_argument('--target-context', required=True, help='JSON file or - for target host_context')
+    handoff.add_argument('--authorized-sources', help='optional JSON file with re-authorized sources array')
+    handoff.add_argument('--path-mapping', help='optional JSON file mapping source paths to target paths')
+    handoff.add_argument('--db', help='SQLite path')
+
 
 def dispatch_host(args):
     if args.host_command == 'capabilities':
@@ -91,4 +99,13 @@ def dispatch_host(args):
         return api.cancel_task(args.operation_id, args.generation, owner=args.owner, reason=args.reason)
     if args.host_command == 'reconcile':
         return api.reconcile_task(args.operation_id, args.owner)
+    if args.host_command == 'handoff':
+        target_ctx = _read_json_object(args.target_context)
+        sources = None
+        if args.authorized_sources:
+            raw_sources = json.loads(Path(args.authorized_sources).read_text(encoding='utf-8'))
+            sources = raw_sources.get('sources') if isinstance(raw_sources, dict) else raw_sources
+        mapping = _read_json_object(args.path_mapping) if args.path_mapping else None
+        return api.handoff_task(args.source_operation_id, args.source_owner, target_ctx,
+                                authorized_sources=sources, path_mapping=mapping)
     raise ValueError('unknown host command')

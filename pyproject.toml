@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rpe-harness"
-version = "1.17.0"
+version = "1.18.0"
 description = "State-driven capability addressing for persistent learning agents"
 requires-python = ">=3.10"
 license = {text = "MIT"}
