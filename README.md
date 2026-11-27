@@ -60,7 +60,8 @@ flowchart LR
 | **C4 · Host-Neutral Task Facade** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 host-neutral methods (`start`, `show`, `confirm`, `execute`, `cancel`, `reconcile`, `handoff`) + thin JSON CLI (`rpe host ...`). Imports **no** agent loop; reuses existing SQLite ledgers. |
 | **C4 · Atomic Cancel-vs-Publish** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | Idempotent CLI (`runs cancel`) & guarded loopback HTTP (`POST /runs/<id>/cancel`). Immediately fences publication; returns honest `too_late` if publication already started; portable `fcntl` (POSIX) + `msvcrt` (Windows) locking. |
 | **Universal Host Adapters** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | Zero-dependency Node.js ESM &amp; Python thin bridges (`execFile` over `rpe host`) ready for **Claude Code, Codex CLI, Hermes, or any custom agent host**. Injects non-spoofable `host_id` / `owner` / `session_id`; invalidates prior confirmations on cross-host handoff. |
-| **3-OS Containment & Signed Assets** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | Native OS containment across all 3 platforms: macOS `sandbox-exec`, Linux `bwrap` (`bubblewrap`), and Windows Win32 **Job Object** (`ctypes`: hard process memory cap + `ActiveProcessLimit=1` + `KILL_ON_JOB_CLOSE`), paired with honest `sandbox_capabilities()` reporting and SHA-256 / RSA-SHA256 asset provenance. |
+| **3-OS Containment & Signed Assets** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | Native OS containment across all 3 platforms: macOS `sandbox-exec`, Linux `bwrap` (`bubblewrap` with `--unshare-pid` + read-only input mount), and Windows Win32 **Job Object** (`ctypes`: suspended assignment + hard process memory cap + `ActiveProcessLimit=1` + `KILL_ON_JOB_CLOSE`), paired with honest `sandbox_capabilities()` reporting and SHA-256 / RSA-SHA256 asset provenance. |
+| **2-Round Red-Team Hardening (`v2.3.1–v2.3.2`)** | [`tests/test_v231_hardening.py`](tests/test_v231_hardening.py) · [`tests/test_v232_hardening.py`](tests/test_v232_hardening.py) | Audited across 2 independent read-only red-team rounds (**264 dedicated hardening tests**): loopback `Host`/port & same-origin `Origin` DNS-rebinding guards on both `server.py` and `inbox.py`, `frame-ancestors 'none'` clickjacking headers, bounded `read_regular_file` anti-FIFO/symlink sandbox reads, frozen SQLite snapshots with `set_progress_handler` step limits, and malformed UTF-8/nesting resilience on MCP stdio. |
 
 ---
 
@@ -69,7 +70,7 @@ flowchart LR
 | Dimension | **LangGraph** | **Temporal / Trigger.dev** | **PydanticAI / TrueForge** | **RPE-Harness** |
 | :--- | :--- | :--- | :--- | :--- |
 | **Primary Role** | Multi-agent state graph orchestration | Cloud-native durable workflow cluster | Typed agent SDK / cloud runtime | **Local-first verifiable execution & approval kernel** |
-| **Infrastructure** | Heavy framework + checkpointer | Temporal server / cloud workers | SDK + external sandbox/telemetry | **Zero daemon · 1 SQLite file · 1 pip dep (`openpyxl`)** |
+| **Infrastructure** | Heavy framework + checkpointer | Temporal server / cloud workers | SDK + external sandbox/telemetry | **Zero daemon · 1 SQLite file · 2 pip deps (`openpyxl`, `cloudpickle`)** |
 | **HITL Boundary** | Graph `interrupt()` node | Workflow waitpoint | Tool-call approval | **Host-only `TrustedHostAction` + `proposal digest` + cross-host invalidation** |
 | **Result Proof** | User-written node logic | Workflow code | Schema + LLM-as-a-judge | **Independent deterministic Oracle + atomic no-overwrite publish** |
 | **Cross-Platform** | Python / JS | Cloud / Docker | Python / TS | **Linux · macOS · Windows (Python + Node.js Universal Adapters)** |
@@ -95,6 +96,15 @@ Measured on **2026-11-27** across **5 model families (20/20 Oracle pass)** on id
 ## 🚀 30-Second Quickstart
 
 ### 1. Install (Linux / macOS / Windows)
+
+**Fastest — install the prebuilt wheel from [GitHub Release `v2.3.2`](https://github.com/Audrey-cn/rpe-harness/releases/tag/v2.3.2):**
+
+```bash
+pip install https://github.com/Audrey-cn/rpe-harness/releases/download/v2.3.2/rpe_harness-2.3.2-py3-none-any.whl
+rpe-harness host capabilities
+```
+
+**Or install editable from source:**
 
 ```bash
 git clone https://github.com/Audrey-cn/rpe-harness.git

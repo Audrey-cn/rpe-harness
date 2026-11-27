@@ -60,7 +60,8 @@ flowchart LR
 | **C4 · 宿主无关任务门面** | [`host_api.py`](src/rpe_harness/host_api.py) · [`operations.py`](src/rpe_harness/operations.py) · [`host_cli.py`](src/rpe_harness/host_cli.py) | 7 个标准方法（`start / show / confirm / execute / cancel / reconcile / handoff`）+ 薄 JSON CLI（`rpe host ...`）；不导入任何 Agent 循环，复用同一 SQLite 账本。 |
 | **C4 · 原子取消 vs 发布竞态** | [`storage.py`](src/rpe_harness/storage.py) · [`server.py`](src/rpe_harness/server.py) · [`file_lock.py`](src/rpe_harness/file_lock.py) | 幂等 CLI（`runs cancel`）与回环 HTTP（`POST /runs/<id>/cancel`）；立即围栏发布，已进入发布则如实返回 `too_late`；内置 `fcntl`（POSIX）+ `msvcrt`（Windows）跨平台文件锁。 |
 | **通用宿主薄适配层** | [`integrations/dsh/`](integrations/dsh/) · [`integrations/hermes/`](integrations/hermes/) | 零依赖 Node.js ESM 与 Python 薄桥接（通过 `execFile` 对接 `rpe host`），可快速适配 **Claude Code、Codex CLI、Hermes 或任意自定义宿主**；跨宿主交接强制废止原确认。 |
-| **三平台原生隔离与签名资产** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | 覆盖三平台原生隔离后端：macOS `sandbox-exec`、Linux `bwrap`（bubblewrap）与 Windows 原生 **Win32 Job Object**（纯 `ctypes` 硬内存上限 + `ActiveProcessLimit=1` + 进程树随句柄销毁），通过 `sandbox_capabilities()` 诚实声明每平台边界，配合 SHA-256 / RSA-SHA256 资产签名验真。 |
+| **三平台原生隔离与签名资产** | [`evolution/sandbox.py`](src/rpe_harness/evolution/sandbox.py) · [`assets/`](src/rpe_harness/assets/) | 覆盖三平台原生隔离后端：macOS `sandbox-exec`、Linux `bwrap`（`--unshare-pid` + 只读输入挂载）与 Windows 原生 **Win32 Job Object**（纯 `ctypes` 挂起绑定 + 硬内存上限 + `ActiveProcessLimit=1` + 进程树随句柄销毁），通过 `sandbox_capabilities()` 诚实声明每平台边界，配合 SHA-256 / RSA-SHA256 资产签名验真。 |
+| **两轮独立红队安全硬化（`v2.3.1–v2.3.2`）** | [`tests/test_v231_hardening.py`](tests/test_v231_hardening.py) · [`tests/test_v232_hardening.py`](tests/test_v232_hardening.py) | 经两轮独立只读红队审计并补齐 **264 项专项硬化回归测试**：`server.py` 与 `inbox.py` 全量防 DNS 重绑定（回环 `Host`/端口与同源 `Origin` 校验）及防点击劫持头（`frame-ancestors 'none'`）、沙箱有界 `read_regular_file` 防 FIFO/软链逃逸、SQLite 冻结快照 + `set_progress_handler` 递归步数熔断、MCP stdio 非法 UTF-8 与深层嵌套容错。 |
 
 ---
 
@@ -69,7 +70,7 @@ flowchart LR
 | 维度 | **LangGraph** | **Temporal / Trigger.dev** | **PydanticAI / TrueForge** | **RPE-Harness（本项目）** |
 | :--- | :--- | :--- | :--- | :--- |
 | **核心定位** | 通用多 Agent 状态图编排 | 云原生持久化分布式工作流 | 类型安全 Agent 运行时 | **本地优先、可验证执行与审批内核** |
-| **运行依赖** | 重框架生态 + Checkpointer | 需 Temporal 集群 / 云服务 | SDK + 外部沙箱/可观测平台 | **零常驻服务 · 单 SQLite · 仅 1 个依赖（`openpyxl`）** |
+| **运行依赖** | 重框架生态 + Checkpointer | 需 Temporal 集群 / 云服务 | SDK + 外部沙箱/可观测平台 | **零常驻服务 · 单 SQLite · 仅 2 个依赖（`openpyxl`, `cloudpickle`）** |
 | **HITL 审批粒度** | 节点级 `interrupt()` | Workflow 级 Waitpoint | 工具级审批 | **宿主独占 `TrustedHostAction` + `proposal digest` + 跨宿主自动失效** |
 | **结果验收方式** | 用户自写校验节点 | 业务代码 | Schema + LLM-as-a-judge | **强制独立确定性 Oracle 复算 + 独占原子无覆盖发布** |
 | **跨平台验证** | Python / JS | 云端 / Docker | Python / TS | **Linux · macOS · Windows 三平台 CI（Python + Node.js 通用适配）** |
@@ -95,6 +96,15 @@ flowchart LR
 ## 🚀 30 秒快速上手
 
 ### 1. 安装（Linux / macOS / Windows 通用）
+
+**最快方式——直接安装 [GitHub Release `v2.3.2`](https://github.com/Audrey-cn/rpe-harness/releases/tag/v2.3.2) 预构建包：**
+
+```bash
+pip install https://github.com/Audrey-cn/rpe-harness/releases/download/v2.3.2/rpe_harness-2.3.2-py3-none-any.whl
+rpe-harness host capabilities
+```
+
+**或从源码可编辑安装：**
 
 ```bash
 git clone https://github.com/Audrey-cn/rpe-harness.git
