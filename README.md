@@ -11,7 +11,7 @@
 <p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
 <p>
-  <a href="#-why-rpe-harness">Why RPE</a> ·
+  <a href="#-what-rpe-harness-does-for-your-coding-agents">Why RPE</a> ·
   <a href="#-architecture">Architecture</a> ·
   <a href="#-how-rpe-compares">vs Alternatives</a> ·
   <a href="#-5-family-live-benchmarks">5-Family Benchmarks</a> ·
@@ -23,18 +23,17 @@
 
 ---
 
-## 🎯 Why RPE-Harness
+## 🎯 What RPE-Harness Does for Your Coding Agents
 
-Most AI agent frameworks focus on giving LLMs **more autonomy** to call tools and grade their own output. In real local workflows, that causes four recurring failure modes:
+If you use **Claude Code, Codex CLI, Hermes, or custom AI agents** on real local files, you've probably hit the same three frustrations: **burning tokens on repeated retries, babysitting outputs to catch subtle mistakes, and worrying an agent will overwrite the wrong file.**
 
-1. **Self-grading illusions** — An agent claims a file was transformed correctly while silently dropping leading zeros (`0041` → `41`), rewriting lexical JSON (`1.0` → `1`, `-0` → `0`), or clobbering the original file.
-2. **Forged or stale approvals** — Ordinary tool approval lets models mutate parameters, or a delayed UI click confirms a draft whose input file has already changed.
-3. **Cancel-vs-publish lies** — Clicking "Stop" while a worker is writing either corrupts output or falsely claims rollback after publication already occurred.
-4. **Wasted tokens on unresolvable prompts** — Heavy agent loops burn tens of thousands of tokens before realizing a required business constraint is missing or two source docs contradict each other.
+**RPE-Harness** sits right underneath your coding agent as a lightweight local kernel (1 SQLite file, 1 pip dependency, zero cloud setup) to improve three everyday dimensions:
 
-**RPE-Harness flips the authority model:**
+- **💰 Cut Token Budget (59%–82% fewer tokens in live tests)** — Stop paying an LLM to ingest giant files or burn 20k+ tokens discovering that a requirement is missing or two docs contradict each other. RPE's **C2 SourceResolver** catches missing/conflicting inputs in `~1 ms` at **0 tokens**, and for valid tasks the LLM only writes a tiny structured draft while deterministic local code processes the data (`O(1)` token cost regardless of file size).
+- **⚡ Boost Reliability & Speed (Zero babysitting)** — No more manually diffing whether an AI silently dropped leading zeros (`0041` → `41`), altered JSON numbers (`1.0` → `1`, `-0` → `0`), or clobbered your original file. Every output is automatically verified by an **Independent Artifact Oracle** before atomic no-overwrite publish—and if you hit **Cancel** mid-run, RPE cleanly fences publication or tells you honestly if it already landed.
+- **🎯 Lock Down Precision & Control** — Keep the LLM doing what it's best at (understanding messy natural-language intent), while locking actual execution behind **digest-bound user confirmation** (`C4 HostAPI`). A model can never forge approval, silently mutate parameters after you click confirm, or replay a stale draft across hosts.
 
-> **Let the LLM draft intent. Keep authorized source resolution, digest-bound user confirmation, deterministic execution, independent oracle verification, and atomic cancellation inside a zero-daemon local SQLite kernel.**
+> **When to plug it in:** Anytime you want an AI coding agent to handle repeatable local data/file workflows, enforce a hard human-approval gate before touching disk, or run the same safe task protocol across Claude Code, Codex CLI, Hermes, and Node.js tools.
 
 ---
 
