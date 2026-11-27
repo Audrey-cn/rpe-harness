@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.3.0` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + Local Approval Inbox` · `7 Built-in Contracts + SDK` · `MIT License`
+`v2.3.1` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + Local Approval Inbox` · `7 Built-in Contracts + SDK` · `MIT License`
 
 <p><strong>English</strong> | <a href="README.zh-CN.md"><strong>简体中文</strong></a></p>
 
@@ -50,7 +50,7 @@ flowchart LR
     ORACLE -->|Verified| PUB["Atomic Publish + SQLite Audit Receipt"]
 ```
 
-### Core Capabilities (`v2.3.0`)
+### Core Capabilities (`v2.3.1`)
 
 | Layer | Module | Guarantee |
 | :--- | :--- | :--- |
