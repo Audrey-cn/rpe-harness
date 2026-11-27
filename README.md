@@ -209,3 +209,13 @@ We publish boundaries as openly as benchmarks:
 | 4-family live C3 comparison report | [reports/v1.18.0/c3-multimodel-comparison/README.md](reports/v1.18.0/c3-multimodel-comparison/README.md) |
 | Real-Hermes XLSX paired verification (`v1.15.3`) | [reports/v1.15.3/1.15.3兼容与复验.md](reports/v1.15.3/1.15.3兼容与复验.md) |
 | License | [MIT](LICENSE) · [Third-Party Notices](THIRD_PARTY_NOTICES.md) |
+
+---
+
+## 🤝 Open Collaboration — Fork, Issues & PRs Welcome
+
+This project is openly developed and actively welcomes **Forks, Issues, and Pull Requests**! Whether you want to plug in a new `ContractPlugin`, adapt it to another coding agent host, report an edge case, or submit a fix, feel free to jump in:
+
+- **Fork & build on it** — customize, extend, or embed freely under the MIT License.
+- **Open an [Issue](https://github.com/Audrey-cn/rpe-harness/issues)** — bug reports, contract ideas, benchmark feedback, and questions are all appreciated.
+- **Submit a [Pull Request](https://github.com/Audrey-cn/rpe-harness/pulls)** — small fixes, docs improvements, and new verified contracts are all welcome.

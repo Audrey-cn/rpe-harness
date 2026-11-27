@@ -209,3 +209,13 @@ const res = await trustedActions.executeTask({
 | 四大家族真实 C3 对照报告 | [reports/v1.18.0/c3-multimodel-comparison/README.md](reports/v1.18.0/c3-multimodel-comparison/README.md) |
 | `v1.15.3` 真实 Hermes XLSX 实测报告 | [reports/v1.15.3/1.15.3兼容与复验.md](reports/v1.15.3/1.15.3兼容与复验.md) |
 | 许可证 | [MIT](LICENSE) · [第三方声明](THIRD_PARTY_NOTICES.md) |
+
+---
+
+## 🤝 开放协作：欢迎 Fork、提 Issue 与 PR
+
+本项目保持开放心态，非常欢迎各位开发者 **Fork 二次开发、提 Issue 交流或提交 Pull Request**！无论你是想扩展自己的 `ContractPlugin`、适配更多编程 Agent 宿主、反馈边界问题，还是贡献代码与文档，都非常欢迎：
+
+- **欢迎 Fork** —— 在 MIT 协议下自由改造、扩展或嵌入到你自己的工作流中。
+- **欢迎提 [Issue](https://github.com/Audrey-cn/rpe-harness/issues)** —— Bug 反馈、新合约需求、实测对照数据与使用疑问都会认真阅读。
+- **欢迎提 [PR](https://github.com/Audrey-cn/rpe-harness/pulls)** —— 从一行修复、文档优化到新带 Oracle 的业务合约，统统欢迎！
