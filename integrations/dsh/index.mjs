@@ -114,6 +114,25 @@ export function createDshRpePlugin({ dbPath, pythonPath = 'python3', repoRoot } 
       return data;
     },
 
+    async executeTask({ operationId, owner, confirmationId, timeout = 60 }) {
+      const { data } = await runHostCli(
+        [
+          'execute',
+          String(operationId),
+          '--owner',
+          String(owner),
+          '--confirmation-id',
+          String(confirmationId),
+          '--timeout',
+          String(timeout),
+          '--db',
+          dbPath,
+        ],
+        cliOpts,
+      );
+      return data;
+    },
+
     async handoffTask({ sourceOperationId, sourceOwner, targetHostMeta, authorizedSources = null, pathMapping = null }) {
       const targetContext = requireHostIdentity(targetHostMeta);
       const files = { targetContext };

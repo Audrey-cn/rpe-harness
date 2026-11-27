@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import copy
-import fcntl
 import hashlib
 import os
 import time
@@ -10,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from .contracts import ExecutionPlan
+from .file_lock import NOFOLLOW, lock_exclusive
 from .tasks import plan_from_dict, current_plan_revisions
 
 
@@ -30,10 +30,10 @@ def _chain_lock(store, root_run_id: str):
     directory.mkdir(exist_ok=True)
     # root_run_id comes from a persisted UUID, never directly from a path input.
     lock_path = directory / (hashlib.sha256(root_run_id.encode()).hexdigest() + '.lock')
-    flags = os.O_RDWR | os.O_CREAT | getattr(os, 'O_NOFOLLOW', 0)
+    flags = os.O_RDWR | os.O_CREAT | NOFOLLOW
     descriptor = os.open(lock_path, flags, 0o600)
     try:
-        fcntl.flock(descriptor, fcntl.LOCK_EX)
+        lock_exclusive(descriptor, blocking=True)
         yield
     finally:
         os.close(descriptor)
@@ -47,7 +47,7 @@ def _stopped_owner(store, original: dict):
         if path.exists():
             lease = path.open('r+b')
             try:
-                fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_exclusive(lease, blocking=False)
             except BlockingIOError as error:
                 raise ValueError('original attempt owner still holds its lease') from error
         elif original['finished_at'] is None:

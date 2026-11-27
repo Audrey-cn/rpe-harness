@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,8 +32,9 @@ test('DSH adapter enforces host identity, digest confirmation, cancellation, and
 
     const caps = await plugin.modelTools.rpe_capabilities();
     assert.equal(caps.schema_version, 'rpe.host/v1');
-    assert.equal(caps.version, '1.18.0');
+    assert.equal(caps.version, '1.19.0');
     assert.ok(caps.methods.includes('handoff'));
+    assert.ok(caps.methods.includes('execute'));
 
     // Model tries to spoof owner/host_id in arguments; DSH trusted hostMeta must win
     const started = await plugin.modelTools.rpe_start_task(
@@ -85,6 +86,17 @@ test('DSH adapter enforces host identity, digest confirmation, cancellation, and
     });
     assert.ok(confirmed.confirmation_id);
     assert.equal(confirmed.generation, 2);
+
+    // Full end-to-end execution loop: execute confirmed task -> verify oracle output on disk
+    const executed = await plugin.trustedActions.executeTask({
+      operationId: started.operation_id,
+      owner: 'dsh-alice',
+      confirmationId: confirmed.confirmation_id,
+    });
+    assert.equal(executed.status, 'succeeded');
+    assert.ok(executed.run_id);
+    const outContent = await readFile(path.join(dir, 'out.json'), 'utf8');
+    assert.equal(outContent.trim(), '{"name":[1,2]}');
 
     // Cross-host handoff: revoked source must be rejected
     const revokedHandoff = await plugin.trustedActions.handoffTask({

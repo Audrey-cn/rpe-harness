@@ -8,11 +8,12 @@ import re
 import sqlite3
 import time
 import uuid
-import fcntl
 import stat
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+
+from .file_lock import NOFOLLOW, NONBLOCK, lock_exclusive
 
 
 class EventConflict(ValueError):
@@ -49,11 +50,15 @@ def _output_may_exist(path, parent_identity=None):
 
 def _read_only_database_path(path):
     """Require an existing regular database without resolving submitted symlink aliases."""
-    from .path_binding import _directory
     path = Path(os.path.abspath(Path(path).expanduser()))
+    if os.name == 'nt':
+        if path.is_symlink() or not stat.S_ISREG(os.lstat(path).st_mode):
+            raise ValueError('read-only database must be an existing regular file')
+        return path
+    from .path_binding import _directory
     parent = _directory(path.parent)
     try:
-        descriptor = os.open(path.name, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW, dir_fd=parent)
+        descriptor = os.open(path.name, os.O_RDONLY | NONBLOCK | NOFOLLOW, dir_fd=parent)
         try:
             if not stat.S_ISREG(os.fstat(descriptor).st_mode):
                 raise ValueError('read-only database must be an existing regular file')
@@ -172,7 +177,7 @@ class RunStore:
                            (run_id, event.lastrowid, os.getpid(), time.time()))
                 self.lease_dir.mkdir(exist_ok=True)
                 lease = (self.lease_dir / run_id).open('a+b')
-                fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_exclusive(lease, blocking=False)
                 self._leases[run_id] = lease
         return self.get(run_id), fresh
 
@@ -308,12 +313,12 @@ class RunStore:
         """Remove an abandoned lease, without unlinking a live owner's lock."""
         path = self.lease_dir / run_id
         try:
-            descriptor = os.open(path, os.O_RDWR | os.O_NONBLOCK | os.O_NOFOLLOW)
+            descriptor = os.open(path, os.O_RDWR | NONBLOCK | NOFOLLOW)
         except FileNotFoundError:
             return
         try:
             try:
-                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_exclusive(descriptor, blocking=False)
             except BlockingIOError:
                 return
             owned = os.fstat(descriptor)
@@ -364,7 +369,7 @@ class RunStore:
             lease = lease_path.open('a+b') if lease_path.exists() else None
             try:
                 if lease is not None:
-                    fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    lock_exclusive(lease, blocking=False)
                 result = self.finish(row['run_id'], 'interrupted', error={'code': 'owner_process_exited',
                             'message': 'previous owner exited before recording a verified result'})
                 count += result['status'] == 'interrupted'

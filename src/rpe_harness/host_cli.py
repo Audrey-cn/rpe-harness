@@ -74,6 +74,13 @@ def register_host(commands):
     handoff.add_argument('--path-mapping', help='optional JSON file mapping source paths to target paths')
     handoff.add_argument('--db', help='SQLite path')
 
+    execute = sub.add_parser('execute', help='execute a confirmed host operation and return verified result')
+    execute.add_argument('operation_id')
+    execute.add_argument('--owner', required=True)
+    execute.add_argument('--confirmation-id', required=True)
+    execute.add_argument('--timeout', type=float, default=60)
+    execute.add_argument('--db', help='SQLite path')
+
 
 def dispatch_host(args):
     if args.host_command == 'capabilities':
@@ -108,4 +115,7 @@ def dispatch_host(args):
         mapping = _read_json_object(args.path_mapping) if args.path_mapping else None
         return api.handoff_task(args.source_operation_id, args.source_owner, target_ctx,
                                 authorized_sources=sources, path_mapping=mapping)
+    if args.host_command == 'execute':
+        return api.execute_task(args.operation_id, args.owner,
+                                confirmation_id=args.confirmation_id, timeout=args.timeout)
     raise ValueError('unknown host command')

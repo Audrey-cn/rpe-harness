@@ -10,7 +10,6 @@ from __future__ import annotations
 import copy
 from contextlib import contextmanager
 from dataclasses import dataclass
-import fcntl
 import hashlib
 import json
 import os
@@ -18,6 +17,7 @@ import sqlite3
 import stat
 import uuid
 
+from .file_lock import NOFOLLOW, lock_exclusive
 from .intent import _bounded, _identity
 from .proposal import ProposalStore, create_proposal
 from .skill_catalog import _absolute
@@ -73,11 +73,11 @@ class TaskOperations:
         directory = self.db_path.parent / ('.' + self.db_path.name + '.operations')
         directory.mkdir(exist_ok=True)
         name = hashlib.sha256(operation_id.encode()).hexdigest() + '.lock'
-        descriptor = os.open(directory / name, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        descriptor = os.open(directory / name, os.O_RDWR | os.O_CREAT | NOFOLLOW, 0o600)
         try:
             if not stat.S_ISREG(os.fstat(descriptor).st_mode):
                 raise ValueError('operation lock must be a regular file')
-            fcntl.flock(descriptor, fcntl.LOCK_EX)
+            lock_exclusive(descriptor, blocking=True)
             yield
         finally:
             os.close(descriptor)
@@ -437,3 +437,23 @@ class TaskOperations:
         if 'operation_id' in created:
             created['handoff_lineage'] = copy.deepcopy(target_ctx['handoff_lineage'])
         return created
+
+    def execute_task(self, operation_id, owner, *, confirmation_id, timeout=60):
+        """Execute a confirmed host operation through the existing ProposalStore authority."""
+        row = self._owned(operation_id, owner)
+        if row is None:
+            return self._forbidden()
+        view = self._view(row)
+        if view['status'] == 'cancelled':
+            return {'status': 'cancelled', 'operation_id': operation_id, 'generation': row['generation']}
+        if not view['confirmation_id'] or view['confirmation_id'] != confirmation_id:
+            return self._forbidden()
+        ctx = view['host_context']
+        result = self.proposals.execute(
+            confirmation_id,
+            session_id=ctx['session_id'],
+            workspace=ctx['workspace'],
+            timeout=timeout,
+        )
+        updated = self.reconcile_task(operation_id, owner)
+        return {**updated, 'execution_result': result}

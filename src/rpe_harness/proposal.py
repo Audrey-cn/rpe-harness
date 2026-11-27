@@ -8,7 +8,6 @@ This is an application boundary, not protection against arbitrary same-UID code.
 from __future__ import annotations
 
 import copy
-import fcntl
 import hashlib
 import json
 import math
@@ -23,6 +22,8 @@ import sys
 import tempfile
 import time
 import unicodedata
+
+from .file_lock import NOFOLLOW, NONBLOCK, lock_exclusive, unlock
 
 from .capability_catalog import _canonical, _definitions, build_catalog
 from .intent import (MAX_INTENT_BYTES, MinimalStateStore, _bounded, _identity,
@@ -551,13 +552,13 @@ class ProposalStore:
 def _worker_lock(database, deadline):
     """Bound per-database local worker resources through serialization."""
     descriptor = os.open(str(database) + '.review-worker.lock',
-        os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+        os.O_RDWR | os.O_CREAT | NOFOLLOW | NONBLOCK, 0o600)
     try:
         if not stat.S_ISREG(os.fstat(descriptor).st_mode):
             raise ValueError('worker lock must be a regular file')
         while True:
             try:
-                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_exclusive(descriptor, blocking=False)
                 return descriptor
             except BlockingIOError:
                 remaining = deadline - time.monotonic()
@@ -653,7 +654,7 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
             if binding is not None:
                 binding.close()
             if lock_fd is not None:
-                fcntl.flock(lock_fd, fcntl.LOCK_UN)
+                unlock(lock_fd)
                 os.close(lock_fd)
     remaining = _remaining_descendants(owned)
     result['worker_cleanup'] = {'remaining_children': remaining, 'errors': cleanup_errors,

@@ -7,7 +7,10 @@ import hashlib
 import json
 import math
 import os
-import resource
+try:
+    import resource
+except ImportError:  # Windows
+    resource = None
 import signal
 import subprocess
 import sys
@@ -119,10 +122,45 @@ def _resident_bytes(pid):
     raise OSError(error or errno.EIO, f'candidate RSS observation incomplete: {received} bytes')
 
 
+def sandbox_backend() -> str:
+    """Detect available OS process/filesystem/network sandbox without faking isolation."""
+    if sys.platform == 'darwin' and Path('/usr/bin/sandbox-exec').is_file():
+        return 'macos-sandbox-exec'
+    if sys.platform.startswith('linux'):
+        import shutil
+        if shutil.which('bwrap'):
+            return 'linux-bwrap'
+    return 'unavailable'
+
+
+def _bwrap_command(job: Path, driver: Path, code: Path) -> list[str]:
+    import shutil
+    bwrap = shutil.which('bwrap')
+    if not bwrap:
+        raise RuntimeError('candidate filesystem/network sandbox is unavailable')
+    cmd = [bwrap, '--unshare-net', '--die-with-parent', '--proc', '/proc', '--dev', '/dev']
+    for ro in ('/usr', '/lib', '/lib64', '/bin', '/etc/alternatives', sys.base_prefix, sys.prefix):
+        p = Path(ro)
+        if p.exists():
+            cmd.extend(['--ro-bind', str(p), str(p)])
+    cmd.extend(['--bind', str(job), str(job), '--chdir', str(job),
+                sys.executable, '-I', '-B', str(driver), str(code)])
+    return cmd
+
+
+def _linux_resident_bytes(pid: int) -> int | None:
+    try:
+        statm = Path(f'/proc/{pid}/statm').read_text(encoding='ascii').split()
+        return int(statm[1]) * os.sysconf('SC_PAGE_SIZE')
+    except (FileNotFoundError, ProcessLookupError, ValueError, IndexError):
+        return None
+
+
 def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                   memory_limit_bytes=MAX_RESIDENT_BYTES) -> bytes:
-    """Accept only a bounded, regular staging file from a no-network macOS child."""
-    if sys.platform != 'darwin' or not Path('/usr/bin/sandbox-exec').is_file():
+    """Accept only a bounded, regular staging file from a no-network sandboxed child."""
+    backend = sandbox_backend()
+    if backend == 'unavailable':
         raise RuntimeError('candidate filesystem/network sandbox is unavailable')
     if type(timeout) not in (float, int) or not 0 < timeout <= 30:
         raise ValueError('candidate timeout must be in (0,30] seconds')
@@ -161,10 +199,14 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
         packet.chmod(0o400)
         env = {'PATH': '/usr/bin:/bin', 'HOME': str(job), 'TMPDIR': str(job),
                'LANG': 'en_US.UTF-8', 'PYTHONDONTWRITEBYTECODE': '1'}
-        profile = _profile(job, staging, log)
+        if backend == 'macos-sandbox-exec':
+            profile = _profile(job, staging, log)
+            child_argv = ['/usr/bin/sandbox-exec', '-p', profile,
+                          sys.executable, '-I', '-B', str(driver), str(code)]
+        else:
+            child_argv = _bwrap_command(job, driver, code)
         with packet.open('rb') as incoming, log.open('wb') as outgoing:
-            proc = subprocess.Popen(['/usr/bin/sandbox-exec', '-p', profile,
-                                     sys.executable, '-I', '-B', str(driver), str(code)],
+            proc = subprocess.Popen(child_argv,
                                     stdin=incoming, stdout=outgoing, stderr=subprocess.STDOUT,
                                     cwd=job, env=env, start_new_session=True,
                                     preexec_fn=lambda: _limits(timeout))
@@ -172,7 +214,8 @@ def run_candidate(content: bytes, plan: dict, owned_root, *, timeout=3.0,
                 deadline = time.monotonic() + timeout
                 while proc.poll() is None:
                     try:
-                        resident = _resident_bytes(proc.pid)
+                        resident = (_resident_bytes(proc.pid) if backend == 'macos-sandbox-exec'
+                                    else _linux_resident_bytes(proc.pid))
                     except OSError as error:
                         raise CandidateExecutionError('candidate RSS observation failed') from error
                     if resident is not None and resident > memory_limit_bytes:
