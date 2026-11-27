@@ -25,7 +25,7 @@ import unicodedata
 
 from .file_lock import NOFOLLOW, NONBLOCK, lock_exclusive, unlock
 
-from .capability_catalog import _canonical, _definitions, build_catalog
+from .capability_catalog import _canonical, build_catalog
 from .intent import (MAX_INTENT_BYTES, MinimalStateStore, _bounded, _identity,
                      _normal_execution, interpret_intent)
 from .skill_catalog import _absolute
@@ -259,12 +259,15 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
         catalog_root=catalog_root, skill_snapshot_id=skill_snapshot_id)
     status, result, machine = 'needs_context', None, {}
     if type(draft) is dict and set(draft) == _DRAFT_FIELDS:
-        definition = next((item for item in _definitions() if item['capability'] == draft['capability']), None)
+        addressed = (catalog.resolve(draft['capability']) if
+                     isinstance(draft['capability'], str) and draft['capability'].strip() else None)
+        definition = addressed['candidates'][0] if addressed and addressed['candidates'] else None
         if definition is None:
             status = 'unsupported'
             errors.append('capability is not registered')
         elif type(draft['execution']) is dict:
-            unknown = set(draft['execution']) - set(definition['execution_fields'])
+            unknown = (set() if definition.get('plugin_options') else
+                       set(draft['execution']) - set(definition['execution_fields']))
             missing += ['execution.' + name for name in sorted(unknown)]
             missing += ['execution.' + name for name in definition['required_execution']
                         if name not in draft['execution']]
@@ -303,9 +306,10 @@ def create_proposal(raw, draft, *, db_path, workspace, session_id, source_ref,
             unsupported = (type(constraints) is list and
                 all(isinstance(value, str) for value in constraints) and
                 bool(set(constraints) - set(definition['constraints'])))
-            unsupported |= (execution.get('keep', 'first') != 'first' or
-                'style' in execution and execution['style'] not in ('minify', 'pretty') or
-                'mode' in execution and execution['mode'] not in ('sheets', 'rows', 'formulas'))
+            if not definition.get('plugin_options'):
+                unsupported |= (execution.get('keep', 'first') != 'first' or
+                    'style' in execution and execution['style'] not in ('minify', 'pretty') or
+                    'mode' in execution and execution['mode'] not in ('sheets', 'rows', 'formulas'))
             if selection_unsupported:
                 status = 'unsupported'
                 errors.append('discovery_only or incompatible skill selection cannot authorize this capability')
@@ -601,6 +605,31 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
             revalidate()
             if not interpreter.is_absolute() or '..' in interpreter.parts or not interpreter.is_file():
                 raise ValueError('fixed worker interpreter must be an absolute Python executable')
+            command = [str(interpreter), '-B', '-m', 'rpe_harness']
+            from .contract_sdk import DEFAULT_REGISTRY
+            plugin = DEFAULT_REGISTRY.get(payload['capability'])
+            if plugin is not None:
+                # The registry is trusted host code; drafts never supply this
+                # transport. A fresh process otherwise loses runtime registration
+                # (including local/closure callbacks supported by the SDK).
+                try:
+                    import cloudpickle
+                    serialized = cloudpickle.dumps(plugin)
+                    if len(serialized) > 16 * 1024 * 1024:
+                        raise ValueError('registered plugin transport exceeds 16 MiB')
+                except Exception as error:
+                    raise ValueError('registered plugin cannot be transported to worker') from error
+                plugin_path = Path(temporary) / 'contract.pickle'
+                with plugin_path.open('xb') as stream:
+                    stream.write(serialized)
+                command = [str(interpreter), '-B', '-m', 'rpe_harness.proposal_worker',
+                           str(plugin_path), hashlib.sha256(serialized).hexdigest()]
+            command += ['events', 'submit', '--event', '-', '--db', str(database)]
+            module_paths = [str(Path(__file__).resolve().parents[1])]
+            if plugin is not None:
+                # Resolve caller-owned import paths before switching to the
+                # private worker cwd, for callbacks from third-party modules.
+                module_paths += [os.path.abspath(path) for path in sys.path]
             if os.name == 'nt':
                 if _path_facts(payload, workspace) != path_facts:
                     raise ValueError('reviewed directory path changed before launch')
@@ -616,11 +645,10 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
                     if key.upper() in {'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'PATHEXT', 'PATH',
                                        'USERPROFILE', 'HOMEDRIVE', 'HOMEPATH', 'APPDATA',
                                        'LOCALAPPDATA', 'PROGRAMFILES', 'PROGRAMDATA'}}
-                environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
+                environment.update(PYTHONPATH=os.pathsep.join(dict.fromkeys(module_paths)),
                     PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1',
                     TMPDIR=temporary, TMP=temporary, TEMP=temporary)
-                process = subprocess.Popen([str(interpreter), '-B', '-m', 'rpe_harness',
-                    'events', 'submit', '--event', '-', '--db', str(database)],
+                process = subprocess.Popen(command,
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                     text=True, encoding='utf-8', cwd=temporary, env=environment,
                     creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
@@ -634,11 +662,10 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
                     raise TimeoutError('review worker deadline elapsed before launch')
                 environment = {key: value for key, value in os.environ.items()
                     if key in {'HOME', 'USER', 'LOGNAME', 'PATH', 'LANG', 'LC_ALL', 'LC_CTYPE'}}
-                environment.update(PYTHONPATH=str(Path(__file__).resolve().parents[1]),
+                environment.update(PYTHONPATH=os.pathsep.join(dict.fromkeys(module_paths)),
                     PYTHONDONTWRITEBYTECODE='1', TMPDIR=temporary, TMP=temporary, TEMP=temporary)
                 environment.update(binding.child_environment())
-                process = subprocess.Popen([str(interpreter), '-B', '-m', 'rpe_harness',
-                    'events', 'submit', '--event', '-', '--db', str(database)],
+                process = subprocess.Popen(command,
                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                     text=True, cwd=temporary, env=environment, pass_fds=binding.pass_fds,
                     start_new_session=True)

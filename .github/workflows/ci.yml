@@ -43,6 +43,7 @@ jobs:
           tests/test_cancel_handler.py
           tests/test_cancel_worker_protocol.py
           tests/test_proposal_confirmation_boundaries.py
+          tests/test_plugin_proposal_loop.py
           tests/test_runtime.py
           tests/test_recovery.py
           tests/test_cli.py
@@ -90,6 +91,7 @@ jobs:
           tests/test_cancel_handler.py
           tests/test_cancel_worker_protocol.py
           tests/test_proposal_confirmation_boundaries.py
+          tests/test_plugin_proposal_loop.py
           tests/test_mcp_server.py
           tests/test_contract_sdk.py
           tests/test_sandbox_backends.py
@@ -123,6 +125,7 @@ jobs:
           tests/test_source_resolver.py
           tests/test_cross_host_handoff.py
           tests/test_cancel_interfaces.py
+          tests/test_plugin_proposal_loop.py
           tests/test_mcp_server.py
           tests/test_contract_sdk.py
           tests/test_sandbox_backends.py
@@ -131,3 +134,8 @@ jobs:
           PYTHONPATH: src
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m rpe_harness host capabilities
+      - name: Run DSH second-host Node.js full-loop E2E tests on Windows
+        env:
+          RPE_TEST_PYTHON: python
+          PYTHONUTF8: "1"
+        run: node --test integrations/dsh/test.mjs

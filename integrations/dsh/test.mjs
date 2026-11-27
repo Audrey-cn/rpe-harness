@@ -9,7 +9,7 @@ import { createDshRpePlugin } from './index.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
-const PYTHON = process.env.RPE_TEST_PYTHON || 'python3';
+const PYTHON = process.env.RPE_TEST_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
 
 async function withWorkspace(fn) {
   const dir = await realpath(await mkdtemp(path.join(os.tmpdir(), 'rpe-dsh-e2e-')));
@@ -97,7 +97,7 @@ test('DSH adapter enforces host identity, digest confirmation, cancellation, and
       owner: 'dsh-alice',
       confirmationId: confirmed.confirmation_id,
     });
-    assert.equal(executed.status, 'succeeded');
+    assert.equal(executed.status, 'succeeded', JSON.stringify(executed.execution_result));
     assert.ok(executed.run_id);
     const outContent = await readFile(path.join(dir, 'out.json'), 'utf8');
     assert.equal(outContent.trim(), '{"name":[1,2]}');

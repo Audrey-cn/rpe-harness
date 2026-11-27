@@ -7,6 +7,7 @@ import json
 import sqlite3
 
 from . import contracts, json_contract, skill_inspection
+from .contract_sdk import DEFAULT_REGISTRY, _callable_revision
 from .skill_catalog import SkillCatalog, validate_skill_binding, XLSX_SKILL_ID, _absolute
 
 
@@ -39,6 +40,27 @@ def _definitions():
     ]
 
 
+def _plugin_definitions():
+    entries = []
+    reserved = {entry['capability'] for entry in _definitions()}
+    # Only registered Python plugins grant execution. Discovery skill rows
+    # cannot introduce validators, options, or executable capabilities.
+    for plugin in DEFAULT_REGISTRY.list_plugins():
+        if plugin.capability in reserved:
+            continue
+        entries.append({**plugin.metadata(),
+            'entry_id': f'{plugin.capability}/v{plugin.contract_version}',
+            'required_execution': ['input_path', 'output_path'],
+            'execution_fields': ['input_path', 'output_path'],
+            'plugin_options': True,
+            'executor_ids': dict.fromkeys(plugin.input_formats, plugin.executor_id),
+            'executor_revision': plugin.executor_revision,
+            'verifier_revision': plugin.verifier_revision,
+            'validator_revision': _callable_revision(plugin.validate_options, plugin.capability),
+            'adapter_status': 'plugin', 'executable': True})
+    return entries
+
+
 class CapabilityCatalog:
     """Trusted builtins plus explicit local skill rows, with exact capability/format indexes.
 
@@ -59,7 +81,7 @@ class CapabilityCatalog:
         self._build(rows)
 
     def _build(self, rows):
-        entries = _definitions()
+        entries = _definitions() + _plugin_definitions()
         inspection = entries[2]
         for raw in sorted(rows, key=lambda row: str(row.get('skill_id', ''))):
             enabled = raw.get('enabled', True) is True and raw.get('status') == 'available'
