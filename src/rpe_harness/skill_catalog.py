@@ -49,8 +49,11 @@ def _absolute(value):
 
 
 def _read(path, limit=MAX_FILE):
-    from .path_binding import _directory, _read_descriptor
     path = _absolute(path)
+    if os.name == 'nt':
+        from .path_binding import read_regular_file
+        return read_regular_file(path, max_bytes=limit)
+    from .path_binding import _directory, _read_descriptor
     parent = _directory(path.parent)
     try:
         fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
