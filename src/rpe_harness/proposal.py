@@ -652,8 +652,12 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
                 if identity:
                     _capture_descendants(process.pid, identity, owned)
                 try:
-                    stdout, _ = process.communicate(input=incoming, timeout=min(0.1, remaining))
+                    wait_for = max(0.1, remaining) if os.name == 'nt' else min(0.1, remaining)
+                    stdout, _ = process.communicate(input=incoming, timeout=wait_for)
                 except subprocess.TimeoutExpired:
+                    if os.name == 'nt':
+                        result = {'status': 'failed', 'error': {'code': 'harness_timeout'}}
+                        break
                     incoming = None
                     continue
                 parsed = json.loads(stdout)
