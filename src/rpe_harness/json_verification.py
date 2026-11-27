@@ -154,6 +154,9 @@ def _style_matches(text, spans, style):
 
 def _read_artifact(path):
     # Staging belongs to the producer, so treat it as untrusted and bound the read.
+    if os.name == 'nt':
+        from .path_binding import read_regular_file
+        return read_regular_file(path, max_bytes=MAX_OUTPUT_BYTES)
     path = Path(path)
     parent_fd = _directory(path.parent)
     try:
