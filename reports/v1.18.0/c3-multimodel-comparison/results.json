@@ -1,0 +1,151 @@
+{
+  "version": "1.18.0",
+  "date": "2026-11-27",
+  "methodology": "Real live API paired comparison: RPE v1.18.0 (C2 SourceResolver + C4 HostAPI + HarnessRuntime deterministic executors + independent oracles) vs Native Direct LLM execution on identical tasks.",
+  "caveats": [
+    "4 controlled tasks per model (2 positive execution tasks + 2 negative boundary probes); not a large-scale multi-hour unattended benchmark.",
+    "API billing invoices were not audited; token counts come directly from live provider usage responses."
+  ],
+  "results": [
+    {
+      "model": "mimo-v2.6-pro",
+      "provider": "xiaomi",
+      "cases": [
+        {
+          "case_id": "dispatch-tabs",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 137,
+            "elapsed_ms": 4773
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 361,
+            "elapsed_ms": 5325
+          }
+        },
+        {
+          "case_id": "json-lexical-minify",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 172,
+            "elapsed_ms": 5290
+          },
+          "native": {
+            "passed": true,
+            "actual": "{\"version\":1.0,\"zero\":-0,\"sci\":1e0,\"z_first\":\"line\\nbreak\",\"a_second\":[1.00,2.50,-0.0]}",
+            "total_tokens": 228,
+            "elapsed_ms": 4460
+          }
+        },
+        {
+          "case_id": "pending-account-key",
+          "rpe": {
+            "passed": true,
+            "status": "needs_user",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 172,
+            "elapsed_ms": 3291
+          }
+        },
+        {
+          "case_id": "conflicting-sources",
+          "rpe": {
+            "passed": true,
+            "status": "conflict",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 108,
+            "elapsed_ms": 3994
+          }
+        }
+      ],
+      "totals": {
+        "rpe_passed": "4/4",
+        "native_passed": "4/4",
+        "rpe_total_tokens": 309,
+        "native_total_tokens": 869,
+        "token_reduction_pct": 64.4
+      }
+    },
+    {
+      "model": "deepseek-chat",
+      "provider": "deepseek",
+      "cases": [
+        {
+          "case_id": "dispatch-tabs",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 125,
+            "elapsed_ms": 5721
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 199,
+            "elapsed_ms": 2223
+          }
+        },
+        {
+          "case_id": "json-lexical-minify",
+          "rpe": {
+            "passed": true,
+            "error": null,
+            "total_tokens": 94,
+            "elapsed_ms": 2485
+          },
+          "native": {
+            "passed": true,
+            "actual": "{\"version\":1.0,\"zero\":-0,\"sci\":1e0,\"z_first\":\"line\\nbreak\",\"a_second\":[1.00,2.50,-0.0]}",
+            "total_tokens": 165,
+            "elapsed_ms": 2285
+          }
+        },
+        {
+          "case_id": "pending-account-key",
+          "rpe": {
+            "passed": true,
+            "status": "needs_user",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 111,
+            "elapsed_ms": 1852
+          }
+        },
+        {
+          "case_id": "conflicting-sources",
+          "rpe": {
+            "passed": true,
+            "status": "conflict",
+            "total_tokens": 0,
+            "elapsed_ms": 1
+          },
+          "native": {
+            "passed": true,
+            "total_tokens": 66,
+            "elapsed_ms": 1950
+          }
+        }
+      ],
+      "totals": {
+        "rpe_passed": "4/4",
+        "native_passed": "4/4",
+        "rpe_total_tokens": 219,
+        "native_total_tokens": 541,
+        "token_reduction_pct": 59.5
+      }
+    }
+  ]
+}
