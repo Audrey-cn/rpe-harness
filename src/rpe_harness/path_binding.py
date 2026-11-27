@@ -48,6 +48,22 @@ def _read_descriptor(fd, max_bytes=None):
 
 def source_digest_nofollow(path, max_bytes=None):
     """Broker receipt probing must not read through a raced symlink either."""
+    if os.name == 'nt':
+        target = Path(os.path.abspath(Path(path).expanduser()))
+        cursor = Path(target.anchor)
+        for part in target.parts[1:]:
+            cursor /= part
+            if cursor.is_symlink():
+                raise ValueError('bound input must not traverse symlinks')
+        st = os.lstat(target)
+        if not stat.S_ISREG(st.st_mode):
+            raise ValueError('bound input must be a regular file')
+        if max_bytes is not None and st.st_size > max_bytes:
+            raise ValueError('source exceeds its read budget')
+        data = target.read_bytes()
+        if max_bytes is not None and len(data) > max_bytes:
+            raise ValueError('source exceeds its read budget')
+        return hashlib.sha256(data).hexdigest()
     parent = _directory(Path(path).parent)
     try:
         fd = os.open(Path(path).name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
