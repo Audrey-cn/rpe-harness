@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Audrey-cn/rpe-harness/actions/workflows/ci.yml)
 
-`v2.3.1` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + 本地审批台` · `7 大内置合约 + 插件 SDK` · `MIT 许可证`
+`v2.3.2` · `Linux (bwrap) / macOS (seatbelt) / Windows (Job Object)` · `Stdio MCP + 本地审批台` · `7 大内置合约 + 插件 SDK` · `MIT 许可证`
 
 <p><a href="README.md"><strong>English</strong></a> | <strong>简体中文</strong></p>
 
@@ -50,7 +50,7 @@ flowchart LR
     ORACLE -->|验真通过| PUB["独占原子发布 + SQLite 审计回执"]
 ```
 
-### 核心能力矩阵（`v2.3.1`）
+### 核心能力矩阵（`v2.3.2`）
 
 | 模块 | 代码入口 | 核心保证 |
 | :--- | :--- | :--- |
