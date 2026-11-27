@@ -1,9 +1,7 @@
-import copy
 import shutil
 import sqlite3
 from pathlib import Path
 
-import pytest
 
 
 def trusted_catalog(tmp_path):

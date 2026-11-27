@@ -95,9 +95,12 @@ def artifact_case(tmp_path, monkeypatch):
         if action not in {'none', 'existing'}:
             (workspace/'output.csv').write_bytes(output if action != 'wrong_business' else b'code\tnote\nA\twrong\n')
         outcome = {'exit_code': exit_code} if tool == 'terminal' else {'verified': True}
-        if action == 'tool_error': outcome['error'] = 'failed'
-        if action == 'tool_unverified': outcome['verified'] = False
-        if action == 'tool_failed': outcome['success'] = False
+        if action == 'tool_error':
+            outcome['error'] = 'failed'
+        if action == 'tool_unverified':
+            outcome['verified'] = False
+        if action == 'tool_failed':
+            outcome['success'] = False
         context.hooks['post_tool_call'](**call, status='ok', result=json.dumps(outcome))
         store = hermes.HostEventStore(trial['db'])
         rows = store.list(ids['session_id'])
@@ -164,9 +167,12 @@ def test_business_gate_rejects_forged_durable_receipts_and_changed_artifacts(art
     elif fault == 'final_bytes':
         (workspace/'output.csv').write_text('changed')
     elif fault == 'same_bytes_rewrite':
-        path = workspace/'output.csv'; path.write_bytes(path.read_bytes())
+        path = workspace/'output.csv'
+        path.write_bytes(path.read_bytes())
     elif fault == 'output_symlink':
-        path = workspace/'output.csv'; path.rename(workspace/'other.csv'); path.symlink_to(workspace/'other.csv')
+        path = workspace/'output.csv'
+        path.rename(workspace/'other.csv')
+        path.symlink_to(workspace/'other.csv')
     elif fault == 'output_hardlink':
         os.link(workspace/'output.csv', workspace/'other.csv')
     elif fault == 'key':

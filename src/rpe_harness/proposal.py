@@ -621,8 +621,9 @@ def _execute_worker(payload, database, workspace, input_sha256, path_facts, *, t
                     continue
                 parsed = json.loads(stdout)
                 if (type(parsed) is not dict or parsed.get('status') not in
-                        {'succeeded', 'rejected', 'failed', 'interrupted', 'received', 'running', 'error'} or
-                        parsed['status'] == 'succeeded' and process.returncode != 0):
+                        {'succeeded', 'rejected', 'failed', 'interrupted', 'cancelled', 'received', 'running', 'error'} or
+                        parsed['status'] == 'succeeded' and process.returncode != 0 or
+                        parsed['status'] == 'cancelled' and process.returncode != 1):
                     raise ValueError('invalid fixed CLI worker response')
                 result = parsed
                 break

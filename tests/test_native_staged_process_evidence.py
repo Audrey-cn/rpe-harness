@@ -91,11 +91,14 @@ def test_staged_stdout_rejects_missing_or_unsafe_source_to_final_binding(staged_
     elif fault == 'existing_final':
         final.write_text('old')
     elif fault == 'wrong_stdout':
-        stdout = 'other.json'; suffix = '; cp other.json output.json'
+        stdout = 'other.json'
+        suffix = '; cp other.json output.json'
     elif fault == 'stage_symlink':
-        (workspace/'other.json').write_text(''); stage.symlink_to(workspace/'other.json')
+        (workspace/'other.json').write_text('')
+        stage.symlink_to(workspace/'other.json')
     elif fault == 'final_symlink':
-        (workspace/'other.json').write_text(''); final.symlink_to(workspace/'other.json')
+        (workspace/'other.json').write_text('')
+        final.symlink_to(workspace/'other.json')
     elif fault == 'final_hardlink':
         suffix = '; ln helper-stdout.json output.json'
     elif fault == 'missing_copy':

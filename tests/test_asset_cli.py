@@ -2,7 +2,7 @@ import json
 
 from rpe_harness.cli import main
 from test_asset_lifecycle import next_task, package, signed_asset
-from test_asset_trust import signing_key, trusted_identity
+from test_asset_trust import signing_key as signing_key, trusted_identity as trusted_identity
 
 
 def invoke(capsys, argv):

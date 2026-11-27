@@ -13,7 +13,6 @@ import subprocess
 import pytest
 
 from rpe_harness.integrations import hermes
-from rpe_harness.integrations.hermes_gate import digest_json
 from rpe_harness.skill_catalog import SkillCatalog
 
 
@@ -243,7 +242,7 @@ def test_missing_context_is_explicit_terminal_rejection(configured):
 def test_source_changed_after_context_cannot_reach_executor(configured):
     env = configured
     discover_and_load(env)
-    restored = dispatch(env, 'rpe_context', {'facts': {'input_path': 'orders.csv', 'output_path': 'out.csv'}})
+    dispatch(env, 'rpe_context', {'facts': {'input_path': 'orders.csv', 'output_path': 'out.csv'}})
     with sqlite3.connect(env['db']) as db:
         db.execute('UPDATE context_sources SET facts_json=?', ('{"key_columns":["email"]}',))
     result = dispatch(env, 'rpe_task', {'goal': 'deduplicate'})

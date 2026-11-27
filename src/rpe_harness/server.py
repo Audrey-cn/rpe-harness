@@ -164,10 +164,22 @@ class HarnessHandler(BaseHTTPRequestHandler):
                 'latency_ms': result.latency_ms, 'confidence': result.confidence,
                 'reason': result.reason, 'missing_preconditions': result.missing_preconditions,
                 'fallback_to_llm': result.fallback_to_llm, 'state': state.to_dict()}
+        if path.startswith('/runs/') and path.endswith('/cancel'):
+            run_id = path[len('/runs/'):-len('/cancel')]
+            if not run_id or '/' in run_id:
+                raise APIError(404, 'run not found')
+            if set(body) - {'reason'}:
+                raise ValueError('cancel accepts only an optional reason')
+            try:
+                result = rt.cancel(run_id, reason=body.get('reason'))
+            except KeyError:
+                raise APIError(404, 'run not found')
+            return (409 if result['status'] == 'conflict' else 200), result
         if path in ['/run', '/events']:
             result = rt.run(body, source='hermes' if path == '/events' else 'http')
             status = {'succeeded': 200, 'received': 202, 'running': 202,
-                      'rejected': 400, 'failed': 422, 'interrupted': 409}[result['status']]
+                      'rejected': 400, 'failed': 422, 'interrupted': 409,
+                      'cancelled': 409}[result['status']]
             return status, result
         if path == '/usage':
             if 'success' not in body:

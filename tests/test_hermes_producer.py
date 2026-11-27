@@ -84,15 +84,24 @@ def test_producer_denies_unsafe_calls_without_dispatch(tmp_path, monkeypatch, da
     identity = {**IDS, 'tool_call_id': 'call'}
     tool = 'write_file'
     candidate = workspace / 'candidate.py'
-    if damage == 'elsewhere': args['path'] = '../other.py'
-    elif damage == 'symlink': candidate.symlink_to(workspace / 'other.py')
-    elif damage == 'fifo': os.mkfifo(candidate)
-    elif damage == 'existing': candidate.write_text('existing')
-    elif damage == 'tool': tool = 'terminal'
-    elif damage == 'ids': identity['tool_call_id'] = ''
-    elif damage == 'api': identity['api_request_id'] = 'unobserved'
-    elif damage == 'extra': args['cross_profile'] = True
-    else: args['content'] = 'x' * 65537
+    if damage == 'elsewhere':
+        args['path'] = '../other.py'
+    elif damage == 'symlink':
+        candidate.symlink_to(workspace / 'other.py')
+    elif damage == 'fifo':
+        os.mkfifo(candidate)
+    elif damage == 'existing':
+        candidate.write_text('existing')
+    elif damage == 'tool':
+        tool = 'terminal'
+    elif damage == 'ids':
+        identity['tool_call_id'] = ''
+    elif damage == 'api':
+        identity['api_request_id'] = 'unobserved'
+    elif damage == 'extra':
+        args['cross_profile'] = True
+    else:
+        args['content'] = 'x' * 65537
     raw = context.middleware['tool_execution'](tool, args,
         lambda actual: pytest.fail('unsafe call reached tool'), **identity)
     assert json.loads(raw)['error']['code'].startswith('producer_')
@@ -101,8 +110,10 @@ def test_producer_denies_unsafe_calls_without_dispatch(tmp_path, monkeypatch, da
 
 def test_producer_policy_fails_closed_on_invalid_identity_or_extra_tool_surface(tmp_path, monkeypatch):
     context, _, _ = producer(tmp_path, monkeypatch)
-    with pytest.raises(ValueError): context.middleware['llm_request']({'tools': TOOLS}, **{**IDS, 'turn_id': ''})
-    with pytest.raises(ValueError): context.middleware['llm_request']({'tools': TOOLS + [
+    with pytest.raises(ValueError):
+        context.middleware['llm_request']({'tools': TOOLS}, **{**IDS, 'turn_id': ''})
+    with pytest.raises(ValueError):
+        context.middleware['llm_request']({'tools': TOOLS + [
         {'type': 'function', 'function': {'name': 'terminal'}}]}, **IDS)
 
 
@@ -118,9 +129,12 @@ def test_producer_post_hook_cannot_close_from_unmatched_or_changed_evidence(tmp_
         (workspace / 'candidate.py').write_bytes(CODE.encode())
         return json.dumps({'verified': True, 'bytes_written': len(CODE.encode())})
     raw = context.middleware['tool_execution']('write_file', args, dispatch, **identity)
-    if damage == 'file_changed': (workspace / 'candidate.py').write_text('changed')
-    elif damage == 'post_args': args = {**args, 'content': 'changed'}
-    elif damage == 'post_ids': identity = {**identity, 'tool_call_id': 'other'}
+    if damage == 'file_changed':
+        (workspace / 'candidate.py').write_text('changed')
+    elif damage == 'post_args':
+        args = {**args, 'content': 'changed'}
+    elif damage == 'post_ids':
+        identity = {**identity, 'tool_call_id': 'other'}
     elif damage == 'api_duplicate':
         context.hooks['post_api_request'](**IDS, response={'assistant_message': {'tool_calls': [{'id': 'call', 'name': 'write_file'}]}})
     context.hooks['post_tool_call'](**identity, tool_name='write_file', args=args, result=raw, status='ok')

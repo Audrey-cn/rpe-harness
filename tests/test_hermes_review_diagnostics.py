@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from test_hermes_review import review
+from test_hermes_review import review as review
 
 from rpe_harness.integrations.review_diagnostics import (
     MAX_JOURNAL, append_response, collect_diagnostics, persist_diagnostics, response_summary)

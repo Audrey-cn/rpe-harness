@@ -1,0 +1,57 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.15, pytest-9.1.1, pluggy-1.7.0
+rootdir: /Users/audrey/项目/rpe-harness
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 2240 items / 4 errors
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_execution.py ___________________
+ImportError while importing test module '/Users/audrey/项目/rpe-harness/tests/test_execution.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_execution.py:16: in <module>
+    from openpyxl import Workbook, load_workbook
+E   ModuleNotFoundError: No module named 'openpyxl'
+_________________ ERROR collecting tests/test_hermes_native.py _________________
+ImportError while importing test module '/Users/audrey/项目/rpe-harness/tests/test_hermes_native.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_hermes_native.py:12: in <module>
+    from openpyxl import load_workbook
+E   ModuleNotFoundError: No module named 'openpyxl'
+________________ ERROR collecting tests/test_skill_dispatch.py _________________
+ImportError while importing test module '/Users/audrey/项目/rpe-harness/tests/test_skill_dispatch.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_skill_dispatch.py:6: in <module>
+    from openpyxl import Workbook
+E   ModuleNotFoundError: No module named 'openpyxl'
+_______________ ERROR collecting tests/test_skill_inspection.py ________________
+ImportError while importing test module '/Users/audrey/项目/rpe-harness/tests/test_skill_inspection.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_skill_inspection.py:11: in <module>
+    from openpyxl import Workbook
+E   ModuleNotFoundError: No module named 'openpyxl'
+=========================== short test summary info ============================
+ERROR tests/test_execution.py
+ERROR tests/test_hermes_native.py
+ERROR tests/test_skill_dispatch.py
+ERROR tests/test_skill_inspection.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 4 errors in 0.82s ===============================

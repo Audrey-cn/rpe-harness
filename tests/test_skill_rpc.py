@@ -1,4 +1,3 @@
-import hashlib
 import http.client
 import json
 import sys

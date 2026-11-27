@@ -60,6 +60,10 @@ def main(argv=None):
     listing = run_commands.add_parser('list')
     listing.add_argument('--limit', type=int, default=20)
     _configuration(listing)
+    cancel = run_commands.add_parser('cancel', help='cancel a run before publication starts')
+    cancel.add_argument('run_id')
+    cancel.add_argument('--reason', help='optional cancellation reason, at most 4096 UTF-8 bytes')
+    _configuration(cancel)
     serve = commands.add_parser('serve')
     serve.add_argument('--host', default='127.0.0.1')
     serve.add_argument('--port', type=int, default=18400)
@@ -248,7 +252,12 @@ def main(argv=None):
             elif args.command == 'events':
                 result = runtime.run(read_json(args.event), source='hermes')
             elif args.command == 'runs':
-                result = runtime.store.get(args.run_id) if args.runs_command == 'show' else {'runs': runtime.store.list(args.limit)}
+                if args.runs_command == 'cancel':
+                    result = runtime.cancel(args.run_id, reason=args.reason)
+                elif args.runs_command == 'show':
+                    result = runtime.store.get(args.run_id)
+                else:
+                    result = {'runs': runtime.store.list(args.limit)}
             else:
                 state, decision = runtime.route(read_json(args.request))
                 result = {'state': state.to_dict(), 'level': decision.level.name,
@@ -259,8 +268,10 @@ def main(argv=None):
             print(result['summary'])
         else:
             print(json.dumps(result, ensure_ascii=False, allow_nan=False))
-        if args.command == 'runs' or (args.command == 'evolution' and
-                                     args.evolution_command in ('list', 'show', 'experiences', 'propose')):
+        if args.command == 'runs':
+            return 2 if args.runs_command == 'cancel' and result.get('status') == 'conflict' else 0
+        if (args.command == 'evolution' and
+                args.evolution_command in ('list', 'show', 'experiences', 'propose')):
             return 0
         status = result.get('status')
         if args.command in ('context', 'intent', 'capabilities', 'source') or (
@@ -274,7 +285,7 @@ def main(argv=None):
             return 0
         if status in ['received', 'running']:
             return 3
-        return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted', 'unverified'] or result.get('passed') is False else 0
+        return 2 if status == 'rejected' else 1 if status in ['failed', 'interrupted', 'cancelled', 'unverified'] or result.get('passed') is False else 0
     except (ValueError, TypeError, KeyError, OSError) as exc:
         print(json.dumps({'status': 'error', 'error_code': 'event_conflict' if isinstance(exc, EventConflict) else 'invalid_request', 'error': str(exc)}, ensure_ascii=False))
         return 2

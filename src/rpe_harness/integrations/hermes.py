@@ -521,9 +521,10 @@ def _execute(args, *, store, workspace, python, task_id=None, session_id=None,
                                        capture_output=True, text=True, cwd=workspace, env=env, timeout=120)
                 decoded, returncode = json.loads(child.stdout), child.returncode
             if (not isinstance(decoded, dict)
-                    or decoded.get('status') not in {'succeeded', 'rejected', 'failed', 'interrupted',
+                    or decoded.get('status') not in {'succeeded', 'rejected', 'failed', 'interrupted', 'cancelled',
                                                     'received', 'running', 'error'}
-                    or (decoded.get('status') == 'succeeded' and returncode != 0)):
+                    or (decoded.get('status') == 'succeeded' and returncode != 0)
+                    or (decoded.get('status') == 'cancelled' and returncode != 1)):
                 raise ValueError('invalid Harness response')
             if decoded['status'] == 'succeeded' and (
                     not isinstance(decoded.get('run_id'), str) or not decoded['run_id']
@@ -643,7 +644,8 @@ class _ProducerPolicy:
 
     def api_observed(self, identity):
         rows = self.store.list(identity[0])
-        same = lambda row: tuple(row.get(key) for key in self.ids[:4]) == identity[:4]
+        def same(row):
+            return tuple(row.get(key) for key in self.ids[:4]) == identity[:4]
         pre = [row for row in rows if row['kind'] == 'pre_api_request' and same(row)]
         post = [row for row in rows if row['kind'] == 'post_api_request' and same(row)]
         return (self.policies.get(identity[:4]) == 'write_file' and len(pre) == len(post) == 1
@@ -928,7 +930,8 @@ def register(ctx) -> None:
                     if (verification.get('passed') is not True or artifact.get('published') is not True or
                             verification.get('input_sha256')!=original_sha or artifact.get('input_sha256')!=original_sha):
                         continue
-                elif run['status']!='rejected' or not (run.get('error') or {}).get('code'):
+                elif (run['status'] not in {'rejected', 'cancelled'} or
+                      run['status'] == 'rejected' and not (run.get('error') or {}).get('code')):
                     continue
             except (OSError,ValueError,TypeError,KeyError,AttributeError,sqlite3.Error):
                 continue

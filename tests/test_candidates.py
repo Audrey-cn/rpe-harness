@@ -1,7 +1,5 @@
 import csv
 import json
-import os
-import signal
 import subprocess
 import sys
 from pathlib import Path
@@ -10,7 +8,7 @@ import pytest
 
 from rpe_harness.evolution import (
     EvolutionStore, apply_candidate, prepare_candidate, propose_candidate,
-    quarantine_candidate, rollback, validate_candidate,
+    rollback, validate_candidate,
 )
 from rpe_harness.execution import cleanup_staging, publish_output
 from rpe_harness.verification import verify_deduplication

@@ -5,9 +5,9 @@ import subprocess
 
 import pytest
 
-from test_hermes_review import review, draft, host_result, _sdk_home, RAW
+from test_hermes_review import review as review, draft, host_result, _sdk_home, RAW
 from test_hermes_review_finish import _NATIVE_TURN_PROGRAM, native_agent
-from test_review_skills import skill_env, skill_review, step
+from test_review_skills import skill_env as skill_env, skill_review as skill_review, step
 
 
 def invalid_response(env, *, number=1, calls=None):

@@ -136,6 +136,10 @@ def recover_run(runtime, run_id: str, *, max_attempts: int = 3) -> dict:
             if not reserved:
                 with store.connect() as db:
                     db.execute('BEGIN IMMEDIATE')
+                    status = db.execute('SELECT status FROM runs WHERE run_id=?',
+                                        (run_id,)).fetchone()['status']
+                    if status not in ('failed', 'interrupted'):
+                        raise ValueError('original attempt is no longer stopped; it may be cancelled')
                     count = db.execute('SELECT COUNT(*) AS n FROM recovery_attempts WHERE root_run_id=?',
                                        (root_id,)).fetchone()['n']
                     if 1 + count >= max_attempts:

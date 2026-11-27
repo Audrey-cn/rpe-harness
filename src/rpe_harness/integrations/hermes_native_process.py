@@ -293,7 +293,8 @@ class _KernelCall:
             return False
         rest, flags = argv[1:], []
         while rest and rest[0] in {'-B', '-u', '-Bu', '-uB', '-I'}:
-            flags.append(rest[0]); rest = rest[1:]
+            flags.append(rest[0])
+            rest = rest[1:]
         mode = {'rows': '--json', 'sheets': '--sheets', 'formulas': '--formulas'}[c['parameters']['mode']]
         expected = [mode] + (['--sheet', c['parameters']['sheet']] if c['parameters'].get('sheet') is not None else [])
         if (len(rest) != len(expected) + 2 or rest[0] != c['helper_path']

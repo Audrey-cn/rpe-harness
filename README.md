@@ -1,4 +1,45 @@
-# RPE-Harness 1.15.3
+<div align="center">
+
+# ⚙️ RPE-Harness · State-Driven Capability Addressing &amp; Verifiable Agent Execution
+
+**让 AI Agent 负责起草与意图理解，把确定性执行、独立产物验收、原子取消与无损回滚交给本地可信内核。**
+
+*State-driven capability addressing, independent artifact verification, atomic cancel-vs-publish convergence, and auditable evolution for persistent coding agents.*
+
+`v1.16.0` · `Python 3.10+` · `SQLite + openpyxl` · `MIT License` · `Successor to Progenitor`
+
+<p>
+  <a href="#-核心架构与亮点">核心架构</a> ·
+  <a href="#-v1160-新增c4-公共任务取消与状态收敛">v1.16.0 新特性</a> ·
+  <a href="#本机快速使用">快速上手</a> ·
+  <a href="#服务与-agent-旁路">HTTP / Agent 旁路</a> ·
+  <a href="docs/fusion.md">阿卡夏融合设计</a>
+</p>
+
+</div>
+
+---
+
+## 🧩 核心架构与亮点
+
+**RPE-Harness** 是从原 `Progenitor`（阿卡夏协议与基因注册表）彻底迭代而来的**单运行时可验证执行内核**：不再依赖守护进程、P2P 或外部框架，仅需 Python 标准库 + `openpyxl`，即可为 Hermes / Claude Code / 自定义 Agent 提供可审计的本地能力执行闭环：
+
+| 模块 | 能力边界 |
+| :--- | :--- |
+| **🎯 确定性执行与独立 Oracle 验收** | 内置 CSV/XLSX 去重、`json.normalize/v1` 与原生 XLSX helper 适配；保留原文件、禁止覆盖输出、独立校验器复核产物与输入 hash 后原子发布 |
+| **🛑 C4 原子取消与发布竞态收敛 (`v1.16.0`)** | 提供 `runs cancel` CLI 与 `POST /runs/<RUN_ID>/cancel` 回环接口：幂等取消、数据库原子围栏、租约安全释放；对已启动发布或已终态任务拒绝篡改并返回真实状态 |
+| **🔐 能力资产与来源签名（吸收 Progenitor）** | 内容寻址（SHA-256 去重）+ RSA PKCS#1 v1.5 SHA-256 双签名发布包与显式本地 `keyring`；所有导入候选默认 `unverified`，须经独立验收才可 CAS 激活或一键回滚 |
+| **📝 自然语言起草 + Digest 绑定确认** | 模型只负责起草带原文引用的要求清单，用户确认绑定当前 `digest` 的草案后由确定性执行器落地；陈旧草案或跨任务误点一律拒绝 |
+| **📊 实证优先（Evidence-First）** | 在 `v1.15.3` 真实 Hermes + `mimo-v2.6-pro` 受控 XLSX 对照中，两侧产出**逐字节一致**且均通过独立验收，RPE 路径总 token 减少 **82.8%**（`11,755` vs `68,327`；单样本受控实测，详见 [1.15.3 报告](reports/v1.15.3/1.15.3兼容与复验.md)） |
+
+## 🆕 v1.16.0 新增：C4 公共任务取消与状态收敛
+
+- **CLI 与 HTTP 双入口**：新增 `rpe runs cancel RUN_ID --db DB [--reason ...]` 与回环接口 `POST /runs/<RUN_ID>/cancel`（复用 `Origin` / `Content-Type` / JSON 大小与超时门禁）。
+- **原子取消 vs 发布竞态**：数据库层立即围栏发布，非终态任务平滑收敛至 `cancelled` 并记录取消原因与时间戳；已进入发布意图或已终态任务严格返回冲突与真实记录，绝不伪造回滚；重复取消天然幂等。
+- **租约清理与 digest 确认护栏**：即便暂存目录清理失败仍保证释放 worker 租约；完整覆盖陈旧草案与跨会话确认拒绝回归测试；同步补齐 MIT `LICENSE` 与 Python 3.11/3.12 GitHub Actions CI。
+
+<details>
+<summary><strong>📜 完整版本演进史（v1.0 → v1.15.3）</strong></summary>
 
 1.15.3 适配本机新版 Hermes：在隔离进程里走 Hermes 原生单轮入口，校验技能返回的相对路径、技能目录和实际文件，并为审查过的 XLSX 助手字节增加精确授权。试验结果和仍未验证的边界见[1.15.3 维护报告](reports/v1.15.3/1.15.3兼容与复验.md)。
 
@@ -48,6 +89,8 @@
 
 1.13 将模型起草引用明确为文字或标识二选一；提案持久化后复用Hermes正常结束回合，减少纯收尾请求。macOS原生对照增加实际helper进程退出观测及回执校验，业务结果仍单独验收；无需新增运行依赖或常驻服务。真实结果、边界和成本见[1.13验收报告](reports/v1.13.0/1.13开发与验收报告.md)，待办见[1.13计划](docs/superpowers/plans/2026-10-15-rpe-v113.md)。
 
+</details>
+
 ## 本机快速使用
 
 仓库提供 `scripts/rpe`，自动寻找具备 openpyxl 的 Python >=3.10，包括本机 Codex bundled runtime。它不安装软件、不修改全局配置，也不生成 Python 缓存。
@@ -64,9 +107,12 @@ cd /Users/audrey/项目/rpe-harness
 ./scripts/rpe run --request request.json --db /absolute/path/runs.sqlite
 ./scripts/rpe runs list --db /absolute/path/runs.sqlite
 ./scripts/rpe runs show RUN_ID --db /absolute/path/runs.sqlite
+./scripts/rpe runs cancel RUN_ID --db /absolute/path/runs.sqlite --reason '停止本次任务'
 ~~~
 
-标准输出是 JSON。执行成功退出码 0；拒绝或非法请求 2；执行失败或中断 1；仍在运行的幂等重放 3。runs show/list 查询成功返回 0，记录自身 status 可为失败或拒绝。运行结果包含 run_id、status、stage、原始事件、状态、验证、产物和错误。默认数据库为 `~/.local/share/rpe-harness/runs.sqlite`，可通过 `--db` 或 `RPE_STATE_DIR` 指定。测试请显式使用临时数据库。
+标准输出是 JSON。执行成功退出码 0；拒绝或非法请求 2；执行失败、中断或已取消事件的重放 1；仍在运行的幂等重放 3。runs show/list 查询成功返回 0，记录自身 status 可为失败或拒绝。运行结果包含 run_id、status、stage、原始事件、状态、验证、产物和错误。默认数据库为 `~/.local/share/rpe-harness/runs.sqlite`，可通过 `--db` 或 `RPE_STATE_DIR` 指定。测试请显式使用临时数据库。
+
+`runs cancel` 将尚未发布的 received/running/interrupted 运行标为 cancelled，保存取消时间、原状态和可选原因（非空 UTF-8 文本，最多 4096 字节）。成功和重复取消退出 0；重复取消保留首次审计记录。已 succeeded/rejected/failed、已有发布证据或已经预留恢复后继的运行返回 conflict 和原记录，退出 2。取消和发布通过同一 SQLite 写事务收敛；已发布文件不会被删除或覆盖。正在准备或验证的工作在下一持久检查点释放租约和暂存文件；进程退出后的遗留取消租约会在后续启动时清理。
 
 ## 常规安装
 
@@ -116,7 +162,9 @@ wheel 自带 CSV 去重、XLSX 去重和 JSON 空白规范化三个内置执行�
 ~~~
 
 GET：`/health`、`/stats`、`/skills`、`/skills/ID`、`/runs`、`/runs/RUN_ID`、`/capabilities`。
-POST：`/route`、`/run`、`/events`、`/usage`、`/skills/state`、`/reload`、`/causal/discover`、`/causal/chain`、`/capabilities/resolve`、`/intent/prepare`、`/intent/show`。1.8 新入口的参数和边界见 [统一目录和状态交接](docs/capability-addressing.md)。
+POST：`/route`、`/run`、`/events`、`/runs/RUN_ID/cancel`、`/usage`、`/skills/state`、`/reload`、`/causal/discover`、`/causal/chain`、`/capabilities/resolve`、`/intent/prepare`、`/intent/show`。1.8 新入口的参数和边界见 [统一目录和状态交接](docs/capability-addressing.md)。
+
+取消接口只接受 `{}` 或 `{"reason":"停止任务"}`，成功和重复取消返回 200、冲突 409、未知运行 404；响应包含真实运行记录 `run`。`/run`、`/events` 重放已取消事件返回 409。
 
 请求体只接受 JSON 对象，最多 1 MiB；POST 要求 application/json，拒绝外部 Origin；请求接收有总时限、并发数有上限。默认回环监听。`/route` 只给推荐，不执行任务；UNKNOWN、缺事实、不兼容或低匹配会返回升级信号，未内置自动 LLM 升级器。`constraints` 是用户要求，`facts` 是已确认条件；执行路径重新探测文件事实。
 

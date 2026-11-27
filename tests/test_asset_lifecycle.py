@@ -11,7 +11,7 @@ from rpe_harness.evolution.store import digest
 from rpe_harness.runtime import HarnessRuntime
 from test_candidates import GOOD_CODE
 from test_evolution import verified_run
-from test_asset_trust import signing_key, trusted_identity
+from test_asset_trust import signing_key as signing_key, trusted_identity as trusted_identity
 
 
 def lifecycle():

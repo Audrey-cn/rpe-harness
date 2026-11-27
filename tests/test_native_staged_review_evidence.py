@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from test_review_native_evidence import helper_execution_protocol
+from test_review_native_evidence import helper_execution_protocol as helper_execution_protocol
 
 
 @pytest.fixture

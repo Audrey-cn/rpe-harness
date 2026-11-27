@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import time
 import uuid
@@ -18,9 +19,32 @@ class EventConflict(ValueError):
     """An idempotency key was reused for a different request."""
 
 
+class RunCancelled(RuntimeError):
+    """A durable cancellation fenced further work by this run's owner."""
+
+
 def canonical_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'),
                       allow_nan=False)
+
+
+def _output_may_exist(path, parent_identity=None):
+    """Only proven absence permits cancellation after publication intent."""
+    if not isinstance(path, str) or not path or parent_identity is None:
+        return True
+    try:
+        parent = os.stat(Path(path).parent, follow_symlinks=False)
+    except OSError:
+        return True
+    if [parent.st_dev, parent.st_ino] != parent_identity:
+        return True
+    try:
+        os.lstat(path)
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return True
+    return True
 
 
 def _read_only_database_path(path):
@@ -61,7 +85,7 @@ class RunStore:
                     state_json TEXT, skill_id TEXT, attempted INTEGER NOT NULL DEFAULT 0,
                     verification_json TEXT, verification_ok INTEGER NOT NULL DEFAULT 0,
                     artifact_json TEXT, error_json TEXT,
-                    CHECK(status IN ('received','running','succeeded','rejected','failed','interrupted')),
+                    CHECK(status IN ('received','running','succeeded','rejected','failed','interrupted','cancelled')),
                     CHECK(status != 'succeeded' OR verification_ok=1));
                 CREATE TABLE IF NOT EXISTS steps (
                     id INTEGER PRIMARY KEY, run_id TEXT NOT NULL REFERENCES runs(run_id),
@@ -72,6 +96,36 @@ class RunStore:
                 CREATE TABLE IF NOT EXISTS skill_states (
                     skill_id TEXT PRIMARY KEY, enabled INTEGER NOT NULL, dormant INTEGER NOT NULL);
             ''')
+            self._migrate_cancellation(db)
+
+    @staticmethod
+    def _migrate_cancellation(db):
+        """Extend the original CHECK without losing rows or inbound foreign keys."""
+        db.commit()
+        db.execute('PRAGMA foreign_keys=OFF')
+        try:
+            db.execute('BEGIN IMMEDIATE')
+            schema = db.execute("SELECT sql FROM sqlite_master WHERE name='runs'").fetchone()[0]
+            if "'cancelled'" not in schema:
+                objects = db.execute("SELECT sql FROM sqlite_master WHERE tbl_name='runs' "
+                                     "AND type IN ('index','trigger') AND sql IS NOT NULL").fetchall()
+                replacement = re.sub(r'^CREATE TABLE\s+(?:"runs"|runs)\s*\(',
+                                     'CREATE TABLE runs_c4 (', schema, count=1, flags=re.I)
+                replacement = replacement.replace("'interrupted'", "'interrupted','cancelled'", 1)
+                db.execute(replacement)
+                db.execute('INSERT INTO runs_c4 SELECT * FROM runs')
+                db.execute('DROP TABLE runs')
+                db.execute('ALTER TABLE runs_c4 RENAME TO runs')
+                for item in objects:
+                    db.execute(item[0])
+                if db.execute('PRAGMA foreign_key_check').fetchone() is not None:
+                    raise ValueError('run status migration would violate foreign keys')
+            db.commit()
+        except BaseException:
+            db.rollback()
+            raise
+        finally:
+            db.execute('PRAGMA foreign_keys=ON')
 
     @classmethod
     def read_only(cls, path):
@@ -125,19 +179,114 @@ class RunStore:
     def mark_running(self, run_id: str, state: dict | None = None,
                      skill_id: str | None = None) -> None:
         with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            self._check_cancelled(db, run_id)
             db.execute("UPDATE runs SET status='running',stage='validate',state_json=?,skill_id=? WHERE run_id=? AND status='received'",
                        (canonical_json(state) if state else None, skill_id, run_id))
 
     def step(self, run_id: str, stage: str, evidence: dict | None = None,
              *, skill_id: str | None = None, attempted: bool = False) -> None:
         with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            self._check_cancelled(db, run_id)
             db.execute('UPDATE runs SET stage=?,skill_id=COALESCE(?,skill_id),attempted=MAX(attempted,?) WHERE run_id=?',
                        (stage, skill_id, int(attempted), run_id))
             db.execute('INSERT INTO steps(run_id,stage,evidence_json,created_at) VALUES(?,?,?,?)',
                        (run_id, stage, canonical_json(evidence or {}), time.time()))
 
+    @staticmethod
+    def _check_cancelled(db, run_id):
+        row = db.execute('SELECT status FROM runs WHERE run_id=?', (run_id,)).fetchone()
+        if row is None:
+            raise KeyError(run_id)
+        if row['status'] == 'cancelled':
+            raise RunCancelled(run_id)
+        return row['status']
+
+    def cancel(self, run_id: str, reason: str | None = None) -> dict:
+        """Cancel once, or explicitly preserve an already terminal/published result."""
+        if reason is not None:
+            if (not isinstance(reason, str) or not reason.strip()
+                    or len(reason.encode('utf-8', errors='replace')) > 4096):
+                raise ValueError('reason must be nonempty UTF-8 text of at most 4096 bytes')
+            try:
+                reason.encode('utf-8')
+            except UnicodeError as error:
+                raise ValueError('reason must be valid UTF-8 text') from error
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row = db.execute('SELECT status,artifact_json FROM runs WHERE run_id=?',
+                             (run_id,)).fetchone()
+            if row is None:
+                raise KeyError(run_id)
+            previous = row['status']
+            conflict = None
+            if previous in ('succeeded', 'rejected', 'failed'):
+                conflict = 'already_terminal'
+            elif previous != 'cancelled':
+                # A process may have died after os.link but before success committed.
+                # Never relabel this ambiguous published artifact as cancelled.
+                intents = db.execute("SELECT stage,evidence_json FROM steps WHERE run_id=? "
+                                     "AND stage IN ('publish','complete')", (run_id,)).fetchall()
+                if row['artifact_json'] or any(
+                    item['stage'] == 'complete' or evidence.get('publication_confirmed') is True
+                    or _output_may_exist(evidence.get('output_path') or evidence.get('path'),
+                                        evidence.get('output_parent_identity'))
+                    for item in intents for evidence in [json.loads(item['evidence_json'])]
+                ):
+                    conflict = 'publication_started'
+                # Recovery reservation and cancellation use the same write lock.
+                # Once handed off, this parent cannot promise to stop its successor.
+                recovery = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
+                                      "AND name='recovery_attempts'").fetchone()
+                if not conflict and recovery and db.execute(
+                    'SELECT 1 FROM recovery_attempts WHERE retry_of=?', (run_id,)
+                ).fetchone():
+                    conflict = 'recovery_started'
+                if not conflict:
+                    timestamp = time.time()
+                    db.execute("UPDATE runs SET status='cancelled',stage='cancel',finished_at=? "
+                               'WHERE run_id=?', (timestamp, run_id))
+                    db.execute('INSERT INTO steps(run_id,stage,evidence_json,created_at) '
+                               'VALUES(?,?,?,?)', (run_id, 'cancel', canonical_json({
+                                   'reason': reason, 'previous_status': previous}), timestamp))
+        if not conflict:
+            self._release_lease(run_id)
+            self._reap_cancelled_lease(run_id)
+        record = self.get(run_id)
+        if conflict:
+            return {'status': 'conflict', 'error_code': conflict, 'run_id': run_id, 'run': record}
+        return {'status': 'cancelled', 'run_id': run_id, 'run': record,
+                'already_cancelled': previous == 'cancelled'}
+
+    def complete_publication(self, run_id: str, publisher, *, verification: dict,
+                             artifact: dict) -> dict:
+        """Serialize the no-overwrite link and success receipt against cancellation.
+
+        The caller saves publication intent first, so even an owner crash between
+        the file link and SQLite commit cannot make cancellation falsify history.
+        """
+        if verification.get('passed') is not True or not artifact:
+            raise ValueError('success requires verified published artifact')
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if self._check_cancelled(db, run_id) not in ('received', 'running'):
+                raise ValueError('run is already terminal')
+            publisher()
+            timestamp = time.time()
+            db.execute('INSERT INTO steps(run_id,stage,evidence_json,created_at) VALUES(?,?,?,?)',
+                       (run_id, 'complete', canonical_json(artifact), timestamp))
+            db.execute("UPDATE runs SET status='succeeded',stage='complete',finished_at=?,"
+                       'verification_json=?,verification_ok=1,artifact_json=?,error_json=NULL '
+                       'WHERE run_id=?',
+                       (timestamp, canonical_json(verification), canonical_json(artifact), run_id))
+        self._release_lease(run_id)
+        return self.get(run_id)
+
     def finish(self, run_id: str, status: str, *, verification: dict | None = None,
                artifact: dict | None = None, error: dict | None = None) -> dict:
+        if status == 'cancelled':
+            raise ValueError('use cancel to record an auditable cancellation')
         verified = verification is not None and verification.get('passed') is True
         if status == 'succeeded' and (not verified or not artifact):
             raise ValueError('success requires verified published artifact')
@@ -155,8 +304,33 @@ class RunStore:
             lease.close()
             (self.lease_dir / run_id).unlink(missing_ok=True)
 
+    def _reap_cancelled_lease(self, run_id):
+        """Remove an abandoned lease, without unlinking a live owner's lock."""
+        path = self.lease_dir / run_id
+        try:
+            descriptor = os.open(path, os.O_RDWR | os.O_NONBLOCK | os.O_NOFOLLOW)
+        except FileNotFoundError:
+            return
+        try:
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                return
+            owned = os.fstat(descriptor)
+            try:
+                current = path.lstat()
+            except FileNotFoundError:
+                return
+            if ((current.st_dev, current.st_ino) == (owned.st_dev, owned.st_ino)
+                    and stat.S_ISREG(current.st_mode)):
+                path.unlink(missing_ok=True)
+        finally:
+            os.close(descriptor)
+
     def get(self, run_id: str) -> dict:
         with self.connect() as db:
+            # Status and audit steps must describe the same committed snapshot.
+            db.execute('BEGIN')
             row = db.execute('SELECT r.*,e.source,e.event_id,e.payload_hash,e.payload_json FROM runs r JOIN events e ON r.event_fk=e.id WHERE run_id=?',
                              (run_id,)).fetchone()
             if row is None:
@@ -191,9 +365,9 @@ class RunStore:
             try:
                 if lease is not None:
                     fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                self.finish(row['run_id'], 'interrupted', error={'code': 'owner_process_exited',
+                result = self.finish(row['run_id'], 'interrupted', error={'code': 'owner_process_exited',
                             'message': 'previous owner exited before recording a verified result'})
-                count += 1
+                count += result['status'] == 'interrupted'
             except BlockingIOError:
                 pass
             finally:
@@ -201,6 +375,10 @@ class RunStore:
                     lease.close()
                 if self.get(row['run_id'])['status'] == 'interrupted':
                     lease_path.unlink(missing_ok=True)
+        with self.connect() as db:
+            cancelled = db.execute("SELECT run_id FROM runs WHERE status='cancelled'").fetchall()
+        for row in cancelled:
+            self._reap_cancelled_lease(row['run_id'])
         return count
 
     def report_usage(self, skill_id: str, success: bool):
@@ -210,7 +388,7 @@ class RunStore:
 
     def usage(self) -> dict:
         with self.connect() as db:
-            rows = db.execute("SELECT skill_id,COUNT(*) AS n,SUM(status='succeeded') AS successes,MAX(started_at) AS last_used FROM runs WHERE skill_id IS NOT NULL AND attempted=1 AND status IN ('succeeded','failed','interrupted') GROUP BY skill_id").fetchall()
+            rows = db.execute("SELECT skill_id,COUNT(*) AS n,SUM(status='succeeded') AS successes,MAX(started_at) AS last_used FROM runs WHERE skill_id IS NOT NULL AND attempted=1 AND status IN ('succeeded','failed','interrupted','cancelled') GROUP BY skill_id").fetchall()
             reports = db.execute('SELECT skill_id,COUNT(*) AS n,SUM(success) AS successes,MAX(created_at) AS last_used FROM reported_usage GROUP BY skill_id').fetchall()
         result = {}
         for row in rows:

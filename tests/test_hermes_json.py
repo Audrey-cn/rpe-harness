@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from rpe_harness.integrations.hermes import (
-    TaskArgumentsError, _prepare_request, _recorded_contract, HostEventStore,
+    _prepare_request, _recorded_contract, HostEventStore,
 )
 from rpe_harness.integrations.hermes_gate import contract_for, digest_json, evaluate_session
 from test_hermes_integration import configured_plugin
@@ -55,21 +55,33 @@ def test_schema_rejection_is_correctable_and_metadata_only(tmp_path, monkeypatch
     context, workspace, db = configured_plugin(tmp_path, monkeypatch)
     (workspace/'source.json').write_text('{"private-business-value":1}')
     args = flat()
-    if damage == 'missing_style': args.pop('style')
-    elif damage == 'invalid_style': args['style'] = 'private-business-value'
-    elif damage == 'tabular_option': args['key_columns'] = ['private-business-value']
-    elif damage == 'tabular_style': args['capability'] = 'tabular.deduplicate'; args['key_columns']=['id']
-    elif damage == 'unknown_capability': args['capability'] = 'private-business-value'
-    elif damage == 'missing_columns': args.pop('capability'); args.pop('style')
-    elif damage == 'json_formula_constraint': args['constraints'] = ['preserve_formulas']
+    if damage == 'missing_style':
+        args.pop('style')
+    elif damage == 'invalid_style':
+        args['style'] = 'private-business-value'
+    elif damage == 'tabular_option':
+        args['key_columns'] = ['private-business-value']
+    elif damage == 'tabular_style':
+        args['capability'] = 'tabular.deduplicate'
+        args['key_columns']=['id']
+    elif damage == 'unknown_capability':
+        args['capability'] = 'private-business-value'
+    elif damage == 'missing_columns':
+        args.pop('capability')
+        args.pop('style')
+    elif damage == 'json_formula_constraint':
+        args['constraints'] = ['preserve_formulas']
     else:
         request = {'schema_version':2,'event_id':'event','capability':'json.normalize',
             'goal':'private-business-goal','execution':{'input_path':'source.json',
                 'output_path':'result.json','style':'pretty'}}
         args = {'request':request}
-        if damage == 'unknown_execution': request['execution']['indent'] = 'private-business-value'
-        elif damage == 'unknown_body': request['indent'] = 'private-business-value'
-        elif damage == 'mixed_envelope': args['style'] = 'private-business-value'
+        if damage == 'unknown_execution':
+            request['execution']['indent'] = 'private-business-value'
+        elif damage == 'unknown_body':
+            request['indent'] = 'private-business-value'
+        elif damage == 'mixed_envelope':
+            args['style'] = 'private-business-value'
         else:
             request['schema_version'] = 1
             request['state'] = {'required_capability':'json.normalize','goal':'private-business-goal'}
@@ -129,7 +141,8 @@ def test_real_broker_json_cli_and_strict_gate(tmp_path, monkeypatch, style, expe
     request = _prepare_request(flat(style),workspace,None)
     first = ids()
     with execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
-        for key,value in env.items(): monkeypatch.setenv(key,value)
+        for key,value in env.items():
+            monkeypatch.setenv(key,value)
         assert api_request(context,first)['tool_choice']['function']['name']=='rpe_task'
         response(context,first,[('call-one','rpe_task')])
         result = execute(context,flat(style),first)
@@ -155,9 +168,11 @@ def test_real_broker_json_cli_and_strict_gate(tmp_path, monkeypatch, style, expe
 def test_json_missing_style_can_be_corrected_with_observable_strict_policy(tmp_path, monkeypatch):
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     (workspace/'source.json').write_text('{"a":1}')
-    bad=flat(); bad.pop('style')
+    bad=flat()
+    bad.pop('style')
     first=ids()
-    api_request(context,first); response(context,first,[('call-one','rpe_task')])
+    api_request(context,first)
+    response(context,first,[('call-one','rpe_task')])
     rejection=execute(context,bad,first)
     assert rejection['error']['fields']==['style']
     second=ids(call='call-two',api='api-two')
@@ -173,10 +188,12 @@ def test_json_missing_style_can_be_corrected_with_observable_strict_policy(tmp_p
 
 
 def test_fixed_json_style_cannot_be_reinterpreted(tmp_path, monkeypatch):
-    workspace=tmp_path/'workspace'; workspace.mkdir()
+    workspace=tmp_path/'workspace'
+    workspace.mkdir()
     (workspace/'source.json').write_text('{"a":1}')
     fixed=_prepare_request(flat('pretty'),workspace,None)
-    fixed_path=tmp_path/'fixed.json'; fixed_path.write_text(json.dumps(fixed))
+    fixed_path=tmp_path/'fixed.json'
+    fixed_path.write_text(json.dumps(fixed))
     monkeypatch.setenv('RPE_HERMES_REQUIRED_REQUEST_PATH',str(fixed_path))
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     result=execute(context,flat('minify'),ids())
@@ -190,19 +207,25 @@ def test_json_plan_style_drift_fails_even_if_redundant_hashes_are_replaced(tmp_p
     from rpe_harness.tasks import plan_from_dict
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     (workspace/'source.json').write_text('{"a":1}')
-    first=ids(); api_request(context,first); response(context,first,[('call-one','rpe_task')])
+    first=ids()
+    api_request(context,first)
+    response(context,first,[('call-one','rpe_task')])
     result=execute(context,flat(),first)
     assert result['status']=='succeeded',result
-    final=ids(call='',api='api-final'); api_request(context,final); response(context,final,[])
+    final=ids(call='',api='api-final')
+    api_request(context,final)
+    response(context,final,[])
     host=completed(context,db)
     with sqlite3.connect(db) as connection:
         row=connection.execute("SELECT id,evidence_json FROM steps WHERE stage='plan'").fetchone()
-        evidence=json.loads(row[1]); evidence['plan']['style']='minify'
+        evidence=json.loads(row[1])
+        evidence['plan']['style']='minify'
         evidence['plan_sha256']=plan_from_dict(evidence['plan']).sha256
         connection.execute('UPDATE steps SET evidence_json=? WHERE id=?',(json.dumps(evidence),row[0]))
         row=connection.execute('SELECT artifact_json,verification_json FROM runs WHERE run_id=?',(result['run_id'],)).fetchone()
         values=[json.loads(value) for value in row]
-        for value in values: value['plan_sha256']=evidence['plan_sha256']
+        for value in values:
+            value['plan_sha256']=evidence['plan_sha256']
         connection.execute('UPDATE runs SET artifact_json=?,verification_json=? WHERE run_id=?',
             (json.dumps(values[0]),json.dumps(values[1]),result['run_id']))
     verdict=evaluate_session(host,db,workspace)
@@ -214,7 +237,9 @@ def test_missing_tabular_keys_can_be_corrected_and_final_gate_accepts_chain(tmp_
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     (workspace/'source.csv').write_text('id,value\na,1\na,2\n')
     args={'input_path':'source.csv','output_path':'result.csv','goal':'retain first'}
-    first=ids(); api_request(context,first); response(context,first,[('call-one','rpe_task')])
+    first=ids()
+    api_request(context,first)
+    response(context,first,[('call-one','rpe_task')])
     rejection=execute(context,args,first)
     assert rejection['error']['fields']==['key_columns']
     second=ids(call='call-two',api='api-two')
@@ -222,7 +247,9 @@ def test_missing_tabular_keys_can_be_corrected_and_final_gate_accepts_chain(tmp_
     response(context,second,[('call-two','rpe_task')])
     success=execute(context,{**args,'key_columns':['id']},second)
     assert success['status']=='succeeded',success
-    final=ids(call='',api='api-final'); api_request(context,final); response(context,final,[])
+    final=ids(call='',api='api-final')
+    api_request(context,final)
+    response(context,final,[])
     verdict=evaluate_session(completed(context,db),db,workspace)
     assert verdict['verified'] is True and verdict['errors']==[],verdict
 
@@ -248,7 +275,9 @@ def test_final_gate_bounds_json_output_hash_read(tmp_path, monkeypatch):
     from rpe_harness.integrations.hermes_gate import _verify_run, read_run
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     (workspace/'source.json').write_text('{"a":1}')
-    identity=ids(); api_request(context,identity); response(context,identity,[('call-one','rpe_task')])
+    identity=ids()
+    api_request(context,identity)
+    response(context,identity,[('call-one','rpe_task')])
     result=execute(context,flat(),identity)
     assert result['status']=='succeeded',result
     receipt=next(e for e in HostEventStore(db).list('session-one') if e['kind']=='rpe_task_received')

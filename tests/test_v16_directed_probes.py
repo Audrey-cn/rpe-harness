@@ -54,11 +54,14 @@ def test_idless_streams_use_real_receipts_and_counted_arguments(api):
 
 def test_gate_failure_retains_measured_metrics_before_validation(api, tmp_path, monkeypatch):
     from rpe_harness.integrations import hermes_session, skill_gate
-    workspace = tmp_path / 'workspace'; workspace.mkdir()
+    workspace = tmp_path / 'workspace'
+    workspace.mkdir()
     (tmp_path / 'records').mkdir()
     (workspace / 'prompt.txt').write_text('frozen prompt')
     (workspace / 'input.csv').write_text('id,v\na,1\n')
-    config = tmp_path / '.hermes/config.yaml'; config.parent.mkdir(); config.write_text('frozen-config')
+    config = tmp_path / '.hermes/config.yaml'
+    config.parent.mkdir()
+    config.write_text('frozen-config')
     monkeypatch.setenv('HOME', str(tmp_path))
     monkeypatch.setattr(api, 'package_identity', lambda: {'frozen': True})
     monkeypatch.setattr(hermes_session, 'run_hermes_session', lambda *a, **k: {'completed': True, 'exit_code': 0,
@@ -86,10 +89,13 @@ def test_preregister_rejects_old_version_marker_before_reusing(api, tmp_path, mo
     catalog = SkillCatalog(tmp_path / 'state.sqlite', tmp_path / 'catalog')
     catalog.sync(source)
     catalog.trust_adapter('productivity/xlsx')
-    config = tmp_path / '.hermes/config.yaml'; config.parent.mkdir(); config.write_text('frozen-config')
+    config = tmp_path / '.hermes/config.yaml'
+    config.parent.mkdir()
+    config.write_text('frozen-config')
     monkeypatch.setenv('HOME', str(tmp_path))
     monkeypatch.setattr(api, 'package_identity', lambda: {'frozen': True})
-    reports = tmp_path / 'reports'; reports.mkdir()
+    reports = tmp_path / 'reports'
+    reports.mkdir()
     old = {'directed_version': 'old-invalid-fixture'}
     old['fingerprint'] = api.sha(api.canonical(old).encode())
     (reports / 'preregistration.json').write_text(json.dumps(old))

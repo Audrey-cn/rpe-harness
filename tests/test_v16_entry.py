@@ -49,10 +49,15 @@ def prepare(plan, staging_path):
 
 
 def test_materialized_skill_bytes_are_immutable_in_actual_host_sandbox(tmp_path):
-    import subprocess,sys
+    import subprocess
+    import sys
     from rpe_harness.integrations.hermes_session import sandbox_profile
-    skills=tmp_path/'skills';skills.mkdir();script=skills/'helper.py';script.write_text('original')
-    config=tmp_path/'skill-config.json';config.write_text('original-config')
+    skills=tmp_path/'skills'
+    skills.mkdir()
+    script=skills/'helper.py'
+    script.write_text('original')
+    config=tmp_path/'skill-config.json'
+    config.write_text('original-config')
     profile=tmp_path/'sandbox.sb'
     profile.write_text(sandbox_profile([tmp_path],tmp_path/'private-home',
                        protected_write_roots=[skills,config]))
@@ -69,15 +74,20 @@ Path(sys.argv[1]).parent.parent.joinpath('allowed.txt').write_text('allowed')
     result=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-B','-c',probe,
           str(script),str(config)],capture_output=True,text=True,timeout=10)
     assert result.returncode==0,result.stderr
-    assert script.read_text()=='original';assert config.read_text()=='original-config'
+    assert script.read_text()=='original'
+    assert config.read_text()=='original-config'
     assert (tmp_path/'allowed.txt').read_text()=='allowed'
 
 
 def test_immutable_snapshot_ancestors_cannot_be_renamed(tmp_path):
-    import subprocess,sys
+    import subprocess
+    import sys
     from rpe_harness.integrations.hermes_session import sandbox_profile
-    home=tmp_path/'home';skills=home/'skills';skills.mkdir(parents=True)
-    helper=skills/'helper.py';helper.write_text('original')
+    home=tmp_path/'home'
+    skills=home/'skills'
+    skills.mkdir(parents=True)
+    helper=skills/'helper.py'
+    helper.write_text('original')
     profile=tmp_path/'sandbox.sb'
     profile.write_text(sandbox_profile([tmp_path],tmp_path/'private',protected_write_roots=[skills]))
     code='''from pathlib import Path

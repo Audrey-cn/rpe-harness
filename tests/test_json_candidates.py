@@ -8,8 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from rpe_harness.evolution import (EvolutionStore, apply_candidate, prepare_candidate,
-    propose_candidate, quarantine_candidate, rollback, validate_candidate)
+from rpe_harness.evolution import (EvolutionStore, apply_candidate, propose_candidate, quarantine_candidate, rollback, validate_candidate)
 from rpe_harness.evolution.candidates import current_revisions
 from rpe_harness.runtime import HarnessRuntime
 

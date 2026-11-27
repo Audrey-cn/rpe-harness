@@ -1,6 +1,5 @@
 """Native Hermes lifecycle paths retain bounded metadata and pinned identity."""
 import shutil
-from pathlib import Path
 import pytest
 from rpe_harness.skill_catalog import SkillCatalog, XLSX_SKILL_ID
 from test_skill_catalog import XLSX_FIXTURE, skill

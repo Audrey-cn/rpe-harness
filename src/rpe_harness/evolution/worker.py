@@ -309,13 +309,15 @@ def _generation_link(result, workspace, raw):
                     or post.get('status') not in {'ok', 'succeeded'} or post.get('arguments_sha256') != args_hash
                     or not all(isinstance(post.get(key), str) and post[key] for key in _IDS)):
                 continue
-            same = lambda event: all(event.get(key) == post[key] for key in _IDS)
+            def same(event):
+                return all(event.get(key) == post[key] for key in _IDS)
             pre = [e for e in events if isinstance(e, dict) and e.get('kind') == 'pre_tool_call' and same(e)]
             posts = [e for e in events if isinstance(e, dict) and e.get('kind') == 'post_tool_call' and same(e)]
             if (len(pre) != 1 or len(posts) != 1 or pre[0].get('tool_name') != 'write_file'
                     or pre[0].get('arguments_sha256') != args_hash):
                 continue
-            api_same = lambda event: all(event.get(key) == post[key] for key in _IDS[:-1])
+            def api_same(event):
+                return all(event.get(key) == post[key] for key in _IDS[:-1])
             api_pre = [e for e in events if isinstance(e, dict) and e.get('kind') == 'pre_api_request' and api_same(e)]
             api_post = [e for e in events if isinstance(e, dict) and e.get('kind') == 'post_api_request' and api_same(e)]
             if len(api_pre) != 1 or len(api_post) != 1:

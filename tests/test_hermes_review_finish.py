@@ -7,8 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from test_hermes_review import review, dispatch, draft, host_result
-from test_review_skills import skill_env, skill_review
+from test_hermes_review import review as review, dispatch, draft, host_result
+from test_review_skills import skill_env as skill_env, skill_review as skill_review
 
 
 def native_agent(**changes):

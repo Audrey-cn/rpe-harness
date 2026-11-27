@@ -83,7 +83,7 @@ def _validated_request(body, database, workspace):
                              and e.get('receipt_id') == event.get('receipt_id')
                              and e.get('run_id') == event['run_id']
                              and all(e.get(key) == event.get(key) for key in _IDS)), None)
-            if returned and returned.get('status') in {'succeeded', 'rejected'}:
+            if returned and returned.get('status') in {'succeeded', 'rejected', 'cancelled'}:
                 run = db.execute('SELECT status FROM runs WHERE run_id=?', (event['run_id'],)).fetchone()
                 if run and run[0] == returned['status']:
                     raise PermissionError('this native turn already has a durable outcome')
@@ -215,8 +215,9 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120, extensi
                     incoming = None
             result = json.loads(stdout)
             if (not isinstance(result, dict) or result.get('status') not in {
-                    'succeeded', 'rejected', 'failed', 'interrupted', 'received', 'running', 'error'}
-                    or (result['status'] == 'succeeded' and process.returncode != 0)):
+                    'succeeded', 'rejected', 'failed', 'interrupted', 'cancelled', 'received', 'running', 'error'}
+                    or (result['status'] == 'succeeded' and process.returncode != 0)
+                    or (result['status'] == 'cancelled' and process.returncode != 1)):
                 raise ValueError('invalid fixed CLI response')
             return 200, {'returncode': process.returncode, 'result': result}
         except (ValueError, TypeError):
@@ -392,7 +393,7 @@ def execution_broker(*, db_path, workspace, python, request_timeout=120, extensi
                     claims[receipt_id]['response'] = response
                     result = response[1].get('result', {})
                     if (native.get('entry_key') and result.get('run_id')
-                            and result.get('status') in {'succeeded', 'rejected'}):
+                            and result.get('status') in {'succeeded', 'rejected', 'cancelled'}):
                         closed_turns.add(turn)
             except OSError:
                 response = (502, {'error': {'code': 'harness_launch_error'}})

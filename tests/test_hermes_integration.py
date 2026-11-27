@@ -248,10 +248,14 @@ def test_argument_validation_feedback_is_specific_and_durable_without_launch(tmp
     if damage=='unknown_flat_key':
         args={'input_path':'orders.csv','output_path':'out.csv','key_columns':['id'],
               'goal':'PRIVATE_GOAL_VALUE','sheet_name':'PRIVATE_SHEET_VALUE'}
-    elif damage=='request_not_object': args={'request':['PRIVATE_REQUEST_VALUE']}
-    elif damage=='execution_not_object': payload['execution']='PRIVATE_EXECUTION_VALUE'
-    elif damage=='constraints_not_array': payload['state']['constraints']='PRIVATE_CONSTRAINT_VALUE'
-    elif damage=='input_path_not_string': payload['execution']['input_path']=42
+    elif damage=='request_not_object':
+        args={'request':['PRIVATE_REQUEST_VALUE']}
+    elif damage=='execution_not_object':
+        payload['execution']='PRIVATE_EXECUTION_VALUE'
+    elif damage=='constraints_not_array':
+        payload['state']['constraints']='PRIVATE_CONSTRAINT_VALUE'
+    elif damage=='input_path_not_string':
+        payload['execution']['input_path']=42
     def forbidden_launch(*args,**kwargs):
         raise AssertionError('invalid arguments must not start any child')
     monkeypatch.setattr(integration().subprocess,'run',forbidden_launch)
@@ -550,7 +554,7 @@ def test_completed_turn_rejects_stale_named_request_and_preserves_published_outp
     queued=native_identity(call='queued-call',api='queued-api')
     strict_request(context,first_id)
     assert strict_request(context,queued)['tool_choice']['function']['name']=='rpe_task'
-    first=native_dispatch(context,{'request':payload},first_id)
+    native_dispatch(context,{'request':payload},first_id)
     original=(workspace/'out.csv').read_bytes()
     monkeypatch.setattr(subprocess,'run',lambda *a,**k:pytest.fail('closed turn executor launch'))
     extra=native_dispatch(context,{'request':{**payload,'execution':{

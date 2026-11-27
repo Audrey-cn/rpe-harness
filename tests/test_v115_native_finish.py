@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from test_native_staged_process_evidence import invoke, staged_case
+from test_native_staged_process_evidence import invoke, staged_case as staged_case
 
 
 @pytest.fixture

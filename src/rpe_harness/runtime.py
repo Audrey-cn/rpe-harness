@@ -11,7 +11,7 @@ from .bridge import EventToStateConverter
 from .capability import CapabilityRouter, SkillEntry
 from .causal_graph import CausalGraph
 from .mcsi import CausalState, TaskType
-from .storage import RunStore, canonical_json
+from .storage import RunCancelled, RunStore, canonical_json
 from .contracts import ExecutionPlan
 from .tasks import plan_from_request, prepare_plan, verify_plan, artifact_metrics
 
@@ -141,6 +141,9 @@ class HarnessRuntime:
         return {'router': self.router.get_stats(), 'graph': self.graph.get_stats(),
                 'graph_issues': self.graph_issues, 'metadata_issues': self.metadata_issues,
                 'usage': self.store.usage()}
+
+    def cancel(self, run_id: str, reason: str | None = None) -> dict:
+        return self.store.cancel(run_id, reason=reason)
 
     def _validate_request(self, payload: dict) -> tuple[CausalState, dict]:
         if type(payload.get('schema_version')) is not int or payload['schema_version'] != 1:
@@ -284,27 +287,37 @@ class HarnessRuntime:
             if verification.get('passed') is not True:
                 raise RuntimeError('independent artifact verification failed')
             stage = 'publish'
+            parent = os.stat(Path(plan.output_path).parent, follow_symlinks=False)
             self.store.step(run_id, stage, {'verification': verification,
                             'output_path': plan.output_path, 'plan_sha256': plan.sha256,
+                            'output_parent_identity': [parent.st_dev, parent.st_ino],
                             'publication_confirmed': False})
-            publish_output(prepared, plan=plan)
             artifact = {'path': plan.output_path, 'sha256': verification['output_sha256'],
                         'format': plan.input_format, 'published': True, 'plan_sha256': plan.sha256,
                         'input_sha256': plan.input_sha256,
                         'actual_executor': actual,
                         **artifact_metrics(verification)}
-            self.store.step(run_id, 'complete', artifact)
-            answer = self.store.finish(run_id, 'succeeded', verification=verification, artifact=artifact)
+            answer = self.store.complete_publication(run_id,
+                lambda: publish_output(prepared, plan=plan),
+                verification=verification, artifact=artifact)
+        except RunCancelled:
+            answer = self.store.get(run_id)
         except Exception as exc:
             invalid = (isinstance(exc, ValueError) and stage in ['validate', 'route', 'execute']) or (isinstance(exc, TypeError) and stage in ['validate', 'route'])
             status = 'rejected' if invalid else 'failed'
-            self.store.step(run_id, stage)
-            answer = self.store.finish(run_id, status, verification=verification,
-                error={'code': 'invalid_request' if status == 'rejected' else 'execution_failed',
-                       'type': type(exc).__name__, 'message': str(exc)})
+            try:
+                self.store.step(run_id, stage)
+                answer = self.store.finish(run_id, status, verification=verification,
+                    error={'code': 'invalid_request' if status == 'rejected' else 'execution_failed',
+                           'type': type(exc).__name__, 'message': str(exc)})
+            except RunCancelled:
+                answer = self.store.get(run_id)
         finally:
-            if prepared is not None:
-                cleanup_staging(prepared)
+            try:
+                if prepared is not None:
+                    cleanup_staging(prepared)
+            finally:
+                self.store._release_lease(run_id)
         with self.lock:
             self._refresh_usage()
         return answer

@@ -88,7 +88,8 @@ def test_export_rejects_mutated_or_unverified_source_anchors(tmp_path, target):
                 connection.execute("UPDATE runs SET status='failed', verification_ok=0 WHERE run_id=?", (run_id,))
             elif target == 'verification':
                 row = connection.execute('SELECT verification_json FROM runs WHERE run_id=?', (run_id,)).fetchone()
-                report = json.loads(row[0]); report['output_rows'] = 999
+                report = json.loads(row[0])
+                report['output_rows'] = 999
                 connection.execute('UPDATE runs SET verification_json=? WHERE run_id=?', (json.dumps(report), run_id))
             else:
                 connection.execute("UPDATE steps SET evidence_json='{}' WHERE run_id=? AND stage='plan'", (run_id,))
@@ -100,12 +101,19 @@ def test_export_rejects_mutated_or_unverified_source_anchors(tmp_path, target):
 def test_rehashed_spoofed_packet_cannot_replace_trusted_export(tmp_path, mutation):
     database, packet = packet_for(tmp_path)
     example = packet['examples'][0]
-    if mutation == 'source': example['source_text'] = 'id,value\nX,fake\n'
-    elif mutation == 'truth': example['expected_rows'][1][1] = 'fake'
-    elif mutation == 'hash': example['verification_sha256'] = '0' * 64
-    elif mutation == 'unknown': example['private_path'] = '/private/auth'
-    elif mutation == 'parameter': example['parameters']['keep'] = 'last'
-    else: packet['evidence_run_ids'] = ['not-a-real-run']; example['run_id'] = 'not-a-real-run'
+    if mutation == 'source':
+        example['source_text'] = 'id,value\nX,fake\n'
+    elif mutation == 'truth':
+        example['expected_rows'][1][1] = 'fake'
+    elif mutation == 'hash':
+        example['verification_sha256'] = '0' * 64
+    elif mutation == 'unknown':
+        example['private_path'] = '/private/auth'
+    elif mutation == 'parameter':
+        example['parameters']['keep'] = 'last'
+    else:
+        packet['evidence_run_ids'] = ['not-a-real-run']
+        example['run_id'] = 'not-a-real-run'
     with pytest.raises(ValueError):
         module().validate_training_packet(database, resign(packet))
 
@@ -216,9 +224,15 @@ def test_probe_retains_actual_failures_without_private_or_qualification_material
 def test_probe_rejects_bad_hash_budget_and_unknown_fields_before_execution(tmp_path):
     _, packet = packet_for(tmp_path)
     variants = []
-    changed = copy.deepcopy(packet); changed['examples'][0]['source_text'] += 'tamper'; variants.append(changed)
-    changed = copy.deepcopy(packet); changed['examples'][0]['source_text'] = 'x' * 16385; variants.append(resign(changed))
-    changed = copy.deepcopy(packet); changed['credential'] = 'PRIVATE'; variants.append(resign(changed))
+    changed = copy.deepcopy(packet)
+    changed['examples'][0]['source_text'] += 'tamper'
+    variants.append(changed)
+    changed = copy.deepcopy(packet)
+    changed['examples'][0]['source_text'] = 'x' * 16385
+    variants.append(resign(changed))
+    changed = copy.deepcopy(packet)
+    changed['credential'] = 'PRIVATE'
+    variants.append(resign(changed))
     for invalid in variants:
         with pytest.raises(ValueError):
             module().probe_training_candidate(GOOD_CODE, invalid, tmp_path / 'not-created')

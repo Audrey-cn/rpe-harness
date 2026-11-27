@@ -274,7 +274,8 @@ def sandbox_profile(write_roots, real_home, install_root=None, database=None, re
             cursor = path if path.is_dir() else path.parent
             while cursor.is_relative_to(owner):
                 ancestors.add(cursor)
-                if cursor==owner:break
+                if cursor==owner:
+                    break
                 cursor=cursor.parent
         allowed += ' '+' '.join('(literal '+quote(p)+')' for p in sorted(ancestors))
         owned_scope = ('(deny file-read-data (require-all (subpath '+quote(Path(owner).resolve())+') '

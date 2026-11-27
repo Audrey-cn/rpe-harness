@@ -71,24 +71,35 @@ def test_broker_rejects_untrusted_or_unbound_requests_before_execution(admitted_
     workspace,db,body=admitted_task
     module=broker_api()
     kwargs={}
-    if damage=='wrong_receipt': body['receipt_id']='missing'
-    elif damage=='wrong_native': body['native']['tool_call_id']='other-call'
-    elif damage=='wrong_contract': body['payload']['execution']['key_columns']=['value']
-    elif damage=='changed_input': (workspace/'source.csv').write_text('changed')
-    elif damage=='escape_path': body['payload']['execution']['output_path']=str(tmp_path/'outside.csv')
+    if damage=='wrong_receipt':
+        body['receipt_id']='missing'
+    elif damage=='wrong_native':
+        body['native']['tool_call_id']='other-call'
+    elif damage=='wrong_contract':
+        body['payload']['execution']['key_columns']=['value']
+    elif damage=='changed_input':
+        (workspace/'source.csv').write_text('changed')
+    elif damage=='escape_path':
+        body['payload']['execution']['output_path']=str(tmp_path/'outside.csv')
     elif damage=='symlink_path':
         (workspace/'link.csv').symlink_to(workspace/'source.csv')
         body['payload']['execution']['input_path']=str(workspace/'link.csv')
-    elif damage=='malformed': body=b'{'
-    elif damage=='extra_field': body['argv']=['unsafe']
+    elif damage=='malformed':
+        body=b'{'
+    elif damage=='extra_field':
+        body['argv']=['unsafe']
     elif damage=='oversized':
         body=b'{}'
         kwargs['headers']={'Content-Length':'1048577'}
-    elif damage=='content_type': kwargs['content_type']='text/plain'
-    elif damage=='auth': kwargs['token']='incorrect'
-    elif damage=='auth_nonascii': kwargs['token']='invalid-é'
+    elif damage=='content_type':
+        kwargs['content_type']='text/plain'
+    elif damage=='auth':
+        kwargs['token']='incorrect'
+    elif damage=='auth_nonascii':
+        kwargs['token']='invalid-é'
     with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
-        if damage=='route': kwargs['path']=env['RPE_HERMES_BROKER_URL']+'/other'
+        if damage=='route':
+            kwargs['path']=env['RPE_HERMES_BROKER_URL']+'/other'
         status,answer=post(env,body,**kwargs)
     assert status==expected,answer
     assert isinstance(answer.get('error',{}).get('code'),str)
@@ -227,8 +238,10 @@ def test_broker_context_closes_a_continuously_dripping_request_line(admitted_tas
     stop=threading.Event()
     def drip():
         while not stop.wait(0.05):
-            try: connection.sendall(b'P')
-            except OSError: return
+            try:
+                connection.sendall(b'P')
+            except OSError:
+                return
     writer=threading.Thread(target=drip)
     writer.start()
     time.sleep(0.1)
@@ -262,8 +275,10 @@ def test_broker_shutdown_is_bounded_and_reports_a_blocked_validation_worker(admi
     context=module.execution_broker(db_path=db,workspace=workspace,python=sys.executable)
     env=context.__enter__()
     def request():
-        try: post(env,body)
-        except OSError: pass
+        try:
+            post(env,body)
+        except OSError:
+            pass
     client=threading.Thread(target=request)
     client.start()
     assert entered.wait(timeout=2)
@@ -328,14 +343,18 @@ def test_broker_cleanup_query_failure_still_stops_known_detached_child(admitted_
         code="import subprocess,os,json,pathlib,time; p=subprocess.Popen(['/bin/sleep','30'],start_new_session=True); pathlib.Path("+repr(str(pidfile))+").write_text(json.dumps([os.getpid(),p.pid])); time.sleep(30)"
         return original_popen([sys.executable,'-B','-c',code],*args,**kwargs)
     def capture(*args):
-        if fault.is_set(): raise OSError('owned injected query failure')
+        if fault.is_set():
+            raise OSError('owned injected query failure')
         original_capture(*args)
-        if args[2]: captured.set()
+        if args[2]:
+            captured.set()
     monkeypatch.setattr(module.subprocess,'Popen',launch)
     monkeypatch.setattr(hermes_session,'_capture_descendants',capture)
     def request(env):
-        try: post(env,body)
-        except OSError: pass
+        try:
+            post(env,body)
+        except OSError:
+            pass
     try:
         with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable) as env:
             client=threading.Thread(target=lambda:request(env))
@@ -346,18 +365,20 @@ def test_broker_cleanup_query_failure_still_stops_known_detached_child(admitted_
         assert env.cleanup['cleanup_complete'] is False
         assert env.cleanup['errors']
         for pid in json.loads(pidfile.read_text()):
-            with pytest.raises(ProcessLookupError): os.kill(pid,0)
+            with pytest.raises(ProcessLookupError):
+                os.kill(pid,0)
     finally:
         if pidfile.exists():
             for pid in json.loads(pidfile.read_text()):
-                try: os.kill(pid,signal.SIGKILL)
-                except ProcessLookupError: pass
+                try:
+                    os.kill(pid,signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
 
 
 @pytest.mark.parametrize('cancel_on_exit',[False,True])
 def test_broker_stops_owned_child_group_on_timeout_or_context_exit(admitted_task,tmp_path,monkeypatch,cancel_on_exit):
     import os
-    import subprocess
     workspace,db,body=admitted_task
     module=broker_api()
     pidfile=tmp_path/'owned-child-pid'
@@ -374,20 +395,25 @@ def test_broker_stops_owned_child_group_on_timeout_or_context_exit(admitted_task
     monkeypatch.setattr(module.subprocess,'Popen',launch)
     response,transport_errors=[],[]
     def request_task(env):
-        try: response.append(post(env,body))
-        except OSError as error: transport_errors.append(type(error).__name__)
+        try:
+            response.append(post(env,body))
+        except OSError as error:
+            transport_errors.append(type(error).__name__)
     with module.execution_broker(db_path=db,workspace=workspace,python=sys.executable,
                                  request_timeout=0.3 if not cancel_on_exit else 120) as env:
         thread=threading.Thread(target=lambda:request_task(env))
         thread.start()
         deadline=time.monotonic()+3
-        while not pidfile.exists() and time.monotonic()<deadline: time.sleep(0.01)
+        while not pidfile.exists() and time.monotonic()<deadline:
+            time.sleep(0.01)
         assert pidfile.exists()
-        if not cancel_on_exit: thread.join(timeout=3)
+        if not cancel_on_exit:
+            thread.join(timeout=3)
     thread.join(timeout=3)
     assert not thread.is_alive()
     assert processes and all(process.poll() is not None for process in processes)
-    with pytest.raises(ProcessLookupError): os.kill(int(pidfile.read_text()),0)
+    with pytest.raises(ProcessLookupError):
+        os.kill(int(pidfile.read_text()),0)
     if cancel_on_exit:
         assert (response and response[0][0] in (503,504)) or transport_errors
     else:
@@ -438,7 +464,8 @@ def test_broker_child_directory_swap_keeps_writes_bound(admitted_task,tmp_path,m
         from openpyxl import Workbook
         book=Workbook()
         book.active.append(['id','value'])
-        for row in [('a','first'),('a','later'),('b','second')]: book.active.append(row)
+        for row in [('a','first'),('a','later'),('b','second')]:
+            book.active.append(row)
         book.save(workspace/'source.xlsx')
         book.close()
         body['payload']['execution']['input_path']=str(workspace/'source.xlsx')

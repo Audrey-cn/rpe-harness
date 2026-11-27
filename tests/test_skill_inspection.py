@@ -446,8 +446,12 @@ def test_shared_worksheet_part_is_rejected_before_each_instance_expands(tmp_path
     Plan, _, verify = modules()
     payload = request(tmp_path)
     source = Path(payload['execution']['input_path'])
-    book=Workbook();book.active.title='Data';book.active.append(['id']);book.active.append([1])
-    book.save(source);book.close()
+    book=Workbook()
+    book.active.title='Data'
+    book.active.append(['id'])
+    book.active.append([1])
+    book.save(source)
+    book.close()
     _inject_worksheet(source,b'<mergeCells count="1"><mergeCell ref="A1:A100000"/></mergeCells>')
     with ZipFile(source) as archive:
         members=[(name,archive.read(name)) for name in archive.namelist()]
@@ -459,7 +463,8 @@ def test_shared_worksheet_part_is_rejected_before_each_instance_expands(tmp_path
                 first=sheets[0]
                 for index in range(2):
                     alias=ET.SubElement(sheets,first.tag,dict(first.attrib))
-                    alias.set('name','Alias'+str(index));alias.set('sheetId',str(index+2))
+                    alias.set('name','Alias'+str(index))
+                    alias.set('sheetId',str(index+2))
                 raw=ET.tostring(tree)
             archive.writestr(name,raw)
     def stop_before_allocation(*args,**kwargs):
@@ -469,7 +474,8 @@ def test_shared_worksheet_part_is_rejected_before_each_instance_expands(tmp_path
         with pytest.raises(ValueError,match='duplicated|shared'):
             Plan.from_request(payload)
     else:
-        output=tmp_path/'probe.json';output.write_text('{"sheet":"Data","rows":[]}')
+        output=tmp_path/'probe.json'
+        output.write_text('{"sheet":"Data","rows":[]}')
         prepared={'input_path':str(source),'output_path':payload['execution']['output_path'],
           'input_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'format':'xlsx',
           'mode':'rows','sheet':'Data','skill_binding':payload['execution']['skill_binding'],

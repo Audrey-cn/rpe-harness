@@ -7,7 +7,6 @@ import os
 import re
 from dataclasses import asdict, dataclass, fields
 from pathlib import Path
-from typing import Any
 
 from .path_binding import current_binding, read_source
 from .json_execution import EXECUTOR_REVISION

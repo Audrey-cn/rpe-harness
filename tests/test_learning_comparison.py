@@ -119,7 +119,6 @@ def test_real_pilot_freezes_qualified_original_and_refuses_source_change(tmp_pat
     m = module()
     from test_candidates import GOOD_CODE
     from rpe_harness.evolution import propose_candidate
-    from rpe_harness.evolution.training_feedback import build_training_packet
     from rpe_harness.evolution import worker
     from rpe_harness.integrations import hermes_session
     generations = []
@@ -627,11 +626,19 @@ def test_native_write_file_requires_actual_verified_bound_result(tmp_path,monkey
 
 
 def test_host_read_boundary_blocks_prior_sibling_experiment(tmp_path, monkeypatch):
-    import subprocess,sys
+    import subprocess
+    import sys
     from rpe_harness.integrations.hermes_session import sandbox_profile
-    m=module(); root=tmp_path/'new'; plan=m.preregister_learning(root); workspace=root/'arms/native/workspace'
-    own=workspace/'current.txt';own.write_text('current')
-    prior=tmp_path/'old';prior.mkdir();truth=prior/'preregistration.json';truth.write_text('hidden prior evaluation')
+    m=module()
+    root=tmp_path/'new'
+    plan=m.preregister_learning(root)
+    workspace=root/'arms/native/workspace'
+    own=workspace/'current.txt'
+    own.write_text('current')
+    prior=tmp_path/'old'
+    prior.mkdir()
+    truth=prior/'preregistration.json'
+    truth.write_text('hidden prior evaluation')
     # Same outer ownership boundary forwarded by _host_session, not only the new root.
     from rpe_harness.integrations import hermes_session
     captured={}
@@ -641,7 +648,8 @@ def test_host_read_boundary_blocks_prior_sibling_experiment(tmp_path, monkeypatc
     monkeypatch.setattr(hermes_session,'run_hermes_session',boundary)
     m._host_session(root,plan,'native',plan['training'][0],'opened')
     assert captured['read_isolation_root']==tmp_path
-    profile=tmp_path/'read-boundary.sb';profile.write_text(sandbox_profile([workspace],Path.home()/'.hermes',
+    profile=tmp_path/'read-boundary.sb'
+    profile.write_text(sandbox_profile([workspace],Path.home()/'.hermes',
         owner_read_scope=(captured['read_isolation_root'],[workspace,Path(sys.executable).resolve().parent.parent])))
     code='import json,sys;from pathlib import Path\nresult=[]\nfor p in sys.argv[1:]:\n try:Path(p).read_bytes();result.append(True)\n except PermissionError:result.append(False)\nprint(json.dumps(result))'
     process=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),sys.executable,'-B','-c',code,str(own),str(truth)],

@@ -14,7 +14,7 @@ import random
 import sys
 import time
 import tracemalloc
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 

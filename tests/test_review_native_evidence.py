@@ -378,7 +378,6 @@ def authenticated_native_execution(helper_execution_protocol, monkeypatch):
     """Real original helper/kernel proof; API IDs below are synthetic unit protocol."""
     from rpe_harness.integrations import hermes_native_process as process
     from rpe_harness.integrations.hermes import HostEventStore, register
-    from rpe_harness.integrations.hermes_gate import digest_json
     plan, trial, session, source, command = helper_execution_protocol
     workspace = Path(trial['workspace'])
     (workspace/'output.json').unlink()
@@ -395,19 +394,22 @@ def authenticated_native_execution(helper_execution_protocol, monkeypatch):
     key = os.urandom(32)
     (session/'native-execution-auth.key').write_bytes(key)
     key_read, key_write = os.pipe()
-    os.write(key_write, key); os.close(key_write)
+    os.write(key_write, key)
+    os.close(key_write)
     monkeypatch.setattr(process, '_SIGNING_KEY', None)
     monkeypatch.setenv('RPE_HERMES_NATIVE_EXECUTION_KEY_FD', str(key_read))
     process.install_native_execution_signing_key()
     assert 'RPE_HERMES_NATIVE_EXECUTION_KEY_FD' not in os.environ
-    with pytest.raises(OSError): os.fstat(key_read)
+    with pytest.raises(OSError):
+        os.fstat(key_read)
     for name, value in {'RPE_HERMES_DB': trial['db'], 'RPE_HERMES_WORKSPACE': str(workspace),
         'RPE_HERMES_TOOL_ENABLED': '0', 'RPE_HERMES_NATIVE_EXECUTION_CONFIG': str(config_path)}.items():
         monkeypatch.setenv(name, value)
     class Context:
         def __init__(self): self.hooks = {}
         def register_hook(self, name, callback): self.hooks[name] = callback
-    context = Context(); register(context)
+    context = Context()
+    register(context)
     ids = {'session_id': 'authenticated-unit', 'task_id': 'task', 'turn_id': 'turn', 'api_request_id': 'api'}
     context.hooks['pre_api_request'](**ids)
     context.hooks['post_api_request'](**ids, response={'assistant_message': {'tool_calls': [
@@ -452,7 +454,8 @@ def test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings(authentic
                         'wrong_receipt_args': ('arguments_sha256', '0'*64)}[fault]
         with store._connect() as db:
             raw, = db.execute('SELECT metadata_json FROM hermes_host_events WHERE ingest_event_id=?', (row['ingest_event_id'],)).fetchone()
-            metadata = json.loads(raw); metadata[field] = value
+            metadata = json.loads(raw)
+            metadata[field] = value
             db.execute('UPDATE hermes_host_events SET metadata_json=? WHERE ingest_event_id=?', (json.dumps(metadata), row['ingest_event_id']))
         result['events'] = store.list(result['session_id'])
     elif fault == 'wrong_input':
@@ -460,7 +463,10 @@ def test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings(authentic
     elif fault == 'wrong_output':
         (workspace/'output.json').write_text('{}')
     elif fault == 'wrong_config':
-        path = session/'native-execution-config.json'; config = json.loads(path.read_text()); config['parameters']['sheet'] = 'wrong'; path.write_text(json.dumps(config))
+        path = session/'native-execution-config.json'
+        config = json.loads(path.read_text())
+        config['parameters']['sheet'] = 'wrong'
+        path.write_text(json.dumps(config))
     elif fault == 'wrong_key':
         (session/'native-execution-auth.key').write_bytes(b'0'*32)
     elif fault == 'business_overwrite':
@@ -471,7 +477,8 @@ def test_v113_rejects_forged_receipts_changed_bytes_and_wrong_bindings(authentic
         row = next(event for event in result['events'] if event['kind'] == 'native_helper_process_observation')
         with store._connect() as db:
             raw, = db.execute('SELECT metadata_json FROM hermes_host_events WHERE ingest_event_id=?', (row['ingest_event_id'],)).fetchone()
-            metadata = json.loads(raw); out = file_snapshot(workspace/'output.json')
+            metadata = json.loads(raw)
+            out = file_snapshot(workspace/'output.json')
             metadata.update(output_sha256=out['sha256'], output_size=out['size'], output_identity_sha256=_digest(out['identity']))
             metadata.pop('process_receipt_hmac_sha256')
             metadata['process_receipt_hmac_sha256'] = receipt_signature(metadata, (session/'native-execution-auth.key').read_bytes())
@@ -493,7 +500,8 @@ def test_v113_session_constructor_clean_sandbox_key_pipe_and_installed_terminal(
     """
     from rpe_harness.integrations import hermes_session as launcher
     plan, trial, _session, _source, _command = helper_execution_protocol
-    workspace = Path(trial['workspace']); (workspace/'output.json').unlink()
+    workspace = Path(trial['workspace'])
+    (workspace/'output.json').unlink()
     case = next(row for row in plan['cases'] if row['case_id'] == trial['case_id'])
     original_popen = subprocess.Popen
     program = r'''import importlib.util,json,os,shlex,socket,subprocess,sys

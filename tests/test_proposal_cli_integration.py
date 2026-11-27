@@ -1,5 +1,5 @@
 """Public consumer checked against the real review producer contract."""
-from test_hermes_review import RAW, review, draft, dispatch, host_result
+from test_hermes_review import RAW, review as review, draft, dispatch, host_result
 from test_proposal_cli import parser
 
 

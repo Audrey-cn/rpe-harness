@@ -329,7 +329,7 @@ def test_strict_handler_without_native_middleware_context_cannot_execute(tmp_pat
 def test_mismatched_post_api_context_cannot_unlock_next_request(tmp_path,monkeypatch):
     context,workspace,db=strict_plugin(tmp_path,monkeypatch)
     payload=request(workspace)
-    outcome=execute(context,{'request':payload},ids())
+    execute(context,{'request':payload},ids())
     # A post event for another API cannot establish the real receipt's outcome.
     rows=integration().HostEventStore(db).list('session-one')
     post=next(e for e in rows if e['kind']=='post_tool_call')
@@ -372,7 +372,7 @@ def test_xlsx_default_sheet_and_durable_formula_rejection(tmp_path,monkeypatch,u
     identity=ids()
     api_request(context,identity)
     response(context,identity,[('call-one','rpe_task')])
-    result=execute(context,{'input_path':'orders.xlsx','output_path':'out.xlsx','key_columns':['id'],
+    execute(context,{'input_path':'orders.xlsx','output_path':'out.xlsx','key_columns':['id'],
         'goal':'keep first rows','constraints':['preserve_formulas','preserve_order']},identity)
     final=ids(call='',api='api-final')
     assert api_request(context,final)['tool_choice']=='none'

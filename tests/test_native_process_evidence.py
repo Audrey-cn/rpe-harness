@@ -95,7 +95,9 @@ def test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code(pr
     workspace = Path(config['workspace'])
     command = None
     if fault == 'wrong_helper':
-        other = workspace/'other.py'; other.write_bytes(Path(config['helper_path']).read_bytes()); argv[2] = str(other)
+        other = workspace/'other.py'
+        other.write_bytes(Path(config['helper_path']).read_bytes())
+        argv[2] = str(other)
     elif fault == 'wrong_interpreter':
         argv[0] = str(Path(sys.executable).resolve())
     elif fault == 'wrong_args':
@@ -103,13 +105,16 @@ def test_kernel_exit_does_not_attribute_bypass_wrong_identity_or_startup_code(pr
     elif fault == 'bypass':
         command = 'false && '+shlex.join(argv)+' > output.json; echo exit=0'
     elif fault == 'startup_injection':
-        injected = workspace/'injected'; injected.mkdir()
+        injected = workspace/'injected'
+        injected.mkdir()
         (injected/'sitecustomize.py').write_text('import os\nprint("forged")\nos._exit(0)\n')
         command = 'PYTHONPATH='+shlex.quote(str(injected))+' '+shlex.join(argv)+' > output.json; true'
     elif fault == 'output_symlink':
-        (workspace/'elsewhere').write_text(''); (workspace/'output.json').symlink_to(workspace/'elsewhere')
+        (workspace/'elsewhere').write_text('')
+        (workspace/'output.json').symlink_to(workspace/'elsewhere')
     elif fault == 'input_symlink':
-        (workspace/'input.xlsx').rename(workspace/'source.xlsx'); (workspace/'input.xlsx').symlink_to(workspace/'source.xlsx')
+        (workspace/'input.xlsx').rename(workspace/'source.xlsx')
+        (workspace/'input.xlsx').symlink_to(workspace/'source.xlsx')
     child, rows = execute(config, argv, command=command)
     assert all(row['verified'] is False for row in rows), rows
 

@@ -12,7 +12,6 @@ import sys
 import pytest
 
 from rpe_harness.integrations import hermes
-from rpe_harness.integrations.hermes_gate import digest_json
 
 
 class SDK:

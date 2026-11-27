@@ -1,7 +1,6 @@
 """Real filesystem races at the authority boundaries (no sandbox impersonation)."""
 import hashlib
 import os
-from pathlib import Path
 
 import pytest
 
@@ -66,8 +65,10 @@ def test_bound_publication_never_overwrites_a_racing_target(bound_paths,monkeypa
     victim.write_bytes(b'preserve me')
     original=os.link
     def racing_link(*args,**kwargs):
-        if kind=='symlink': binding.output.symlink_to(victim)
-        else: binding.output.write_bytes(b'existing output')
+        if kind=='symlink':
+            binding.output.symlink_to(victim)
+        else:
+            binding.output.write_bytes(b'existing output')
         return original(*args,**kwargs)
     monkeypatch.setattr(os,'link',racing_link)
     with pytest.raises(FileExistsError):

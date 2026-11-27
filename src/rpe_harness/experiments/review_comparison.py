@@ -399,7 +399,8 @@ def evaluate_native_review_draft(result, plan, trial):
         raw = read_regular_file(session/'stdout.jsonl', max_bytes=MAX_ARTIFACT_BYTES)
         records = [json.loads(line,object_pairs_hook=_unique_pairs) for line in raw.decode('utf-8').splitlines()]
         uses = [row for row in records if type(row) is dict and row.get('type')=='tool_use']
-        signature = lambda row:(row.get('name'), digest_json(row.get('input')))
+        def signature(row):
+            return (row.get('name'), digest_json(row.get('input')))
         if Counter(map(signature, uses))!=Counter(map(signature, streams)):
             raise ValueError('native_write_log_stream_changed')
         workspace, target = _safe_path(trial['workspace']), _safe_path(Path(trial['workspace'])/'draft.json')
